@@ -6,4 +6,6 @@ app_name = 'nextseq_app'
 urlpatterns = [
     url(r'^$', views.index,name='index'),
     path('register/', views.UserRegisterView.as_view(), name='register'),
+    path('login/', views.UserLoginView.as_view(), name='login'),
+
 ]
