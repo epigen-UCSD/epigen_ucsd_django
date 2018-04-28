@@ -5,10 +5,15 @@ from .forms import UserRegisterForm,UserLoginForm
 from django.views.generic import FormView, View
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
+from django.views.generic.base import TemplateView
+
 
 # Create your views here.
-def index(request):
-    return HttpResponse("Hello, world!")
+# def index(request):
+#     return HttpResponse("Hello, world!")
+class IndexView(TemplateView):
+	template_name = "nextseq_app/index.html"
+
 
 class UserRegisterView(FormView):
 	form_class = UserRegisterForm
@@ -42,3 +47,19 @@ class UserLoginView(View):
 				return render(request, self.template_name,{'form':form,'error_message':'Invalid login'})
 
 		return render(request, self.template_name,{'form':form})
+
+		
+def logout_view(request):
+	logout(request)
+	return render(request,"nextseq_app/index.html")
+
+
+
+
+
+
+
+
+
+
+
