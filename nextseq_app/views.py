@@ -51,7 +51,7 @@ class UserLoginView(View):
 		
 def logout_view(request):
 	logout(request)
-	return render(request,"nextseq_app/index.html")
+	return redirect('nextseq_app:index')
 
 
 
