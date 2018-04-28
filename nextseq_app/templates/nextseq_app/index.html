@@ -1,7 +1,13 @@
-{% if user.is_authenticated %}
-  Hi {{ user.username }}!
+
+  Hi {{ user.username }}! Here are your runs:
   <p><a href="{% url 'nextseq_app:logout' %}">logout</a></p>
+
+{% if RunInfo_list %}
+	<ul>
+	{% for Run in RunInfo_list %}
+		<li><a href="{% url 'nextseq_app:login' %}">{{ Run.runid }}</a></li>
+	{% endfor %}
+	</ul>
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'nextseq_app:login' %}">login</a>
+	<p>No polls are available.</p>
 {% endif %}

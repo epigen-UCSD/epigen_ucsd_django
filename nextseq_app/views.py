@@ -6,13 +6,27 @@ from django.views.generic import FormView, View
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
-
+from django.views.generic.list import ListView
+from .models import Barcode, RunInfo
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 # def index(request):
 #     return HttpResponse("Hello, world!")
-class IndexView(TemplateView):
-	template_name = "nextseq_app/index.html"
+# class IndexView(TemplateView):
+# 	template_name = "nextseq_app/index.html"
+#@login_required
+# class IndexView(ListView):
+# 	template_name = "nextseq_app/index.html"
+# 	context_object_name = 'RunInfo_list'
+# 	def get_queryset(self):
+# 		return RunInfo.objects.filter(operator=self.request.user)
+@login_required	
+def IndexView(request):
+	
+	RunInfo_list = RunInfo.objects.filter(operator=request.user)
+	return render(request, 'nextseq_app/index.html', {'RunInfo_list': RunInfo_list})
+
 
 
 class UserRegisterView(FormView):
@@ -48,7 +62,7 @@ class UserLoginView(View):
 
 		return render(request, self.template_name,{'form':form})
 
-		
+
 def logout_view(request):
 	logout(request)
 	return redirect('nextseq_app:index')
