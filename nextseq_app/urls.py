@@ -5,5 +5,5 @@ from . import views
 app_name = 'nextseq_app'
 urlpatterns = [
     url(r'^$', views.index,name='index'),
-    path('register/', views.UserFormView.as_view(), name='register'),
+    path('register/', views.UserRegisterView.as_view(), name='register'),
 ]
