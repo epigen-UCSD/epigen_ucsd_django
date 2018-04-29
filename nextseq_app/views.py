@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from .forms import UserRegisterForm,UserLoginForm
@@ -7,8 +7,13 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
-from .models import Barcode, RunInfo
-from django.contrib.auth.decorators import login_required
+from .models import Barcode, RunInfo, SamplesInRun
+#from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.views.generic.detail import DetailView
+from django.utils.decorators import method_decorator
+from django.conf import settings
+from django.views.decorators.cache import never_cache
 
 # Create your views here.
 # def index(request):
@@ -21,13 +26,41 @@ from django.contrib.auth.decorators import login_required
 # 	context_object_name = 'RunInfo_list'
 # 	def get_queryset(self):
 # 		return RunInfo.objects.filter(operator=self.request.user)
+barcodes_dic = {}
+barcodes_list = Barcode.objects.all()
+for barcodes in barcodes_list:
+	barcodes_dic[barcodes.indexid] = barcodes.indexseq
+print(barcodes_dic['A006'])
+
+
 @login_required	
 def IndexView(request):
-	
+
 	RunInfo_list = RunInfo.objects.filter(operator=request.user)
 	return render(request, 'nextseq_app/index.html', {'RunInfo_list': RunInfo_list})
 
-
+@method_decorator(login_required, name='dispatch')
+class RunDetailView(DetailView):
+	model = RunInfo
+	template_name = 'nextseq_app/detail.html'
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['barcode'] = barcodes_dic
+		return context
+# @login_required
+# def RunDetailView(request, run_id):
+# 	runinfo = get_object_or_404(RunInfo, pk=run_id)
+# 	barcodei7 = {}
+# 	barcodei5 = {}
+# 	for samples in runinfo.samplesinrun_set.all():
+# 		barcodequery = Barcode.objects.get(indexid=samples.i7index)
+# 		barcodei7[samples] = barcodequery.indexseq
+# 		samples
+# 		print(samples)
+# 		print(barcodei7[samples])
+# 		barcodequery = Barcode.objects.get(indexid=samples.i5index)
+# 		barcodei5[samples] = barcodequery.indexseq
+# 	return render(request, 'nextseq_app/detail.html', {'runinfo': runinfo, 'barcodei7': barcodei7, 'barcodei5': barcodei5})
 
 class UserRegisterView(FormView):
 	form_class = UserRegisterForm
@@ -40,6 +73,7 @@ class UserRegisterView(FormView):
 		user.save()
 		return HttpResponseRedirect(self.success_url)
 
+@method_decorator(never_cache, name='dispatch')
 class UserLoginView(View):
 	form_class = UserLoginForm
 	template_name = 'nextseq_app/login.html'

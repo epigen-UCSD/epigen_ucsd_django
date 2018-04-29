@@ -3,8 +3,9 @@
 {% else %}
     <h3>Enter to log in</h3>
 {% endif %}
-<form method="post" action="">
+<form method="post" action=" {% url 'nextseq_app:login' %} ">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Submit" />
+    <input type="hidden" name="next" value="{{ request.GET.next }}" />
 </form>

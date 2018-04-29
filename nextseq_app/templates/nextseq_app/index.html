@@ -5,9 +5,18 @@
 {% if RunInfo_list %}
 	<ul>
 	{% for Run in RunInfo_list %}
-		<li><a href="{% url 'nextseq_app:login' %}">{{ Run.runid }}</a></li>
+		<li><a href="{% url 'nextseq_app:rundetail' Run.id %}">{{ Run.runid }}---{{ Run.date }}----{{ Run.is_pe }}----{{ Run.reads_length }}</a>
+		<p><a href="{% url 'nextseq_app:login' %}"> Change </a>
+			<a href="{% url 'nextseq_app:login' %}"> Delete </a>
+		</p>
+
+
+
+		</li>
 	{% endfor %}
 	</ul>
+
+<a href="{% url 'nextseq_app:login' %}"> Add a new RunInfo </a>
 {% else %}
-	<p>No polls are available.</p>
+	<p>No RunInfos are available.</p>
 {% endif %}
