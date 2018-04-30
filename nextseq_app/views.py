@@ -15,7 +15,7 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.views.decorators.cache import never_cache
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
-import re
+import re,csv
 from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 # def index(request):
@@ -140,8 +140,40 @@ def SamplesBulkCreateView(request,run_pk):
 		form = SamplesToCreatForm()
 	return render(request, 'nextseq_app/createsamples_inbulk.html',{'form':form,'runinfo':runinfo})
 
-
-
+@login_required
+def SampleSheetCreateView(request,run_pk):
+	runinfo = get_object_or_404(RunInfo, pk=run_pk)
+	response = HttpResponse(content_type='text/csv')
+	response['Content-Disposition'] = 'attachment; filename="SampleSheet.csv"'
+	writer = csv.writer(response)
+	writer.writerow(['[Header]'])
+	writer.writerow(['IEMFileVersion','5'])
+	writer.writerow(['Date',runinfo.date])
+	writer.writerow(['Workflow','GenerateFASTQ'])
+	writer.writerow(['Application','NextSeq FASTQ Only'])
+	writer.writerow(['Instrument Type','NextSeq/MiniSeq'])
+	writer.writerow(['Assay','Nextera XT / TruSeq LT'])
+	writer.writerow(['Index Adapters','Nextera XT v2 Index Kit / TruSeq LT'])
+	writer.writerow(['Description'])
+	writer.writerow(['Chemistry','Amplicon'])
+	writer.writerow([''])
+	writer.writerow(['[Reads]'])
+	if runinfo.is_pe:
+		a = runinfo.reads_length
+		writer.writerow([a])
+		writer.writerow([a])
+	writer.writerow([''])
+	writer.writerow(['[Settings]'])
+	writer.writerow([''])
+	writer.writerow(['Sample_ID','Sample_Name','Sample_Plate','Sample_Well','I7_Index_ID','index','I5_Index_ID','index2','Sample_Project','Description'])
+	samples_list = runinfo.samplesinrun_set.all()
+	for samples in samples_list:
+		i7id = samples.i7index
+		i5id = samples.i5index
+		i7seq= Barcode.objects.get(indexid=i7id).indexseq
+		i5seq= Barcode.objects.get(indexid=i5id).indexseq
+		writer.writerow([samples.sampleid,'','','',i7id,i7seq,i5id,i5seq,'',''])									
+	return response
 
 
 

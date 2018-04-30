@@ -18,6 +18,6 @@ urlpatterns = [
     path('<int:run_pk>/sample/add/', views.SampleCreateView, name='sample_add'),
     path('<int:run_pk>/samples/add/', views.SamplesBulkCreateView, name='samples_bulkadd'),
     path('<int:run_pk>/samples/delete/', views.SamplesDeleteView, name='samples_delete'),
-
-
+    path('<int:run_pk>/samplesheetcreate/', views.SampleSheetCreateView, name='samplesheet_create'),
+    
 ]
