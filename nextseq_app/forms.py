@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 #from django.utils.translation import gettext_lazy as _
-from .models import RunInfo
+from .models import RunInfo,SamplesInRun
 from django.forms import ModelForm
 
 
@@ -26,3 +26,8 @@ class RunCreationForm(ModelForm):
 			 'date': forms.DateInput(),
 
 		}
+class SamplesInRunForm(ModelForm):
+
+	class Meta:
+		model = SamplesInRun
+		fields = ['sampleid','i7index','i5index']

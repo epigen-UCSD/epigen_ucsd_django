@@ -15,6 +15,7 @@ urlpatterns = [
     path('add/', views.RunCreateView2.as_view(), name='run_add'),
     path('<int:pk>/update/', views.RunUpdateView.as_view(), name='run_update'),
     path('<int:pk>/delete/', views.RunDeleteView.as_view(), name='run_delete'),
+    path('<int:run_pk>/sample/add/', views.SampleCreateView, name='sample_add'),
 
 
 ]

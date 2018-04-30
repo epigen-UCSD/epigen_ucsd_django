@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from .forms import UserRegisterForm,UserLoginForm,RunCreationForm
+from .forms import UserRegisterForm,UserLoginForm,RunCreationForm,SamplesInRunForm
 from django.views.generic import FormView, View
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
@@ -75,6 +75,29 @@ class RunCreateView2(CreateView):
 		obj = form.save(commit=False)
 		obj.operator = self.request.user
 		return super().form_valid(form)
+
+@login_required
+def SampleCreateView(request, run_pk):
+	form = SamplesInRunForm(request.POST or None, request.FILES or None)
+	runinfo = get_object_or_404(RunInfo, pk=run_pk)
+	if form.is_valid():
+		runinfo_samples = runinfo.samplesinrun_set.all()
+		for s in runinfo_samples:
+			if s.sampleid == form.cleaned_data.get("sampleid"):
+				context ={
+					'form':form,
+					'runinfo':runinfo,
+					'error_message':'You already added that sample',
+				}
+				return render(request, 'nextseq_app/createsamples.html', context)
+		obj = form.save(commit=False)
+		obj.singlerun = runinfo
+		obj.save()
+		return redirect('nextseq_app:rundetail',pk=runinfo.id)
+	return render(request, 'nextseq_app/createsamples.html', {'form':form,'runinfo':runinfo})
+
+
+
 
 @method_decorator(login_required, name='dispatch')
 class RunUpdateView(UpdateView):
