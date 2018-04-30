@@ -16,7 +16,8 @@
 	{% endfor %}
 	</ul>
 
-<a href="{% url 'nextseq_app:run_add' %}"> Add a new RunInfo </a>
+
 {% else %}
 	<p>No RunInfos are available.</p>
 {% endif %}
+<a href="{% url 'nextseq_app:run_add' %}"> Add a new RunInfo </a>

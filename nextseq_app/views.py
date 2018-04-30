@@ -96,6 +96,14 @@ def SampleCreateView(request, run_pk):
 		return redirect('nextseq_app:rundetail',pk=runinfo.id)
 	return render(request, 'nextseq_app/createsamples.html', {'form':form,'runinfo':runinfo})
 
+def SamplesDeleteView(request, run_pk):
+	delete_list = request.GET.getlist('delete_list')
+	if request.method == "POST":
+		SamplesInRun.objects.filter(singlerun=RunInfo.objects.get(pk=run_pk),sampleid__in=delete_list).delete()
+		return redirect('nextseq_app:rundetail',pk=run_pk)
+	return render(request, 'nextseq_app/samples_confirm_delete.html', {'delete_list':delete_list,'run_pk':run_pk})
+
+
 
 
 
