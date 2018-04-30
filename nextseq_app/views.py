@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from .forms import UserRegisterForm,UserLoginForm,RunCreationForm,SamplesInRunForm
+from .forms import UserRegisterForm,UserLoginForm,RunCreationForm,SamplesInRunForm,SamplesToCreatForm
 from django.views.generic import FormView, View
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
@@ -15,6 +15,8 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.views.decorators.cache import never_cache
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
+import re
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 # def index(request):
 #     return HttpResponse("Hello, world!")
@@ -96,12 +98,48 @@ def SampleCreateView(request, run_pk):
 		return redirect('nextseq_app:rundetail',pk=runinfo.id)
 	return render(request, 'nextseq_app/createsamples.html', {'form':form,'runinfo':runinfo})
 
+@login_required
 def SamplesDeleteView(request, run_pk):
 	delete_list = request.GET.getlist('delete_list')
 	if request.method == "POST":
 		SamplesInRun.objects.filter(singlerun=RunInfo.objects.get(pk=run_pk),sampleid__in=delete_list).delete()
 		return redirect('nextseq_app:rundetail',pk=run_pk)
 	return render(request, 'nextseq_app/samples_confirm_delete.html', {'delete_list':delete_list,'run_pk':run_pk})
+
+@login_required
+def SamplesBulkCreateView(request,run_pk):
+	runinfo = get_object_or_404(RunInfo, pk=run_pk)
+	if request.method == 'POST':
+		form = SamplesToCreatForm(request.POST)
+		if form.is_valid():
+			samplestocreat = form.cleaned_data['samplestocreat']
+			tosave_list = []
+			for samples in samplestocreat.split('\n'):
+				samples_info = re.split(r'[\s\t]',samples.strip('\r'))
+				if samples_info[0] != 'sampleid':
+					try:
+						tosave_sample = SamplesInRun(
+							singlerun=runinfo,
+							sampleid=samples_info[0],
+							i7index=Barcode.objects.get(indexid=samples_info[1]),
+							i5index=Barcode.objects.get(indexid=samples_info[2]),
+							)
+					except ObjectDoesNotExist:
+						context = {
+							'form':form,
+							'error_message':'There are indexes that are not stored in the database!'
+						}
+						return render(request, 'nextseq_app/createsamples_inbulk.html',context)
+
+
+					tosave_list.append(tosave_sample)
+			SamplesInRun.objects.bulk_create(tosave_list)
+			return redirect('nextseq_app:rundetail',pk=run_pk)
+
+	else:
+		form = SamplesToCreatForm()
+	return render(request, 'nextseq_app/createsamples_inbulk.html',{'form':form,'runinfo':runinfo})
+
 
 
 

@@ -26,4 +26,6 @@ class SamplesInRun(models.Model):
 	i7index = models.ForeignKey(Barcode,related_name='i7_index', on_delete=models.CASCADE, blank=True,null=True)
 	i5index = models.ForeignKey(Barcode,related_name='i5_index',on_delete=models.CASCADE, blank=True,null=True)
 	def __str__(self):
-	 	return self.sampleid
+		return self.sampleid
+	class Meta:
+		ordering = ['sampleid']

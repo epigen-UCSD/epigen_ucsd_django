@@ -31,3 +31,6 @@ class SamplesInRunForm(ModelForm):
 	class Meta:
 		model = SamplesInRun
 		fields = ['sampleid','i7index','i5index']
+
+class SamplesToCreatForm(forms.Form):
+	samplestocreat = forms.CharField(label='Samples to Save:',widget=forms.Textarea(),initial='sampleid i7index i5index(seperated by Space or Tab)\n')
