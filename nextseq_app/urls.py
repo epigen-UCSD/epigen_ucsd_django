@@ -12,6 +12,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     #path('<int:pk>/', views.RunDetailView.as_view(), name='rundetail'),
     path('<int:pk>/', views.RunDetailView.as_view(), name='rundetail'),
+    path('add/', views.RunCreateView.as_view(), name='run_add'),
 
 
 ]

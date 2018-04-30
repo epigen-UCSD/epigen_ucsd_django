@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 class Barcode(models.Model):
 	indexid = models.CharField(max_length=200)
@@ -13,6 +14,9 @@ class RunInfo(models.Model):
 	date = models.DateField('I did this run on...')
 	is_pe = models.BooleanField('Is it paired-end?', default=True)
 	reads_length = models.IntegerField(default=75)
+
+	def get_absolute_url(self):
+		return reverse('nextseq_app:rundetail', kwargs={'pk': self.pk})
 
 	def __str__(self):
 		return self.runid

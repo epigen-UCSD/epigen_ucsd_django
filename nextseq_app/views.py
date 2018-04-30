@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from .forms import UserRegisterForm,UserLoginForm
+from .forms import UserRegisterForm,UserLoginForm,RunCreationForm
 from django.views.generic import FormView, View
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
@@ -14,7 +14,7 @@ from django.views.generic.detail import DetailView
 from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.views.decorators.cache import never_cache
-
+from django.views.generic.edit import CreateView,UpdateView,DeleteView
 # Create your views here.
 # def index(request):
 #     return HttpResponse("Hello, world!")
@@ -30,8 +30,6 @@ barcodes_dic = {}
 barcodes_list = Barcode.objects.all()
 for barcodes in barcodes_list:
 	barcodes_dic[barcodes.indexid] = barcodes.indexseq
-print(barcodes_dic['A006'])
-
 
 @login_required	
 def IndexView(request):
@@ -61,6 +59,17 @@ class RunDetailView(DetailView):
 # 		barcodequery = Barcode.objects.get(indexid=samples.i5index)
 # 		barcodei5[samples] = barcodequery.indexseq
 # 	return render(request, 'nextseq_app/detail.html', {'runinfo': runinfo, 'barcodei7': barcodei7, 'barcodei5': barcodei5})
+@method_decorator(login_required, name='dispatch')
+class RunCreateView(CreateView):
+	model = RunInfo
+	fields = ['runid','date','is_pe','reads_length']
+	template_name = 'nextseq_app/createrun.html'
+	#ields = '__all__'
+
+@method_decorator(login_required, name='dispatch')
+class RunCreateView2(CreateView):
+	form_class = RunCreationForm
+	template_name = 'nextseq_app/createrun.html'
 
 class UserRegisterView(FormView):
 	form_class = UserRegisterForm
