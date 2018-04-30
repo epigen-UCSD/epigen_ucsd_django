@@ -12,7 +12,9 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     #path('<int:pk>/', views.RunDetailView.as_view(), name='rundetail'),
     path('<int:pk>/', views.RunDetailView.as_view(), name='rundetail'),
-    path('add/', views.RunCreateView.as_view(), name='run_add'),
+    path('add/', views.RunCreateView2.as_view(), name='run_add'),
+    path('<int:pk>/update/', views.RunUpdateView.as_view(), name='run_update'),
+    path('<int:pk>/delete/', views.RunDeleteView.as_view(), name='run_delete'),
 
 
 ]

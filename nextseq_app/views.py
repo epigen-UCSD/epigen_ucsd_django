@@ -66,10 +66,27 @@ class RunCreateView(CreateView):
 	template_name = 'nextseq_app/createrun.html'
 	#ields = '__all__'
 
+
 @method_decorator(login_required, name='dispatch')
 class RunCreateView2(CreateView):
 	form_class = RunCreationForm
 	template_name = 'nextseq_app/createrun.html'
+	def form_valid(self, form):
+		obj = form.save(commit=False)
+		obj.operator = self.request.user
+		return super().form_valid(form)
+
+@method_decorator(login_required, name='dispatch')
+class RunUpdateView(UpdateView):
+	model = RunInfo
+	fields = ['runid','date','is_pe','reads_length']
+	template_name = 'nextseq_app/updaterun.html'
+
+@method_decorator(login_required, name='dispatch')
+class RunDeleteView(DeleteView):
+	model = RunInfo
+	success_url = reverse_lazy('nextseq_app:index')
+
 
 class UserRegisterView(FormView):
 	form_class = UserRegisterForm
