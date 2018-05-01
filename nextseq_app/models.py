@@ -7,6 +7,8 @@ class Barcode(models.Model):
 	indexseq = models.CharField(max_length=200)
 	def __str__(self):
 		return self.indexid
+	class Meta:
+		ordering = ['indexid']
 
 class RunInfo(models.Model):
 	runid = models.CharField(max_length=200)
@@ -23,6 +25,7 @@ class RunInfo(models.Model):
 
 	class Meta:
 		ordering = ['date']
+
 class SamplesInRun(models.Model):
 	singlerun = models.ForeignKey(RunInfo, on_delete=models.CASCADE)
 	sampleid = models.CharField(max_length=200)

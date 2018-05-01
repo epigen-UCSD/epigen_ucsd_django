@@ -189,10 +189,10 @@ def SampleSheetCreateView(request,run_pk):
 	writer.writerow(['Sample_ID','Sample_Name','Sample_Plate','Sample_Well','I7_Index_ID','index','I5_Index_ID','index2','Sample_Project','Description'])
 	samples_list = runinfo.samplesinrun_set.all()
 	for samples in samples_list:
-		i7id = samples.i7index
-		i5id = samples.i5index
-		i7seq= Barcode.objects.get(indexid=i7id).indexseq
-		i5seq= Barcode.objects.get(indexid=i5id).indexseq
+		i7id = samples.i7index or ''
+		i5id = samples.i5index or ''
+		i7seq= Barcode.objects.get(indexid=i7id).indexseq if i7id!='' else ''
+		i5seq= Barcode.objects.get(indexid=i5id).indexseq if i5id!='' else ''
 		writer.writerow([samples.sampleid,'','','',i7id,i7seq,i5id,i5seq,'',''])									
 	return response
 
