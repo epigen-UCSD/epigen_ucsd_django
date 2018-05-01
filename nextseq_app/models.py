@@ -20,6 +20,9 @@ class RunInfo(models.Model):
 
 	def __str__(self):
 		return self.runid
+
+	class Meta:
+		ordering = ['date']
 class SamplesInRun(models.Model):
 	singlerun = models.ForeignKey(RunInfo, on_delete=models.CASCADE)
 	sampleid = models.CharField(max_length=200)

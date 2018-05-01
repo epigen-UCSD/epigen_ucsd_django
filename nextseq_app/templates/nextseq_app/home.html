@@ -1,0 +1,16 @@
+<form method='GET' action=''>
+	<input type="text" name="q" placeholder="Search" value='{{request.GET.q}}'>
+	<input type="submit" value="Search">	
+</form>
+
+<h1>Here are all of the runs in our center:</h1>
+<ul>
+{% for Run in RunInfo_list %}
+    <li>
+    	{{ Run.operator }} - {{ Run.runid }} - {{ Run.date|date }} - {{ Run.is_pe }} - {{ Run.reads_length }}
+    	<a href="{% url 'nextseq_app:rundetail' Run.id %}">View</a>
+    </li>
+{% empty %}
+    <li>No Runs yet.</li>
+{% endfor %}
+</ul>

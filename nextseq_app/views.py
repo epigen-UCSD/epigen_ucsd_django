@@ -17,6 +17,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 import re,csv
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 # Create your views here.
 # def index(request):
 #     return HttpResponse("Hello, world!")
@@ -38,6 +39,26 @@ def IndexView(request):
 
 	RunInfo_list = RunInfo.objects.filter(operator=request.user)
 	return render(request, 'nextseq_app/index.html', {'RunInfo_list': RunInfo_list})
+
+@method_decorator(login_required, name='dispatch')
+class HomeView(ListView):
+	template_name = "nextseq_app/home.html"
+	context_object_name = 'RunInfo_list'
+
+	def get_queryset(self):
+		queryset_list = RunInfo.objects.all()
+		if self.request.GET.get('q'):
+			q = self.request.GET.get('q')
+			print(q)
+			queryset_list = queryset_list.filter(
+				Q(operator__username__icontains=q) | 
+				Q(runid__icontains=q) | 
+				Q(is_pe__icontains=q) | 
+				Q(reads_length__icontains=q)
+
+				).distinct()
+		return queryset_list
+
 
 @method_decorator(login_required, name='dispatch')
 class RunDetailView(DetailView):
