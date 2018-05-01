@@ -1,2 +1,0 @@
-python == v3.6.5
-django == v2.0.4
