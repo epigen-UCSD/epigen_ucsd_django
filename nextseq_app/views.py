@@ -18,6 +18,7 @@ from django.views.generic.edit import CreateView,UpdateView,DeleteView
 import re,csv
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from django.forms import modelformset_factory
 # Create your views here.
 # def index(request):
 #     return HttpResponse("Hello, world!")
@@ -89,7 +90,6 @@ class RunCreateView(CreateView):
 	template_name = 'nextseq_app/createrun.html'
 	#ields = '__all__'
 
-
 @method_decorator(login_required, name='dispatch')
 class RunCreateView2(CreateView):
 	form_class = RunCreationForm
@@ -99,9 +99,63 @@ class RunCreateView2(CreateView):
 		obj.operator = self.request.user
 		return super().form_valid(form)
 
+# @login_required
+# def RunCreateView3(request):
+# 	run_form = RunCreationForm(request.POST or None, prefix = "run")
+# 	sample_form = SamplesInRunForm(request.POST or None, prefix = "samples")
+# 	if run_form.is_valid() and sample_form.is_valid():
+# 		runinfo = run_form.save(commit=False)
+# 		runinfo.operator = request.user
+# 		runinfo.save()
+# 		sampleinfo = sample_form.save(commit=False)
+# 		sampleinfo.singlerun = runinfo
+# 		sampleinfo.save()
+# 		return redirect('nextseq_app:rundetail',pk=runinfo.id)
+# 	return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form':run_form,'sample_form':sample_form})
+	
+
+@login_required
+def RunCreateView3(request):
+	run_form = RunCreationForm(request.POST or None, prefix = "run")
+	formset = modelformset_factory(SamplesInRun, form=SamplesInRunForm,extra =3 )
+	sample_formset = formset(request.POST or None, queryset =  SamplesInRun.objects.none())
+
+	if run_form.is_valid() and sample_formset.is_valid():
+		runinfo = run_form.save(commit=False)
+		runinfo.operator = request.user
+		runinfo.save()
+		instances = sample_formset.save(commit=False)
+		for instance in instances:
+			instance.singlerun = runinfo
+			instance.save()
+		return redirect('nextseq_app:rundetail',pk=runinfo.id)
+	return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form':run_form,'sample_formset':sample_formset})
+	
+@login_required
+def RunUpdateView2(request):
+	run_form = RunCreationForm(request.POST or None, prefix = "run")
+	formset = modelformset_factory(SamplesInRun, form=SamplesInRunForm,extra =3 )
+	sample_formset = formset(request.POST or None, queryset =  SamplesInRun.objects.none())
+
+	if run_form.is_valid() and sample_formset.is_valid():
+		runinfo = run_form.save(commit=False)
+		runinfo.operator = request.user
+		runinfo.save()
+		instances = sample_formset.save(commit=False)
+		for instance in instances:
+			instance.singlerun = runinfo
+			instance.save()
+		return redirect('nextseq_app:rundetail',pk=runinfo.id)
+	return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form':run_form,'sample_formset':sample_formset})
+	
+
+	
+
+
 @login_required
 def SampleCreateView(request, run_pk):
-	form = SamplesInRunForm(request.POST or None, request.FILES or None)
+	#form = SamplesInRunForm(request.POST or None, request.FILES or None)
+	form = SamplesInRunForm(request.POST or None)
 	runinfo = get_object_or_404(RunInfo, pk=run_pk)
 	if form.is_valid():
 		runinfo_samples = runinfo.samplesinrun_set.all()
@@ -132,19 +186,43 @@ def SamplesBulkCreateView(request,run_pk):
 	runinfo = get_object_or_404(RunInfo, pk=run_pk)
 	if request.method == 'POST':
 		form = SamplesToCreatForm(request.POST)
+		print(form)
 		if form.is_valid():
 			samplestocreat = form.cleaned_data['samplestocreat']
 			tosave_list = []
+			samplestocreat += '  \nsampleid'
+			print(samplestocreat)
 			for samples in samplestocreat.split('\n'):
-				samples_info = re.split(r'[\s\t]',samples.strip('\r'))
+				print(samples)
+				samples_info = re.split(r'[\s\t]',samples)
+				print(samples_info)
 				if samples_info[0] != 'sampleid':
 					try:
-						tosave_sample = SamplesInRun(
-							singlerun=runinfo,
-							sampleid=samples_info[0],
-							i7index=Barcode.objects.get(indexid=samples_info[1]),
-							i5index=Barcode.objects.get(indexid=samples_info[2]),
-							)
+						if samples_info[1] and samples_info[2]: 
+							tosave_sample = SamplesInRun(
+								singlerun=runinfo,
+								sampleid=samples_info[0],
+								i7index=Barcode.objects.get(indexid=samples_info[1]),
+								i5index=Barcode.objects.get(indexid=samples_info[2]),
+								)
+						elif samples_info[1] and not samples_info[2]:
+							tosave_sample = SamplesInRun(
+								singlerun=runinfo,
+								sampleid=samples_info[0],
+								i7index=Barcode.objects.get(indexid=samples_info[1]),
+								)
+						elif not samples_info[1] and samples_info[2]:
+							tosave_sample = SamplesInRun(
+								singlerun=runinfo,
+								sampleid=samples_info[0],
+								i5index=Barcode.objects.get(indexid=samples_info[2]),
+								)
+						else:
+							tosave_sample = SamplesInRun(
+								singlerun=runinfo,
+								sampleid=samples_info[0],
+								)												
+
 					except ObjectDoesNotExist:
 						context = {
 							'form':form,
