@@ -19,6 +19,7 @@ import re,csv
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.forms import modelformset_factory
+from django.forms import inlineformset_factory
 # Create your views here.
 # def index(request):
 #     return HttpResponse("Hello, world!")
@@ -50,7 +51,7 @@ class HomeView(ListView):
 		queryset_list = RunInfo.objects.all()
 		if self.request.GET.get('q'):
 			q = self.request.GET.get('q')
-			print(q)
+			#print(q)
 			queryset_list = queryset_list.filter(
 				Q(operator__username__icontains=q) | 
 				Q(runid__icontains=q) | 
@@ -117,7 +118,7 @@ class RunCreateView2(CreateView):
 @login_required
 def RunCreateView3(request):
 	run_form = RunCreationForm(request.POST or None, prefix = "run")
-	formset = modelformset_factory(SamplesInRun, form=SamplesInRunForm,extra =3 )
+	formset = modelformset_factory(SamplesInRun, form=SamplesInRunForm,extra =3, can_order=True,  can_delete=True )
 	sample_formset = formset(request.POST or None, queryset =  SamplesInRun.objects.none())
 
 	if run_form.is_valid() and sample_formset.is_valid():
@@ -129,6 +130,24 @@ def RunCreateView3(request):
 			instance.singlerun = runinfo
 			instance.save()
 		return redirect('nextseq_app:rundetail',pk=runinfo.id)
+	return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form':run_form,'sample_formset':sample_formset})
+
+@login_required
+def RunCreateView4(request):
+	run_form = RunCreationForm(request.POST or None)
+	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['sampleid','i7index','i5index'],extra =3)
+	sample_formset = SamplesInlineFormSet(instance=RunInfo())
+
+	if run_form.is_valid():
+		runinfo = run_form.save(commit=False)
+		runinfo.operator = request.user
+		sample_formset = SamplesInlineFormSet(request.POST,instance=runinfo)
+		if sample_formset.is_valid():
+			runinfo.save()
+			sample_formset.save()
+			return redirect('nextseq_app:rundetail',pk=runinfo.id)
+		
+
 	return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form':run_form,'sample_formset':sample_formset})
 	
 @login_required
@@ -186,16 +205,16 @@ def SamplesBulkCreateView(request,run_pk):
 	runinfo = get_object_or_404(RunInfo, pk=run_pk)
 	if request.method == 'POST':
 		form = SamplesToCreatForm(request.POST)
-		print(form)
+		#print(form)
 		if form.is_valid():
 			samplestocreat = form.cleaned_data['samplestocreat']
 			tosave_list = []
 			samplestocreat += '  \nsampleid'
-			print(samplestocreat)
+			#print(samplestocreat)
 			for samples in samplestocreat.split('\n'):
-				print(samples)
+				#print(samples)
 				samples_info = re.split(r'[\s\t]',samples)
-				print(samples_info)
+				#print(samples_info)
 				if samples_info[0] != 'sampleid':
 					try:
 						if samples_info[1] and samples_info[2]: 
