@@ -286,22 +286,20 @@ def RunCreateView6(request):
 	return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
 @login_required
-def RunUpdateView2(request):
-	run_form = RunCreationForm(request.POST or None)
+def RunUpdateView2(request,run_pk):
+	runinfo = get_object_or_404(RunInfo, pk=run_pk)
+	run_form = RunCreationForm(request.POST or None, instance = runinfo)
 	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['sampleid','i7index','i5index'],extra =3)
-	sample_formset = SamplesInlineFormSet(instance=RunInfo())
+	sample_formset = SamplesInlineFormSet(request.POST or None, instance=runinfo)
 
-	if run_form.is_valid():
+	if run_form.is_valid() and sample_formset.is_valid():
 		runinfo = run_form.save(commit=False)
 		runinfo.operator = request.user
-		sample_formset = SamplesInlineFormSet(request.POST,instance=runinfo)
-		if sample_formset.is_valid():
-			runinfo.save()
-			sample_formset.save()
-			return redirect('nextseq_app:rundetail',pk=runinfo.id)
+		runinfo.save()
+		sample_formset.save()
+		return redirect('nextseq_app:rundetail',pk=runinfo.pk)
 		
-
-	return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form':run_form,'sample_formset':sample_formset})
+	return render(request, 'nextseq_app/runandsamplesupdate.html', {'run_form':run_form,'sample_formset':sample_formset})
 
 	
 
