@@ -1,0 +1,23 @@
+{% if error_message %}
+    <p><strong>{{ error_message }}</strong></p>
+{% endif %}
+        <form action="" method="post">{% csrf_token %}
+            {{ run_form.as_p }}
+              <br />
+              <hr />
+              <br />
+{% for field in form %}
+    <div class="fieldWrapper">
+        <p>{{ field.label_tag }}</p>
+        <p>{{ field }}</p>
+    </div>
+{% endfor %}
+            <input type="submit" name="singlsave" value="Save"/> <a href="{% url 'nextseq_app:index' %}">back to the list</a>
+              <br />
+              <hr />
+              <br />
+
+
+
+        </form>
+
