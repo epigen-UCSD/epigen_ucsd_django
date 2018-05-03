@@ -70,6 +70,15 @@ class RunDetailView(DetailView):
 		context = super().get_context_data(**kwargs)
 		context['barcode'] = barcodes_dic
 		return context
+
+@method_decorator(login_required, name='dispatch')
+class RunDetailView2(DetailView):
+	model = RunInfo
+	template_name = 'nextseq_app/details.html'
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['barcode'] = barcodes_dic
+		return context
 # @login_required
 # def RunDetailView(request, run_id):
 # 	runinfo = get_object_or_404(RunInfo, pk=run_id)
@@ -468,7 +477,7 @@ class UserLoginView(View):
 			if user is not None:
 				if user.is_active:
 					login(request, user)
-					return redirect('nextseq_app:index')
+					return redirect('nextseq_app:home')
 			else:
 				return render(request, self.template_name,{'form':form,'error_message':'Invalid login'})
 

@@ -2,8 +2,8 @@
 	<input type="text" name="q" placeholder="Search" value='{{request.GET.q}}'>
 	<input type="submit" value="Search">	
 </form>
-
-<h1>Here are all of the runs in our center:</h1>
+<a href="{% url 'nextseq_app:index' %}">Manage My Data</a>
+<h1>Hi {{ user.username }}! Here are all of the runs in our center:</h1>
 <ul>
 {% for Run in RunInfo_list %}
     <li>

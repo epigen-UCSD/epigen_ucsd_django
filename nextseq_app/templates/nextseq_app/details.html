@@ -1,0 +1,29 @@
+{% load nextseq_app_tags %}
+<h1>runid:  {{ runinfo.runid }}</h1>
+
+
+<table border="1">
+  <tr>
+
+    <th>sampleid</th>
+    <th>i7index</th>
+    <th>i7sequence</th>
+    <th>i5index</th>
+    <th>i5sequence</th>
+  </tr>
+
+{% for samples in runinfo.samplesinrun_set.all %}
+  <tr>
+
+    <td>{{samples.sampleid}}</td>
+    <td>{{samples.i7index}}</td>
+    <td>{{ barcode|key:samples.i7index }}</td>    
+    <td>{{samples.i5index}}</td>
+    <td>{{ barcode|key:samples.i5index }}</td>
+  </tr>
+{% endfor %}
+
+</table>
+
+<p><a href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> Export to SampleSheet.csv</a></p>
+<a href="{% url 'nextseq_app:index' %}">back to the list</a>

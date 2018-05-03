@@ -1,25 +1,27 @@
 
-  Hi {{ user.username }}! Here are your runs:
-  <p><a href="{% url 'nextseq_app:logout' %}">logout</a></p>
+<h2> Hi {{ user.username }}! Here are your data:</h2>
+<p><a href="{% url 'nextseq_app:logout' %}">logout</a></p>
+<ul>
+{% for Run in RunInfo_list %}
+    <li>
+    	{{ Run.operator }} - {{ Run.runid }} - {{ Run.date|date }} - {{ Run.is_pe }} - {{ Run.reads_length }}
+    	<p>
+    		<a href="{% url 'nextseq_app:rundetail' Run.id %}"> View </a>--
+    		<a href="{% url 'nextseq_app:run_update' Run.id %}"> Change </a>--
+    		<a href="{% url 'nextseq_app:run_delete' Run.id%}"> Delete </a>
+    	</p>
+    </li>
+{% empty %}
+    <li>No Runs yet.</li>
+{% endfor %}
+</ul>
 
-{% if RunInfo_list %}
-	<ul>
-	{% for Run in RunInfo_list %}
-		<li><a href="{% url 'nextseq_app:rundetail' Run.id %}">{{ Run.runid }}---{{ Run.date }}----{{ Run.is_pe }}----{{ Run.reads_length }}</a>
-		<p><a href="{% url 'nextseq_app:run_update' Run.id %}"> Change </a>
-			<a href="{% url 'nextseq_app:run_delete' Run.id%}"> Delete </a>
-		</p>
 
-
-
-		</li>
-	{% endfor %}
-	</ul>
-
-
-{% else %}
-	<p>No RunInfos are available.</p>
-{% endif %}
 <a href="{% url 'nextseq_app:runandsample_add' %}"> Add a new RunInfo </a>
 <br />
 <a href="{% url 'nextseq_app:runandsample_add_inbulky' %}"> Add a new RunInfo and Samples(bulk) </a>
+
+<br />
+<br />
+<br />
+<a href="{% url 'nextseq_app:home' %}"> Home Page </a>
