@@ -428,6 +428,9 @@ def SampleSheetCreateView(request,run_pk):
 		a = runinfo.reads_length
 		writer.writerow([a])
 		writer.writerow([a])
+	else:
+		a = runinfo.reads_length
+		writer.writerow([a])
 	writer.writerow([''])
 	writer.writerow(['[Settings]'])
 	writer.writerow([''])
