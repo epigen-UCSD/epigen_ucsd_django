@@ -59,7 +59,13 @@ class HomeView(ListView):
 				Q(reads_length__icontains=q)
 
 				).distinct()
+
 		return queryset_list
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['number'] = self.get_queryset().count()
+		return context
 
 
 @method_decorator(login_required, name='dispatch')
@@ -245,7 +251,7 @@ def RunCreateView6(request):
 		tosave_list = []
 		samplestocreat += '   \nsampleid'
 		for samples in samplestocreat.split('\n'):
-			samples_info = re.split(r'[\s\t]',samples)
+			samples_info = re.split(r'[\s]',samples)
 			print(samples_info)
 			if samples_info[0] != 'sampleid':
 				try:
@@ -355,7 +361,7 @@ def SamplesBulkCreateView(request,run_pk):
 			#print(samplestocreat)
 			for samples in samplestocreat.split('\n'):
 				#print(samples)
-				samples_info = re.split(r'[\s\t]',samples)
+				samples_info = re.split(r'[\s]',samples)
 				#print(samples_info)
 				if samples_info[0] != 'sampleid':
 					try:

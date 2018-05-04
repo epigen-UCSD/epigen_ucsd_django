@@ -1,0 +1,12 @@
+body {
+    background: white url("bg2.png");
+
+}
+
+.navbar {
+    border-radius: 0;
+    font-size: 16px;
+    height: 40px;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+

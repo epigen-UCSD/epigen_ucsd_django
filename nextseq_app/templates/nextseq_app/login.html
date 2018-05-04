@@ -1,11 +1,32 @@
+{% extends 'nextseq_app/base.html' %}
+
+{% block body %}
+<br />
+<br />
+<br />
+<br />
+<div class="container">
+    <div class="card">
+    <div class="card-body">
+
 {% if error_message %}
     <p><strong>{{ error_message }}</strong></p>
 {% else %}
-    <h3>Enter to log in</h3>
+    <h3>Enter to log in:</h3>
+    <br />
+
 {% endif %}
 <form method="post" action=" {% url 'nextseq_app:login' %} ">
     {% csrf_token %}
     {{ form.as_p }}
+     <br />
     <input type="submit" value="Submit" />
+    <input type="submit" name="Register" value="Register" onclick="location.href='{% url 'nextseq_app:register' %}'" />
     <input type="hidden" name="next" value="{{ request.GET.next }}" />
 </form>
+
+</div>
+</div>
+</div>
+
+{% endblock %}

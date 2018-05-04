@@ -1,27 +1,52 @@
+{% extends 'nextseq_app/base.html' %}
 
-<h2> Hi {{ user.username }}! Here are your data:</h2>
-<p><a href="{% url 'nextseq_app:logout' %}">logout</a></p>
-<ul>
-{% for Run in RunInfo_list %}
-    <li>
-    	{{ Run.operator }} - {{ Run.runid }} - {{ Run.date|date }} - {{ Run.is_pe }} - {{ Run.reads_length }}
-    	<p>
-    		<a href="{% url 'nextseq_app:rundetail' Run.id %}"> View </a>--
-    		<a href="{% url 'nextseq_app:run_update' Run.id %}"> Change </a>--
-    		<a href="{% url 'nextseq_app:run_delete' Run.id%}"> Delete </a>
-    	</p>
-    </li>
-{% empty %}
+{% block body %}
+<br />
+<br />
+<br />
+<br />
+<div class="container">
+    <div class="card">
+    <div class="card-body">
+<h2> Hi {{ user.username }}!  Here are your runs:</h2>
+
+<br />
+<br />
+
+<table class="table table-striped table-lg" >
+  <thead>
+    <tr>
+      
+      <th scope="col">RunID</th>
+      <th scope="col">Operator</th>
+      <th scope="col">Date</th>
+      <th scope="col">Is it paired end?</th>
+      <th scope="col">Read Length</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for Run in RunInfo_list %}
+    <tr>
+
+      <td><a style="color:#447e9b; font-weight:bold" href="{% url 'nextseq_app:rundetail' Run.pk %}"> {{ Run.runid }} </a></td>
+      <td>{{ Run.operator }}</td>
+      <td>{{ Run.date|date }}</td>
+      <td>{{ Run.is_pe }}</td>
+      <td>{{ Run.reads_length }}</td>
+      <td>
+      	<a style="color:#447e9b; letter-spacing:10px;" href="{% url 'nextseq_app:run_update' Run.id %}"><i class="fas fa-edit"></i></a>
+      	<a style="color:#447e9b;" href="{% url 'nextseq_app:run_delete' Run.id %}"><i class="fas fa-trash-alt"></i></a>
+
+      </td>
+    </tr>
+    {% empty %}
     <li>No Runs yet.</li>
-{% endfor %}
-</ul>
+    {% endfor %}
+  </tbody>
+</table>
 
-
-<a href="{% url 'nextseq_app:runandsample_add' %}"> Add a new RunInfo </a>
-<br />
-<a href="{% url 'nextseq_app:runandsample_add_inbulky' %}"> Add a new RunInfo and Samples(bulk) </a>
-
-<br />
-<br />
-<br />
-<a href="{% url 'nextseq_app:home' %}"> Home Page </a>
+</div>
+</div>
+</div>
+{% endblock %}

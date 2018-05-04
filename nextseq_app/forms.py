@@ -11,7 +11,11 @@ class UserRegisterForm(UserCreationForm):
 	class Meta:
 		model = User
 		fields = ['username','email']
-		#help_texts = {'username': '',}
+		help_texts = {
+		'username': '',
+		'password1':'',
+		'password2':''
+		}
 class UserLoginForm(forms.Form):
 
 	username = forms.CharField()

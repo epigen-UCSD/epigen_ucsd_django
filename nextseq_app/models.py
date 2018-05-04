@@ -24,7 +24,7 @@ class RunInfo(models.Model):
 		return self.runid
 
 	class Meta:
-		ordering = ['date']
+		ordering = ['-date']
 
 class SamplesInRun(models.Model):
 	singlerun = models.ForeignKey(RunInfo, on_delete=models.CASCADE)

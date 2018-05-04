@@ -1,10 +1,22 @@
+{% extends 'nextseq_app/base.html' %}
+
+{% block body %}
 {% load nextseq_app_tags %}
-<h1>runid:  {{ runinfo.runid }}</h1>
+<br />
+<br />
+<br />
+<br />
+<div class="container">
+      <div class="card">
+    <div class="card-body">
 
-
-<table border="1">
+<h2>Samples in {{ runinfo.runid }}:</h2>
+<br />
+<p><a style="color:#447e9b; font-weight:bold; float:right" href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> <i class="fas fa-save"></i>Save as SampleSheet.csv</a></p>
+<br />
+<table class="table table-striped table-lg">
+  <thead>
   <tr>
-
     <th>sampleid</th>
     <th>i7index</th>
     <th>i7sequence</th>
@@ -24,6 +36,9 @@
 {% endfor %}
 
 </table>
+</div>
+</div>
+</div>
 
-<p><a href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> Export to SampleSheet.csv</a></p>
-<a href="{% url 'nextseq_app:index' %}">back to the list</a>
+
+{% endblock %}
