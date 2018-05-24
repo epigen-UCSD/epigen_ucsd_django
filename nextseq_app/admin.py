@@ -11,7 +11,7 @@ class SamplesInRunInline(admin.TabularInline):
 	extra = 3
 
 class RunInfoAdmin(admin.ModelAdmin):
-	list_display = ('runid','operator','date','is_pe','reads_length')
+	list_display = ('Flowcell','operator','date','read_type','read_length')
 	inlines = [SamplesInRunInline]
 
 admin.site.register(RunInfo,RunInfoAdmin)

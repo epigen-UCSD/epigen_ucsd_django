@@ -17,10 +17,10 @@
   <thead>
     <tr>
       
-      <th scope="col">RunID</th>
+      <th scope="col">FlowcellSerialNumber</th>
       <th scope="col">Operator</th>
       <th scope="col">Date</th>
-      <th scope="col">Is it paired end?</th>
+      <th scope="col">Read Type</th>
       <th scope="col">Read Length</th>
       <th scope="col"></th>
     </tr>
@@ -29,11 +29,11 @@
   	{% for Run in RunInfo_list %}
     <tr>
 
-      <td><a style="color:#447e9b; font-weight:bold" href="{% url 'nextseq_app:rundetail' Run.pk %}"> {{ Run.runid }} </a></td>
+      <td><a style="color:#447e9b; font-weight:bold" href="{% url 'nextseq_app:rundetail' Run.pk %}"> {{ Run.Flowcell }} </a></td>
       <td>{{ Run.operator }}</td>
       <td>{{ Run.date|date }}</td>
-      <td>{{ Run.is_pe }}</td>
-      <td>{{ Run.reads_length }}</td>
+      <td>{{ Run.read_type }}</td>
+      <td>{{ Run.read_length }}</td>
       <td>
       	<a style="color:#447e9b; letter-spacing:10px;" href="{% url 'nextseq_app:run_update' Run.id %}"><i class="fas fa-edit"></i></a>
       	<a style="color:#447e9b;" href="{% url 'nextseq_app:run_delete' Run.id %}"><i class="fas fa-trash-alt"></i></a>

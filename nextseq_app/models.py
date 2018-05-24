@@ -11,17 +11,21 @@ class Barcode(models.Model):
 		ordering = ['indexid']
 
 class RunInfo(models.Model):
-	runid = models.CharField(max_length=200,unique=True)
+	#runid = models.CharField(max_length=200,unique=True,help_text='Please enter the flowcellSe')
+	Flowcell = models.CharField(max_length=200,unique=True, help_text='Please enter the FlowcellSerialNumber, like H5GLYBGX5')
 	operator = models.ForeignKey(User, on_delete=models.CASCADE)
-	date = models.DateField('I did this run on...',help_text='Please enter like this: 2018-04-30')
-	is_pe = models.BooleanField('Is it paired-end?', default=True)
-	reads_length = models.IntegerField(default=75)
+	date = models.DateField('I did this run on...',help_text='Please enter like this: 2018-04-30',blank=True,null=True)
+	read_type_choice = (('SE','Single-end'),('PE','Paired-end'))
+	read_type = models.CharField(max_length=2, choices=read_type_choice)
+	#is_pe = models.BooleanField('Is it paired-end?', default=True)
+	#reads_length = models.IntegerField(default=75)
+	read_length = models.IntegerField()
 
 	def get_absolute_url(self):
 		return reverse('nextseq_app:rundetail', kwargs={'pk': self.pk})
 
 	def __str__(self):
-		return self.runid
+		return self.Flowcell
 
 	class Meta:
 		ordering = ['-date']

@@ -10,7 +10,7 @@
       <div class="card">
     <div class="card-body">
 
-<h2>Samples in {{ runinfo.runid }}:</h2>
+<h2>Samples in {{ runinfo.Flowcell }}-{{runinfo.date}}:</h2>
 <br />
 <p><a style="color:#447e9b; font-weight:bold; float:right" href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> <i class="fas fa-save"></i>Save as SampleSheet.csv</a></p>
 <br />

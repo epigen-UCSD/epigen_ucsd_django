@@ -25,7 +25,7 @@ class RunCreationForm(ModelForm):
 
 	class Meta:
 		model = RunInfo
-		fields = ['runid','date','is_pe','reads_length']
+		fields = ['Flowcell','date','read_type','read_length']
 		widgets ={
 			 'date': forms.DateInput(),
 

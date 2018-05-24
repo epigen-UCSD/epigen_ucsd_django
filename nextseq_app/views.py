@@ -35,6 +35,7 @@ barcodes_dic = {}
 barcodes_list = Barcode.objects.all()
 for barcodes in barcodes_list:
 	barcodes_dic[barcodes.indexid] = barcodes.indexseq
+print(barcodes_dic)
 
 def UniqueValidation(itemslist):
 	if len(itemslist) != len(set(itemslist)):
@@ -80,9 +81,9 @@ class HomeView(ListView):
 			#print(q)
 			queryset_list = queryset_list.filter(
 				Q(operator__username__icontains=q) | 
-				Q(runid__icontains=q) | 
-				Q(is_pe__icontains=q) | 
-				Q(reads_length__icontains=q)
+				Q(Flowcell__icontains=q) | 
+				Q(read_type__icontains=q) | 
+				Q(read_length__icontains=q)
 
 				).distinct()
 
@@ -128,7 +129,7 @@ class RunDetailView2(DetailView):
 @method_decorator(login_required, name='dispatch')
 class RunCreateView(CreateView):
 	model = RunInfo
-	fields = ['runid','date','is_pe','reads_length']
+	fields = ['Flowcell','date','read_type','read_length']
 	template_name = 'nextseq_app/createrun.html'
 	#ields = '__all__'
 
@@ -189,9 +190,12 @@ def RunCreateView4(request):
 			i7index_list = []
 			i5index_list = []
 			for form in sample_formset:
-				sampleid_list.append(form.cleaned_data['sampleid'])
-				i7index_list.append(form.cleaned_data['i7index'])
-				i5index_list.append(form.cleaned_data['i5index'])
+				try:
+					sampleid_list.append(form.cleaned_data['sampleid'])
+					i7index_list.append(form.cleaned_data['i7index'])
+					i5index_list.append(form.cleaned_data['i5index'])
+				except KeyError:
+					pass
 			#print(i7index_list)
 			#print(i5index_list)
 			duplicate = IndexValidation(i7index_list,i5index_list)
@@ -377,6 +381,28 @@ def RunUpdateView2(request,run_pk):
 	if run_form.is_valid() and sample_formset.is_valid():
 		runinfo = run_form.save(commit=False)
 		runinfo.operator = request.user
+
+		sampleid_list = []
+		i7index_list = []
+		i5index_list = []
+		for form in sample_formset:
+			try:
+				sampleid_list.append(form.cleaned_data['sampleid'])
+				i7index_list.append(form.cleaned_data['i7index'])
+				i5index_list.append(form.cleaned_data['i5index'])
+			except KeyError:
+				pass
+
+		duplicate = IndexValidation(i7index_list,i5index_list)
+		if len(duplicate) > 0:
+			context = {
+				 'run_form':run_form,
+				 'sample_formset':sample_formset,
+				 'error_message': 'Duplicates:' + str(duplicate)
+
+			}
+			return render(request, 'nextseq_app/runandsamplesupdate.html',context)
+			
 		runinfo.save()
 		sample_formset.save()
 		return redirect('nextseq_app:rundetail',pk=runinfo.pk)
@@ -491,12 +517,12 @@ def SampleSheetCreateView(request,run_pk):
 	writer.writerow(['Chemistry','Amplicon'])
 	writer.writerow([''])
 	writer.writerow(['[Reads]'])
-	if runinfo.is_pe:
-		a = runinfo.reads_length
+	if runinfo.read_type == 'PE':
+		a = runinfo.read_length
 		writer.writerow([a])
 		writer.writerow([a])
 	else:
-		a = runinfo.reads_length
+		a = runinfo.read_length
 		writer.writerow([a])
 	writer.writerow([''])
 	writer.writerow(['[Settings]'])
@@ -516,7 +542,7 @@ def SampleSheetCreateView(request,run_pk):
 @method_decorator(login_required, name='dispatch')
 class RunUpdateView(UpdateView):
 	model = RunInfo
-	fields = ['runid','date','is_pe','reads_length']
+	fields = ['Flowcell','date','read_type','read_length']
 	template_name = 'nextseq_app/updaterun.html'
 
 @method_decorator(login_required, name='dispatch')
