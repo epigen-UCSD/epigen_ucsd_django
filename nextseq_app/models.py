@@ -11,7 +11,7 @@ class Barcode(models.Model):
 		ordering = ['indexid']
 
 class RunInfo(models.Model):
-	runid = models.CharField(max_length=200)
+	runid = models.CharField(max_length=200,unique=True)
 	operator = models.ForeignKey(User, on_delete=models.CASCADE)
 	date = models.DateField('I did this run on...',help_text='Please enter like this: 2018-04-30')
 	is_pe = models.BooleanField('Is it paired-end?', default=True)

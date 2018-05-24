@@ -36,6 +36,32 @@ barcodes_list = Barcode.objects.all()
 for barcodes in barcodes_list:
 	barcodes_dic[barcodes.indexid] = barcodes.indexseq
 
+def UniqueValidation(itemslist):
+	if len(itemslist) != len(set(itemslist)):
+		return False
+	return True
+
+def IndexValidation(i7list, i5list):
+	duplicate = []
+
+	combinelist = [x for x in list(zip(i7list,i5list)) if x[1]]
+	#print(combinelist)
+	for i in range(0, len(combinelist)):
+		if combinelist[i] in combinelist[i+1:]:
+			duplicate.append(combinelist[i])
+
+	combinei7 = set([x[0] for x in list(zip(i7list,i5list)) if x[1]])
+	#print(combinei7)
+	singlei7 = [x[0] for x in list(zip(i7list,i5list)) if not x[1]]
+	singlelist = list(combinei7) + singlei7
+	#print(singlelist)
+	for i in range(0, len(singlelist)):
+		if singlelist[i] in singlelist[i+1:]:
+			duplicate.append(singlelist[i])
+	return duplicate
+
+
+
 @login_required	
 def IndexView(request):
 
@@ -158,6 +184,27 @@ def RunCreateView4(request):
 		runinfo.operator = request.user
 		sample_formset = SamplesInlineFormSet(request.POST,instance=runinfo)
 		if sample_formset.is_valid():
+			
+			sampleid_list = []
+			i7index_list = []
+			i5index_list = []
+			for form in sample_formset:
+				sampleid_list.append(form.cleaned_data['sampleid'])
+				i7index_list.append(form.cleaned_data['i7index'])
+				i5index_list.append(form.cleaned_data['i5index'])
+			#print(i7index_list)
+			#print(i5index_list)
+			duplicate = IndexValidation(i7index_list,i5index_list)
+			if len(duplicate) > 0:
+				context = {
+				  'run_form':run_form,
+				  'sample_formset':sample_formset,
+				  'error_message': 'Duplicates:' + str(duplicate)
+
+				}
+				return render(request, 'nextseq_app/runandsamplesadd.html',context)
+
+
 			runinfo.save()
 			sample_formset.save()
 			return redirect('nextseq_app:rundetail',pk=runinfo.id)
@@ -165,77 +212,79 @@ def RunCreateView4(request):
 	return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form':run_form,'sample_formset':sample_formset})
 
 #creat run and samples or samples in bulk in one page
-@login_required
-def RunCreateView5(request):
-	run_form = RunCreationForm(request.POST or None)
-	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['sampleid','i7index','i5index'],extra =2)
-	sample_formset = SamplesInlineFormSet(instance=RunInfo())
-	form = SamplesToCreatForm(request.POST or None)
+# @login_required
+# def RunCreateView5(request):
+# 	run_form = RunCreationForm(request.POST or None)
+# 	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['sampleid','i7index','i5index'],extra =2)
+# 	sample_formset = SamplesInlineFormSet(instance=RunInfo())
+# 	form = SamplesToCreatForm(request.POST or None)
 
-	if run_form.is_valid():
-		runinfo = run_form.save(commit=False)
-		runinfo.operator = request.user
-		if 'singlsave' in request.POST:
-			sample_formset = SamplesInlineFormSet(request.POST,instance=runinfo)
-			if sample_formset.is_valid():
-				runinfo.save()
-				sample_formset.save()
-				return redirect('nextseq_app:rundetail',pk=runinfo.id)
-		elif 'bulksave' in request.POST and form.is_valid():
-			runinfo.save()
-			samplestocreat = form.cleaned_data['samplestocreat']
-			tosave_list = []
-			samplestocreat += '  \nsampleid'
-			for samples in samplestocreat.split('\n'):
-				samples_info = re.split(r'[\s\t]',samples)
-				if samples_info[0] != 'sampleid':
-					try:
-						if samples_info[1] and samples_info[2]: 
-							tosave_sample = SamplesInRun(
-								singlerun=runinfo,
-								sampleid=samples_info[0],
-								i7index=Barcode.objects.get(indexid=samples_info[1]),
-								i5index=Barcode.objects.get(indexid=samples_info[2]),
-								)
-						elif samples_info[1] and not samples_info[2]:
-							tosave_sample = SamplesInRun(
-								singlerun=runinfo,
-								sampleid=samples_info[0],
-								i7index=Barcode.objects.get(indexid=samples_info[1]),
-								)
-						elif not samples_info[1] and samples_info[2]:
-							tosave_sample = SamplesInRun(
-								singlerun=runinfo,
-								sampleid=samples_info[0],
-								i5index=Barcode.objects.get(indexid=samples_info[2]),
-								)
-						else:
-							tosave_sample = SamplesInRun(
-								singlerun=runinfo,
-								sampleid=samples_info[0],
-								)												
+# 	if run_form.is_valid():
+# 		runinfo = run_form.save(commit=False)
+# 		runinfo.operator = request.user
+# 		if 'singlsave' in request.POST:
+# 			sample_formset = SamplesInlineFormSet(request.POST,instance=runinfo)
+# 			if sample_formset.is_valid():
+# 				runinfo.save()
+# 				sample_formset.save()
+# 				return redirect('nextseq_app:rundetail',pk=runinfo.id)
+# 		elif 'bulksave' in request.POST and form.is_valid():
+# 			runinfo.save()
+# 			samplestocreat = form.cleaned_data['samplestocreat']
+# 			tosave_list = []
+# 			samplestocreat += '  \nsampleid'
+# 			i7index_list = []
+# 			i5index_list = []
+# 			for samples in samplestocreat.split('\n'):
+# 				samples_info = re.split(r'[\s\t]',samples)
+# 				if samples_info[0] != 'sampleid':
+# 					try:
+# 						if samples_info[1] and samples_info[2]: 
+# 							tosave_sample = SamplesInRun(
+# 								singlerun=runinfo,
+# 								sampleid=samples_info[0],
+# 								i7index=Barcode.objects.get(indexid=samples_info[1]),
+# 								i5index=Barcode.objects.get(indexid=samples_info[2]),
+# 								)
+# 						elif samples_info[1] and not samples_info[2]:
+# 							tosave_sample = SamplesInRun(
+# 								singlerun=runinfo,
+# 								sampleid=samples_info[0],
+# 								i7index=Barcode.objects.get(indexid=samples_info[1]),
+# 								)
+# 						elif not samples_info[1] and samples_info[2]:
+# 							tosave_sample = SamplesInRun(
+# 								singlerun=runinfo,
+# 								sampleid=samples_info[0],
+# 								i5index=Barcode.objects.get(indexid=samples_info[2]),
+# 								)
+# 						else:
+# 							tosave_sample = SamplesInRun(
+# 								singlerun=runinfo,
+# 								sampleid=samples_info[0],
+# 								)											
 
-					except ObjectDoesNotExist:
-						context = {
-							'run_form':run_form,
-							'sample_formset':sample_formset,
-							'form':form,
-							'error_message':'There are indexes that are not stored in the database!'
-						}
-						return render(request, 'nextseq_app/runandsamplesadd.html',context)
+# 					except ObjectDoesNotExist:
+# 						context = {
+# 							'run_form':run_form,
+# 							'sample_formset':sample_formset,
+# 							'form':form,
+# 							'error_message':'There are indexes that are not stored in the database!'
+# 						}
+# 						return render(request, 'nextseq_app/runandsamplesadd.html',context)
 
 
-					tosave_list.append(tosave_sample)
-			SamplesInRun.objects.bulk_create(tosave_list)
-			return redirect('nextseq_app:rundetail',pk=runinfo.id)
+# 					tosave_list.append(tosave_sample)
+# 			SamplesInRun.objects.bulk_create(tosave_list)
+# 			return redirect('nextseq_app:rundetail',pk=runinfo.id)
 
-	context={
-		'run_form':run_form,
-		'sample_formset':sample_formset,
-		'form':form,
-		}
+# 	context={
+# 		'run_form':run_form,
+# 		'sample_formset':sample_formset,
+# 		'form':form,
+# 		}
 
-	return render(request, 'nextseq_app/runandsamplesadd.html', context)
+# 	return render(request, 'nextseq_app/runandsamplesadd.html', context)
 
 
 @login_required
@@ -250,9 +299,11 @@ def RunCreateView6(request):
 		samplestocreat = form.cleaned_data['samplestocreat']
 		tosave_list = []
 		samplestocreat += '   \nsampleid'
+		i7index_list = []
+		i5index_list = []
 		for samples in samplestocreat.split('\n'):
 			samples_info = re.split(r'[\s]',samples)
-			print(samples_info)
+			#print(samples_info)
 			if samples_info[0] != 'sampleid':
 				try:
 					if samples_info[1] and samples_info[2]: 
@@ -279,6 +330,8 @@ def RunCreateView6(request):
 							singlerun=runinfo,
 							sampleid=samples_info[0],
 							)												
+					i7index_list.append(samples_info[1])
+					i5index_list.append(samples_info[2])
 
 				except ObjectDoesNotExist:
 					context = {
@@ -286,11 +339,25 @@ def RunCreateView6(request):
 							'form':form,
 							'error_message':'There are indexes that are not stored in the database!'
 						}
+					runinfo.delete()
 					return render(request, 'nextseq_app/runandsamplesbulkadd.html',context)
 
 
 				tosave_list.append(tosave_sample)
+		duplicate = IndexValidation(i7index_list,i5index_list)
+		if len(duplicate) > 0:
+			runinfo.delete()
+			context = {
+				 'run_form':run_form,
+				 'form':form,
+				 'error_message': 'Duplicates:' + str(duplicate)
+
+			}
+			return render(request, 'nextseq_app/runandsamplesbulkadd.html',context)
+		
+		#runinfo.save()
 		SamplesInRun.objects.bulk_create(tosave_list)
+
 		return redirect('nextseq_app:rundetail',pk=runinfo.id)
 
 	context={
