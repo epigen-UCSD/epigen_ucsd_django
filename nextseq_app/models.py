@@ -16,7 +16,7 @@ class RunInfo(models.Model):
 	operator = models.ForeignKey(User, on_delete=models.CASCADE)
 	date = models.DateField('I did this run on...',help_text='Please enter like this: 2018-04-30',blank=True,null=True)
 	read_type_choice = (('SE','Single-end'),('PE','Paired-end'))
-	read_type = models.CharField(max_length=2, choices=read_type_choice)
+	read_type = models.CharField(max_length=2,choices=read_type_choice)
 	#is_pe = models.BooleanField('Is it paired-end?', default=True)
 	#reads_length = models.IntegerField(default=75)
 	read_length = models.IntegerField()

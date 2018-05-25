@@ -35,7 +35,7 @@ barcodes_dic = {}
 barcodes_list = Barcode.objects.all()
 for barcodes in barcodes_list:
 	barcodes_dic[barcodes.indexid] = barcodes.indexseq
-print(barcodes_dic)
+#print(barcodes_dic)
 
 def UniqueValidation(itemslist):
 	if len(itemslist) != len(set(itemslist)):
