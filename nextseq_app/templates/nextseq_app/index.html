@@ -1,7 +1,8 @@
 {% extends 'nextseq_app/base.html' %}
 
 {% block body %}
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"/>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'nextseq_app/css/jquery.dataTables.min.css' %}"/>
 <br />
 <br />
 <br />
@@ -50,7 +51,7 @@
 </div>
 </div>
 </div>
-<script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" ></script>
+<script src="{% static 'nextseq_app/js/jquery.dataTables.min.js' %}" ></script>
 <script type="text/javascript">
    $(document).ready( function () {
     $('#myTable').DataTable();

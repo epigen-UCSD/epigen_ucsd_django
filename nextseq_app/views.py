@@ -215,6 +215,7 @@ def RunCreateView3(request):
 @login_required
 def RunCreateView4(request):
 	run_form = RunCreationForm(request.POST or None)
+	print(run_form.as_p)
 	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['sampleid','i7index','i5index'],extra =2)
 	sample_formset = SamplesInlineFormSet(instance=RunInfo())
 

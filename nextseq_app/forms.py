@@ -5,6 +5,8 @@ from django import forms
 from .models import RunInfo,SamplesInRun
 from django.forms import ModelForm
 
+# class DateInput(forms.DateInput):
+# 	input_type = 'date'
 
 class UserRegisterForm(UserCreationForm):
 

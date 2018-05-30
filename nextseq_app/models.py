@@ -14,7 +14,7 @@ class RunInfo(models.Model):
 	#runid = models.CharField(max_length=200,unique=True,help_text='Please enter the flowcellSe')
 	Flowcell = models.CharField(max_length=200,unique=True, help_text='Please enter the FlowcellSerialNumber, like H5GLYBGX5')
 	operator = models.ForeignKey(User, on_delete=models.CASCADE)
-	date = models.DateField('I did this run on...',help_text='Please enter like this: 2018-04-30',blank=True,null=True)
+	date = models.DateField('I did this run on...',help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03',blank=True,null=True)
 	read_type_choice = (('SE','Single-end'),('PE','Paired-end'))
 	read_type = models.CharField(max_length=2,choices=read_type_choice)
 	#is_pe = models.BooleanField('Is it paired-end?', default=True)

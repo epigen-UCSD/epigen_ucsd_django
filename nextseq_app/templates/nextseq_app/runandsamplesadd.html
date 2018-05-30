@@ -16,15 +16,25 @@
         {% endif %}
 
         <form action="" method="post">{% csrf_token %}
-            <!-- {{ run_form.as_p }} -->
+           <!--  {{ run_form.as_p }} -->
+            <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+            <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+            <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+             <script>
+              $( function() {
+                $( "#id_date" ).datepicker();
+              } );
+            </script>
 
             {% for field in run_form %}
-              <p>{{ field.label_tag }} {{ field }} {{ field.help_text }}
-                {% if field.name == 'date' %}
-
-
-                {% endif %}
-              </p>
+                <div class="fieldWrapper">
+                    <p>{{ field.errors }}
+                      {{ field.label_tag }} {{ field }}
+                      {% if field.help_text %}
+                        <span style="font-size:13px;">{{ field.help_text|safe }}</span>
+                      {% endif %}
+                    </p>
+                </div>
             {% endfor %}
 
             <br />
@@ -63,7 +73,7 @@
         </form>
     </div>
 <!--     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
-    <script src="{% static 'nextseq_app/jquery.formset.js' %}"></script>
+    <script src="{% static 'nextseq_app/js/jquery.formset.js' %}"></script>
     <script>
         $('.formset_row').formset({
             addText: 'add another samples',
