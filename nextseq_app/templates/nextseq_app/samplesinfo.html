@@ -1,13 +1,15 @@
 {% extends 'nextseq_app/base.html' %}
 
 {% block body %}
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"/>
+
 {% load nextseq_app_tags %}
 <br />
 <br />
 <br />
 <br />
-<div class="container">
-    <div class="card " style="font-size: 14px;">
+<div class="container" >
+    <div class="card ">
     <div class="card-body">
 
 {% if usersamples %}
@@ -17,9 +19,8 @@
 {% endif %}
 
 <br />
-<br />
-<table class="table table-sm table-striped table-bordered text-center" style="width: 90%;"  align="center">
-  <thead>
+<table id="myTable" class="table table-sm table-striped table-bordered text-center">
+  <thead style="background-color: cadetblue; color: white">
     <tr>
 
       <th scope="col">sampleid</th>
@@ -50,5 +51,13 @@
 </div>
 </div>
 </div>
+
+<script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" ></script>
+<script type="text/javascript">
+   $(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+
+</script>
 
 {% endblock %}

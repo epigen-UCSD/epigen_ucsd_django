@@ -7,14 +7,14 @@
 <br />
 <br />
 <div class="container">
-      <div class="card" style="font-size: 14px;">
+      <div class="card">
     <div class="card-body">
 
-<h4>Samples in {{ runinfo.Flowcell }}-{{runinfo.date}}:</h4>
+<h4> {{ runinfo.Flowcell }}-{{runinfo.date|date:"Y/m/d"}}:</h4>
 <br />
 <p><a style="color:#447e9b; font-weight:bold; float:right" href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> <i class="fas fa-save"></i>Save as SampleSheet.csv</a></p>
 <br />
-<table class="table table-sm table-striped">
+<table class="table table-sm table-striped text-center">
   <thead>
   <tr>
     <th>sampleid</th>
@@ -23,6 +23,7 @@
     <th>i5index</th>
     <th>i5sequence</th>
   </tr>
+  </thead>
 
 {% for samples in runinfo.samplesinrun_set.all %}
   <tr>

@@ -1,12 +1,13 @@
 {% extends 'nextseq_app/base.html' %}
 
 {% block body %}
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"/>
 <br />
 <br />
 <br />
 <br />
 <div class="container">
-    <div class="card" style="font-size: 14.5px;">
+    <div class="card">
     <div class="card-body">
 {% if request.GET.q %}
 <h4>{{number}} runs matched:</h4>
@@ -16,7 +17,7 @@
 <a style="color:#447e9b; font-weight:bold" href="{% url 'nextseq_app:allsamples' %}"> See all samples </a>
 <br />
 <br />
-<table class="table table-sm table-striped table-bordered text-center" style="width: 90%;"  align="center">
+<table id="myTable" class="table table-sm table-striped table-bordered text-center">
   <thead>
     <tr>
       
@@ -33,7 +34,7 @@
 
       <td><a style="color:#447e9b; font-weight:bold" href="{% url 'nextseq_app:rundetail' Run.pk %}"> {{ Run.Flowcell }} </a></td>
       <td>{{ Run.operator }}</td>
-      <td>{{ Run.date|date }}</td>
+      <td>{{ Run.date|date:"Y/m/d" }}</td>
       <td>{{ Run.read_type }}</td>
       <td>{{ Run.read_length }}</td>
     </tr>
@@ -45,5 +46,13 @@
 </div>
 </div>
 </div>
+
+<script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" ></script>
+<script type="text/javascript">
+   $(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+
+</script>
 
 {% endblock %}

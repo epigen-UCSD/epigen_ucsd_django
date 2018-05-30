@@ -5,10 +5,19 @@ body {
 }
 
 .navbar {
-	
+
     font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
+.card {
+
+	padding: 0px 50px;
+	font-size: 14.5px;
+}
+thead {
+	background-color: cadetblue;
+	color: white;
+}
 /*.navbar {
     border-radius: 0;
     font-size: 16px;
