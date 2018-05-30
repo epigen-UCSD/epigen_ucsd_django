@@ -31,11 +31,18 @@ from django.forms import inlineformset_factory
 # 	context_object_name = 'RunInfo_list'
 # 	def get_queryset(self):
 # 		return RunInfo.objects.filter(operator=self.request.user)
-barcodes_dic = {}
-barcodes_list = Barcode.objects.all()
-for barcodes in barcodes_list:
-	barcodes_dic[barcodes.indexid] = barcodes.indexseq
+# barcodes_dic = {}
+# barcodes_list = Barcode.objects.all()
+# for barcodes in barcodes_list:
+# 	barcodes_dic[barcodes.indexid] = barcodes.indexseq
 #print(barcodes_dic)
+def BarcodeDic():
+	barcodes_dic = {}
+	barcodes_list = Barcode.objects.all()
+	for barcodes in barcodes_list:
+		barcodes_dic[barcodes.indexid] = barcodes.indexseq
+	return barcodes_dic
+
 
 def UniqueValidation(itemslist):
 	if len(itemslist) != len(set(itemslist)):
@@ -94,6 +101,36 @@ class HomeView(ListView):
 		context['number'] = self.get_queryset().count()
 		return context
 
+@login_required	
+def AllSamplesView(request):
+	Samples_list = SamplesInRun.objects.all()
+	barcodes_dic = BarcodeDic()
+	number = SamplesInRun.objects.count()
+
+	context = {
+		'Samples_list': Samples_list,
+		'barcode': barcodes_dic,
+		'number' : number
+
+	}
+	return render(request, 'nextseq_app/samplesinfo.html', context)
+
+@login_required	
+def UserSamplesView(request):
+	userruns = RunInfo.objects.filter(operator=request.user)
+	Samples_list = SamplesInRun.objects.filter(singlerun__in=userruns)
+	barcodes_dic = BarcodeDic()
+	number = Samples_list.count()
+	usersamples = True
+
+	context = {
+		'Samples_list': Samples_list,
+		'barcode': barcodes_dic,
+		'number' : number,
+		'usersamples': usersamples
+	}
+	return render(request, 'nextseq_app/samplesinfo.html', context)
+
 
 @method_decorator(login_required, name='dispatch')
 class RunDetailView(DetailView):
@@ -110,7 +147,8 @@ class RunDetailView2(DetailView):
 	template_name = 'nextseq_app/details.html'
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['barcode'] = barcodes_dic
+		#context['barcode'] = barcodes_dic
+		context['barcode'] = BarcodeDic()
 		return context
 # @login_required
 # def RunDetailView(request, run_id):

@@ -1,12 +1,26 @@
 body {
+    
     background: white url("bg2.png");
 
 }
 
 .navbar {
+	
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+/*.navbar {
     border-radius: 0;
     font-size: 16px;
     height: 40px;
     font-family: "Trebuchet MS", Helvetica, sans-serif;
-}
+}*/
 
+/*table tr{
+   height: 500px;
+}
+*/
+/*
+table tr td{
+   padding:2px !important;
+}*/

@@ -6,16 +6,17 @@
 <br />
 <br />
 <div class="container">
-    <div class="card">
+    <div class="card" style="font-size: 14.5px;">
     <div class="card-body">
 {% if request.GET.q %}
-<h1>{{number}} runs matched:</h1>
+<h4>{{number}} runs matched:</h4>
 {% else %}
-<h2>We have {{number}} runs in total:</h2>
+<h4>We have {{number}} runs in total:</h4>
 {% endif %}
+<a style="color:#447e9b; font-weight:bold" href="{% url 'nextseq_app:allsamples' %}"> See all samples </a>
 <br />
 <br />
-<table class="table table-striped tablelg" >
+<table class="table table-sm table-striped table-bordered text-center" style="width: 90%;"  align="center">
   <thead>
     <tr>
       

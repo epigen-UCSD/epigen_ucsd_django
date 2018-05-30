@@ -7,14 +7,14 @@
 <br />
 <br />
 <div class="container">
-      <div class="card">
+      <div class="card" style="font-size: 14px;">
     <div class="card-body">
 
-<h2>Samples in {{ runinfo.Flowcell }}-{{runinfo.date}}:</h2>
+<h4>Samples in {{ runinfo.Flowcell }}-{{runinfo.date}}:</h4>
 <br />
 <p><a style="color:#447e9b; font-weight:bold; float:right" href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> <i class="fas fa-save"></i>Save as SampleSheet.csv</a></p>
 <br />
-<table class="table table-striped table-lg">
+<table class="table table-sm table-striped">
   <thead>
   <tr>
     <th>sampleid</th>

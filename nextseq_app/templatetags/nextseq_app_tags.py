@@ -9,3 +9,4 @@ def key(d, key_name):
 		return d[str(key_name)]
 	else:
 		return ''
+

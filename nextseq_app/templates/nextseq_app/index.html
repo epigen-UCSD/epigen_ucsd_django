@@ -6,14 +6,14 @@
 <br />
 <br />
 <div class="container">
-    <div class="card">
+    <div class="card" style="font-size: 14.5px;">
     <div class="card-body">
-<h2> Hi {{ user.username }}!  Here are your runs:</h2>
-
+<h4> Hi {{ user.username }}!  Here are your runs:</h4>
+<a style="color:#447e9b; font-weight:bold" href="{% url 'nextseq_app:usersamples' %}"> See all your samples </a>
 <br />
 <br />
 
-<table class="table table-striped table-lg" >
+<table class="table table-striped table-sm text-center" style="width: 90%;"  align="center" >
   <thead>
     <tr>
       

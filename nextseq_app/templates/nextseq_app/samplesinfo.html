@@ -1,0 +1,54 @@
+{% extends 'nextseq_app/base.html' %}
+
+{% block body %}
+{% load nextseq_app_tags %}
+<br />
+<br />
+<br />
+<br />
+<div class="container">
+    <div class="card " style="font-size: 14px;">
+    <div class="card-body">
+
+{% if usersamples %}
+<h4>You have {{number}} samples in total:</h4>
+{% else %}
+<h4>We have {{number}} samples in total:</h4>
+{% endif %}
+
+<br />
+<br />
+<table class="table table-sm table-striped table-bordered text-center" style="width: 90%;"  align="center">
+  <thead>
+    <tr>
+
+      <th scope="col">sampleid</th>
+      <th scope="col">FlowcellSerialNumber</th>
+      
+      <th scope="col">i7index</th>
+      <th scope="col">i7sequence</th>
+      <th scope="col">i5index</th>
+      <th scope="col">i5sequence</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for sample in Samples_list %}
+    <tr>
+
+      <td><a style="color:#447e9b; font-weight:bold" href=" "> {{ sample.sampleid }} </a></td>
+      <td>{{  sample.singlerun }}</td>    
+      <td>{{  sample.i7index }}</td>
+      <td>{{ barcode|key:sample.i7index }}</td>
+      <td>{{  sample.i5index }}</td>
+      <td>{{ barcode|key:sample.i5index }}</td>
+    </tr>
+    {% empty %}
+    <li>No Runs yet.</li>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+
+{% endblock %}
