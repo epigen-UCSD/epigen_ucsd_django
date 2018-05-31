@@ -96,7 +96,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'nextseqapp',
-        'USER': 'liyuxin',
+        'USER': 'test',
         'PASSWORD': '123456',
         'HOST': '127.0.0.1',
         'PORT': '5432',

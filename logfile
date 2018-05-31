@@ -1,0 +1,41 @@
+2018-05-31 10:27:06.544 PDT [12578] LOG:  listening on IPv6 address "::1", port 5432
+2018-05-31 10:27:06.544 PDT [12578] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-05-31 10:27:06.545 PDT [12578] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2018-05-31 10:27:06.554 PDT [12579] LOG:  database system was shut down at 2018-05-31 10:26:49 PDT
+2018-05-31 10:27:06.556 PDT [12578] LOG:  database system is ready to accept connections
+2018-05-31 10:27:17.120 PDT [12592] FATAL:  database "frank" does not exist
+2018-05-31 10:30:04.721 PDT [12625] FATAL:  database "frank" does not exist
+2018-05-31 10:34:14.427 PDT [12655] ERROR:  syntax error at or near "DROP" at character 18
+2018-05-31 10:34:14.427 PDT [12655] STATEMENT:  CREATE USER test
+	DROP nextseq_app
+	DROP nextseq_app;
+2018-05-31 10:34:53.406 PDT [12674] FATAL:  database "frank" does not exist
+2018-05-31 10:36:07.423 PDT [12681] ERROR:  syntax error at or near "DROP" at character 6
+2018-05-31 10:36:07.423 PDT [12681] STATEMENT:  DROP
+	DROP DATABASE nextseqapp
+	DROP DATABASE nextseqapp;
+2018-05-31 10:37:31.360 PDT [12694] ERROR:  unrecognized role option "nextseqapp" at character 32
+2018-05-31 10:37:31.360 PDT [12694] STATEMENT:  CREATE USER test WITH CREATEDB nextseqapp
+	CREATE USER test WITH CREATEDB nextseqapp;
+2018-05-31 10:39:48.707 PDT [12729] FATAL:  database "test" does not exist
+2018-05-31 10:39:52.500 PDT [12735] FATAL:  database "test" does not exist
+2018-05-31 10:40:52.659 PDT [12746] FATAL:  role "liyuxin" does not exist
+2018-05-31 10:41:06.963 PDT [12752] FATAL:  role "liyuxin" does not exist
+2018-05-31 11:11:40.669 PDT [13118] ERROR:  relation "nextseq_app_runinfo" does not exist at character 35
+2018-05-31 11:11:40.669 PDT [13118] STATEMENT:  SELECT COUNT(*) AS "__count" FROM "nextseq_app_runinfo"
+2018-05-31 11:11:40.905 PDT [13118] ERROR:  relation "nextseq_app_runinfo" does not exist at character 213
+2018-05-31 11:11:40.905 PDT [13118] STATEMENT:  SELECT "nextseq_app_runinfo"."id", "nextseq_app_runinfo"."Flowcell", "nextseq_app_runinfo"."operator_id", "nextseq_app_runinfo"."date", "nextseq_app_runinfo"."read_type", "nextseq_app_runinfo"."read_length" FROM "nextseq_app_runinfo" ORDER BY "nextseq_app_runinfo"."date" DESC LIMIT 21
+2018-05-31 11:11:40.906 PDT [13118] ERROR:  relation "nextseq_app_runinfo" does not exist at character 213
+2018-05-31 11:11:40.906 PDT [13118] STATEMENT:  SELECT "nextseq_app_runinfo"."id", "nextseq_app_runinfo"."Flowcell", "nextseq_app_runinfo"."operator_id", "nextseq_app_runinfo"."date", "nextseq_app_runinfo"."read_type", "nextseq_app_runinfo"."read_length" FROM "nextseq_app_runinfo" ORDER BY "nextseq_app_runinfo"."date" DESC LIMIT 21
+2018-05-31 11:11:50.931 PDT [13125] ERROR:  relation "nextseq_app_runinfo" does not exist at character 35
+2018-05-31 11:11:50.931 PDT [13125] STATEMENT:  SELECT COUNT(*) AS "__count" FROM "nextseq_app_runinfo"
+2018-05-31 11:11:51.113 PDT [13125] ERROR:  relation "nextseq_app_runinfo" does not exist at character 213
+2018-05-31 11:11:51.113 PDT [13125] STATEMENT:  SELECT "nextseq_app_runinfo"."id", "nextseq_app_runinfo"."Flowcell", "nextseq_app_runinfo"."operator_id", "nextseq_app_runinfo"."date", "nextseq_app_runinfo"."read_type", "nextseq_app_runinfo"."read_length" FROM "nextseq_app_runinfo" ORDER BY "nextseq_app_runinfo"."date" DESC LIMIT 21
+2018-05-31 11:11:51.114 PDT [13125] ERROR:  relation "nextseq_app_runinfo" does not exist at character 213
+2018-05-31 11:11:51.114 PDT [13125] STATEMENT:  SELECT "nextseq_app_runinfo"."id", "nextseq_app_runinfo"."Flowcell", "nextseq_app_runinfo"."operator_id", "nextseq_app_runinfo"."date", "nextseq_app_runinfo"."read_type", "nextseq_app_runinfo"."read_length" FROM "nextseq_app_runinfo" ORDER BY "nextseq_app_runinfo"."date" DESC LIMIT 21
+2018-05-31 11:12:56.019 PDT [13146] ERROR:  relation "nextseq_app_runinfo" does not exist at character 35
+2018-05-31 11:12:56.019 PDT [13146] STATEMENT:  SELECT COUNT(*) AS "__count" FROM "nextseq_app_runinfo"
+2018-05-31 11:12:56.243 PDT [13146] ERROR:  relation "nextseq_app_runinfo" does not exist at character 213
+2018-05-31 11:12:56.243 PDT [13146] STATEMENT:  SELECT "nextseq_app_runinfo"."id", "nextseq_app_runinfo"."Flowcell", "nextseq_app_runinfo"."operator_id", "nextseq_app_runinfo"."date", "nextseq_app_runinfo"."read_type", "nextseq_app_runinfo"."read_length" FROM "nextseq_app_runinfo" ORDER BY "nextseq_app_runinfo"."date" DESC LIMIT 21
+2018-05-31 11:12:56.244 PDT [13146] ERROR:  relation "nextseq_app_runinfo" does not exist at character 213
+2018-05-31 11:12:56.244 PDT [13146] STATEMENT:  SELECT "nextseq_app_runinfo"."id", "nextseq_app_runinfo"."Flowcell", "nextseq_app_runinfo"."operator_id", "nextseq_app_runinfo"."date", "nextseq_app_runinfo"."read_type", "nextseq_app_runinfo"."read_length" FROM "nextseq_app_runinfo" ORDER BY "nextseq_app_runinfo"."date" DESC LIMIT 21
