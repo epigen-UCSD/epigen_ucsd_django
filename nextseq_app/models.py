@@ -32,7 +32,7 @@ class RunInfo(models.Model):
 
 class SamplesInRun(models.Model):
 	singlerun = models.ForeignKey(RunInfo, on_delete=models.CASCADE)
-	sampleid = models.CharField(max_length=200)
+	sampleid = models.CharField(max_length=200,unique=True)
 	i7index = models.ForeignKey(Barcode,related_name='i7_index', on_delete=models.CASCADE, blank=True,null=True)
 	i5index = models.ForeignKey(Barcode,related_name='i5_index',on_delete=models.CASCADE, blank=True,null=True)
 	def __str__(self):
