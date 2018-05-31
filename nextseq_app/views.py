@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse,Http404
 from django.contrib.auth import authenticate, login, logout
 from .forms import UserRegisterForm,UserLoginForm,RunCreationForm,SamplesInRunForm,SamplesToCreatForm
 from django.views.generic import FormView, View
@@ -16,10 +16,10 @@ from django.conf import settings
 from django.views.decorators.cache import never_cache
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 import re,csv
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist,PermissionDenied
 from django.db.models import Q
-from django.forms import modelformset_factory
-from django.forms import inlineformset_factory
+from django.forms import modelformset_factory,inlineformset_factory
+
 # Create your views here.
 # def index(request):
 #     return HttpResponse("Hello, world!")
@@ -411,8 +411,10 @@ def RunCreateView6(request):
 	return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
 @login_required
-def RunUpdateView2(request,run_pk):
+def RunUpdateView2(request,username,run_pk):
 	runinfo = get_object_or_404(RunInfo, pk=run_pk)
+	if runinfo.operator != request.user:
+		raise PermissionDenied
 	run_form = RunCreationForm(request.POST or None, instance = runinfo)
 	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['sampleid','i7index','i5index'],extra =3)
 	sample_formset = SamplesInlineFormSet(request.POST or None, instance=runinfo)
@@ -588,6 +590,15 @@ class RunUpdateView(UpdateView):
 class RunDeleteView(DeleteView):
 	model = RunInfo
 	success_url = reverse_lazy('nextseq_app:index')
+
+@login_required
+def RunDeleteView2(request,run_pk):
+	deleterun = get_object_or_404(RunInfo, pk=run_pk)
+	if deleterun.operator != request.user:
+		raise PermissionDenied
+	deleterun.delete()
+	return redirect('nextseq_app:index')
+
 
 
 class UserRegisterView(FormView):

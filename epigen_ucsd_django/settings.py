@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '$omp0lc+c$5b&)e+c7xyk_zsddr#a4x4y+196bre5+f6pl2hlg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG =  True
 
 ALLOWED_HOSTS = ['epigenomics.sdsc.edu','127.0.0.1']
 

@@ -37,8 +37,8 @@
       <td>{{ Run.read_type }}</td>
       <td>{{ Run.read_length }}</td>
       <td>
-      	<a style="color:#447e9b; letter-spacing:10px;" href="{% url 'nextseq_app:run_update' Run.id %}"><i class="fas fa-edit"></i></a>
-      	<a style="color:#447e9b;" href="{% url 'nextseq_app:run_delete' Run.id %}"><i class="fas fa-trash-alt"></i></a>
+      	<a style="color:#447e9b; letter-spacing:10px;" href="{% url 'nextseq_app:run_update' username=user.username run_pk=Run.id %}"><i class="fas fa-edit"></i></a>
+      	<a style="color:#447e9b;" onclick="return confirm('Are you sure you want to delete {{ Run.Flowcell }} ?');" href="{% url 'nextseq_app:run_delete2' Run.id %}"><i class="fas fa-trash-alt"></i></a>
 
       </td>
     </tr>
