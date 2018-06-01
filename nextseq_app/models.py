@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 class Barcode(models.Model):
-	indexid = models.CharField(max_length=200)
+	indexid = models.CharField(max_length=200,unique=True)
 	indexseq = models.CharField(max_length=200)
 	def __str__(self):
 		return self.indexid
