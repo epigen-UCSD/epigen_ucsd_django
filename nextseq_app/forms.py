@@ -27,7 +27,7 @@ class RunCreationForm(ModelForm):
 
 	class Meta:
 		model = RunInfo
-		fields = ['Flowcell','date','read_type','read_length']
+		fields = ['Flowcell_ID','date','read_type','read_length']
 		widgets ={
 			 'date': forms.DateInput(),
 
@@ -36,11 +36,11 @@ class SamplesInRunForm(ModelForm):
 
 	class Meta:
 		model = SamplesInRun
-		fields = ['sampleid','i7index','i5index']
+		fields = ['Library_ID','i7index','i5index']
 
 class SamplesToCreatForm(forms.Form):
 	samplestocreat = forms.CharField(
 			label='Samples to Save:',
 			widget=forms.Textarea(attrs={'cols': 40, 'rows': 20}),
-			initial='sampleid i7index i5index(seperated by Space or Tab)\n'
+			initial='Library_ID i7index i5index(seperated by Space or Tab)\n'
 		)

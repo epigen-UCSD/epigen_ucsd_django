@@ -1,35 +1,132 @@
+.navbar-default {
+  border-bottom: 1px solid #dee2e6 !important; 
+  /*padding:0;*/
+
+ }
+/* .bg-light {
+  background-color: #e9ecef !important;
+ }*/
+
+.crop {
+    width: auto;
+    height: 60px;
+    margin: -20px 0 -20px 0;
+
+}
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+    background-color: white;
+    color: black !important;
+}
 body {
-    
-    background: white url("bg2.png");
+  padding-top: 80px;
+  background-color: #ffffff;
+  font-size: 1em;
+}
+table a {
+  color: #428bca;
+  font-weight:bold;
 
 }
+a.spacing {
+  letter-spacing: 10px;
+}
+#sidebar {
 
-.navbar {
+  border-radius: 5px;
 
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+.card-body {
+  padding: 50px 0px, ;
+  font-size:14.5px;
 }
 
-.card {
 
-	padding: 0px 50px;
-	font-size: 14.5px;
+.list-group-item-action-custom {
+  color: #428bca;
+  background-color: white;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1em;
+  /*text-align: center;*/
+  -webkit-transition: .3s;
+  -moz-transition: .3s;
+  -ms-transition: .3s;
+  -o-transition: .3s;
+  transition: .3s;
 }
-thead {
-	background-color: cadetblue;
-	color: white;
-}
-/*.navbar {
-    border-radius: 0;
-    font-size: 16px;
-    height: 40px;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-}*/
 
-/*table tr{
-   height: 500px;
+.list-group-item-action-custom:hover,.list-group-item-action:focus{
+  color: #428bca;
+  text-decoration: none;
+  background-color: #f8f9fa;
+  margin-left: 8px;
 }
-*/
-/*
-table tr td{
-   padding:2px !important;
-}*/
+.list-group-item-action-custom:active {
+  color: white;
+  background-color: #428bca;
+  margin-left: 8px;
+}
+.list-group-item-action-custom.active {
+  color: white;
+  background-color: #428bca;
+  margin-left: 8px;
+}
+.list-group-item-action-custom.submenu:hover,.list-group-item-action.submenu:focus{
+  color: #428bca;
+  text-decoration: none;
+  background-color: #f8f9fa;
+  margin-left: 16px;
+}
+.list-group-item-action-custom.submenu:active {
+  color: white;
+  background-color: #428bca;
+  margin-left: 16px;
+}
+.list-group-item-action-custom.submenu.active {
+  color: white;
+  background-color: #428bca;
+  margin-left: 16px;
+}
+.list-group-item[aria-expanded="true"]{
+  background-color: #428bca !important;
+  color: white;
+  margin-left: 8px;
+
+}
+.list-group-item {
+  border-radius: 5px;
+  padding:8px 10px 8px 15px;
+}
+.list-group-item.submenu {
+  border-color:white;
+  margin-left: 8px;
+  font-size: 0.8em;
+}
+.list-group {
+    min-height: 0;
+    box-shadow: 0 0 10px #BDBDBD;
+    border-radius: 5px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    max-height: none;
+}
+.card-header.fortable {
+
+    border: none;
+    padding-top: 5px;
+    border-bottom: 1px solid #DEDEDE;
+    border-radius: 3px 3px 0 0;
+    -webkit-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    height: 35px;
+    min-height: 35px !important;
+    margin-bottom: 0;
+    font-weight: bold;
+    background: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(100%, rgba(0, 0, 0, 0.1)));
+    background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
+    background: -o-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
+    background: -ms-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#1a000000', GradientType=0);
+}

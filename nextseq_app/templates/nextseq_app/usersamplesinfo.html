@@ -47,47 +47,50 @@
     <div class="row">
       <div id="sidebar" class="col-sm-2 col-lg-2" role="navigation">
         <div class="list-group">
-          <a href="{% url 'nextseq_app:index' %}" class="list-group-item list-group-item-action-custom active">My runs</a>      
-          <a href="{% url 'nextseq_app:usersamples' %}" class="list-group-item list-group-item-action-custom" >My samples</a>      
+          <a href="{% url 'nextseq_app:index' %}" class="list-group-item list-group-item-action-custom">My runs</a>      
+          <a href="{% url 'nextseq_app:usersamples' %}" class="list-group-item list-group-item-action-custom active" >My samples</a>      
            <a href="#addrun" class="list-group-item list-group-item-action-custom" data-toggle="collapse" ><i class="fas fa-plus"></i> Add a Run <i class="fa fa-caret-down"></i></a>
             <div class="collapse" id="addrun">
             <a href="{% url 'nextseq_app:runandsample_add' %}" class="list-group-item list-group-item-action-custom submenu">One by One Entry of Samples</a>
             <a href="{% url 'nextseq_app:runandsample_add_inbulky' %}" class="list-group-item list-group-item-action-custom submenu">Bulk Entry of Samples</a>
           </div>
         </div>
-      </div> 
-
+      </div>
       <div id="content" class="col-lg-10 col-sm-10">
         <div class="card">
           <div class="card-header fortable">
-            {{ runinfo.Flowcell_ID }}-{{runinfo.date|date:"Y-m-d"}}
+            My Samples
           </div><!-- /.card-header -->
-          <div class="card-body">
-            <p><a style="color:#447e9b; font-weight:bold; float:right" href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> <i class="fas fa-save"></i>Save as SampleSheet.csv</a></p>
-            <br />
-            <table class="table table-sm table-striped text-center">
-              <thead>
-              <tr>
-                <th>Library ID</th>
-                <th>i7index</th>
-                <th>i7sequence</th>
-                <th>i5index</th>
-                <th>i5sequence</th>
-              </tr>
-              </thead>            
+          <div class="card-body"> 
+           <table id="myTable" class="table table-sm table-striped table-bordered text-center">
+             <thead>
+               <tr>           
 
-            {% for samples in runinfo.samplesinrun_set.all %}
-              <tr>            
+                 <th scope="col">Library ID</th>
+                 <th scope="col">FlowcellSerialNumber</th>
+                 
+                 <th scope="col">i7index</th>
+                 <th scope="col">i7sequence</th>
+                 <th scope="col">i5index</th>
+                 <th scope="col">i5sequence</th>
+               </tr>
+             </thead>
+             <tbody>
+               {% for sample in Samples_list %}
+               <tr>           
 
-                <td>{{samples.Library_ID}}</td>
-                <td>{{samples.i7index}}</td>
-                <td>{{ barcode|key:samples.i7index }}</td>    
-                <td>{{samples.i5index}}</td>
-                <td>{{ barcode|key:samples.i5index }}</td>
-              </tr>
-            {% endfor %}            
-
-            </table>
+                 <td><a href=" "> {{ sample.Library_ID }} </a></td>
+                 <td>{{  sample.singlerun }}</td>    
+                 <td>{{  sample.i7index }}</td>
+                 <td>{{ barcode|key:sample.i7index }}</td>
+                 <td>{{  sample.i5index }}</td>
+                 <td>{{ barcode|key:sample.i5index }}</td>
+               </tr>
+               {% empty %}
+               <li>No Runs yet.</li>
+               {% endfor %}
+             </tbody>
+           </table>
           </div><!-- /.card-body -->              
         </div><!-- /.card -->      
       </div><!-- /#content --> 

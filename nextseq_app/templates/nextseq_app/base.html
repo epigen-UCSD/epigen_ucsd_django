@@ -1,73 +1,35 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'nextseq_app/css/style.css' %}"/>
-    <!-- Bootstrap CSS -->
-<!--     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous"> -->
-<!--     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous"> -->
+<head>
+  <title>NextseqApp</title>
+     
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  {% load static %}
 
-    <link rel="stylesheet" href="{% static 'nextseq_app/css/bootstrap.min.css' %}" >
-    <link rel="stylesheet" href="{% static 'nextseq_app/css/fontawesome-all.css' %}" >
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
 
-    <title>NextseqApp</title>
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand " href="{% url 'nextseq_app:home' %}"><i class="fas fa-home" style="font-size:20px;"></i></a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+  <link rel="stylesheet" type="text/css" href="{% static 'nextseq_app/css/style.css' %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static 'nextseq_app/css/jquery.dataTables.min.css' %}">
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-
-          <form class="form-inline my-2 my-lg-0" method='GET' action="{% url 'nextseq_app:home' %}">
-            <input class="form-control form-control-sm mr-sm-2" type="search" placeholder="Search..." aria-label="Search" name="q" value='{{request.GET.q}}'>
-            <button class="btn btn-sm btn-light" type="submit" value="Search"><i class="fas fa-search"></i></button>
-          </form>
-
-        </ul>
+</head>
+<body>
 
 
-
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-plus"></i> Add Run</a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="{% url 'nextseq_app:runandsample_add' %}">One by One Entry of Samples</a>
-              <a class="dropdown-item" href="{% url 'nextseq_app:runandsample_add_inbulky' %}">Bulk Entry of Samples</a>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'nextseq_app:index'%}"><i class="fas fa-user"></i> Hi, {{ user.username }}</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'nextseq_app:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
-          </li>
-        </ul>
-
-      </div>
-    </nav>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<!--     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
-<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script> -->
-<!--     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script> -->
-
-    <script src="{% static 'nextseq_app/js/jquery-3.3.1.slim.min.js' %}" ></script>
-    <script src="{% static 'nextseq_app/js/popper.min.js' %}" ></script>
-    <script src="{% static 'nextseq_app/js/bootstrap.min.js' %}" ></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+  <script src="{% static 'nextseq_app/js/jquery.dataTables.min.js' %}" ></script>
+  <script src="{% static 'nextseq_app/js/epigen.js' %}"></script>
 
   {% block body %}
   {% endblock %}
-  
-  </body>
+</body>
   
 
 </html>
-

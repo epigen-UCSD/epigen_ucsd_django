@@ -12,7 +12,7 @@ class Barcode(models.Model):
 
 class RunInfo(models.Model):
 	#runid = models.CharField(max_length=200,unique=True,help_text='Please enter the flowcellSe')
-	Flowcell = models.CharField(max_length=200,unique=True, help_text='Please enter the FlowcellSerialNumber, like H5GLYBGX5')
+	Flowcell_ID  = models.CharField(max_length=200,unique=True, help_text='Please enter the FlowcellSerialNumber, like H5GLYBGX5')
 	operator = models.ForeignKey(User, on_delete=models.CASCADE)
 	date = models.DateField('I did this run on...',help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03',blank=True,null=True)
 	read_type_choice = (('SE','Single-end'),('PE','Paired-end'))
@@ -25,17 +25,17 @@ class RunInfo(models.Model):
 		return reverse('nextseq_app:rundetail', kwargs={'pk': self.pk})
 
 	def __str__(self):
-		return self.Flowcell
+		return self.Flowcell_ID
 
 	class Meta:
 		ordering = ['-date']
 
 class SamplesInRun(models.Model):
 	singlerun = models.ForeignKey(RunInfo, on_delete=models.CASCADE)
-	sampleid = models.CharField(max_length=200,unique=True)
+	Library_ID = models.CharField(max_length=200,unique=True)
 	i7index = models.ForeignKey(Barcode,related_name='i7_index', on_delete=models.CASCADE, blank=True,null=True)
 	i5index = models.ForeignKey(Barcode,related_name='i5_index',on_delete=models.CASCADE, blank=True,null=True)
 	def __str__(self):
-		return self.sampleid
+		return self.Library_ID
 	class Meta:
-		ordering = ['sampleid']
+		ordering = ['Library_ID']

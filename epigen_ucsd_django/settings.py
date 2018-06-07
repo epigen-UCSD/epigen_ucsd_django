@@ -74,34 +74,24 @@ WSGI_APPLICATION = 'epigen_ucsd_django.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
-# DATABASES = {
-#     default": {
-#         "ENGINE": "django.db.backends.postgresql_psycopg2",
-#         "NAME": "nextseqapp",
-#         "USER": "postgres",
-#         "PASSWORD": "123456",
-#         "HOST": "localhost",
-#         "PORT": "5432",
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'nextseqapp',
-        'USER': 'liyuxin',
-        'PASSWORD': '123456',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'nextseqapp',
+#         'USER': 'liyuxin',
+#         'PASSWORD': '123456',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators

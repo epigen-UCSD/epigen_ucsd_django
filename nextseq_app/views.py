@@ -8,7 +8,6 @@ from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from .models import Barcode, RunInfo, SamplesInRun
-#from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic.detail import DetailView
 from django.utils.decorators import method_decorator
@@ -20,22 +19,6 @@ from django.core.exceptions import ObjectDoesNotExist,PermissionDenied
 from django.db.models import Q
 from django.forms import modelformset_factory,inlineformset_factory
 
-# Create your views here.
-# def index(request):
-#     return HttpResponse("Hello, world!")
-# class IndexView(TemplateView):
-# 	template_name = "nextseq_app/index.html"
-#@login_required
-# class IndexView(ListView):
-# 	template_name = "nextseq_app/index.html"
-# 	context_object_name = 'RunInfo_list'
-# 	def get_queryset(self):
-# 		return RunInfo.objects.filter(operator=self.request.user)
-# barcodes_dic = {}
-# barcodes_list = Barcode.objects.all()
-# for barcodes in barcodes_list:
-# 	barcodes_dic[barcodes.indexid] = barcodes.indexseq
-#print(barcodes_dic)
 def BarcodeDic():
 	barcodes_dic = {}
 	barcodes_list = Barcode.objects.all()
@@ -88,7 +71,7 @@ class HomeView(ListView):
 			#print(q)
 			queryset_list = queryset_list.filter(
 				Q(operator__username__icontains=q) | 
-				Q(Flowcell__icontains=q) | 
+				Q(Flowcell_ID__icontains=q) | 
 				Q(read_type__icontains=q) | 
 				Q(read_length__icontains=q)
 
@@ -129,7 +112,7 @@ def UserSamplesView(request):
 		'number' : number,
 		'usersamples': usersamples
 	}
-	return render(request, 'nextseq_app/samplesinfo.html', context)
+	return render(request, 'nextseq_app/usersamplesinfo.html', context)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -150,26 +133,23 @@ class RunDetailView2(DetailView):
 		#context['barcode'] = barcodes_dic
 		context['barcode'] = BarcodeDic()
 		return context
-# @login_required
-# def RunDetailView(request, run_id):
-# 	runinfo = get_object_or_404(RunInfo, pk=run_id)
-# 	barcodei7 = {}
-# 	barcodei5 = {}
-# 	for samples in runinfo.samplesinrun_set.all():
-# 		barcodequery = Barcode.objects.get(indexid=samples.i7index)
-# 		barcodei7[samples] = barcodequery.indexseq
-# 		samples
-# 		print(samples)
-# 		print(barcodei7[samples])
-# 		barcodequery = Barcode.objects.get(indexid=samples.i5index)
-# 		barcodei5[samples] = barcodequery.indexseq
-# 	return render(request, 'nextseq_app/detail.html', {'runinfo': runinfo, 'barcodei7': barcodei7, 'barcodei5': barcodei5})
+
+@method_decorator(login_required, name='dispatch')
+class RunDetailViewhome(DetailView):
+	model = RunInfo
+	template_name = 'nextseq_app/homedetails.html'
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		#context['barcode'] = barcodes_dic
+		context['barcode'] = BarcodeDic()
+		return context
+
 @method_decorator(login_required, name='dispatch')
 class RunCreateView(CreateView):
 	model = RunInfo
-	fields = ['Flowcell','date','read_type','read_length']
+	fields = ['Flowcell_ID','date','read_type','read_length']
 	template_name = 'nextseq_app/createrun.html'
-	#ields = '__all__'
+
 
 @method_decorator(login_required, name='dispatch')
 class RunCreateView2(CreateView):
@@ -180,19 +160,6 @@ class RunCreateView2(CreateView):
 		obj.operator = self.request.user
 		return super().form_valid(form)
 
-# @login_required
-# def RunCreateView3(request):
-# 	run_form = RunCreationForm(request.POST or None, prefix = "run")
-# 	sample_form = SamplesInRunForm(request.POST or None, prefix = "samples")
-# 	if run_form.is_valid() and sample_form.is_valid():
-# 		runinfo = run_form.save(commit=False)
-# 		runinfo.operator = request.user
-# 		runinfo.save()
-# 		sampleinfo = sample_form.save(commit=False)
-# 		sampleinfo.singlerun = runinfo
-# 		sampleinfo.save()
-# 		return redirect('nextseq_app:rundetail',pk=runinfo.id)
-# 	return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form':run_form,'sample_form':sample_form})
 	
 
 @login_required
@@ -216,7 +183,7 @@ def RunCreateView3(request):
 def RunCreateView4(request):
 	run_form = RunCreationForm(request.POST or None)
 	print(run_form.as_p)
-	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['sampleid','i7index','i5index'],extra =2)
+	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['Library_ID','i7index','i5index'],extra =2)
 	sample_formset = SamplesInlineFormSet(instance=RunInfo())
 
 	if run_form.is_valid():
@@ -225,12 +192,12 @@ def RunCreateView4(request):
 		sample_formset = SamplesInlineFormSet(request.POST,instance=runinfo)
 		if sample_formset.is_valid():
 			
-			sampleid_list = []
+			Library_ID_list = []
 			i7index_list = []
 			i5index_list = []
 			for form in sample_formset:
 				try:
-					sampleid_list.append(form.cleaned_data['sampleid'])
+					Library_ID_list.append(form.cleaned_data['Library_ID'])
 					i7index_list.append(form.cleaned_data['i7index'])
 					i5index_list.append(form.cleaned_data['i5index'])
 				except KeyError:
@@ -254,80 +221,6 @@ def RunCreateView4(request):
 	
 	return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form':run_form,'sample_formset':sample_formset})
 
-#creat run and samples or samples in bulk in one page
-# @login_required
-# def RunCreateView5(request):
-# 	run_form = RunCreationForm(request.POST or None)
-# 	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['sampleid','i7index','i5index'],extra =2)
-# 	sample_formset = SamplesInlineFormSet(instance=RunInfo())
-# 	form = SamplesToCreatForm(request.POST or None)
-
-# 	if run_form.is_valid():
-# 		runinfo = run_form.save(commit=False)
-# 		runinfo.operator = request.user
-# 		if 'singlsave' in request.POST:
-# 			sample_formset = SamplesInlineFormSet(request.POST,instance=runinfo)
-# 			if sample_formset.is_valid():
-# 				runinfo.save()
-# 				sample_formset.save()
-# 				return redirect('nextseq_app:rundetail',pk=runinfo.id)
-# 		elif 'bulksave' in request.POST and form.is_valid():
-# 			runinfo.save()
-# 			samplestocreat = form.cleaned_data['samplestocreat']
-# 			tosave_list = []
-# 			samplestocreat += '  \nsampleid'
-# 			i7index_list = []
-# 			i5index_list = []
-# 			for samples in samplestocreat.split('\n'):
-# 				samples_info = re.split(r'[\s\t]',samples)
-# 				if samples_info[0] != 'sampleid':
-# 					try:
-# 						if samples_info[1] and samples_info[2]: 
-# 							tosave_sample = SamplesInRun(
-# 								singlerun=runinfo,
-# 								sampleid=samples_info[0],
-# 								i7index=Barcode.objects.get(indexid=samples_info[1]),
-# 								i5index=Barcode.objects.get(indexid=samples_info[2]),
-# 								)
-# 						elif samples_info[1] and not samples_info[2]:
-# 							tosave_sample = SamplesInRun(
-# 								singlerun=runinfo,
-# 								sampleid=samples_info[0],
-# 								i7index=Barcode.objects.get(indexid=samples_info[1]),
-# 								)
-# 						elif not samples_info[1] and samples_info[2]:
-# 							tosave_sample = SamplesInRun(
-# 								singlerun=runinfo,
-# 								sampleid=samples_info[0],
-# 								i5index=Barcode.objects.get(indexid=samples_info[2]),
-# 								)
-# 						else:
-# 							tosave_sample = SamplesInRun(
-# 								singlerun=runinfo,
-# 								sampleid=samples_info[0],
-# 								)											
-
-# 					except ObjectDoesNotExist:
-# 						context = {
-# 							'run_form':run_form,
-# 							'sample_formset':sample_formset,
-# 							'form':form,
-# 							'error_message':'There are indexes that are not stored in the database!'
-# 						}
-# 						return render(request, 'nextseq_app/runandsamplesadd.html',context)
-
-
-# 					tosave_list.append(tosave_sample)
-# 			SamplesInRun.objects.bulk_create(tosave_list)
-# 			return redirect('nextseq_app:rundetail',pk=runinfo.id)
-
-# 	context={
-# 		'run_form':run_form,
-# 		'sample_formset':sample_formset,
-# 		'form':form,
-# 		}
-
-# 	return render(request, 'nextseq_app/runandsamplesadd.html', context)
 
 
 @login_required
@@ -341,37 +234,37 @@ def RunCreateView6(request):
 		runinfo.save()
 		samplestocreat = form.cleaned_data['samplestocreat']
 		tosave_list = []
-		samplestocreat += '   \nsampleid'
+		samplestocreat += '   \nLibrary_ID'
 		i7index_list = []
 		i5index_list = []
 		for samples in samplestocreat.split('\n'):
 			samples_info = re.split(r'[\s]',samples)
 			#print(samples_info)
-			if samples_info[0] != 'sampleid':
+			if samples_info[0] != 'Library_ID':
 				try:
 					if samples_info[1] and samples_info[2]: 
 						tosave_sample = SamplesInRun(
 							singlerun=runinfo,
-							sampleid=samples_info[0],
+							Library_ID=samples_info[0],
 							i7index=Barcode.objects.get(indexid=samples_info[1]),
 							i5index=Barcode.objects.get(indexid=samples_info[2]),
 							)
 					elif samples_info[1] and not samples_info[2]:
 						tosave_sample = SamplesInRun(
 							singlerun=runinfo,
-							sampleid=samples_info[0],
+							Library_ID=samples_info[0],
 							i7index=Barcode.objects.get(indexid=samples_info[1]),
 							)
 					elif not samples_info[1] and samples_info[2]:
 						tosave_sample = SamplesInRun(
 							singlerun=runinfo,
-							sampleid=samples_info[0],
+							Library_ID=samples_info[0],
 							i5index=Barcode.objects.get(indexid=samples_info[2]),
 							)
 					else:
 						tosave_sample = SamplesInRun(
 							singlerun=runinfo,
-							sampleid=samples_info[0],
+							Library_ID=samples_info[0],
 							)												
 					i7index_list.append(samples_info[1])
 					i5index_list.append(samples_info[2])
@@ -416,19 +309,19 @@ def RunUpdateView2(request,username,run_pk):
 	if runinfo.operator != request.user:
 		raise PermissionDenied
 	run_form = RunCreationForm(request.POST or None, instance = runinfo)
-	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['sampleid','i7index','i5index'],extra =3)
+	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['Library_ID','i7index','i5index'],extra =3)
 	sample_formset = SamplesInlineFormSet(request.POST or None, instance=runinfo)
 
 	if run_form.is_valid() and sample_formset.is_valid():
 		runinfo = run_form.save(commit=False)
 		runinfo.operator = request.user
 
-		sampleid_list = []
+		Library_ID_list = []
 		i7index_list = []
 		i5index_list = []
 		for form in sample_formset:
 			try:
-				sampleid_list.append(form.cleaned_data['sampleid'])
+				Library_ID_list.append(form.cleaned_data['Library_ID'])
 				i7index_list.append(form.cleaned_data['i7index'])
 				i5index_list.append(form.cleaned_data['i5index'])
 			except KeyError:
@@ -439,7 +332,8 @@ def RunUpdateView2(request,username,run_pk):
 			context = {
 				 'run_form':run_form,
 				 'sample_formset':sample_formset,
-				 'error_message': 'Duplicates:' + str(duplicate)
+				 'error_message': 'Duplicates:' + str(duplicate),
+				 'runinfo': runinfo,
 
 			}
 			return render(request, 'nextseq_app/runandsamplesupdate.html',context)
@@ -448,7 +342,7 @@ def RunUpdateView2(request,username,run_pk):
 		sample_formset.save()
 		return redirect('nextseq_app:rundetail',pk=runinfo.pk)
 		
-	return render(request, 'nextseq_app/runandsamplesupdate.html', {'run_form':run_form,'sample_formset':sample_formset})
+	return render(request, 'nextseq_app/runandsamplesupdate.html', {'run_form':run_form,'sample_formset':sample_formset,'runinfo': runinfo})
 
 	
 
@@ -461,7 +355,7 @@ def SampleCreateView(request, run_pk):
 	if form.is_valid():
 		runinfo_samples = runinfo.samplesinrun_set.all()
 		for s in runinfo_samples:
-			if s.sampleid == form.cleaned_data.get("sampleid"):
+			if s.Library_ID == form.cleaned_data.get("Library_ID"):
 				context ={
 					'form':form,
 					'runinfo':runinfo,
@@ -478,7 +372,7 @@ def SampleCreateView(request, run_pk):
 def SamplesDeleteView(request, run_pk):
 	delete_list = request.GET.getlist('delete_list')
 	if request.method == "POST":
-		SamplesInRun.objects.filter(singlerun=RunInfo.objects.get(pk=run_pk),sampleid__in=delete_list).delete()
+		SamplesInRun.objects.filter(singlerun=RunInfo.objects.get(pk=run_pk),Library_ID__in=delete_list).delete()
 		return redirect('nextseq_app:rundetail',pk=run_pk)
 	return render(request, 'nextseq_app/samples_confirm_delete.html', {'delete_list':delete_list,'run_pk':run_pk})
 
@@ -491,37 +385,37 @@ def SamplesBulkCreateView(request,run_pk):
 		if form.is_valid():
 			samplestocreat = form.cleaned_data['samplestocreat']
 			tosave_list = []
-			samplestocreat += '  \nsampleid'
+			samplestocreat += '  \nLibrary_ID'
 			#print(samplestocreat)
 			for samples in samplestocreat.split('\n'):
 				#print(samples)
 				samples_info = re.split(r'[\s]',samples)
 				#print(samples_info)
-				if samples_info[0] != 'sampleid':
+				if samples_info[0] != 'Library_ID':
 					try:
 						if samples_info[1] and samples_info[2]: 
 							tosave_sample = SamplesInRun(
 								singlerun=runinfo,
-								sampleid=samples_info[0],
+								Library_ID=samples_info[0],
 								i7index=Barcode.objects.get(indexid=samples_info[1]),
 								i5index=Barcode.objects.get(indexid=samples_info[2]),
 								)
 						elif samples_info[1] and not samples_info[2]:
 							tosave_sample = SamplesInRun(
 								singlerun=runinfo,
-								sampleid=samples_info[0],
+								Library_ID=samples_info[0],
 								i7index=Barcode.objects.get(indexid=samples_info[1]),
 								)
 						elif not samples_info[1] and samples_info[2]:
 							tosave_sample = SamplesInRun(
 								singlerun=runinfo,
-								sampleid=samples_info[0],
+								Library_ID=samples_info[0],
 								i5index=Barcode.objects.get(indexid=samples_info[2]),
 								)
 						else:
 							tosave_sample = SamplesInRun(
 								singlerun=runinfo,
-								sampleid=samples_info[0],
+								Library_ID=samples_info[0],
 								)												
 
 					except ObjectDoesNotExist:
@@ -575,7 +469,7 @@ def SampleSheetCreateView(request,run_pk):
 		i5id = samples.i5index or ''
 		i7seq= Barcode.objects.get(indexid=i7id).indexseq if i7id!='' else ''
 		i5seq= Barcode.objects.get(indexid=i5id).indexseq if i5id!='' else ''
-		writer.writerow([samples.sampleid,'','','',i7id,i7seq,i5id,i5seq,'',''])									
+		writer.writerow([samples.Library_ID,'','','',i7id,i7seq,i5id,i5seq,'',''])									
 	return response
 
 
@@ -583,7 +477,7 @@ def SampleSheetCreateView(request,run_pk):
 @method_decorator(login_required, name='dispatch')
 class RunUpdateView(UpdateView):
 	model = RunInfo
-	fields = ['Flowcell','date','read_type','read_length']
+	fields = ['Flowcell_ID','date','read_type','read_length']
 	template_name = 'nextseq_app/updaterun.html'
 
 @method_decorator(login_required, name='dispatch')
@@ -629,7 +523,7 @@ class UserLoginView(View):
 			if user is not None:
 				if user.is_active:
 					login(request, user)
-					return redirect('nextseq_app:home')
+					return redirect('nextseq_app:index')
 			else:
 				return render(request, self.template_name,{'form':form,'error_message':'Invalid login'})
 
