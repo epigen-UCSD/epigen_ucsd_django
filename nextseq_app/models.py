@@ -19,7 +19,8 @@ class RunInfo(models.Model):
 	read_type = models.CharField(max_length=2,choices=read_type_choice)
 	#is_pe = models.BooleanField('Is it paired-end?', default=True)
 	#reads_length = models.IntegerField(default=75)
-	read_length = models.IntegerField()
+	# read_length = models.IntegerField()
+	read_length = models.CharField(max_length=50)
 
 	def get_absolute_url(self):
 		return reverse('nextseq_app:rundetail', kwargs={'pk': self.pk})

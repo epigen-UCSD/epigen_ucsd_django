@@ -4,79 +4,77 @@
 {% load static %}
 {% load nextseq_app_tags %}
 <div id="wrapper">
-  <nav class="navbar navbar-expand-lg navbar-default navbar-light bg-light fixed-top" border-bottom="3px solid">
+  <nav class="navbar navbar-expand-lg navbar-default navbar-light bg-light fixed-top borderline">
     <a class="navbar-brand" href="#"><img alt="Charisma Logo" src="{% static 'nextseq_app/images/CFE_Brandmark-01.png' %}" class="crop" margin="-200px 0 -200px 0" width=auto height=50 /></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
        <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse">
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'nextseq_app:home' %}">Runs <span class="sr-only">(current)</span></a>
+          <a class="nav-link active" href="{% url 'nextseq_app:index' %}"> NextSeq <span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'nextseq_app:allsamples' %}">Samples</a>
-        </li>
-   <!--       <li class="nav-item dropdown">
-           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-             Nextseq
-           </a>
-           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-             <a class="dropdown-item" href="#">Runs</a>
-             <a class="dropdown-item" href="#">Samples</a>
-           </div>
-         </li> -->
       </ul>
       <ul class="navbar-nav ml-auto">
-   <!--           <li class="nav-item">
-               <a class="nav-link" href="{% url 'nextseq_app:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
-             </li> -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user fa-fw"></i>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="{% url 'nextseq_app:index' %}"><i class="fas fa-user-edit"></i> Manage My data</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{% url 'nextseq_app:logout' %}"><i class="fas fa-sign-out-alt"></i>   Logout</a>
-          </div>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'nextseq_app:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </li>
       </ul>
     </div>
   </nav>
-  <div class="container">
-    <div class="card">
-      <div class="card-header fortable">
-        {{ runinfo.Flowcell_ID }}-{{runinfo.date|date:"Y-m-d"}}
-      </div><!-- /.card-header -->
-      <div class="card-body">
-        <p><a style="color:#447e9b; font-weight:bold; float:right" href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> <i class="fas fa-save"></i>Save as SampleSheet.csv</a></p>
-        <br />
-        <table class="table table-sm table-striped text-center">
-          <thead>
-          <tr>
-            <th>Library ID</th>
-            <th>i7index</th>
-            <th>i7sequence</th>
-            <th>i5index</th>
-            <th>i5sequence</th>
-          </tr>
-          </thead>            
+  <div class="container-fluid">
+    <div class="row">
+      <div id="sidebar" class="col-sm-2 col-md-2 col-lg-2" role="navigation">
+        <div class="list-group">
+          <li class="sidebar-header">Nextseq App</li>
+          <a href="{% url 'nextseq_app:index' %}" class="list-group-item list-group-item-action-custom">My Runs</a>      
+          <a href="{% url 'nextseq_app:usersamples' %}" class="list-group-item list-group-item-action-custom" >My Samples</a>      
+          <a href="#addrun" class="list-group-item list-group-item-action-custom" data-toggle="collapse" ><i class="fas fa-plus"></i> Add a Run <i class="fa fa-caret-down"></i></a>
+            <div class="collapse" id="addrun">
+            <a href="{% url 'nextseq_app:runandsample_add' %}" class="list-group-item list-group-item-action-custom submenu">One by One Entry of Samples</a>
+            <a href="{% url 'nextseq_app:runandsample_add_inbulky' %}" class="list-group-item list-group-item-action-custom submenu">Bulk Entry of Samples</a>
+            </div>
+          <a href="{% url 'nextseq_app:home' %}" class="list-group-item list-group-item-action-custom active">All Runs</a>      
+          <a href="{% url 'nextseq_app:allsamples' %}" class="list-group-item list-group-item-action-custom" >All Samples</a>
+        </div>
+      </div> 
 
-      {% for samples in runinfo.samplesinrun_set.all %}
-          <tr>            
+      <div id="content" class="col-sm-10 col-md-10 col-lg-10">
+        <div class="card">
+          <div class="card-header fortable">
+            {{ runinfo.Flowcell_ID }}-{{runinfo.date|date:"Y-m-d"}}
+          </div><!-- /.card-header -->
+          <div class="card-body">
+            <p><a style="color:#447e9b; font-weight:bold; float:right" href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> <i class="fas fa-save"></i>Save as SampleSheet.csv</a></p>
+            <br />
+            <table class="table table-sm table-striped text-center">
+              <thead>
+              <tr>
+                <th>Library ID</th>
+                <th>i7index</th>
+                <th>i7sequence</th>
+                <th>i5index</th>
+                <th>i5sequence</th>
+              </tr>
+              </thead>                
 
-          <td>{{samples.Library_ID}}</td>
-            <td>{{samples.i7index}}</td>
-            <td>{{ barcode|key:samples.i7index }}</td>    
-            <td>{{samples.i5index}}</td>
-            <td>{{ barcode|key:samples.i5index }}</td>
-          </tr>
-        {% endfor %}            
+          {% for samples in runinfo.samplesinrun_set.all %}
+              <tr>                
 
-      </table>
-      </div><!-- /.card-body -->              
-    </div><!-- /.card -->      
-  </div><!-- /.container-->
+              <td>{{samples.Library_ID}}</td>
+                <td>{{samples.i7index}}</td>
+                <td>{{ barcode|key:samples.i7index }}</td>    
+                <td>{{samples.i5index}}</td>
+                <td>{{ barcode|key:samples.i5index }}</td>
+              </tr>
+            {% endfor %}                
+
+          </table>
+          </div><!-- /.card-body -->              
+        </div><!-- /.card -->      
+      </div><!-- /#content --> 
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
 </div><!-- /#wrapper -->
 
 
