@@ -1,7 +1,7 @@
 {% extends 'nextseq_app/base.html' %}
 
 {% block body %}
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 {% load static %}
 <div id="wrapper">
   <nav class="navbar navbar-expand-lg navbar-default navbar-light bg-light fixed-top borderline">
@@ -49,8 +49,18 @@
           <p style="color:red"><strong>{{ error_message }}</strong></p>
         {% endif %}
         
-        <form action="" method="post">{% csrf_token %}
-            {{ run_form.as_p }}
+          <form action="" method="post">{% csrf_token %}
+           <!--  {{ run_form.as_p }} -->
+            {% for field in run_form %}
+            <div class="fieldWrapper">
+              <p>{{ field.errors }}
+                 {{ field.label_tag }} {{ field }}
+                 {% if field.help_text %}
+                 <span class="fontsize-sm">{{ field.help_text|safe }}</span>
+                 {% endif %}
+              </p>
+            </div>
+            {% endfor %}
             <br />
 
             <table class="table table-striped table-sm">
@@ -93,13 +103,5 @@
   </div><!-- /.container-fluid -->
 </div><!-- /#wrapper -->
 <!--     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
-<script src="{% static 'nextseq_app/js/jquery.formset.js' %}"></script>
-<script>
-    $('.formset_row').formset({
-        addText: 'add another samples',
-        deleteText: 'remove',
-        prefix: 'samplesinrun_set'
-    });
-</script>
 
 {% endblock %}

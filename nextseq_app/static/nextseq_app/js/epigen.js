@@ -1,7 +1,12 @@
 $(document).ready( function () {
-    $('#myTable').DataTable();
+    $('.datatable').DataTable();
 
-} );
-$( function() {
-  $( "#id_date" ).datepicker();
+    $( "#id_date" ).datepicker();
+    
+    $('.formset_row').formset({
+    addText: 'add another samples',
+    deleteText: 'remove',
+    prefix: 'samplesinrun_set'
+});
+
 } );

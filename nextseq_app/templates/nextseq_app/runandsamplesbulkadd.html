@@ -1,7 +1,7 @@
 {% extends 'nextseq_app/base.html' %}
 
 {% block body %}
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 {% load static %}
 <div id="wrapper">
   <nav class="navbar navbar-expand-lg navbar-default navbar-light bg-light fixed-top borderline">
@@ -54,7 +54,7 @@
                   <p>{{ field.errors }}
                     {{ field.label_tag }} {{ field }}
                     {% if field.help_text %}
-                    <span style="font-size:13px;">{{ field.help_text|safe }}</span>
+                    <span class="fontsize-sm">{{ field.help_text|safe }}</span>
                     {% endif %}
                   </p>
                 </div>

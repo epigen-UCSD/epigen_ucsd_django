@@ -15,6 +15,10 @@
     margin: -20px 0 -20px 0;
 
 }
+.fontsize-sm {
+    font-size: 13px;
+}
+
 
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
     background-color: white;
@@ -33,10 +37,12 @@ body {
   font-size: 15px;
   font-family:"Mr Eaves Modern",Arial,sans-serif;
 }
-table a {
+table a, .linkblue{
   color:  #428bca;
-  font-weight:bold;
-
+  font-weight: bold;
+}
+.toright {
+  float:right
 }
 a.spacing {
   letter-spacing: 10px;
@@ -47,7 +53,6 @@ a.spacing {
 
 }
 .card-body {
-  padding: 50px 0px, ;
   font-size:14.5px;
 }
 .sidebar-header {
@@ -133,7 +138,7 @@ a.spacing {
     margin-bottom: 0;
     padding-bottom: 0;
     max-height: none;
-    padding:0px 0px 0px 0px;
+   
 }
 .card-header.fortable {
 

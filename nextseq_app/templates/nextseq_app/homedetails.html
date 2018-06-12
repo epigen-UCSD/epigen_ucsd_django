@@ -45,7 +45,7 @@
             {{ runinfo.Flowcell_ID }}-{{runinfo.date|date:"Y-m-d"}}
           </div><!-- /.card-header -->
           <div class="card-body">
-            <p><a style="color:#447e9b; font-weight:bold; float:right" href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> <i class="fas fa-save"></i>Save as SampleSheet.csv</a></p>
+            <p><a class="linkblue toright" href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> <i class="fas fa-save"></i>Save as SampleSheet.csv</a></p>
             <br />
             <table class="table table-sm table-striped text-center">
               <thead>
