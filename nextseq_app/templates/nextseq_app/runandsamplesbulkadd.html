@@ -78,17 +78,7 @@
                     {% endfor %}
                   </tr>    
                 </table>
-    <!--{% for field in form %}
-        <div class="fieldWrapper">
-            <p>{{ field.label_tag }}</p>
-            <p>{{ field }}</p>
-        </div>
-    {% endfor %}-->    
-              {% if error_message %}
-              <input onclick="return alert('{{error_message}}');" type="submit" name="singlsave" value="Save"/>
-              {% else %}
               <input type="submit" name="singlsave" value="Save"/>
-              {% endif %} 
             </form>
           </div><!-- /.card-body -->              
         </div><!-- /.card -->      
