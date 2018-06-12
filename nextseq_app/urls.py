@@ -5,10 +5,10 @@ from . import views
 app_name = 'nextseq_app'
 urlpatterns = [
 
-    path('', views.IndexView,name='index'),
-    path('samples/', views.UserSamplesView,name='usersamples'),
-    path('home/', views.HomeView.as_view(),name='home'),
-    path('home/samples/', views.AllSamplesView,name='allsamples'),
+    path('myruns/', views.IndexView,name='userruns'),
+    path('mysamples/', views.UserSamplesView,name='usersamples'),
+    path('allruns/', views.HomeView.as_view(),name='allruns'),
+    path('allsamples/', views.AllSamplesView,name='allsamples'),
     path('register/', views.UserRegisterView.as_view(), name='register'),
     path('login/', views.UserLoginView.as_view(), name='login'),
     path('logout/', views.logout_view, name='logout'),

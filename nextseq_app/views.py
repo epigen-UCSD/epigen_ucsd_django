@@ -57,11 +57,11 @@ def IndexValidation(i7list, i5list):
 def IndexView(request):
 
 	RunInfo_list = RunInfo.objects.filter(operator=request.user)
-	return render(request, 'nextseq_app/index.html', {'RunInfo_list': RunInfo_list})
+	return render(request, 'nextseq_app/userrunsinfo.html', {'RunInfo_list': RunInfo_list})
 
 @method_decorator(login_required, name='dispatch')
 class HomeView(ListView):
-	template_name = "nextseq_app/home.html"
+	template_name = "nextseq_app/runsinfo.html"
 	context_object_name = 'RunInfo_list'
 
 	def get_queryset(self):
@@ -483,7 +483,7 @@ class RunUpdateView(UpdateView):
 @method_decorator(login_required, name='dispatch')
 class RunDeleteView(DeleteView):
 	model = RunInfo
-	success_url = reverse_lazy('nextseq_app:index')
+	success_url = reverse_lazy('nextseq_app:userruns')
 
 @login_required
 def RunDeleteView2(request,run_pk):
@@ -491,14 +491,14 @@ def RunDeleteView2(request,run_pk):
 	if deleterun.operator != request.user:
 		raise PermissionDenied
 	deleterun.delete()
-	return redirect('nextseq_app:index')
+	return redirect('nextseq_app:userruns')
 
 
 
 class UserRegisterView(FormView):
 	form_class = UserRegisterForm
 	template_name = 'nextseq_app/registration.html'
-	success_url = reverse_lazy('nextseq_app:index')
+	success_url = reverse_lazy('nextseq_app:userruns')
 
 	def form_valid(self, form):
 		user = form.save(commit=False)
@@ -523,7 +523,7 @@ class UserLoginView(View):
 			if user is not None:
 				if user.is_active:
 					login(request, user)
-					return redirect('nextseq_app:index')
+					return redirect('nextseq_app:userruns')
 			else:
 				return render(request, self.template_name,{'form':form,'error_message':'Invalid login'})
 
@@ -532,7 +532,7 @@ class UserLoginView(View):
 
 def logout_view(request):
 	logout(request)
-	return redirect('nextseq_app:index')
+	return redirect('nextseq_app:userruns')
 
 
 

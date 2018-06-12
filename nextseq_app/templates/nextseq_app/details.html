@@ -12,7 +12,7 @@
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active" href="{% url 'nextseq_app:index' %}"> NextSeq <span class="sr-only">(current)</span></a>
+          <a class="nav-link active" href="{% url 'nextseq_app:userruns' %}"> NextSeq <span class="sr-only">(current)</span></a>
         </li>
       </ul>
       <ul class="navbar-nav ml-auto">
@@ -27,14 +27,14 @@
       <div id="sidebar" class="col-sm-2 col-md-2 col-lg-2" role="navigation">
         <div class="list-group">
           <li class="sidebar-header">Nextseq App</li>
-          <a href="{% url 'nextseq_app:index' %}" class="list-group-item list-group-item-action-custom active">My Runs</a>      
+          <a href="{% url 'nextseq_app:userruns' %}" class="list-group-item list-group-item-action-custom active">My Runs</a>      
           <a href="{% url 'nextseq_app:usersamples' %}" class="list-group-item list-group-item-action-custom" >My Samples</a>      
           <a href="#addrun" class="list-group-item list-group-item-action-custom" data-toggle="collapse" ><i class="fas fa-plus"></i> Add a Run <i class="fa fa-caret-down"></i></a>
             <div class="collapse" id="addrun">
             <a href="{% url 'nextseq_app:runandsample_add' %}" class="list-group-item list-group-item-action-custom submenu">One by One Entry of Samples</a>
             <a href="{% url 'nextseq_app:runandsample_add_inbulky' %}" class="list-group-item list-group-item-action-custom submenu">Bulk Entry of Samples</a>
             </div>
-          <a href="{% url 'nextseq_app:home' %}" class="list-group-item list-group-item-action-custom">All Runs</a>      
+          <a href="{% url 'nextseq_app:allruns' %}" class="list-group-item list-group-item-action-custom">All Runs</a>      
           <a href="{% url 'nextseq_app:allsamples' %}" class="list-group-item list-group-item-action-custom" >All Samples</a>
         </div>
       </div> 
