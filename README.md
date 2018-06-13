@@ -51,7 +51,7 @@ python manage.py runserver 0.0.0.0:8000
 
 ## links 
 
-* Register: http://127.0.0.1:8000/nextseq_app/register/
-* Login: http://127.0.0.1:8000/nextseq_app/login/
+* Register: [test](http://127.0.0.1:8000/nextseq_app/register/),[deployed](http://epigenomics.sdsc.edu:8000/nextseq_app/register/)
+* Login: [test](http://127.0.0.1:8000/nextseq_app/login/),[deployed](http://epigenomics.sdsc.edu:8000/nextseq_app/login/)
 
 
