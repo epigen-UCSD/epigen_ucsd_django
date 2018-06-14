@@ -46,19 +46,26 @@
           </div><!-- /.card-header -->
           <div class="card-body">
             {% if error_message %}
-                <p style="color:red"><strong>{{ error_message }}</strong></p>
+                <p class="error-message">{{ error_message }}</p>
             {% endif %}
 
             <form action="" method="post">{% csrf_token %}
              <!--  {{ run_form.as_p }} -->
               {% for field in run_form %}
               <div class="fieldWrapper">
-                <p>{{ field.errors }}
-                   {{ field.label_tag }} {{ field }}
-                   {% if field.help_text %}
-                   <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
-                   {% endif %}
-                </p>
+                <p>
+                  <ul>
+                  {% for error in field.errors %}
+                  <li class="error-message" >
+                    {{error}}
+                  </li>
+                  {% endfor %}
+                  </ul>
+                  {{ field.label_tag }} {{ field }}
+                  {% if field.help_text %}
+                  <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+                  {% endif %}
+                </p>              
               </div>
               {% endfor %}
 
@@ -77,7 +84,7 @@
                     </tr>
                   </thead>
                   {% endif %}
-                     <tr class="{% cycle row1 row2 %} formset_row">
+                     <tr class="formset_row">
                      {% for field in form.visible_fields %}
                      <td>
                       {# Include the hidden fields in the form #}
@@ -86,7 +93,7 @@
                         {{ hidden }}
                       {% endfor %}
                       {% endif %}
-                      {{ field.errors.as_ul }}
+                      <span class="error-message" >{{ field.errors.as_ul }}</span>
                       {{ field }}
                      </td>
                      {% endfor %}

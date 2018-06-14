@@ -9,6 +9,11 @@
 .borderline {
   border-bottom: "3px solid";
 }
+.error-message {
+  color:red !important;
+  font-weight: bold;
+  font-size: 13px;
+}
 .crop {
     width: auto;
     height: 60px;
