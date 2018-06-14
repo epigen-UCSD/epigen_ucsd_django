@@ -27,10 +27,15 @@ def BarcodeDic():
 	return barcodes_dic
 
 
-def UniqueValidation(itemslist):
-	if len(itemslist) != len(set(itemslist)):
-		return False
-	return True
+def UniqueValidation(tosavelist,existinglist):
+	return list(set(tosavelist).intersection(set(existinglist)))
+
+def SelfUniqueValidation(tosavelist):
+	duplicate = []
+	for i in range(0, len(tosavelist)):
+		if tosavelist[i] in tosavelist[i+1:]:
+			duplicate.append(tosavelist[i])
+	return duplicate
 
 def IndexValidation(i7list, i5list):
 	duplicate = []
@@ -209,7 +214,7 @@ def RunCreateView4(request):
 				context = {
 				  'run_form':run_form,
 				  'sample_formset':sample_formset,
-				  'error_message': 'Duplicates:' + str(duplicate)
+				  'error_message': 'Duplicates:\t' + str(duplicate)
 
 				}
 				return render(request, 'nextseq_app/runandsamplesadd.html',context)
@@ -237,6 +242,7 @@ def RunCreateView6(request):
 		samplestocreat += '   \nLibrary_ID'
 		i7index_list = []
 		i5index_list = []
+		libraryid_list = []
 		for samples in samplestocreat.split('\n'):
 			samples_info = re.split(r'[\s]',samples)
 			#print(samples_info)
@@ -268,25 +274,50 @@ def RunCreateView6(request):
 							)												
 					i7index_list.append(samples_info[1])
 					i5index_list.append(samples_info[2])
+					libraryid_list.append(samples_info[0])
 
 				except ObjectDoesNotExist:
 					context = {
 							'run_form':run_form,
 							'form':form,
-							'error_message':'There are indexes that are not stored in the database!'
+							'error_message':'There are indexes that are not stored in the database for this library: '+'\t'.join(samples_info)
 						}
 					runinfo.delete()
 					return render(request, 'nextseq_app/runandsamplesbulkadd.html',context)
 
 
 				tosave_list.append(tosave_sample)
+		libraryselfduplicate = SelfUniqueValidation(libraryid_list)
+		if len(libraryselfduplicate) > 0:
+			runinfo.delete()
+			context = {
+				 'run_form':run_form,
+				 'form':form,
+				 'error_message': 'Duplicate Library within this run:\t' + ';\t'.join(list(libraryselfduplicate))
+
+			}
+			return render(request, 'nextseq_app/runandsamplesbulkadd.html',context)
+
+		existinglibray = list(SamplesInRun.objects.values_list('Library_ID',flat=True))
+		libraynotuniq = UniqueValidation(libraryid_list,existinglibray)
+
+		if len(libraynotuniq) > 0:
+			runinfo.delete()
+			context = {
+				 'run_form':run_form,
+				 'form':form,
+				 'error_message': 'Libraries already exit:\t' + ';\t'.join(list(libraynotuniq))
+
+			}
+			return render(request, 'nextseq_app/runandsamplesbulkadd.html',context)
+
 		duplicate = IndexValidation(i7index_list,i5index_list)
 		if len(duplicate) > 0:
 			runinfo.delete()
 			context = {
 				 'run_form':run_form,
 				 'form':form,
-				 'error_message': 'Duplicates:' + str(duplicate)
+				 'error_message': 'Duplicates:\t' + str(duplicate)
 
 			}
 			return render(request, 'nextseq_app/runandsamplesbulkadd.html',context)
@@ -332,7 +363,7 @@ def RunUpdateView2(request,username,run_pk):
 			context = {
 				 'run_form':run_form,
 				 'sample_formset':sample_formset,
-				 'error_message': 'Duplicates:' + str(duplicate),
+				 'error_message': 'Duplicates:\t' + str(duplicate),
 				 'runinfo': runinfo,
 
 			}
