@@ -62,7 +62,7 @@
 
                 <td><a href="{% url 'nextseq_app:rundetail' Run.pk %}"> {{ Run.Flowcell_ID }} </a></td>
                   <td>{{ Run.operator }}</td>
-                  <td>{{ Run.date|date:"Y/m/d" }}</td>
+                  <td>{{ Run.date|date:"m/d/Y" }}</td>
                   <td>{{ Run.read_type }}</td>
                   <td>{{ Run.read_length }}</td>
                   <td>

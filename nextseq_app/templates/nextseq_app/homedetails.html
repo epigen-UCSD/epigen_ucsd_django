@@ -42,7 +42,7 @@
       <div id="content" class="col-sm-10 col-md-10 col-lg-10">
         <div class="card">
           <div class="card-header fortable">
-            {{ runinfo.Flowcell_ID }}-{{runinfo.date|date:"Y-m-d"}}
+            {{ runinfo.Flowcell_ID }}-{{runinfo.date|date:"m/d/Y"}}
           </div><!-- /.card-header -->
           <div class="card-body">
             <p><a class="linkblue toright" href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> <i class="fas fa-save"></i>Save as SampleSheet.csv</a></p>
@@ -62,9 +62,9 @@
               <tr>                
 
               <td>{{samples.Library_ID}}</td>
-                <td>{{samples.i7index}}</td>
+                <td>{{samples.i7index|default_if_none:""}}</td>
                 <td>{{ barcode|key:samples.i7index }}</td>    
-                <td>{{samples.i5index}}</td>
+                <td>{{samples.i5index|default_if_none:""}}</td>
                 <td>{{ barcode|key:samples.i5index }}</td>
               </tr>
             {% endfor %}                

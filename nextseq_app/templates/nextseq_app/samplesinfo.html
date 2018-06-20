@@ -64,9 +64,9 @@
 
                   <td><a href="#"> {{ sample.Library_ID }} </a></td>
                   <td>{{  sample.singlerun }}</td>    
-                  <td>{{  sample.i7index }}</td>
+                  <td>{{  sample.i7index|default_if_none:"" }}</td>
                   <td>{{ barcode|key:sample.i7index }}</td>
-                  <td>{{  sample.i5index }}</td>
+                  <td>{{  sample.i5index|default_if_none:"" }}</td>
                   <td>{{ barcode|key:sample.i5index }}</td>
                 </tr>
                 {% empty %}
