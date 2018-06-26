@@ -4,3 +4,4 @@
 .DS_Store
 *~
 deploy.ini
+000*.py
