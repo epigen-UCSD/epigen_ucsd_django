@@ -15,6 +15,7 @@
 ```
 ### Set up database 
 
+see [here](./docs/db.md)
 ``` Shell
 # 1. init db
 pg_ctl -D /Users/frank/pgsql/data -l logfile start

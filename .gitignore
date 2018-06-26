@@ -1,3 +1,6 @@
 *pycache*
+*\#*
 .idea
 .DS_Store
+*~
+deploy.ini

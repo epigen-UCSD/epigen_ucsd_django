@@ -1,7 +1,14 @@
 # Deploy #
 
+## set up postgresql
+
+* [server admin](https://www.postgresql.org/docs/10/static/admin.html)
+* [nfs harmful](https://www.time-travellers.org/shane/papers/NFS_considered_harmful.html)
+* [multiple db in django](https://docs.djangoproject.com/en/2.0/topics/db/multi-db/). Limitation: cross-database relations. 
 
 ## change sqlite3 to postgresql:
+
+* split setting: https://code.djangoproject.com/wiki/SplitSettings. Use `.ini` method. 
 
 1.replace:
 
@@ -47,4 +54,4 @@ python manage.py createsuperuser
 ### import existing barcodes into database:
 
 go to scripts folder:
-python barcodeimport.py
+`python barcodeimport.py`
