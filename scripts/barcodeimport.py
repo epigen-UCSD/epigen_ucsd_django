@@ -2,7 +2,7 @@
 import os
 import sys
 #print(os.path.abspath(__file__))
-basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+basedir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(basedir)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "epigen_ucsd_django.settings")
 
@@ -14,7 +14,7 @@ def main():
 	
 	index = {}
 	i= 0
-	with open('barcodes.csv','r') as f:
+	with open('./scripts/barcodes.csv','r') as f:
 		for line in f:
 			fields = line.strip('\n').split('\t')
 			if fields[0] in index.keys():

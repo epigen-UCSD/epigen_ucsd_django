@@ -1,14 +1,12 @@
 # Setup Database #
 
+* `su postgres`
 ``` Shell
 initdb -D /usr/local/pgsql/data
 postgres -D /usr/local/pgsql/data >pg_logfile 2>&1 &
 pg_ctl start -l logfile #use wrapper
-
-# 3. create db
 createdb nextseqapp
-
-# 4. enter db
+# enter db
 psql -d nextseqapp
 ```
 

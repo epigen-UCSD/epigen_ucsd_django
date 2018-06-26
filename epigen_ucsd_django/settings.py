@@ -75,24 +75,26 @@ WSGI_APPLICATION = 'epigen_ucsd_django.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 # https://docs.python.org/3/library/configparser.html#rawconfigparser-objects
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+#}
+
+config = configparser.ConfigParser()
+config.read('deploy.ini')
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'epigendb',
-#         'USER': 'liyuxin',
-#         'PASSWORD': '123456',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5432',
-#     }
-# }
+     'default': {
+         'ENGINE': config['database']['DATABASE_ENGINE'],
+         'NAME': config['database']['DATABASE_NAME'],
+         'USER': config['database']['DATABASE_USER'],
+         'PASSWORD': config['database']['DATABASE_PASSWORD'],
+         'HOST': config['database']['DATABASE_HOST'],
+         'PORT': config['database']['DATABASE_PORT'],
+     }
+ }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
