@@ -31,7 +31,7 @@ class RunInfo(models.Model):
 	class Meta:
 		ordering = ['-date']
 
-class SamplesInRun(models.Model):
+class LibrariesInRun(models.Model):
 	singlerun = models.ForeignKey(RunInfo, on_delete=models.CASCADE)
 	Library_ID = models.CharField(max_length=200,unique=True)
 	i7index = models.ForeignKey(Barcode,related_name='i7_index', on_delete=models.CASCADE, blank=True, null=True)

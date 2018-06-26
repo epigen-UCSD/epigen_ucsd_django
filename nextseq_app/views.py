@@ -1,13 +1,13 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse,Http404
 from django.contrib.auth import authenticate, login, logout
-from .forms import UserRegisterForm,UserLoginForm,RunCreationForm,SamplesInRunForm,SamplesToCreatForm
+from .forms import UserRegisterForm,UserLoginForm,RunCreationForm,LibrariesInRunForm,SamplesToCreatForm
 from django.views.generic import FormView, View
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
-from .models import Barcode, RunInfo, SamplesInRun
+from .models import Barcode, RunInfo, LibrariesInRun
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic.detail import DetailView
 from django.utils.decorators import method_decorator
@@ -92,9 +92,9 @@ class HomeView(ListView):
 
 @login_required	
 def AllSamplesView(request):
-	Samples_list = SamplesInRun.objects.all()
+	Samples_list = LibrariesInRun.objects.all()
 	barcodes_dic = BarcodeDic()
-	number = SamplesInRun.objects.count()
+	number = LibrariesInRun.objects.count()
 
 	context = {
 		'Samples_list': Samples_list,
@@ -107,7 +107,7 @@ def AllSamplesView(request):
 @login_required	
 def UserSamplesView(request):
 	userruns = RunInfo.objects.filter(operator=request.user)
-	Samples_list = SamplesInRun.objects.filter(singlerun__in=userruns)
+	Samples_list = LibrariesInRun.objects.filter(singlerun__in=userruns)
 	barcodes_dic = BarcodeDic()
 	number = Samples_list.count()
 	usersamples = True
@@ -171,8 +171,8 @@ class RunDetailViewhome(DetailView):
 # @login_required
 # def RunCreateView3(request):
 # 	run_form = RunCreationForm(request.POST or None, prefix = "run")
-# 	formset = modelformset_factory(SamplesInRun, form=SamplesInRunForm,extra =3, can_order=True,  can_delete=True )
-# 	sample_formset = formset(request.POST or None, queryset =  SamplesInRun.objects.none())
+# 	formset = modelformset_factory(LibrariesInRun, form=LibrariesInRunForm,extra =3, can_order=True,  can_delete=True )
+# 	sample_formset = formset(request.POST or None, queryset =  LibrariesInRun.objects.none())
 
 # 	if run_form.is_valid() and sample_formset.is_valid():
 # 		runinfo = run_form.save(commit=False)
@@ -190,7 +190,7 @@ class RunDetailViewhome(DetailView):
 def RunCreateView4(request):
 	run_form = RunCreationForm(request.POST or None)
 	print(run_form.as_p)
-	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['Library_ID','i7index','i5index'],extra =2)
+	SamplesInlineFormSet = inlineformset_factory(RunInfo, LibrariesInRun,fields = ['Library_ID','i7index','i5index'],extra =2)
 	sample_formset = SamplesInlineFormSet(request.POST or None, instance=RunInfo())
 
 	if run_form.is_valid():
@@ -252,26 +252,26 @@ def RunCreateView6(request):
 			if samples_info[0] != 'Library_ID':
 				try:
 					if samples_info[1] and samples_info[2]: 
-						tosave_sample = SamplesInRun(
+						tosave_sample = LibrariesInRun(
 
 							Library_ID=samples_info[0],
 							i7index=Barcode.objects.get(indexid=samples_info[1]),
 							i5index=Barcode.objects.get(indexid=samples_info[2]),
 							)
 					elif samples_info[1] and not samples_info[2]:
-						tosave_sample = SamplesInRun(
+						tosave_sample = LibrariesInRun(
 
 							Library_ID=samples_info[0],
 							i7index=Barcode.objects.get(indexid=samples_info[1]),
 							)
 					elif not samples_info[1] and samples_info[2]:
-						tosave_sample = SamplesInRun(
+						tosave_sample = LibrariesInRun(
 
 							Library_ID=samples_info[0],
 							i5index=Barcode.objects.get(indexid=samples_info[2]),
 							)
 					else:
-						tosave_sample = SamplesInRun(
+						tosave_sample = LibrariesInRun(
 
 							Library_ID=samples_info[0],
 							)												
@@ -301,7 +301,7 @@ def RunCreateView6(request):
 			}
 			return render(request, 'nextseq_app/runandsamplesbulkadd.html',context)
 
-		existinglibray = list(SamplesInRun.objects.values_list('Library_ID',flat=True))
+		existinglibray = list(LibrariesInRun.objects.values_list('Library_ID',flat=True))
 		libraynotuniq = UniqueValidation(libraryid_list,existinglibray)
 
 		if len(libraynotuniq) > 0:
@@ -328,7 +328,7 @@ def RunCreateView6(request):
 		runinfo.save()
 		for samples in tosave_list:
 			 samples.singlerun=runinfo
-		SamplesInRun.objects.bulk_create(tosave_list)
+		LibrariesInRun.objects.bulk_create(tosave_list)
 
 		return redirect('nextseq_app:rundetail',pk=runinfo.id)
 
@@ -346,7 +346,7 @@ def RunUpdateView2(request,username,run_pk):
 	if runinfo.operator != request.user:
 		raise PermissionDenied
 	run_form = RunCreationForm(request.POST or None, instance = runinfo)
-	SamplesInlineFormSet = inlineformset_factory(RunInfo, SamplesInRun,fields = ['Library_ID','i7index','i5index'],extra =3)
+	SamplesInlineFormSet = inlineformset_factory(RunInfo, LibrariesInRun,fields = ['Library_ID','i7index','i5index'],extra =3)
 	sample_formset = SamplesInlineFormSet(request.POST or None, instance=runinfo)
 
 	if run_form.is_valid() and sample_formset.is_valid():
@@ -386,11 +386,11 @@ def RunUpdateView2(request,username,run_pk):
 
 # @login_required
 # def SampleCreateView(request, run_pk):
-# 	#form = SamplesInRunForm(request.POST or None, request.FILES or None)
-# 	form = SamplesInRunForm(request.POST or None)
+# 	#form = LibrariesInRunForm(request.POST or None, request.FILES or None)
+# 	form = LibrariesInRunForm(request.POST or None)
 # 	runinfo = get_object_or_404(RunInfo, pk=run_pk)
 # 	if form.is_valid():
-# 		runinfo_samples = runinfo.samplesinrun_set.all()
+# 		runinfo_samples = runinfo.LibrariesInRun_set.all()
 # 		for s in runinfo_samples:
 # 			if s.Library_ID == form.cleaned_data.get("Library_ID"):
 # 				context ={
@@ -409,7 +409,7 @@ def RunUpdateView2(request,username,run_pk):
 # def SamplesDeleteView(request, run_pk):
 # 	delete_list = request.GET.getlist('delete_list')
 # 	if request.method == "POST":
-# 		SamplesInRun.objects.filter(singlerun=RunInfo.objects.get(pk=run_pk),Library_ID__in=delete_list).delete()
+# 		LibrariesInRun.objects.filter(singlerun=RunInfo.objects.get(pk=run_pk),Library_ID__in=delete_list).delete()
 # 		return redirect('nextseq_app:rundetail',pk=run_pk)
 # 	return render(request, 'nextseq_app/samples_confirm_delete.html', {'delete_list':delete_list,'run_pk':run_pk})
 
@@ -431,26 +431,26 @@ def RunUpdateView2(request,username,run_pk):
 # 				if samples_info[0] != 'Library_ID':
 # 					try:
 # 						if samples_info[1] and samples_info[2]: 
-# 							tosave_sample = SamplesInRun(
+# 							tosave_sample = LibrariesInRun(
 # 								singlerun=runinfo,
 # 								Library_ID=samples_info[0],
 # 								i7index=Barcode.objects.get(indexid=samples_info[1]),
 # 								i5index=Barcode.objects.get(indexid=samples_info[2]),
 # 								)
 # 						elif samples_info[1] and not samples_info[2]:
-# 							tosave_sample = SamplesInRun(
+# 							tosave_sample = LibrariesInRun(
 # 								singlerun=runinfo,
 # 								Library_ID=samples_info[0],
 # 								i7index=Barcode.objects.get(indexid=samples_info[1]),
 # 								)
 # 						elif not samples_info[1] and samples_info[2]:
-# 							tosave_sample = SamplesInRun(
+# 							tosave_sample = LibrariesInRun(
 # 								singlerun=runinfo,
 # 								Library_ID=samples_info[0],
 # 								i5index=Barcode.objects.get(indexid=samples_info[2]),
 # 								)
 # 						else:
-# 							tosave_sample = SamplesInRun(
+# 							tosave_sample = LibrariesInRun(
 # 								singlerun=runinfo,
 # 								Library_ID=samples_info[0],
 # 								)												
@@ -464,7 +464,7 @@ def RunUpdateView2(request,username,run_pk):
 
 
 # 					tosave_list.append(tosave_sample)
-# 			SamplesInRun.objects.bulk_create(tosave_list)
+# 			LibrariesInRun.objects.bulk_create(tosave_list)
 # 			return redirect('nextseq_app:rundetail',pk=run_pk)
 
 # 	else:
@@ -500,7 +500,7 @@ def SampleSheetCreateView(request,run_pk):
 	writer.writerow(['[Settings]'])
 	writer.writerow([''])
 	writer.writerow(['Sample_ID','Sample_Name','Sample_Plate','Sample_Well','I7_Index_ID','index','I5_Index_ID','index2','Sample_Project','Description'])
-	samples_list = runinfo.samplesinrun_set.all()
+	samples_list = runinfo.LibrariesInRun_set.all()
 	for samples in samples_list:
 		i7id = samples.i7index or ''
 		i5id = samples.i5index or ''
