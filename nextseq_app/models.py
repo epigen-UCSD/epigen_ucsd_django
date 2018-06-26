@@ -21,6 +21,7 @@ class RunInfo(models.Model):
 	#reads_length = models.IntegerField(default=75)
 	# read_length = models.IntegerField()
 	read_length = models.CharField(max_length=50)
+	updated_at = models.DateTimeField(auto_now=True)
 
 	def get_absolute_url(self):
 		return reverse('nextseq_app:rundetail', kwargs={'pk': self.pk})
