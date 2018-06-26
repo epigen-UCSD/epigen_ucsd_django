@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 import os
 import sys
+#print(os.path.abspath(__file__))
+basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(basedir)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "epigen_ucsd_django.settings")
+
 import django
 django.setup()
 from nextseq_app.models import Barcode

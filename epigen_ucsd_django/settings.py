@@ -55,7 +55,7 @@ ROOT_URLCONF = 'epigen_ucsd_django.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,7 +85,7 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'nextseqapp',
+#         'NAME': 'epigendb',
 #         'USER': 'liyuxin',
 #         'PASSWORD': '123456',
 #         'HOST': '127.0.0.1',
