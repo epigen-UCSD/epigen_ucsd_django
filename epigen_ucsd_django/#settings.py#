@@ -75,12 +75,14 @@ WSGI_APPLICATION = 'epigen_ucsd_django.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 # https://docs.python.org/3/library/configparser.html#rawconfigparser-objects
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+#}
+
+config = configparser.ConfigParser()
 
 
 # DATABASES = {
