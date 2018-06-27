@@ -10,7 +10,7 @@
 
 * split setting: https://code.djangoproject.com/wiki/SplitSettings. Use `.ini` method. 
 
-1.replace:
+1. replace:
 
 ``` shell
 DATABASES = {
@@ -53,5 +53,6 @@ python manage.py createsuperuser
 
 ### import existing barcodes into database:
 
+copy deploy.ini to folder scritps, 
 go to scripts folder:
 `python barcodeimport.py`
