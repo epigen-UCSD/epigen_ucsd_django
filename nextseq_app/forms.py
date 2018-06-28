@@ -40,7 +40,7 @@ class LibrariesInRunForm(ModelForm):
 
 class SamplesToCreatForm(forms.Form):
 	samplestocreat = forms.CharField(
-			label='Samples to Save:',
+			label='Libraries to Save:',
 			widget=forms.Textarea(attrs={'cols': 40, 'rows': 20}),
 			initial='Library_ID i7index i5index(seperated by Space or Tab)\n'
 		)

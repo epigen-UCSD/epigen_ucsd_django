@@ -28,21 +28,21 @@
         <div class="list-group">
           <li class="sidebar-header">Nextseq App</li>
           <a href="{% url 'nextseq_app:userruns' %}" class="list-group-item list-group-item-action-custom">My Runs</a>      
-          <a href="{% url 'nextseq_app:usersamples' %}" class="list-group-item list-group-item-action-custom" >My Samples</a>      
+          <a href="{% url 'nextseq_app:usersamples' %}" class="list-group-item list-group-item-action-custom" >My Libraries</a>      
           <a href="#addrun" class="list-group-item list-group-item-action-custom active" data-toggle="collapse" ><i class="fas fa-plus"></i> Add a Run <i class="fa fa-caret-down"></i></a>
             <div class="collapse" id="addrun">
-            <a href="{% url 'nextseq_app:runandsample_add' %}" class="list-group-item list-group-item-action-custom submenu">One by One Entry of Samples</a>
-            <a href="{% url 'nextseq_app:runandsample_add_inbulky' %}" class="list-group-item list-group-item-action-custom submenu">Bulk Entry of Samples</a>
+            <a href="{% url 'nextseq_app:runandsample_add' %}" class="list-group-item list-group-item-action-custom submenu">One by One Entry of Libraries</a>
+            <a href="{% url 'nextseq_app:runandsample_add_inbulky' %}" class="list-group-item list-group-item-action-custom submenu">Bulk Entry of Libraries</a>
             </div>
           <a href="{% url 'nextseq_app:allruns' %}" class="list-group-item list-group-item-action-custom">All Runs</a>      
-          <a href="{% url 'nextseq_app:allsamples' %}" class="list-group-item list-group-item-action-custom" >All Samples</a>
+          <a href="{% url 'nextseq_app:allsamples' %}" class="list-group-item list-group-item-action-custom" >All Libraries</a>
         </div>
       </div> 
 
       <div id="content" class="col-sm-10 col-md-10 col-lg-10">
         <div class="card">
           <div class="card-header fortable">
-            One by One Entry of Samples
+            One by One Entry of Libraries
           </div><!-- /.card-header -->
           <div class="card-body">
             {% if error_message %}
