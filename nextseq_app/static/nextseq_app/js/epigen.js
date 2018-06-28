@@ -14,7 +14,7 @@ $(document).ready( function () {
     $('.formset_row').formset({
     addText: 'add another samples',
     deleteText: 'remove',
-    prefix: 'samplesinrun_set'
+    prefix: 'librariesinrun_set'
 });
 
 } );
