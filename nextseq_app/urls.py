@@ -5,6 +5,7 @@ from . import views
 app_name = 'nextseq_app'
 urlpatterns = [
 
+    path('', views.IndexView,name='index'),
     path('myruns/', views.IndexView,name='userruns'),
     path('mysamples/', views.UserSamplesView,name='usersamples'),
     path('allruns/', views.HomeView.as_view(),name='allruns'),
@@ -19,5 +20,6 @@ urlpatterns = [
     path('<slug:username>/<int:run_pk>/update/', views.RunUpdateView2, name='run_update'),
     path('<int:run_pk>/delete2/', views.RunDeleteView2, name='run_delete2'),
     path('<int:run_pk>/samplesheetcreate/', views.SampleSheetCreateView, name='samplesheet_create'),
+    path('changepassword/', views.change_password, name='change_password'),
     
 ]

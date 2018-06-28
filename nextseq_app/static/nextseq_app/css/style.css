@@ -9,6 +9,11 @@
 .borderline {
   border-bottom: "3px solid";
 }
+.cardnosidebar {
+  background-color: #f8f9fa;
+  padding: 50px;
+
+}
 .error-message {
   color:red !important;
   font-weight: bold;

@@ -20,8 +20,8 @@
     {% csrf_token %}
     {{ form.as_p }}
      <br />
-    <input type="submit" value="Submit" />
-    <input type="submit" name="Register" value="Register" onclick="location.href='{% url 'nextseq_app:register' %}'" />
+    <input class="btn btn-info btn-sm" type="submit" value="Submit">
+    <a class="btn btn-info btn-sm" href="{% url 'nextseq_app:register' %}" role="button">Register</a>
     <input type="hidden" name="next" value="{{ request.GET.next }}" />
 </form>
 

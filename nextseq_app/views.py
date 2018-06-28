@@ -19,6 +19,9 @@ from django.core.exceptions import ObjectDoesNotExist,PermissionDenied
 from django.db.models import Q
 from django.db import transaction
 from django.forms import modelformset_factory,inlineformset_factory
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 
 def BarcodeDic():
 	barcodes_dic = {}
@@ -573,8 +576,22 @@ def logout_view(request):
 	return redirect('nextseq_app:userruns')
 
 
-
-
+@login_required
+def change_password(request):
+	if request.method == 'POST':
+		form = PasswordChangeForm(user=request.user, data=request.POST)
+		if form.is_valid():
+			user = form.save()
+			update_session_auth_hash(request, form.user)
+			#messages.success(request, 'Your password was successfully updated!')
+			return redirect('nextseq_app:userruns')
+		#else:
+			#messages.error(request, 'Please correct the error below.')
+	else:
+		form = PasswordChangeForm(user=request.user)
+	return render(request, 'nextseq_app/change_password.html', {
+		'form': form
+	})
 
 
 
