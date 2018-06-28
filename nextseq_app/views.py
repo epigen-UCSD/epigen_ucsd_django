@@ -49,7 +49,8 @@ def IndexValidation(i7list, i5list):
 
 	combinei7 = set([x[0] for x in list(zip(i7list,i5list)) if x[1]])
 	#print(combinei7)
-	singlei7 = [x[0] for x in list(zip(i7list,i5list)) if not x[1]]
+	singlei7 = [x[0] for x in list(zip(i7list,i5list)) if not x[1] and x[0]]
+	print(singlei7)
 	singlelist = list(combinei7) + singlei7
 	#print(singlelist)
 	for i in range(0, len(singlelist)):
