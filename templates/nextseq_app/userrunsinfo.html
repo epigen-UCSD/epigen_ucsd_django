@@ -72,7 +72,7 @@
                   <td>{{ Run.date|date:"m/d/Y" }}</td>
                   <td>{{ Run.read_type }}</td>
                   <td>{{ Run.read_length }}</td>
-                  <td>{{ Run.updated_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+                  <td>{{ Run.updated_at|date:"m/d/Y H:i" }}</td>
                   <td>
                     <a class="spacing" href="{% url 'nextseq_app:run_update' username=user.username run_pk=Run.id %}"><i class="fas fa-edit"></i></a>
                     <a onclick="return confirm('Are you sure you want to delete {{ Run.Flowcell_ID }} ?');" href="{% url 'nextseq_app:run_delete2' Run.id %}"><i class="fas fa-trash-alt"></i></a>                
