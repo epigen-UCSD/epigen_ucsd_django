@@ -356,17 +356,18 @@ def RunUpdateView2(request,username,run_pk):
 	if run_form.is_valid() and sample_formset.is_valid():
 		runinfo = run_form.save(commit=False)
 		runinfo.operator = request.user
-
+		sample_formset.save(commit=False)
 		Library_ID_list = []
 		i7index_list = []
 		i5index_list = []
 		for form in sample_formset:
-			try:
-				Library_ID_list.append(form.cleaned_data['Library_ID'])
-				i7index_list.append(form.cleaned_data['i7index'])
-				i5index_list.append(form.cleaned_data['i5index'])
-			except KeyError:
-				pass
+			if form not in sample_formset.deleted_forms:
+				try:
+					Library_ID_list.append(form.cleaned_data['Library_ID'])
+					i7index_list.append(form.cleaned_data['i7index'])
+					i5index_list.append(form.cleaned_data['i5index'])
+				except KeyError:
+					pass
 
 		duplicate = IndexValidation(i7index_list,i5index_list)
 		if len(duplicate) > 0:
