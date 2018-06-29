@@ -91,18 +91,21 @@
                   </thead>
                   {% endif %}
                      <tr class="formset_row">
-                     {% for field in form.visible_fields %}
-                     <td>
-                      {# Include the hidden fields in the form #}
-                      {% if forloop.first %}
-                      {% for hidden in form.hidden_fields %}
-                        {{ hidden }}
-                      {% endfor %}
-                      {% endif %}
-                      <span class="error-message" >{{ field.errors.as_ul }}</span>
-                      {{ field }}
-                     </td>
-                     {% endfor %}
+
+                       {% for field in form.visible_fields %}
+                          <td>
+                            {# Include the hidden fields in the form #}
+                            {% if forloop.first %}
+                              <span class="error-message" >{{ form.non_field_errors.as_ul }}</span>
+                              {% for hidden in form.hidden_fields %}
+                                {{ hidden }}
+                              {% endfor %}
+                            {% endif %}
+                            <span class="error-message" >{{ field.errors.as_ul }}</span>
+                      
+                            {{ field }}
+                          </td>
+                        {% endfor %}
                      </tr>
                 {% endfor %}
               </table>

@@ -94,6 +94,7 @@
                             <td>
                                 {# Include the hidden fields in the form #}
                                 {% if forloop.first %}
+                                <span class="error-message" >{{ form.non_field_errors.as_ul }}</span>
                                     {% for hidden in form.hidden_fields %}
                                         {{ hidden }}
                                     {% endfor %}

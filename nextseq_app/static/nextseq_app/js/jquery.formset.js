@@ -86,18 +86,7 @@
                         console.log(row);
                         //console.log(row.find(childElementSelector));
 
-                        row.find(childElementSelector).not(options.keepFieldValues).each(function() {
-                            var elem = $(this);
-                            console.log(elem)
-                            // If this is a checkbox or radiobutton, uncheck it.
-                            // This fixes Issue 1, reported by Wilson.Andrew.J:
 
-                            if (elem.is('select')){
-                                elem.find('option').attr("selected",false) ;        
-
-                            }
-
-                        });
                         row.hide();
                         //console.log(row);
                         forms = $('.' + options.formCssClass).not(':hidden');

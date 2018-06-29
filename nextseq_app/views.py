@@ -193,7 +193,6 @@ class RunDetailViewhome(DetailView):
 @transaction.atomic
 def RunCreateView4(request):
 	run_form = RunCreationForm(request.POST or None)
-	print(run_form.as_p)
 	SamplesInlineFormSet = inlineformset_factory(RunInfo, LibrariesInRun,fields = ['Library_ID','i7index','i5index'],extra =2)
 	sample_formset = SamplesInlineFormSet(request.POST or None, instance=RunInfo())
 
@@ -202,19 +201,20 @@ def RunCreateView4(request):
 		runinfo.operator = request.user
 		sample_formset = SamplesInlineFormSet(request.POST,instance=runinfo)
 		if sample_formset.is_valid():
-			
+			sample_formset.save(commit=False)
 			Library_ID_list = []
 			i7index_list = []
 			i5index_list = []
 			for form in sample_formset:
-				try:
-					Library_ID_list.append(form.cleaned_data['Library_ID'])
-					i7index_list.append(form.cleaned_data['i7index'])
-					i5index_list.append(form.cleaned_data['i5index'])
-				except KeyError:
-					pass
-			#print(i7index_list)
-			#print(i5index_list)
+				if form not in sample_formset.deleted_forms:
+					#print(form.as_table())
+					try:
+						Library_ID_list.append(form.cleaned_data['Library_ID'])
+						i7index_list.append(form.cleaned_data['i7index'])
+						i5index_list.append(form.cleaned_data['i5index'])
+					except KeyError:
+						pass			
+
 			duplicate = IndexValidation(i7index_list,i5index_list)
 			if len(duplicate) > 0:
 				context = {
