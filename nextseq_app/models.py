@@ -20,7 +20,7 @@ class RunInfo(models.Model):
 	#is_pe = models.BooleanField('Is it paired-end?', default=True)
 	#reads_length = models.IntegerField(default=75)
 	# read_length = models.IntegerField()
-	read_length = models.CharField(max_length=50)
+	read_length = models.CharField(max_length=50,help_text='e.g. if R1=R2=75, enter 75, if R1=50,R2=75, enter 50+75')
 	updated_at = models.DateTimeField(auto_now=True)
 
 	def get_absolute_url(self):
