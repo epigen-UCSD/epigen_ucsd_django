@@ -21,5 +21,6 @@ urlpatterns = [
     path('<int:run_pk>/delete2/', views.RunDeleteView2, name='run_delete2'),
     path('<int:run_pk>/samplesheetcreate/', views.SampleSheetCreateView, name='samplesheet_create'),
     path('changepassword/', views.change_password, name='change_password'),
+    path('<int:run_pk>/demultiplexing/', views.DemultiplexingView, name='demultiplexing'),
     
 ]

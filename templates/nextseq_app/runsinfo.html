@@ -59,6 +59,7 @@
                   <th scope="col">Date</th>
                   <th scope="col">Read Type</th>
                   <th scope="col">Read Length</th>
+                  <th scope="col">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -70,6 +71,11 @@
                   <td>{{ Run.date|date:"m/d/Y" }}</td>
                   <td>{{ Run.read_type }}</td>
                   <td>{{ Run.read_length }}</td>
+                  {% if Run.nextseqdir%}
+                  <td><span class="badge badge-success badge-status-green">Done</span></td>
+                  {% else %}
+                  <td><span class="badge badge-success badge-status-orange">ToSubmit</span></td>
+                  {% endif %}
                 </tr>
                 {% empty %}
                 <li>No Runs yet.</li>

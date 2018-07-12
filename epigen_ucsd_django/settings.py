@@ -135,3 +135,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/nextseq_app/login/'
+
+NEXTSEQAPP_DMPDIR = '/Users/zhuming/myenv/samplesheettest'

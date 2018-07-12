@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import UserRegisterForm,UserLoginForm,RunCreationForm,LibrariesInRunForm,SamplesToCreatForm
 from django.views.generic import FormView, View
 from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,JsonResponse
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from .models import Barcode, RunInfo, LibrariesInRun
@@ -22,6 +22,7 @@ from django.forms import modelformset_factory,inlineformset_factory
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+import subprocess,os
 
 def BarcodeDic():
 	barcodes_dic = {}
@@ -594,6 +595,85 @@ def change_password(request):
 		'form': form
 	})
 
+@login_required
+@transaction.atomic
+def DemultiplexingView(request,run_pk):
+	dmpdir = settings.NEXTSEQAPP_DMPDIR
+	runinfo = get_object_or_404(RunInfo, pk=run_pk)
+	if runinfo.operator != request.user:
+		raise PermissionDenied
+	data = {}
+	#print(runinfo.Flowcell_ID)
+	for fname in os.listdir(dmpdir):
+		#print(os.path.join(dmpdir,fname))
+		if os.path.isdir(os.path.join(dmpdir,fname)) and fname.endswith(runinfo.Flowcell_ID):
+			data['is_direxists'] = 1
+			basedirname = os.path.join(dmpdir,fname)
+			rundate = '20'+'-'.join([fname[i:i+2] for i in range(0, len(fname.split('_')[0]), 2)])
+			#print(rundate)
+			break
+	#print(data)
+	if 'is_direxists' in data:
+		try:
+			os.mkdir(os.path.join(basedirname,'Data/Fastqs'))
+		except FileNotFoundError as e:
+			data['mkdirerror'] = 'Error: Folder: '+os.path.join(basedirname,'Data')+' not exits'
+			print(e)
+			return JsonResponse(data)
+		except FileExistsError as e:
+			data['mkdirerror'] = 'Error: Folder: '+os.path.join(basedirname,'Data/Fastqs')+' already exists'
+			print(e)
+			return JsonResponse(data)
+		except Exception as e:
+			data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs Error!'
+			print(e)
+			return JsonResponse(data)
+		try:
+			with open(os.path.join(basedirname,'Data/Fastqs','SampleSheet.csv'),"w") as csvfile:
+				writer = csv.writer(csvfile)
+				writer.writerow(['[Header]'])
+				writer.writerow(['IEMFileVersion','5'])
+				writer.writerow(['Date',runinfo.date])
+				writer.writerow(['Workflow','GenerateFASTQ'])
+				writer.writerow(['Application','NextSeq FASTQ Only'])
+				writer.writerow(['Instrument Type','NextSeq/MiniSeq'])
+				writer.writerow(['Assay','Nextera XT / TruSeq LT'])
+				writer.writerow(['Index Adapters','Nextera XT v2 Index Kit / TruSeq LT'])
+				writer.writerow(['Description'])
+				writer.writerow(['Chemistry','Amplicon'])
+				writer.writerow([''])
+				writer.writerow(['[Reads]'])
+				if runinfo.read_type == 'PE':
+					a = runinfo.read_length
+					writer.writerow([a])
+					writer.writerow([a])
+				else:
+					a = runinfo.read_length
+					writer.writerow([a])
+				writer.writerow([''])
+				writer.writerow(['[Settings]'])
+				writer.writerow([''])
+				writer.writerow(['Sample_ID','Sample_Name','Sample_Plate','Sample_Well','I7_Index_ID','index','I5_Index_ID','index2','Sample_Project','Description'])
+				samples_list = runinfo.librariesinrun_set.all()
+				for samples in samples_list:
+					i7id = samples.i7index or ''
+					i5id = samples.i5index or ''
+					i7seq= Barcode.objects.get(indexid=i7id).indexseq if i7id!='' else ''
+					i5seq= Barcode.objects.get(indexid=i5id).indexseq if i5id!='' else ''
+					writer.writerow([samples.Library_ID,'','','',i7id,i7seq,i5id,i5seq,'',''])
+		except Exception as e:
+			data['writesamplesheeterror'] = 'Unexpected writing to SampleSheet.csv Error!'
+			print(e)
+			return JsonResponse(data)
+
+		RunInfo.objects.filter(pk=run_pk).update(nextseqdir=basedirname)
+		RunInfo.objects.filter(pk=run_pk).update(date=rundate)
+		data['writetosamplesheet'] = 1
+		data['updatedate'] = '/'.join([rundate.split('-')[i] for i in [1,2,0]])
+		return JsonResponse(data)
+
+	else:
+		return JsonResponse(data)
 
 
 
