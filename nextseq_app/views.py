@@ -42,12 +42,14 @@ def SelfUniqueValidation(tosavelist):
 	return duplicate
 
 def IndexValidation(i7list, i5list):
+	barcodes_dic = BarcodeDic()
 	duplicate = []
 
 	combinelist = [x for x in list(zip(i7list,i5list)) if x[1]]
+	combinelistseq = [(barcodes_dic[x[0]],barcodes_dic[x[1]]) for x in combinelist]
 	#print(combinelist)
-	for i in range(0, len(combinelist)):
-		if combinelist[i] in combinelist[i+1:]:
+	for i in range(0, len(combinelistseq)):
+		if combinelistseq[i] in combinelistseq[i+1:]:
 			duplicate.append(combinelist[i])
 
 	combinei7 = set([x[0] for x in list(zip(i7list,i5list)) if x[1]])
@@ -55,12 +57,13 @@ def IndexValidation(i7list, i5list):
 	singlei7 = [x[0] for x in list(zip(i7list,i5list)) if not x[1] and x[0]]
 	print(singlei7)
 	singlelist = list(combinei7) + singlei7
+	singlelistseq = [barcodes_dic[x] for x in singlelist]
 	#print(singlelist)
-	for i in range(0, len(singlelist)):
-		if singlelist[i] in singlelist[i+1:]:
-			duplicate.append(singlelist[i])
+	for i in range(0, len(singlelistseq)):
+		for i7seq in singlelistseq[i+1:]:
+			if singlelistseq[i] in i7seq:
+				duplicate.append(singlelist[i])
 	return duplicate
-
 
 
 @login_required	
@@ -213,9 +216,12 @@ def RunCreateView4(request):
 						i7index_list.append(form.cleaned_data['i7index'])
 						i5index_list.append(form.cleaned_data['i5index'])
 					except KeyError:
-						pass			
+						pass
 
-			duplicate = IndexValidation(i7index_list,i5index_list)
+			duplicate = IndexValidation(
+				[x.indexid if x is not None else None for x in i7index_list],
+				[x.indexid if x is not None else None for x in i5index_list]
+				)
 			if len(duplicate) > 0:
 				context = {
 				  'run_form':run_form,
@@ -250,10 +256,9 @@ def RunCreateView6(request):
 		i7index_list = []
 		i5index_list = []
 		libraryid_list = []
-		for samples in samplestocreat.split('\n'):
+		for samples in samplestocreat.strip().split('\n'):
 			samples_info = re.split(r'[\s]',samples)
-			#print(samples_info)
-			if samples_info[0] != 'Library_ID':
+			if samples != '\r' and samples_info[0] != 'Library_ID':
 				try:
 					if samples_info[1] and samples_info[2]: 
 						tosave_sample = LibrariesInRun(
@@ -369,7 +374,10 @@ def RunUpdateView2(request,username,run_pk):
 				except KeyError:
 					pass
 
-		duplicate = IndexValidation(i7index_list,i5index_list)
+		duplicate = IndexValidation(
+			[x.indexid if x is not None else None for x in i7index_list],
+			[x.indexid if x is not None else None for x in i5index_list]
+			)
 		if len(duplicate) > 0:
 			context = {
 				 'run_form':run_form,
@@ -504,6 +512,7 @@ def SampleSheetCreateView(request,run_pk):
 	writer.writerow([''])
 	writer.writerow(['[Settings]'])
 	writer.writerow([''])
+	writer.writerow(['[Data]'])
 	writer.writerow(['Sample_ID','Sample_Name','Sample_Plate','Sample_Well','I7_Index_ID','index','I5_Index_ID','index2','Sample_Project','Description'])
 	samples_list = runinfo.librariesinrun_set.all()
 	for samples in samples_list:
