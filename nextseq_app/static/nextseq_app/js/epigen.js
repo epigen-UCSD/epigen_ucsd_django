@@ -43,7 +43,7 @@ $(document).ready( function () {
           $("#"+runinfoiddate).text(data.updatedate)
           // $(that).removeClass('btn btn-danger btn-sm btn-status-orange dmpajax')
           // $(that).addClass('btn btn-success btn-sm btn-status-green disabled');
-          $(that).replaceWith('<span class="badge badge-success badge-status-green">Done</span>')
+          $(that).replaceWith('<span class="badge badge-success badge-status-green">JobSumitted</span>')
 
           return
         }

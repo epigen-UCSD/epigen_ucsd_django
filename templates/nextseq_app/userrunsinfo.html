@@ -74,11 +74,15 @@
                   <td >{{ Run.read_type }}</td>
                   <td>{{ Run.read_length }}</td>
                   <td>{{ Run.updated_at|date:"m/d/Y H:i" }}</td>
-                  {% if Run.nextseqdir%}
+                  {% if Run.jobstatus == 'Done'%}
                   <td><span class="badge badge-success badge-status-green">Done</span></td>
-                  {% else %}
+                  {% elif Run.jobstatus == 'ToSubmit' %}
 
-                  <td><a class="btn btn-danger btn-sm btn-status-orange dmpajax" href="" data-href="{% url 'nextseq_app:demultiplexing' Run.id %}" id={{Run.Flowcell_ID}}>Submit</a></td>
+                  <td><a class="btn btn-danger btn-sm btn-status-orange dmpajax" href="" data-href="{% url 'nextseq_app:demultiplexing' Run.id %}" id={{Run.Flowcell_ID}}>ToSubmit</a></td>
+                  {% elif Run.jobstatus == 'JobSumitted'%}
+                  <td><span class="badge badge-success badge-status-blue">JobSumitted</span></td>
+                  {% elif Run.jobstatus == 'JobStarted'%}
+                  <td><span class="badge badge-success badge-status-lightblue">JobStarted</span></td>
                   {% endif %}
 
                   <td>

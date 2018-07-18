@@ -136,4 +136,4 @@ STATIC_URL = '/static/'
 
 LOGIN_URL = '/nextseq_app/login/'
 
-NEXTSEQAPP_DMPDIR = '/Users/zhuming/myenv/samplesheettest'
+NEXTSEQAPP_DMPDIR = config['database']['NEXTSEQAPP_DMPDIR']

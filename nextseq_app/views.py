@@ -22,7 +22,7 @@ from django.forms import modelformset_factory,inlineformset_factory
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-import subprocess,os
+import subprocess,os,time
 
 def BarcodeDic():
 	barcodes_dic = {}
@@ -653,6 +653,7 @@ def DemultiplexingView(request,run_pk):
 				writer.writerow([''])
 				writer.writerow(['[Settings]'])
 				writer.writerow([''])
+				writer.writerow(['[Data]'])
 				writer.writerow(['Sample_ID','Sample_Name','Sample_Plate','Sample_Well','I7_Index_ID','index','I5_Index_ID','index2','Sample_Project','Description'])
 				samples_list = runinfo.librariesinrun_set.all()
 				for samples in samples_list:
@@ -665,9 +666,12 @@ def DemultiplexingView(request,run_pk):
 			data['writesamplesheeterror'] = 'Unexpected writing to SampleSheet.csv Error!'
 			print(e)
 			return JsonResponse(data)
+		thisjobid='12345'
 
 		RunInfo.objects.filter(pk=run_pk).update(nextseqdir=basedirname)
 		RunInfo.objects.filter(pk=run_pk).update(date=rundate)
+		RunInfo.objects.filter(pk=run_pk).update(jobid=thisjobid)
+		RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSumitted')
 		data['writetosamplesheet'] = 1
 		data['updatedate'] = '/'.join([rundate.split('-')[i] for i in [1,2,0]])
 		return JsonResponse(data)
