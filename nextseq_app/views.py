@@ -14,7 +14,7 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.views.decorators.cache import never_cache
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
-import re,csv
+import re,csv,os
 from django.core.exceptions import ObjectDoesNotExist,PermissionDenied
 from django.db.models import Q
 from django.db import transaction
@@ -481,7 +481,7 @@ def SampleSheetCreateView(request,run_pk):
 	runinfo = get_object_or_404(RunInfo, pk=run_pk)
 	response = HttpResponse(content_type='text/csv')
 	response['Content-Disposition'] = 'attachment; filename="SampleSheet.csv"'
-	writer = csv.writer(response)
+	writer = csv.writer(response,lineterminator=os.linesep)
 	writer.writerow(['[Header]'])
 	writer.writerow(['IEMFileVersion','5'])
 	writer.writerow(['Date',runinfo.date])
