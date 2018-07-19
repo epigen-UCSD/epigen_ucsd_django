@@ -504,6 +504,7 @@ def SampleSheetCreateView(request,run_pk):
 	writer.writerow([''])
 	writer.writerow(['[Settings]'])
 	writer.writerow([''])
+	writer.writerow(['[Data]'])
 	writer.writerow(['Sample_ID','Sample_Name','Sample_Plate','Sample_Well','I7_Index_ID','index','I5_Index_ID','index2','Sample_Project','Description'])
 	samples_list = runinfo.librariesinrun_set.all()
 	for samples in samples_list:
