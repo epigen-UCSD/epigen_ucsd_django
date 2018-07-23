@@ -47,22 +47,25 @@ def IndexValidation(i7list, i5list):
 
 	combinelist = [x for x in list(zip(i7list,i5list)) if x[1]]
 	combinelistseq = [(barcodes_dic[x[0]],barcodes_dic[x[1]]) for x in combinelist]
-	#print(combinelist)
 	for i in range(0, len(combinelistseq)):
-		if combinelistseq[i] in combinelistseq[i+1:]:
-			duplicate.append(combinelist[i])
+		for j in range(i+1, len(combinelistseq)):
+			if combinelistseq[i] == combinelistseq[j]:
+				duplicate.append(str(combinelist[i])+' vs '+str(combinelist[j]))
 
-	combinei7 = set([x[0] for x in list(zip(i7list,i5list)) if x[1]])
-	#print(combinei7)
+	combinei7 = list(set([x[0] for x in list(zip(i7list,i5list)) if x[1]]))
+	combinei7seq = [barcodes_dic[x] for x in combinei7]
 	singlei7 = [x[0] for x in list(zip(i7list,i5list)) if not x[1] and x[0]]
-	print(singlei7)
-	singlelist = list(combinei7) + singlei7
-	singlelistseq = [barcodes_dic[x] for x in singlelist]
-	#print(singlelist)
-	for i in range(0, len(singlelistseq)):
-		for i7seq in singlelistseq[i+1:]:
-			if singlelistseq[i] in i7seq:
-				duplicate.append(singlelist[i])
+	singlei7seq = [barcodes_dic[x] for x in singlei7]
+
+	for i in range(0, len(singlei7seq)):
+		for j in range(i+1, len(singlei7seq)):
+			if singlei7seq[i] in singlei7seq[j] or singlei7seq[j] in singlei7seq[i]:
+				duplicate.append(singlei7[i]+' vs '+singlei7[j])
+	for i in range(0, len(combinei7seq)):
+		for j in range(0,len(singlei7seq)):
+			if combinei7seq[i] in singlei7seq[j] or singlei7seq[j] in combinei7seq[i]:
+				duplicate.append(combinei7[i]+' vs '+singlei7[j])
+
 	return duplicate
 
 
