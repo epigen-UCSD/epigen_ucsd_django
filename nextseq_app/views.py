@@ -666,7 +666,9 @@ def DemultiplexingView(request,run_pk):
 			data['writesamplesheeterror'] = 'Unexpected writing to SampleSheet.csv Error!'
 			print(e)
 			return JsonResponse(data)
-		thisjobid='12345'
+		cmd1 = './scripts/dmptest.sh'
+		p = subprocess.Popen(cmd1, shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+		thisjobid=p.pid
 
 		RunInfo.objects.filter(pk=run_pk).update(nextseqdir=basedirname)
 		RunInfo.objects.filter(pk=run_pk).update(date=rundate)
