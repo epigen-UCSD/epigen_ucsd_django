@@ -15,7 +15,7 @@ from nextseq_app.models import RunInfo
 
 
 def main():
-	#for example: python updateRun.py -s '0' -f 'H5GLYBGX5fff'
+	#for example: python updateRunStatus.py -s '0' -f 'H5GLYBGX5fff'
 	statuscode = {'-1':'ClickToSubmit','0':'JobSubmitted','1':'JobStarted','2':'Done','3': 'Error','4':'Warning'}
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-s',choices=['-1','0','1','2','3','4'],\

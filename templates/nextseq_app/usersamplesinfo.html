@@ -62,6 +62,7 @@
                  <th scope="col">i7sequence</th>
                  <th scope="col">i5index</th>
                  <th scope="col">i5sequence</th>
+                 <th scope="col">#Reads</th>
                </tr>
              </thead>
              <tbody>
@@ -74,6 +75,7 @@
                  <td>{{ barcode|key:sample.i7index }}</td>
                  <td>{{  sample.i5index|default_if_none:"" }}</td>
                  <td>{{ barcode|key:sample.i5index }}</td>
+                 <td>{{ sample.numberofreads|default_if_none:"" }}</td>
                </tr>
                {% empty %}
                <li>No Runs yet.</li>

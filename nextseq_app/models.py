@@ -40,7 +40,7 @@ class LibrariesInRun(models.Model):
 	Library_ID = models.CharField(max_length=200,unique=True)
 	i7index = models.ForeignKey(Barcode,related_name='i7_index', on_delete=models.CASCADE, blank=True, null=True)
 	i5index = models.ForeignKey(Barcode,related_name='i5_index',on_delete=models.CASCADE, blank=True, null=True)
-	
+	numberofreads = models.IntegerField(blank=True,null=True)
 	def __str__(self):
 		return self.Library_ID
 	class Meta:
