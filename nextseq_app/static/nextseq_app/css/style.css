@@ -15,21 +15,28 @@
   font-size: 12px;
   border-color: #FF6A39;
   line-height: 0.6;
-  width:100%;
+  width:80%;
+}
+.btn-status-red {
+  background-color: red;
+  font-size: 12px;
+  border-color: red;
+  line-height: 0.6;
+  width:80%;
 }
 .btn-status-green {
   background-color: #26D07C;
   font-size: 12px;
   border-color: #26D07C;
   line-height: 0.6;
-  width:100%;
+  width:80%;
 }
 .badge-status-orange {
   background-color: #FF6A39;
   font-size: 12px;
   border-color: #FF6A39;
   line-height: 0.8;
-  width:100%;
+  width:80%;
   font-weight: normal;
 }
 .badge-status-green {
@@ -37,7 +44,7 @@
   font-size: 12px;
   border-color: #26D07C;
   line-height: 1;
-  width:100%;
+  width:80%;
   font-weight: normal;
 }
 .badge-status-yellow {
@@ -45,7 +52,7 @@
   font-size: 12px;
   border-color: #F6BE00;
   line-height: 0.8;
-  width:100%;
+  width:80%;
   font-weight: normal;
 }
 .badge-status-lightblue {
@@ -53,7 +60,7 @@
   font-size: 12px;
   border-color: #00B5E2;
   line-height: 0.8;
-  width:100%;
+  width:80%;
   font-weight: normal;
 }
 .badge-status-blue {
@@ -61,7 +68,7 @@
   font-size: 12px;
   border-color: #182B49;
   line-height: 0.8;
-  width:100%;
+  width:80%;
   font-weight: normal;
 }
 .cardnosidebar {

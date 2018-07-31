@@ -59,7 +59,7 @@
                   <th scope="col">Date</th>
                   <th scope="col">Read Type</th>
                   <th scope="col">Read Length</th>
-                  <th scope="col">Status</th>
+                  <th scope="col">Demultiplexing</th>
                 </tr>
               </thead>
               <tbody>
@@ -73,12 +73,16 @@
                   <td>{{ Run.read_length }}</td>
                   {% if Run.jobstatus == 'Done'%}
                   <td><span class="badge badge-success badge-status-green">Done</span></td>
-                  {% elif Run.jobstatus == 'ToSubmit' %}
-                  <td><span class="badge badge-success badge-status-orange">ToSubmit</span></td>
+                  {% elif Run.jobstatus == 'ClickToSubmit' %}
+                  <td><span class="badge badge-success badge-status-orange">ClickToSubmit</span></td>
                   {% elif Run.jobstatus == 'JobSumitted'%}
                   <td><span class="badge badge-success badge-status-blue">JobSumitted</span></td>
                   {% elif Run.jobstatus == 'JobStarted'%}
                   <td><span class="badge badge-success badge-status-lightblue">JobStarted</span></td>
+                  {% elif Run.jobstatus == 'Error'%}
+                  <td><span class="badge badge-success badge-status-red">Error</span></td>
+                  {% elif Run.jobstatus == 'Warning'%}
+                  <td><span class="badge badge-success badge-status-red">Warning</span></td>
                   {% endif %}
                 </tr>
                 {% empty %}

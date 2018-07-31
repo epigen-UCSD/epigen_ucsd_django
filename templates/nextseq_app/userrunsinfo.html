@@ -60,7 +60,7 @@
                   <th scope="col">Read Type</th>
                   <th scope="col">Read Length</th>
                   <th scope="col">Last Modified</th>
-                  <th scope="col">Status</th>
+                  <th scope="col">Demultiplexing</th>
                   <th scope="col"></th>
                 </tr>
               </thead>
@@ -76,13 +76,17 @@
                   <td>{{ Run.updated_at|date:"m/d/Y H:i" }}</td>
                   {% if Run.jobstatus == 'Done'%}
                   <td><span class="badge badge-success badge-status-green">Done</span></td>
-                  {% elif Run.jobstatus == 'ToSubmit' %}
+                  {% elif Run.jobstatus == 'ClickToSubmit' %}
 
-                  <td><a class="btn btn-danger btn-sm btn-status-orange dmpajax" href="" data-href="{% url 'nextseq_app:demultiplexing' Run.id %}" id={{Run.Flowcell_ID}}>ToSubmit</a></td>
+                  <td><a class="btn btn-danger btn-sm btn-status-orange dmpajax" href="" data-href="{% url 'nextseq_app:demultiplexing' Run.id %}" id={{Run.Flowcell_ID}}>ClickToSubmit</a></td>
                   {% elif Run.jobstatus == 'JobSumitted'%}
                   <td><span class="badge badge-success badge-status-blue">JobSumitted</span></td>
                   {% elif Run.jobstatus == 'JobStarted'%}
                   <td><span class="badge badge-success badge-status-lightblue">JobStarted</span></td>
+                  {% elif Run.jobstatus == 'Error'%}
+                  <td><span class="badge badge-success badge-status-red">Error</span></td>
+                  {% elif Run.jobstatus == 'Warning'%}
+                  <td><span class="badge badge-success badge-status-red">Warning</span></td>
                   {% endif %}
 
                   <td>

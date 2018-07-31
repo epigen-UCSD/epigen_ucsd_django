@@ -380,9 +380,12 @@ def RunUpdateView2(request,username,run_pk):
 
 			}
 			return render(request, 'nextseq_app/runandsamplesupdate.html',context)
-			
+		if run_form.has_changed() or sample_formset.has_changed():
+			runinfo.jobstatus = 'ClickToSubmit'
+
 		runinfo.save()
-		sample_formset.save()
+		sample_formset.save() 
+		
 		return redirect('nextseq_app:rundetail',pk=runinfo.pk)
 		
 	return render(request, 'nextseq_app/runandsamplesupdate.html', {'run_form':run_form,'sample_formset':sample_formset,'runinfo': runinfo})
@@ -629,39 +632,62 @@ def DemultiplexingView(request,run_pk):
 			print(e)
 			return JsonResponse(data)
 		try:
-			with open(os.path.join(basedirname,'Data/Fastqs','SampleSheet.csv'),"w") as csvfile:
-				writer = csv.writer(csvfile)
-				writer.writerow(['[Header]'])
-				writer.writerow(['IEMFileVersion','5'])
-				writer.writerow(['Date',runinfo.date])
-				writer.writerow(['Workflow','GenerateFASTQ'])
-				writer.writerow(['Application','NextSeq FASTQ Only'])
-				writer.writerow(['Instrument Type','NextSeq/MiniSeq'])
-				writer.writerow(['Assay','Nextera XT / TruSeq LT'])
-				writer.writerow(['Index Adapters','Nextera XT v2 Index Kit / TruSeq LT'])
-				writer.writerow(['Description'])
-				writer.writerow(['Chemistry','Amplicon'])
-				writer.writerow([''])
-				writer.writerow(['[Reads]'])
-				if runinfo.read_type == 'PE':
-					a = runinfo.read_length
-					writer.writerow([a])
-					writer.writerow([a])
-				else:
-					a = runinfo.read_length
-					writer.writerow([a])
-				writer.writerow([''])
-				writer.writerow(['[Settings]'])
-				writer.writerow([''])
-				writer.writerow(['[Data]'])
-				writer.writerow(['Sample_ID','Sample_Name','Sample_Plate','Sample_Well','I7_Index_ID','index','I5_Index_ID','index2','Sample_Project','Description'])
-				samples_list = runinfo.librariesinrun_set.all()
-				for samples in samples_list:
-					i7id = samples.i7index or ''
-					i5id = samples.i5index or ''
-					i7seq= Barcode.objects.get(indexid=i7id).indexseq if i7id!='' else ''
-					i5seq= Barcode.objects.get(indexid=i5id).indexseq if i5id!='' else ''
-					writer.writerow([samples.Library_ID,'','','',i7id,i7seq,i5id,i5seq,'',''])
+			os.mkdir(os.path.join(basedirname,'Data/Fastqs/OnePrimer'))
+		except Exception as e:
+			data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs/OnePrimer Error!'
+			print(e)
+			return JsonResponse(data)
+		try:
+			os.mkdir(os.path.join(basedirname,'Data/Fastqs/TwoPrimers'))
+		except Exception as e:
+			data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs/TwoPrimers Error!'
+			print(e)
+			return JsonResponse(data)
+		try:
+			towritefiles = [os.path.join(basedirname,'Data/Fastqs/OnePrimer','SampleSheet.csv'), \
+			os.path.join(basedirname,'Data/Fastqs/TwoPrimers','SampleSheet.csv')]
+			for filename in towritefiles:
+				print(filename)
+				with open(filename,'w') as csvfile:
+					writer = csv.writer(csvfile)
+					writer.writerow(['[Header]'])
+					writer.writerow(['IEMFileVersion','5'])
+					writer.writerow(['Date',runinfo.date])
+					writer.writerow(['Workflow','GenerateFASTQ'])
+					writer.writerow(['Application','NextSeq FASTQ Only'])
+					writer.writerow(['Instrument Type','NextSeq/MiniSeq'])
+					writer.writerow(['Assay','Nextera XT / TruSeq LT'])
+					writer.writerow(['Index Adapters','Nextera XT v2 Index Kit / TruSeq LT'])
+					writer.writerow(['Description'])
+					writer.writerow(['Chemistry','Amplicon'])
+					writer.writerow([''])
+					writer.writerow(['[Reads]'])
+					if runinfo.read_type == 'PE':
+						a = runinfo.read_length
+						writer.writerow([a])
+						writer.writerow([a])
+					else:
+						a = runinfo.read_length
+						writer.writerow([a])
+					writer.writerow([''])
+					writer.writerow(['[Settings]'])
+					writer.writerow([''])
+					writer.writerow(['[Data]'])
+					writer.writerow(['Sample_ID','Sample_Name','Sample_Plate','Sample_Well','I7_Index_ID','index','I5_Index_ID','index2','Sample_Project','Description'])
+					samples_list = runinfo.librariesinrun_set.all()
+					for samples in samples_list:
+						if not samples.i5index:
+							if filename == os.path.join(basedirname,'Data/Fastqs/OnePrimer','SampleSheet.csv'):
+								i7id = samples.i7index or ''
+								i7seq= Barcode.objects.get(indexid=i7id).indexseq if i7id!='' else ''
+								writer.writerow([samples.Library_ID,'','','',i7id,i7seq,'','','',''])
+						else:
+							if filename == os.path.join(basedirname,'Data/Fastqs/TwoPrimers','SampleSheet.csv'):
+								i7id = samples.i7index or ''
+								i5id = samples.i5index or ''
+								i7seq= Barcode.objects.get(indexid=i7id).indexseq if i7id!='' else ''
+								i5seq= Barcode.objects.get(indexid=i5id).indexseq if i5id!='' else ''
+								writer.writerow([samples.Library_ID,'','','',i7id,i7seq,i5id,i5seq,'',''])
 		except Exception as e:
 			data['writesamplesheeterror'] = 'Unexpected writing to SampleSheet.csv Error!'
 			print(e)

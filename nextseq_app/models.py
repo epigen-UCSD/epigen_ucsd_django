@@ -24,7 +24,7 @@ class RunInfo(models.Model):
 	updated_at = models.DateTimeField(auto_now=True)
 	nextseqdir = models.CharField(max_length=200,blank=True,null=True)
 	jobid = models.CharField(max_length=200,blank=True,null=True)
-	jobstatus = models.CharField(max_length=200,blank=True,null=True,default='ToSubmit')
+	jobstatus = models.CharField(max_length=200,blank=True,null=True,default='ClickToSubmit')
 
 	def get_absolute_url(self):
 		return reverse('nextseq_app:rundetail', kwargs={'pk': self.pk})

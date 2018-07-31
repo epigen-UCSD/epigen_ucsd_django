@@ -16,9 +16,10 @@ from nextseq_app.models import RunInfo
 
 def main():
 	#for example: python updateRun.py -s '0' -j '12345'
-	statuscode = {'-1':'ToSubmit','0':'JobSumitted','1':'JobStarted','2':'Done'}
+	statuscode = {'-1':'ClickToSubmit','0':'JobSumitted','1':'JobStarted','2':'Done','3': 'Error','4':'Warning'}
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-s',choices=['-1','0','1','2'],help = '-1: ToSubmit 0:JobSumitted 1:JobStarted 2:Done')
+	parser.add_argument('-s',choices=['-1','0','1','2'],\
+		help = '-1: ClickToSubmit 0:JobSumitted 1:JobStarted 2:Done 3:Error 4:Warning')
 	parser.add_argument('-j',help = 'jobid')
 	thisstatus = parser.parse_args().s
 	thisjobid = parser.parse_args().j
