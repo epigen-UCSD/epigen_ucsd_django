@@ -25,6 +25,7 @@ $(document).ready( function () {
     var that = this;
     $.ajax({
       url:$(this).attr("data-href"),
+      cache:false,
       dataType: 'json',
       success:function (data){
         if (!data.is_direxists){
@@ -43,7 +44,7 @@ $(document).ready( function () {
           $("#"+runinfoiddate).text(data.updatedate)
           // $(that).removeClass('btn btn-danger btn-sm btn-status-orange dmpajax')
           // $(that).addClass('btn btn-success btn-sm btn-status-green disabled');
-          $(that).replaceWith('<span class="badge badge-success badge-status-blue">JobSumitted</span>')
+          $(that).replaceWith('<span class="badge badge-success badge-status-blue">JobSubmitted</span>')
 
           return
         }

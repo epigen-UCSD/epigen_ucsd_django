@@ -79,8 +79,8 @@
                   {% elif Run.jobstatus == 'ClickToSubmit' %}
 
                   <td><a class="btn btn-danger btn-sm btn-status-orange dmpajax" href="" data-href="{% url 'nextseq_app:demultiplexing' Run.id %}" id={{Run.Flowcell_ID}}>ClickToSubmit</a></td>
-                  {% elif Run.jobstatus == 'JobSumitted'%}
-                  <td><span class="badge badge-success badge-status-blue">JobSumitted</span></td>
+                  {% elif Run.jobstatus == 'JobSubmitted'%}
+                  <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
                   {% elif Run.jobstatus == 'JobStarted'%}
                   <td><span class="badge badge-success badge-status-lightblue">JobStarted</span></td>
                   {% elif Run.jobstatus == 'Error'%}

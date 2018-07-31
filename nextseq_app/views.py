@@ -22,7 +22,7 @@ from django.forms import modelformset_factory,inlineformset_factory
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-import subprocess,os,time
+import subprocess,os,time,shutil
 
 def BarcodeDic():
 	barcodes_dic = {}
@@ -381,6 +381,14 @@ def RunUpdateView2(request,username,run_pk):
 			}
 			return render(request, 'nextseq_app/runandsamplesupdate.html',context)
 		if run_form.has_changed() or sample_formset.has_changed():
+			dmpdir = settings.NEXTSEQAPP_DMPDIR
+			for fname in os.listdir(dmpdir):
+				if os.path.isdir(os.path.join(dmpdir,fname)) and fname.endswith(runinfo.Flowcell_ID):
+					basedirname = os.path.join(dmpdir,fname)			
+			try:
+				shutil.rmtree(os.path.join(basedirname,'Data/Fastqs'))
+			except FileNotFoundError as e:
+				pass
 			runinfo.jobstatus = 'ClickToSubmit'
 
 		runinfo.save()
@@ -631,28 +639,35 @@ def DemultiplexingView(request,run_pk):
 			data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs Error!'
 			print(e)
 			return JsonResponse(data)
-		try:
-			os.mkdir(os.path.join(basedirname,'Data/Fastqs/OnePrimer'))
-		except Exception as e:
-			data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs/OnePrimer Error!'
-			print(e)
-			return JsonResponse(data)
-		try:
-			os.mkdir(os.path.join(basedirname,'Data/Fastqs/TwoPrimers'))
-		except Exception as e:
-			data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs/TwoPrimers Error!'
-			print(e)
-			return JsonResponse(data)
-		try:
+
+		samples_list = runinfo.librariesinrun_set.all()
+		i7len = len([x for x in samples_list.values_list('i7index',flat=True) if x])
+		i5len = len([x for x in samples_list.values_list('i5index',flat=True) if x])
+		if i7len == i5len or i5len == 0:
+			towritefiles = [os.path.join(basedirname,'Data/Fastqs','SampleSheet.csv')]
+		else:
+			try:
+				os.mkdir(os.path.join(basedirname,'Data/Fastqs/OnePrimer'))
+			except Exception as e:
+				data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs/OnePrimer Error!'
+				print(e)
+				return JsonResponse(data)
+			try:
+				os.mkdir(os.path.join(basedirname,'Data/Fastqs/TwoPrimers'))
+			except Exception as e:
+				data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs/TwoPrimers Error!'
+				print(e)
+				return JsonResponse(data)
 			towritefiles = [os.path.join(basedirname,'Data/Fastqs/OnePrimer','SampleSheet.csv'), \
 			os.path.join(basedirname,'Data/Fastqs/TwoPrimers','SampleSheet.csv')]
+		try:
 			for filename in towritefiles:
-				print(filename)
+				#print(filename)
 				with open(filename,'w') as csvfile:
 					writer = csv.writer(csvfile)
 					writer.writerow(['[Header]'])
 					writer.writerow(['IEMFileVersion','5'])
-					writer.writerow(['Date',runinfo.date])
+					writer.writerow(['Date',rundate])
 					writer.writerow(['Workflow','GenerateFASTQ'])
 					writer.writerow(['Application','NextSeq FASTQ Only'])
 					writer.writerow(['Instrument Type','NextSeq/MiniSeq'])
@@ -676,30 +691,36 @@ def DemultiplexingView(request,run_pk):
 					writer.writerow(['Sample_ID','Sample_Name','Sample_Plate','Sample_Well','I7_Index_ID','index','I5_Index_ID','index2','Sample_Project','Description'])
 					samples_list = runinfo.librariesinrun_set.all()
 					for samples in samples_list:
-						if not samples.i5index:
-							if filename == os.path.join(basedirname,'Data/Fastqs/OnePrimer','SampleSheet.csv'):
-								i7id = samples.i7index or ''
-								i7seq= Barcode.objects.get(indexid=i7id).indexseq if i7id!='' else ''
-								writer.writerow([samples.Library_ID,'','','',i7id,i7seq,'','','',''])
+						if filename == os.path.join(basedirname,'Data/Fastqs','SampleSheet.csv'):
+							i7id = samples.i7index or ''
+							i5id = samples.i5index or ''
+							i7seq= Barcode.objects.get(indexid=i7id).indexseq if i7id!='' else ''
+							i5seq= Barcode.objects.get(indexid=i5id).indexseq if i5id!='' else ''
+							writer.writerow([samples.Library_ID,'','','',i7id,i7seq,i5id,i5seq,'',''])
 						else:
-							if filename == os.path.join(basedirname,'Data/Fastqs/TwoPrimers','SampleSheet.csv'):
-								i7id = samples.i7index or ''
-								i5id = samples.i5index or ''
-								i7seq= Barcode.objects.get(indexid=i7id).indexseq if i7id!='' else ''
-								i5seq= Barcode.objects.get(indexid=i5id).indexseq if i5id!='' else ''
-								writer.writerow([samples.Library_ID,'','','',i7id,i7seq,i5id,i5seq,'',''])
+							if not samples.i5index:
+								if filename == os.path.join(basedirname,'Data/Fastqs/OnePrimer','SampleSheet.csv'):
+									i7id = samples.i7index or ''
+									i7seq= Barcode.objects.get(indexid=i7id).indexseq if i7id!='' else ''
+									writer.writerow([samples.Library_ID,'','','',i7id,i7seq,'','','',''])
+							else:
+								if filename == os.path.join(basedirname,'Data/Fastqs/TwoPrimers','SampleSheet.csv'):
+									i7id = samples.i7index or ''
+									i5id = samples.i5index or ''
+									i7seq= Barcode.objects.get(indexid=i7id).indexseq if i7id!='' else ''
+									i5seq= Barcode.objects.get(indexid=i5id).indexseq if i5id!='' else ''
+									writer.writerow([samples.Library_ID,'','','',i7id,i7seq,i5id,i5seq,'',''])
 		except Exception as e:
 			data['writesamplesheeterror'] = 'Unexpected writing to SampleSheet.csv Error!'
 			print(e)
 			return JsonResponse(data)
-		cmd1 = './scripts/dmptest.sh'
+		cmd1 = './scripts/dmptest.sh '+ runinfo.Flowcell_ID
 		p = subprocess.Popen(cmd1, shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-		thisjobid=p.pid
+		# thisjobid=p.pid
 
 		RunInfo.objects.filter(pk=run_pk).update(nextseqdir=basedirname)
 		RunInfo.objects.filter(pk=run_pk).update(date=rundate)
-		RunInfo.objects.filter(pk=run_pk).update(jobid=thisjobid)
-		RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSumitted')
+		RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSubmitted')
 		data['writetosamplesheet'] = 1
 		data['updatedate'] = '/'.join([rundate.split('-')[i] for i in [1,2,0]])
 		return JsonResponse(data)
