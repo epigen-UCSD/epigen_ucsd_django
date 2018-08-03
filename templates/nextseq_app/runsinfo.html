@@ -80,9 +80,9 @@
                   {% elif Run.jobstatus == 'JobStarted'%}
                   <td><span class="badge badge-success badge-status-lightblue">JobStarted</span></td>
                   {% elif Run.jobstatus == 'Error'%}
-                  <td><span class="badge badge-success badge-status-red">Error</span></td>
+                  <td><span class="badge badge-success badge-status-yellow">Error</span></td>
                   {% elif Run.jobstatus == 'Warning'%}
-                  <td><span class="badge badge-success badge-status-red">Warning</span></td>
+                  <td><span class="badge badge-success badge-status-yellow">Warning</span></td>
                   {% endif %}
                 </tr>
                 {% empty %}
