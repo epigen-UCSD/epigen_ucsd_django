@@ -73,7 +73,7 @@
                 <td>{{ barcode|key:samples.i7index }}</td>    
                 <td>{{samples.i5index|default_if_none:""}}</td>
                 <td>{{ barcode|key:samples.i5index }}</td>
-                <td>{{ sample.numberofreads|default_if_none:"" }}</td>
+                <td>{{ samples.numberofreads|default_if_none:"" }}</td>
               </tr>
             {% endfor %}                
 

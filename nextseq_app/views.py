@@ -356,7 +356,7 @@ def RunUpdateView2(request,username,run_pk):
 
 	if run_form.is_valid() and sample_formset.is_valid():
 		runinfo = run_form.save(commit=False)
-		runinfo.operator = request.user
+		#runinfo.operator = request.user
 		sample_formset.save(commit=False)
 		Library_ID_list = []
 		i7index_list = []
