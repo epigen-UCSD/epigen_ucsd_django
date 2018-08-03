@@ -61,6 +61,7 @@
                 <th>i7sequence</th>
                 <th>i5index</th>
                 <th>i5sequence</th>
+                <th>#Reads</th>
               </tr>
               </thead>            
 
@@ -72,6 +73,7 @@
                 <td>{{ barcode|key:samples.i7index }}</td>    
                 <td>{{samples.i5index|default_if_none:""}}</td>
                 <td>{{ barcode|key:samples.i5index }}</td>
+                <td>{{ sample.numberofreads|default_if_none:"" }}</td>
               </tr>
             {% endfor %}            
 
