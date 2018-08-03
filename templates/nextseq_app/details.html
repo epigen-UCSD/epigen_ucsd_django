@@ -3,6 +3,7 @@
 {% block body %}
 {% load static %}
 {% load nextseq_app_tags %}
+{% load humanize %}
 <div id="wrapper">
   <nav class="navbar navbar-expand-lg navbar-default navbar-light bg-light fixed-top borderline">
     <a class="navbar-brand" href="#"><img alt="Charisma Logo" src="{% static 'nextseq_app/images/CFE_Brandmark-01.png' %}" class="crop" margin="-200px 0 -200px 0" width=auto height=50 /></a>
@@ -73,7 +74,9 @@
                 <td>{{ barcode|key:samples.i7index }}</td>    
                 <td>{{samples.i5index|default_if_none:""}}</td>
                 <td>{{ barcode|key:samples.i5index }}</td>
-                <td>{{ samples.numberofreads|default_if_none:"" }}</td>
+                {% with firstfilter=samples.numberofreads|default_if_none:"" %}
+                <td>{{ firstfilter|intcomma }}</td>
+                {% endwith %}
               </tr>
             {% endfor %}            
 
