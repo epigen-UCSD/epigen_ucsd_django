@@ -348,7 +348,7 @@ def RunCreateView6(request):
 @transaction.atomic
 def RunUpdateView2(request,username,run_pk):
 	runinfo = get_object_or_404(RunInfo, pk=run_pk)
-	if runinfo.operator != request.user:
+	if runinfo.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
 		raise PermissionDenied
 	run_form = RunCreationForm(request.POST or None, instance = runinfo)
 	SamplesInlineFormSet = inlineformset_factory(RunInfo, LibrariesInRun,fields = ['Library_ID','i7index','i5index'],extra =3)
@@ -542,7 +542,7 @@ def SampleSheetCreateView(request,run_pk):
 @login_required
 def RunDeleteView2(request,run_pk):
 	deleterun = get_object_or_404(RunInfo, pk=run_pk)
-	if deleterun.operator != request.user:
+	if deleterun.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
 		raise PermissionDenied
 	deleterun.delete()
 	return redirect('nextseq_app:userruns')
@@ -611,7 +611,7 @@ def change_password(request):
 def DemultiplexingView(request,run_pk):
 	dmpdir = settings.NEXTSEQAPP_DMPDIR
 	runinfo = get_object_or_404(RunInfo, pk=run_pk)
-	if runinfo.operator != request.user:
+	if runinfo.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
 		raise PermissionDenied
 	data = {}
 	#print(runinfo.Flowcell_ID)

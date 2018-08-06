@@ -2,6 +2,7 @@
 
 {% block body %}
 {% load static %}
+{% load nextseq_app_tags %}
 <div id="wrapper">
   <nav class="navbar navbar-expand-lg navbar-default navbar-light bg-light fixed-top borderline">
     <a class="navbar-brand" href="#"><img alt="Charisma Logo" src="{% static 'nextseq_app/images/CFE_Brandmark-01.png' %}" class="crop" margin="-200px 0 -200px 0" width=auto height=50 /></a>
@@ -50,7 +51,11 @@
             All Runs
           </div><!-- /.card-header -->
           <div class="card-body">
+            {% if request.user|has_group:"bioinformatics" %}
+            <table class="table table-striped table-sm datatablesort5 text-center">
+            {% else %}
             <table class="table table-sm table-striped table-bordered datatablesort2 text-center">
+            {% endif %}
               <thead>
                 <tr>
                   
@@ -59,7 +64,14 @@
                   <th scope="col">Date</th>
                   <th scope="col">Read Type</th>
                   <th scope="col">Read Length</th>
+                  {% if request.user|has_group:"bioinformatics" %}
+                  <th scope="col">Last Modified</th>
+                  {% endif %}
                   <th scope="col">Demultiplexing</th>
+                  {% if request.user|has_group:"bioinformatics" %}
+                  <th scope="col"></th>
+                  {% endif %}
+
                 </tr>
               </thead>
               <tbody>
@@ -68,13 +80,20 @@
 
                       <td><a href="{% url 'nextseq_app:rundetailhome' Run.pk %}"> {{ Run.Flowcell_ID }} </a></td>
                   <td>{{ Run.operator }}</td>
-                  <td>{{ Run.date|date:"m/d/Y" }}</td>
+                  <td id="date-{{Run.Flowcell_ID}}">{{ Run.date|date:"m/d/Y" }}</td>
                   <td>{{ Run.read_type }}</td>
                   <td>{{ Run.read_length }}</td>
+                  {% if request.user|has_group:"bioinformatics" %}
+                  <td>{{ Run.updated_at|date:"m/d/Y H:i" }}</td>
+                  {% endif %}
                   {% if Run.jobstatus == 'Done'%}
                   <td><span class="badge badge-success badge-status-green">Done</span></td>
                   {% elif Run.jobstatus == 'ClickToSubmit' %}
-                  <td><span class="badge badge-success badge-status-orange">ClickToSubmit</span></td>
+                    {% if request.user|has_group:"bioinformatics" %}
+                    <td><a class="btn btn-danger btn-sm btn-status-orange dmpajax" href="" data-href="{% url 'nextseq_app:demultiplexing' Run.id %}" id={{Run.Flowcell_ID}}>ClickToSubmit</a></td>
+                    {% else %}
+                    <td><span class="badge badge-success badge-status-orange">ClickToSubmit</span></td>
+                    {% endif %}
                   {% elif Run.jobstatus == 'JobSubmitted'%}
                   <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
                   {% elif Run.jobstatus == 'JobStarted'%}
@@ -83,6 +102,12 @@
                   <td><span class="badge badge-success badge-status-yellow">Error</span></td>
                   {% elif Run.jobstatus == 'Warning'%}
                   <td><span class="badge badge-success badge-status-yellow">Warning</span></td>
+                  {% endif %}
+                  {% if request.user|has_group:"bioinformatics" %}
+                  <td>
+                    <a class="spacing" href="{% url 'nextseq_app:run_update' username=user.username run_pk=Run.id %}"><i class="fas fa-edit"></i></a>
+                    <a onclick="return confirm('Are you sure you want to delete {{ Run.Flowcell_ID }} ?');" href="{% url 'nextseq_app:run_delete2' Run.id %}"><i class="fas fa-trash-alt"></i></a>                
+                  </td>
                   {% endif %}
                 </tr>
                 {% empty %}
