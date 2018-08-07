@@ -11,7 +11,7 @@ class LibrariesInRunInline(admin.TabularInline):
 	extra = 3
 
 class RunInfoAdmin(admin.ModelAdmin):
-	list_display = ('Flowcell_ID','operator','date','read_type','read_length')
+	list_display = ('Flowcell_ID','operator','date','read_type','read_length','nextseqdir')
 	inlines = [LibrariesInRunInline]
 
 admin.site.register(RunInfo,RunInfoAdmin)

@@ -60,6 +60,7 @@
                   <th scope="col">Read Type</th>
                   <th scope="col">Read Length</th>
                   <th scope="col">Last Modified</th>
+                  <th scope="col">Demultiplexing</th>
                   <th scope="col"></th>
                 </tr>
               </thead>
@@ -69,10 +70,25 @@
 
                 <td><a href="{% url 'nextseq_app:rundetail' Run.pk %}"> {{ Run.Flowcell_ID }} </a></td>
                   <td>{{ Run.operator }}</td>
-                  <td>{{ Run.date|date:"m/d/Y" }}</td>
-                  <td>{{ Run.read_type }}</td>
+                  <td id="date-{{Run.Flowcell_ID}}">{{ Run.date|date:"m/d/Y" }}</td>
+                  <td >{{ Run.read_type }}</td>
                   <td>{{ Run.read_length }}</td>
                   <td>{{ Run.updated_at|date:"m/d/Y H:i" }}</td>
+                  {% if Run.jobstatus == 'Done'%}
+                  <td><span class="badge badge-success badge-status-green">Done</span></td>
+                  {% elif Run.jobstatus == 'ClickToSubmit' %}
+
+                  <td><a class="btn btn-danger btn-sm btn-status-orange dmpajax" href="" data-href="{% url 'nextseq_app:demultiplexing' Run.id %}" id={{Run.Flowcell_ID}}>ClickToSubmit</a></td>
+                  {% elif Run.jobstatus == 'JobSubmitted'%}
+                  <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
+                  {% elif Run.jobstatus == 'JobStarted'%}
+                  <td><span class="badge badge-success badge-status-lightblue">JobStarted</span></td>
+                  {% elif Run.jobstatus == 'Error'%}
+                  <td><span class="badge badge-success badge-status-yellow">Error</span></td>
+                  {% elif Run.jobstatus == 'Warning'%}
+                  <td><span class="badge badge-success badge-status-yellow">Warning</span></td>
+                  {% endif %}
+
                   <td>
                     <a class="spacing" href="{% url 'nextseq_app:run_update' username=user.username run_pk=Run.id %}"><i class="fas fa-edit"></i></a>
                     <a onclick="return confirm('Are you sure you want to delete {{ Run.Flowcell_ID }} ?');" href="{% url 'nextseq_app:run_delete2' Run.id %}"><i class="fas fa-trash-alt"></i></a>                
@@ -90,6 +106,9 @@
     </div><!-- /.row -->
   </div><!-- /.container-fluid -->
 </div><!-- /#wrapper -->
+<script type="text/javascript">
 
+
+</script>
 
 {% endblock %}

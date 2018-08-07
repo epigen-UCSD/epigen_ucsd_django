@@ -22,6 +22,9 @@ class RunInfo(models.Model):
 	# read_length = models.IntegerField()
 	read_length = models.CharField(max_length=50,help_text='e.g. if R1=R2=75, enter 75, if R1=50,R2=75, enter 50+75')
 	updated_at = models.DateTimeField(auto_now=True)
+	nextseqdir = models.CharField(max_length=200,blank=True,null=True)
+	# jobid = models.CharField(max_length=200,blank=True,null=True)
+	jobstatus = models.CharField(max_length=200,blank=True,null=True,default='ClickToSubmit')
 
 	def get_absolute_url(self):
 		return reverse('nextseq_app:rundetail', kwargs={'pk': self.pk})
@@ -37,6 +40,7 @@ class LibrariesInRun(models.Model):
 	Library_ID = models.CharField(max_length=200,unique=True)
 	i7index = models.ForeignKey(Barcode,related_name='i7_index', on_delete=models.CASCADE, blank=True, null=True)
 	i5index = models.ForeignKey(Barcode,related_name='i5_index',on_delete=models.CASCADE, blank=True, null=True)
+	numberofreads = models.IntegerField(blank=True,null=True)
 	def __str__(self):
 		return self.Library_ID
 	class Meta:

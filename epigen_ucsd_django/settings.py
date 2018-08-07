@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'nextseq_app',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/nextseq_app/login/'
+
+NEXTSEQAPP_DMPDIR = config['database']['NEXTSEQAPP_DMPDIR']

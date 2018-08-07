@@ -59,6 +59,7 @@
                   <th scope="col">Date</th>
                   <th scope="col">Read Type</th>
                   <th scope="col">Read Length</th>
+                  <th scope="col">Demultiplexing</th>
                 </tr>
               </thead>
               <tbody>
@@ -70,6 +71,19 @@
                   <td>{{ Run.date|date:"m/d/Y" }}</td>
                   <td>{{ Run.read_type }}</td>
                   <td>{{ Run.read_length }}</td>
+                  {% if Run.jobstatus == 'Done'%}
+                  <td><span class="badge badge-success badge-status-green">Done</span></td>
+                  {% elif Run.jobstatus == 'ClickToSubmit' %}
+                  <td><span class="badge badge-success badge-status-orange">ClickToSubmit</span></td>
+                  {% elif Run.jobstatus == 'JobSubmitted'%}
+                  <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
+                  {% elif Run.jobstatus == 'JobStarted'%}
+                  <td><span class="badge badge-success badge-status-lightblue">JobStarted</span></td>
+                  {% elif Run.jobstatus == 'Error'%}
+                  <td><span class="badge badge-success badge-status-yellow">Error</span></td>
+                  {% elif Run.jobstatus == 'Warning'%}
+                  <td><span class="badge badge-success badge-status-yellow">Warning</span></td>
+                  {% endif %}
                 </tr>
                 {% empty %}
                 <li>No Runs yet.</li>

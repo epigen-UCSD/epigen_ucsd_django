@@ -83,7 +83,7 @@
                         // Rather than remove this form from the DOM, we'll mark it as deleted
                         // and hide it, then let Django handle the deleting:
                         del.val('on');
-                        console.log(row);
+                        //console.log(row);
                         //console.log(row.find(childElementSelector));
 
 

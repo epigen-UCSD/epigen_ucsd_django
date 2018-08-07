@@ -3,6 +3,7 @@
 {% block body %}
 {% load static %}
 {% load nextseq_app_tags %}
+{% load humanize %}
 <div id="wrapper">
   <nav class="navbar navbar-expand-lg navbar-default navbar-light bg-light fixed-top borderline">
     <a class="navbar-brand" href="#"><img alt="Charisma Logo" src="{% static 'nextseq_app/images/CFE_Brandmark-01.png' %}" class="crop" margin="-200px 0 -200px 0" width=auto height=50 /></a>
@@ -51,7 +52,7 @@
             My Libraries
           </div><!-- /.card-header -->
           <div class="card-body"> 
-           <table class="table table-sm table-striped table-bordered datatable text-center">
+           <table class="table table-sm table-striped table-bordered datatablesort1 text-center">
              <thead>
                <tr>           
 
@@ -62,6 +63,7 @@
                  <th scope="col">i7sequence</th>
                  <th scope="col">i5index</th>
                  <th scope="col">i5sequence</th>
+                 <th scope="col">#Reads</th>
                </tr>
              </thead>
              <tbody>
@@ -74,6 +76,9 @@
                  <td>{{ barcode|key:sample.i7index }}</td>
                  <td>{{  sample.i5index|default_if_none:"" }}</td>
                  <td>{{ barcode|key:sample.i5index }}</td>
+                 {% with firstfilter=sample.numberofreads|default_if_none:"" %}
+                 <td>{{ firstfilter|intcomma }}</td>
+                 {% endwith %}
                </tr>
                {% empty %}
                <li>No Runs yet.</li>
