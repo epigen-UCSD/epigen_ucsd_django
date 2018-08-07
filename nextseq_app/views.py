@@ -384,10 +384,10 @@ def RunUpdateView2(request,username,run_pk):
 			dmpdir = settings.NEXTSEQAPP_DMPDIR
 			for fname in os.listdir(dmpdir):
 				if os.path.isdir(os.path.join(dmpdir,fname)) and fname.endswith(runinfo.Flowcell_ID):
-					basedirname = os.path.join(dmpdir,fname)			
+					basedirname = os.path.join(dmpdir,fname)
 			try:
 				shutil.rmtree(os.path.join(basedirname,'Data/Fastqs'))
-			except FileNotFoundError as e:
+			except (FileNotFoundError,UnboundLocalError) as e:
 				pass
 			runinfo.jobstatus = 'ClickToSubmit'
 
