@@ -14,7 +14,7 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.views.decorators.cache import never_cache
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
-import re,csv
+import re,csv,os
 from django.core.exceptions import ObjectDoesNotExist,PermissionDenied
 from django.db.models import Q
 from django.db import transaction
@@ -43,25 +43,32 @@ def SelfUniqueValidation(tosavelist):
 	return duplicate
 
 def IndexValidation(i7list, i5list):
+	barcodes_dic = BarcodeDic()
 	duplicate = []
 
 	combinelist = [x for x in list(zip(i7list,i5list)) if x[1]]
-	#print(combinelist)
-	for i in range(0, len(combinelist)):
-		if combinelist[i] in combinelist[i+1:]:
-			duplicate.append(combinelist[i])
+	combinelistseq = [(barcodes_dic[x[0]],barcodes_dic[x[1]]) for x in combinelist]
+	for i in range(0, len(combinelistseq)):
+		for j in range(i+1, len(combinelistseq)):
+			if combinelistseq[i] == combinelistseq[j]:
+				duplicate.append(str(combinelist[i])+' vs '+str(combinelist[j]))
 
-	combinei7 = set([x[0] for x in list(zip(i7list,i5list)) if x[1]])
-	#print(combinei7)
+	combinei7 = list(set([x[0] for x in list(zip(i7list,i5list)) if x[1]]))
+	combinei7seq = [barcodes_dic[x] for x in combinei7]
 	singlei7 = [x[0] for x in list(zip(i7list,i5list)) if not x[1] and x[0]]
-	#print(singlei7)
-	singlelist = list(combinei7) + singlei7
-	#print(singlelist)
-	for i in range(0, len(singlelist)):
-		if singlelist[i] in singlelist[i+1:]:
-			duplicate.append(singlelist[i])
-	return duplicate
+	singlei7seq = [barcodes_dic[x] for x in singlei7]
+  
+	for i in range(0, len(singlei7seq)):
+		for j in range(i+1, len(singlei7seq)):
+			if singlei7seq[i] in singlei7seq[j] or singlei7seq[j] in singlei7seq[i]:
+				duplicate.append(singlei7[i]+' vs '+singlei7[j])
+        
+	for i in range(0, len(combinei7seq)):
+		for j in range(0,len(singlei7seq)):
+			if combinei7seq[i] in singlei7seq[j] or singlei7seq[j] in combinei7seq[i]:
+				duplicate.append(combinei7[i]+' vs '+singlei7[j])
 
+	return duplicate
 
 
 @login_required	
@@ -214,9 +221,12 @@ def RunCreateView4(request):
 						i7index_list.append(form.cleaned_data['i7index'])
 						i5index_list.append(form.cleaned_data['i5index'])
 					except KeyError:
-						pass			
+						pass
 
-			duplicate = IndexValidation(i7index_list,i5index_list)
+			duplicate = IndexValidation(
+				[x.indexid if x is not None else None for x in i7index_list],
+				[x.indexid if x is not None else None for x in i5index_list]
+				)
 			if len(duplicate) > 0:
 				context = {
 				  'run_form':run_form,
@@ -251,10 +261,9 @@ def RunCreateView6(request):
 		i7index_list = []
 		i5index_list = []
 		libraryid_list = []
-		for samples in samplestocreat.split('\n'):
+		for samples in samplestocreat.strip().split('\n'):
 			samples_info = re.split(r'[\s]',samples)
-			#print(samples_info)
-			if samples_info[0] != 'Library_ID':
+			if samples != '\r' and samples_info[0] != 'Library_ID':
 				try:
 					if samples_info[1] and samples_info[2]: 
 						tosave_sample = LibrariesInRun(
@@ -370,7 +379,10 @@ def RunUpdateView2(request,username,run_pk):
 				except KeyError:
 					pass
 
-		duplicate = IndexValidation(i7index_list,i5index_list)
+		duplicate = IndexValidation(
+			[x.indexid if x is not None else None for x in i7index_list],
+			[x.indexid if x is not None else None for x in i5index_list]
+			)
 		if len(duplicate) > 0:
 			context = {
 				 'run_form':run_form,
@@ -493,7 +505,7 @@ def SampleSheetCreateView(request,run_pk):
 	runinfo = get_object_or_404(RunInfo, pk=run_pk)
 	response = HttpResponse(content_type='text/csv')
 	response['Content-Disposition'] = 'attachment; filename="SampleSheet.csv"'
-	writer = csv.writer(response)
+	writer = csv.writer(response,lineterminator=os.linesep)
 	writer.writerow(['[Header]'])
 	writer.writerow(['IEMFileVersion','5'])
 	writer.writerow(['Date',runinfo.date])
@@ -516,6 +528,7 @@ def SampleSheetCreateView(request,run_pk):
 	writer.writerow([''])
 	writer.writerow(['[Settings]'])
 	writer.writerow([''])
+	writer.writerow(['[Data]'])
 	writer.writerow(['Sample_ID','Sample_Name','Sample_Plate','Sample_Well','I7_Index_ID','index','I5_Index_ID','index2','Sample_Project','Description'])
 	samples_list = runinfo.librariesinrun_set.all()
 	for samples in samples_list:
