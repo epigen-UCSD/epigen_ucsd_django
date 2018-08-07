@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Time-stamp: <2018-07-24 12:20:32>
+# Time-stamp: <2018-08-07 10:10:21>
 
 import os
 import sys
@@ -17,7 +17,7 @@ def getArgs():
         import argparse
         parser = argparse.ArgumentParser(description='Import barcodes script.')
         parser.add_argument('-b','--barcode_file', dest='barcode_file', 
-                    help='input barcode file  (csv format)')
+                            help='input barcode file  (csv format, basedir is ../scripts)')
         if len(sys.argv)==1:
                 parser.print_help(sys.stderr)
                 sys.exit(1)
