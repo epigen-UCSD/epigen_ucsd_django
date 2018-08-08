@@ -92,8 +92,7 @@
                   <td>
                     <a class="spacing" href="{% url 'nextseq_app:run_update' username=user.username run_pk=Run.id %}"><i class="fas fa-edit"></i></a>
                     <a onclick="return confirm('Are you sure you want to delete {{ Run.Flowcell_ID }} ?');" href="{% url 'nextseq_app:run_delete2' Run.id %}"><i class="fas fa-trash-alt"></i></a>                
-
-                </td>
+                  </td>
                 </tr>
                 {% empty %}
                 <li>No Runs yet.</li>

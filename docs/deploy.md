@@ -53,6 +53,5 @@ python manage.py createsuperuser
 
 ### import existing barcodes into database:
 
-copy deploy.ini to folder scritps, 
 go to scripts folder:
 `python barcodeimport.py`
