@@ -1,0 +1,32 @@
+#!/bin/bash
+#PBS -q condo
+#PBS -N run_bcl2fastq_custom
+#PBS -l nodes=1:ppn=16
+#PBS -l walltime=8:00:00
+#PBS -o /home/zhc268/logs/run_bcl2fastq_c.out
+#PBS -e /home/zhc268/logs/run_bcl2fastq_c.err
+#PBS -V
+#PBS -M zhangc518@gmail.com
+#PBS -m abe
+#PBS -A epigen-group
+
+# -v pass parameters: run_dir, out_dir
+mkdir -p $out_dir
+s="--no-lane-splitting"
+[[ "$split" = true ]] &&  s=""
+
+[[ "$idx" = true ]] && c="--create-fastq-for-index-reads"
+samplesheet="${out_dir}/SampleSheet.csv" #--sample-sheet Default: <runfolder-dir>/SampleSheet.csv
+bcl2fastq --runfolder-dir $run_dir --output-dir $out_dir $s $c -p 8 --min-log-level TRACE --sample-sheet $samplesheet
+
+
+# simlink fastqs
+n=$(grep -n Data $samplesheet|cut -d':' -f1)
+libs=($(sed -n "$[n+2]"',$p' $samplesheet|cut -d',' -f 1))
+
+cd $out_dir
+for l in ${libs[@]}
+do
+    find . -name "${l}*.gz" |xargs -n1 -I '{}' echo "cp -pfs $(pwd)/{} /home/zhc268/data/seqdata/{}" | sed "s/_S[0-9]*_/_/2;s/\/\.//g;s/_001.fastq/.fastq/2" |bash
+done
+
