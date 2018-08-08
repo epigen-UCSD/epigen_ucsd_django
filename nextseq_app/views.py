@@ -647,6 +647,8 @@ def DemultiplexingView(request,run_pk):
 		except FileExistsError as e:
 			data['mkdirerror'] = 'Error: Folder: '+os.path.join(basedirname,'Data/Fastqs')+' already exists'
 			print(e)
+			RunInfo.objects.filter(pk=run_pk).update(nextseqdir=basedirname)
+			RunInfo.objects.filter(pk=run_pk).update(date=rundate)
 			return JsonResponse(data)
 		except Exception as e:
 			data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs Error!'
@@ -740,9 +742,3 @@ def DemultiplexingView(request,run_pk):
 
 	else:
 		return JsonResponse(data)
-
-
-
-
-
-
