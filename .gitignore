@@ -7,3 +7,4 @@ deploy.ini
 logfile
 */migrations/*
 !*/migrations/__init__.py
+*.cfg

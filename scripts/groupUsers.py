@@ -15,7 +15,7 @@ from django.contrib.auth.models import Group,User
 
 def main():
 	groupUser = {}
-	with open('scripts/groupUserscfg','r') as f:
+	with open('./groupUsers.cfg','r') as f:
 		for line in f:
 			fields = line.strip('\n')
 			print(fields)
