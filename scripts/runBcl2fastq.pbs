@@ -37,7 +37,7 @@ do
     out_dir=${samplesheet%/*}
     
     ## run bcl2fastq 
-    bcl2fastq --runfolder-dir $run_dir --output-dir $out_dir $s $c -p 16 --min-log-level TRACE --sample-sheet $samplesheet
+    #bcl2fastq --runfolder-dir $run_dir --output-dir $out_dir $s $c -p 16 --min-log-level TRACE --sample-sheet $samplesheet
 
     ## simlink fastqs & count reads number 
     n=$(grep -n Data $samplesheet|cut -d':' -f1)

@@ -672,8 +672,9 @@ def DemultiplexingView(request, run_pk):
             print(e)
             return JsonResponse(data)
         except FileExistsError as e:
-            data['mkdirerror'] = 'Error: Folder: ' + \
-                os.path.join(basedirname, 'Data/Fastqs')+' already exists'
+            data['mkdirerror2'] = 'Error: Folder: ' + \
+                os.path.join(basedirname, 'Data/Fastqs') + \
+                ' already exists; \n Are you sure to continue and overwrite existed fastqs?'
             print(e)
             RunInfo.objects.filter(pk=run_pk).update(nextseqdir=basedirname)
             RunInfo.objects.filter(pk=run_pk).update(date=rundate)
@@ -684,6 +685,137 @@ def DemultiplexingView(request, run_pk):
             return JsonResponse(data)
 
         samples_list = runinfo.librariesinrun_set.all()
+        i7len = len(
+            [x for x in samples_list.values_list('i7index', flat=True) if x])
+        i5len = len(
+            [x for x in samples_list.values_list('i5index', flat=True) if x])
+        if i7len == i5len or i5len == 0:
+            towritefiles = [os.path.join(
+                basedirname, 'Data/Fastqs', 'SampleSheet.csv')]
+        else:
+            try:
+                os.mkdir(os.path.join(basedirname, 'Data/Fastqs/OnePrimer'))
+            except Exception as e:
+                data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs/OnePrimer Error!'
+                print(e)
+                return JsonResponse(data)
+            try:
+                os.mkdir(os.path.join(basedirname, 'Data/Fastqs/TwoPrimers'))
+            except Exception as e:
+                data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs/TwoPrimers Error!'
+                print(e)
+                return JsonResponse(data)
+            towritefiles = [os.path.join(basedirname, 'Data/Fastqs/OnePrimer', 'SampleSheet.csv'),
+                            os.path.join(basedirname, 'Data/Fastqs/TwoPrimers', 'SampleSheet.csv')]
+        try:
+            for filename in towritefiles:
+                # print(filename)
+                with open(filename, 'w') as csvfile:
+                    writer = csv.writer(csvfile)
+                    writer.writerow(['[Header]'])
+                    writer.writerow(['IEMFileVersion', '5'])
+                    writer.writerow(['Date', rundate])
+                    writer.writerow(['Workflow', 'GenerateFASTQ'])
+                    writer.writerow(['Application', 'NextSeq FASTQ Only'])
+                    writer.writerow(['Instrument Type', 'NextSeq/MiniSeq'])
+                    writer.writerow(['Assay', 'Nextera XT / TruSeq LT'])
+                    writer.writerow(
+                        ['Index Adapters', 'Nextera XT v2 Index Kit / TruSeq LT'])
+                    writer.writerow(['Description'])
+                    writer.writerow(['Chemistry', 'Amplicon'])
+                    writer.writerow([''])
+                    writer.writerow(['[Reads]'])
+                    if runinfo.read_type == 'PE':
+                        a = runinfo.read_length
+                        writer.writerow([a])
+                        writer.writerow([a])
+                    else:
+                        a = runinfo.read_length
+                        writer.writerow([a])
+                    writer.writerow([''])
+                    writer.writerow(['[Settings]'])
+                    writer.writerow([''])
+                    writer.writerow(['[Data]'])
+                    writer.writerow(['Sample_ID', 'Sample_Name', 'Sample_Plate', 'Sample_Well',
+                                     'I7_Index_ID', 'index', 'I5_Index_ID', 'index2', 'Sample_Project', 'Description'])
+                    samples_list = runinfo.librariesinrun_set.all()
+                    for samples in samples_list:
+                        if filename == os.path.join(basedirname, 'Data/Fastqs', 'SampleSheet.csv'):
+                            i7id = samples.i7index or ''
+                            i5id = samples.i5index or ''
+                            i7seq = Barcode.objects.get(
+                                indexid=i7id).indexseq if i7id != '' else ''
+                            i5seq = Barcode.objects.get(
+                                indexid=i5id).indexseq if i5id != '' else ''
+                            writer.writerow(
+                                [samples.Library_ID, '', '', '', i7id, i7seq, i5id, i5seq, '', ''])
+                        else:
+                            if not samples.i5index:
+                                if filename == os.path.join(basedirname, 'Data/Fastqs/OnePrimer', 'SampleSheet.csv'):
+                                    i7id = samples.i7index or ''
+                                    i7seq = Barcode.objects.get(
+                                        indexid=i7id).indexseq if i7id != '' else ''
+                                    writer.writerow(
+                                        [samples.Library_ID, '', '', '', i7id, i7seq, '', '', '', ''])
+                            else:
+                                if filename == os.path.join(basedirname, 'Data/Fastqs/TwoPrimers', 'SampleSheet.csv'):
+                                    i7id = samples.i7index or ''
+                                    i5id = samples.i5index or ''
+                                    i7seq = Barcode.objects.get(
+                                        indexid=i7id).indexseq if i7id != '' else ''
+                                    i5seq = Barcode.objects.get(
+                                        indexid=i5id).indexseq if i5id != '' else ''
+                                    writer.writerow(
+                                        [samples.Library_ID, '', '', '', i7id, i7seq, i5id, i5seq, '', ''])
+        except Exception as e:
+            data['writesamplesheeterror'] = 'Unexpected writing to SampleSheet.csv Error!'
+            print(e)
+            return JsonResponse(data)
+
+        RunInfo.objects.filter(pk=run_pk).update(nextseqdir=basedirname)
+        RunInfo.objects.filter(pk=run_pk).update(date=rundate)
+        RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSubmitted')
+
+        # runBcl2fastq
+        cmd1 = './scripts/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
+            ' ' + basedirname + ' ' + request.user.email
+        p = subprocess.Popen(
+            cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        # thisjobid=p.pid
+
+        data['writetosamplesheet'] = 1
+        data['updatedate'] = '/'.join([rundate.split('-')[i]
+                                       for i in [1, 2, 0]])
+        return JsonResponse(data)
+
+    else:
+        return JsonResponse(data)
+
+
+@login_required
+@transaction.atomic
+def DemultiplexingView2(request, run_pk):
+    dmpdir = settings.NEXTSEQAPP_DMPDIR
+    runinfo = get_object_or_404(RunInfo, pk=run_pk)
+    if runinfo.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+        raise PermissionDenied
+    data = {}
+    # print(runinfo.Flowcell_ID)
+    for fname in os.listdir(dmpdir):
+        # print(os.path.join(dmpdir,fname))
+        if os.path.isdir(os.path.join(dmpdir, fname)) and fname.endswith(runinfo.Flowcell_ID):
+            data['is_direxists'] = 1
+            basedirname = os.path.join(dmpdir, fname)
+            rundate = '20'+'-'.join([fname[i:i+2]
+                                     for i in range(0, len(fname.split('_')[0]), 2)])
+            # print(rundate)
+            break
+    # print(data)
+    if 'is_direxists' in data:
+        #os.mkdir(os.path.join(basedirname, 'Data/Fastqs'))
+
+        samples_list = runinfo.librariesinrun_set.all()
+
         i7len = len(
             [x for x in samples_list.values_list('i7index', flat=True) if x])
         i5len = len(
