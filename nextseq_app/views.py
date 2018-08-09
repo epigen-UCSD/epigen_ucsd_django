@@ -415,14 +415,14 @@ def RunUpdateView2(request, username, run_pk):
             }
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
         if run_form.has_changed() or sample_formset.has_changed():
-            dmpdir = settings.NEXTSEQAPP_DMPDIR
-            for fname in os.listdir(dmpdir):
-                if os.path.isdir(os.path.join(dmpdir, fname)) and fname.endswith(runinfo.Flowcell_ID):
-                    basedirname = os.path.join(dmpdir, fname)
-            try:
-                shutil.rmtree(os.path.join(basedirname, 'Data/Fastqs'))
-            except (FileNotFoundError, UnboundLocalError) as e:
-                pass
+            #dmpdir = settings.NEXTSEQAPP_DMPDIR
+            # for fname in os.listdir(dmpdir):
+            #    if os.path.isdir(os.path.join(dmpdir, fname)) and fname.endswith(runinfo.Flowcell_ID):
+            #        basedirname = os.path.join(dmpdir, fname)
+            # try:
+            #    shutil.rmtree(os.path.join(basedirname, 'Data/Fastqs'))
+            # except (FileNotFoundError, UnboundLocalError) as e:
+            #    pass
             runinfo.jobstatus = 'ClickToSubmit'
 
         runinfo.save()
