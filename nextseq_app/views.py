@@ -824,18 +824,6 @@ def DemultiplexingView2(request, run_pk):
             towritefiles = [os.path.join(
                 basedirname, 'Data/Fastqs', 'SampleSheet.csv')]
         else:
-            try:
-                os.mkdir(os.path.join(basedirname, 'Data/Fastqs/OnePrimer'))
-            except Exception as e:
-                data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs/OnePrimer Error!'
-                print(e)
-                return JsonResponse(data)
-            try:
-                os.mkdir(os.path.join(basedirname, 'Data/Fastqs/TwoPrimers'))
-            except Exception as e:
-                data['mkdirerror'] = 'Unexpected mkdir .../Data/Fastqs/TwoPrimers Error!'
-                print(e)
-                return JsonResponse(data)
             towritefiles = [os.path.join(basedirname, 'Data/Fastqs/OnePrimer', 'SampleSheet.csv'),
                             os.path.join(basedirname, 'Data/Fastqs/TwoPrimers', 'SampleSheet.csv')]
         try:
