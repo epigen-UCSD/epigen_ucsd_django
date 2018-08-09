@@ -5,19 +5,14 @@ import django
 import argparse
 
 
-os.chdir("../")
 basedir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(os.path.dirname(basedir))
 sys.path.append(basedir)
+sys.path.append(os.path.dirname(basedir))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "epigen_ucsd_django.settings")
 django.setup()
 
 from nextseq_app.models import RunInfo, LibrariesInRun
-
-
-def getReadNumber(lib, run_dir):
-    '''
-    get number of reads for input lib
-    '''
 
 
 def main():
@@ -28,16 +23,26 @@ def main():
     # for example: python saveReadsNumber.py -f 'xxx|flowcellid'
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', help='flowcell id')
+    parser.add_argument('-i', help='input reads cnt file')
     flowcell = parser.parse_args().f
-    obj = LibrariesInRun.objects.get(singlerun=flowcell)
-    libs = [s.Library_ID for s in obj.librariesinrun_set.all()]
+    readscountfile = parser.parse_args().i
 
-    with open(readsnumberfile, 'r') as f:
+    warning_count_th = 1000
+    run_obj = RunInfo.objects.get(Flowcell_ID=flowcell)
+    run_obj.jobstatus = 'Done'
+
+    # save reads counts
+    with open(readscountfile, 'r') as f:
         for line in f:
             fields = line.strip('\n').split('\t')
             obj = LibrariesInRun.objects.get(Library_ID=fields[0])
             obj.numberofreads = int(fields[1])
+            if(obj.numberofreads < warning_count_th):
+                run_obj.jobstatus = 'Warning'
             obj.save()
+
+    # save run
+    run_obj.save()
 
 
 if __name__ == '__main__':

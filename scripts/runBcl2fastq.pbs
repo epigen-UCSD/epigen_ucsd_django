@@ -1,0 +1,63 @@
+#!/bin/bash
+#PBS -q condo
+#PBS -N run_bcl2fastq_custom
+#PBS -l nodes=1:ppn=16
+#PBS -l walltime=8:00:00
+#PBS -o /home/zhc268/logs/run_bcl2fastq_c.out
+#PBS -e /home/zhc268/logs/run_bcl2fastq_c.err
+#PBS -V
+#PBS -m abe
+#PBS -A epigen-group
+
+# -v pass parameters: flowcell_id, run_dir
+############################################################
+## update status to job submitted @VM
+############################################################
+cmd="source activate django;python \$(which updateRunStatus.py) -s '1' -f $flowcell_id"
+ssh zhc268@epigenomics.sdsc.edu $cmd
+
+
+############################################################
+## run bcl2fastq @TSCC
+############################################################
+## prepare variables & directories 
+mkdir -p $out_dir
+s="--no-lane-splitting"
+[[ "$split" = true ]] &&  s=""
+[[ "$idx" = true ]] && c="--create-fastq-for-index-reads"
+
+samplesheets=($(find $run_dir -name "SampleSheet.csv" ))
+reads_cnt_file="${run_dir}/Data/Fastqs/reads_cnt.tsv"
+>$reads_cnt_file
+
+# count for mix 1 and 2 primers 
+for samplesheet in ${samplesheets[@]}
+do
+    cd $run_dir 
+    out_dir=${samplesheet%/*}
+    
+    ## run bcl2fastq 
+    bcl2fastq --runfolder-dir $run_dir --output-dir $out_dir $s $c -p 16 --min-log-level TRACE --sample-sheet $samplesheet
+
+    ## simlink fastqs & count reads number 
+    n=$(grep -n Data $samplesheet|cut -d':' -f1)
+    libs=($(sed -n "$[n+2]"',$p' $samplesheet|cut -d',' -f 1))
+
+    cd $out_dir
+    for l in ${libs[@]}
+    do
+	fastqs=($(find . -name "${l}*.gz"))
+	nreads=$(zcat ${fastqs[0]}| wc -l ) && echo -e "$l\t$[nreads/4]" >> $reads_cnt_file & sleep 1
+	
+	find . -name "${l}*.gz" |xargs -n1 -I '{}' echo "cp -pfs $(pwd)/{} /home/zhc268/data/seqdata/{}" | sed "s/_S[0-9]*_/_/2;s/\/\.//g;s/_001.fastq/.fastq/2" |bash
+	
+    done
+done
+
+wait
+
+############################################################
+# update status to finish or warning @ VM
+############################################################
+cmd="source activate django;python \$(which updateReadsNumberPerRun.py) -f $flowcell_id -i $reads_cnt_file"
+ssh zhc268@epigenomics.sdsc.edu $cmd
