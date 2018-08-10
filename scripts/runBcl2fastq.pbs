@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -q condo
-#PBS -N run_bcl2fastq_custom
+#PBS -N django_bcl2fastq
 #PBS -l nodes=1:ppn=16
 #PBS -l walltime=8:00:00
 #PBS -o /home/zhc268/logs/run_bcl2fastq_c.out
@@ -37,7 +37,7 @@ do
     out_dir=${samplesheet%/*}
     
     ## run bcl2fastq 
-    #bcl2fastq --runfolder-dir $run_dir --output-dir $out_dir $s $c -p 16 --min-log-level TRACE --sample-sheet $samplesheet
+    bcl2fastq --runfolder-dir $run_dir --output-dir $out_dir $s $c -p 16 --min-log-level TRACE --sample-sheet $samplesheet
 
     ## simlink fastqs & count reads number 
     n=$(grep -n Data $samplesheet|cut -d':' -f1)
