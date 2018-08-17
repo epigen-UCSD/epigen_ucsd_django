@@ -6,6 +6,11 @@
 /* .bg-light {
   background-color: #e9ecef !important;
  }*/
+
+ .tooltip {
+  font-family:"Mr Eaves Modern",Arial,sans-serif;
+  font-size: 12px;
+}
 .borderline {
   border-bottom: "3px solid";
 }

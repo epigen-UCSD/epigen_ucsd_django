@@ -34,10 +34,12 @@ $(document).ready( function () {
     	"order": [[ 2, "desc" ]]
     });
     $('.datatablesort1').DataTable({
-	"order": [[ 1, "asc" ]]
+		"order": [[ 1, "asc" ]]
     });
 
     $( "#id_date" ).datepicker();
+
+    $('[data-toggle="tooltip"]').tooltip();
     
     $('.formset_row').formset({
 	addText: 'add another samples',

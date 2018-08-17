@@ -50,7 +50,7 @@
             My Runs
           </div><!-- /.card-header -->
           <div class="card-body">
-            <table class="table table-striped table-sm datatablesort2 text-center">
+            <table class="table table-striped table-sm datatablesort2 text-center table-responsive-xl">
               <thead>
                 <tr>
                   
@@ -86,7 +86,7 @@
                   {% elif Run.jobstatus == 'Error'%}
                   <td><span class="badge badge-success badge-status-yellow">Error</span></td>
                   {% elif Run.jobstatus == 'Warning'%}
-                  <td><span class="badge badge-success badge-status-yellow">Warning</span></td>
+                  <td><span class="badge badge-success badge-status-yellow" data-toggle="tooltip" data-placement="right" title="contain libraries with reads number less than 1000">Warning</span></td>
                   {% endif %}
 
                   <td>
