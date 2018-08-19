@@ -11,10 +11,21 @@
   font-family:"Mr Eaves Modern",Arial,sans-serif;
   font-size: 12px;
 }
+
+.top15 {
+  margin-top: 15px;
+}
+
 .borderline {
   border-bottom: "3px solid";
 }
 
+.summarytable td {
+  padding: 0px 0 10px 50px;
+}
+.summarytable th {
+  padding: 0px 0 10px 0px;
+}
 .btn-status-orange {
   background-color: #FF6A39;
   font-size: 12px;
@@ -115,7 +126,7 @@ table a, .linkblue{
 .toright {
   float:right
 }
-a.spacing {
+.spacing {
   letter-spacing: 10px;
 }
 #sidebar {
@@ -126,6 +137,21 @@ a.spacing {
 .card-body {
   font-size:14.5px;
 }
+a[aria-expanded=true] .fa-caret-right {
+   display: none;
+   width:50px;
+}
+a[aria-expanded=false] .fa-caret-down {
+   display: none;
+}
+
+.fa-caret-right {
+  color: rgba(0, 0, 0, .5);
+}
+.fa-caret-down {
+  color: rgba(0, 0, 0, .5);
+}
+
 .sidebar-header {
     display: block;
     padding: 3px 15px;

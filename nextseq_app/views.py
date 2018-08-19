@@ -28,6 +28,8 @@ import subprocess
 import os
 import time
 import shutil
+from django.core import serializers
+from django.forms.models import model_to_dict
 
 
 def BarcodeDic():
@@ -159,23 +161,45 @@ def UserSamplesView(request):
 class RunDetailView2(DetailView):
     model = RunInfo
     template_name = 'nextseq_app/details.html'
+    summaryfield = ['jobstatus','date','operator','read_type','read_length','nextseqdir']
+    #object = FooForm(data=model_to_dict(Foo.objects.get(pk=object_id)))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         #context['barcode'] = barcodes_dic
         context['barcode'] = BarcodeDic()
+        context['summaryfield'] = self.summaryfield 
         return context
+
+# @login_required
+# def RunDetailView(request,pk):
+#     runinfo = get_object_or_404(RunInfo, pk=pk)
+#     runinfosummary = model_to_dict(runinfo, \
+#         fields=['jobstatus','date','operator','read_type','read_length','nextseqdir'])
+#     #runinfosummary = serializers.serialize('python', RunInfo.objects.filter(pk=pk), \
+#         #fields=('jobstatus','date','operator','read_type','read_length','nextseqdir',))
+#     print(runinfosummary)
+
+#     context = {
+#         'runinfosummary':runinfosummary,
+#         'runinfo': runinfo,
+#         'barcode': BarcodeDic(),
+
+#     }
+#     return render(request, 'nextseq_app/details.html', context=context)
 
 
 @method_decorator(login_required, name='dispatch')
 class RunDetailViewhome(DetailView):
     model = RunInfo
     template_name = 'nextseq_app/homedetails.html'
+    summaryfield = ['jobstatus','date','operator','read_type','read_length','nextseqdir']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         #context['barcode'] = barcodes_dic
         context['barcode'] = BarcodeDic()
+        context['summaryfield'] = self.summaryfield
         return context
 
 # @method_decorator(login_required, name='dispatch')

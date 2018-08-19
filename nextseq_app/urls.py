@@ -14,6 +14,7 @@ urlpatterns = [
     path('login/', views.UserLoginView.as_view(), name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('<int:pk>/', views.RunDetailView2.as_view(), name='rundetail'),
+    #path('<int:pk>/', views.RunDetailView, name='rundetail'),
     path('home/<int:pk>/', views.RunDetailViewhome.as_view(), name='rundetailhome'),
     path('adds/', views.RunCreateView4, name='runandsample_add'),
     path('addsinbulky/', views.RunCreateView6, name='runandsample_add_inbulky'),

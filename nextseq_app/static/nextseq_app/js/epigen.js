@@ -40,6 +40,11 @@ $(document).ready( function () {
     $( "#id_date" ).datepicker();
 
     $('[data-toggle="tooltip"]').tooltip();
+
+    $('.close').on('click',function() {
+      $(this).closest('.card').fadeOut();
+    });
+
     
     $('.formset_row').formset({
 	addText: 'add another samples',
