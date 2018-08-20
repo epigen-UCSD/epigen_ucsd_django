@@ -3,6 +3,7 @@
   /*padding:0;*/
 
  }
+ /*html {height: 101%;}*/
 /* .bg-light {
   background-color: #e9ecef !important;
  }*/
@@ -20,6 +21,16 @@
   border-bottom: "3px solid";
 }
 
+.tooltip .tooltip-inner{
+    background-color:#535554;
+    padding:3px 12px;
+    max-width:300px;
+}
+
+.tooltip .arrow:before {
+  border-left-color: #535554;
+  border-right-color: #535554;
+}
 .summarytable td {
   padding: 0px 0 10px 50px;
 }
@@ -145,10 +156,10 @@ a[aria-expanded=false] .fa-caret-down {
    display: none;
 }
 
-.fa-caret-right {
+.fa-caret-right.collapseheader {
   color: rgba(0, 0, 0, .5);
 }
-.fa-caret-down {
+.fa-caret-down.collapseheader {
   color: rgba(0, 0, 0, .5);
 }
 
@@ -236,6 +247,11 @@ a[aria-expanded=false] .fa-caret-down {
     padding-bottom: 0;
     max-height: none;
    
+}
+.card-header.collapseheader {
+    padding-left: 3px;
+    padding-right: 10px;
+
 }
 .card-header.fortable {
 
