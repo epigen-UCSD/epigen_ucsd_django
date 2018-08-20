@@ -72,7 +72,9 @@
                <tr>           
 
                  <td><a href=" "> {{ sample.Library_ID }} </a></td>
-                 <td>{{  sample.singlerun }}</td>    
+                
+                 <td><a href=" {% url 'nextseq_app:rundetail' sample.singlerun|get_value:'pk' %} ">{{  sample.singlerun }} </a></td>  
+                
                  <td>{{  sample.i7index|default_if_none:"" }}</td>
                  <td>{{ barcode|key:sample.i7index }}</td>
                  <td>{{  sample.i5index|default_if_none:"" }}</td>

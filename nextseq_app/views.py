@@ -136,13 +136,11 @@ def UserSamplesView(request):
     userruns = RunInfo.objects.filter(operator=request.user)
     Samples_list = LibrariesInRun.objects.filter(singlerun__in=userruns)
     barcodes_dic = BarcodeDic()
-    number = Samples_list.count()
     usersamples = True
 
     context = {
         'Samples_list': Samples_list,
         'barcode': barcodes_dic,
-        'number': number,
         'usersamples': usersamples
     }
     return render(request, 'nextseq_app/usersamplesinfo.html', context)
