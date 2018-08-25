@@ -15,9 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from nextseq_app import views
+#from nextseq_app import views
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('nextseq_app/', include('nextseq_app.urls')),
+    path('nextseq_app/login/', views.UserLoginView.as_view(), name='loginfromnexseq'),
+    path('login/', views.UserLoginView.as_view(), name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('changepassword/', views.change_password, name='change_password'),
+    path('register/', views.UserRegisterView.as_view(), name='register'),
+
+
+
 ]

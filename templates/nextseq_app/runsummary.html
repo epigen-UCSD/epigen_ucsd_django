@@ -1,0 +1,52 @@
+{% load nextseq_app_tags %}
+{% load humanize %}
+<div class="row" id="summary">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="card bottom15">
+      <div class="card-header fortable collapseheader">
+        <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1"><i class="fa fas fa-caret-right collapseheader fa-lg fa-fw"></i><i class="fa fa-caret-down collapseheader fa-lg fa-fw"></i></a>
+        Summary
+        <button type="button" class="close" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+        </button>
+      </div><!-- /.card-header -->
+      <div class="collapse show" id="collapse1">
+        <div class="card-body">
+          <table class="summarytable">
+            <tbody>  
+                {% for field in summaryfield %}
+              <tr>
+                <th>
+                  {{ field|humantitle}}:
+                  
+                </th>
+                {% if field == 'jobstatus'%}
+                {% if runinfo.jobstatus == 'Done'%}
+                <td><span class="badge badge-success badge-status-green">Done</span></td>
+                {% elif runinfo.jobstatus == 'ClickToSubmit' %}      
+                <td><span class="badge badge-success badge-status-orange">ToSubmit</span></td>
+                {% elif runinfo.jobstatus == 'JobSubmitted'%}
+                <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
+                {% elif runinfo.jobstatus == 'JobStarted'%}
+                <td><span class="badge badge-success badge-status-lightblue">JobStarted</span></td>
+                {% elif runinfo.jobstatus == 'Error'%}
+                <td><span class="badge badge-success badge-status-yellow">Error</span></td>
+                {% elif runinfo.jobstatus == 'Warning'%}
+                <td><span class="badge badge-success badge-status-yellow" data-toggle="tooltip" data-placement="right" title="contain libraries with reads number less than 1000">Warning</span></td>
+                {% endif %}
+                {% else %}  
+                <td>
+                  {{ runinfo|get_value:field|default_if_none:""}}
+                </td>
+                {% endif %}
+              </tr>
+               
+              {% endfor %}  
+            </tbody>
+            
+          </table>
+        </div><!-- /.card-body -->              
+      </div><!-- /.collapse --> 
+    </div><!-- /.card -->
+  </div>
+</div>

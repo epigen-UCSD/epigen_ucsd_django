@@ -1,0 +1,24 @@
+{% extends 'nextseq_app/base.html' %}
+{% block navheader %}{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content %}
+
+<div id="contentlogin" class="col-sm-10 col-md-10 col-lg-10 mx-auto">
+  <div class="card">
+    <div class="card-body">
+
+      <form method="post" action="">
+        {% csrf_token %}
+        <table class=”table“>
+                   	
+          {{ form.as_table }}      
+
+        </table>
+        <input type="submit" value="Submit" />
+      </form>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

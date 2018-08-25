@@ -42,7 +42,7 @@ $(document).ready( function () {
     $('[data-toggle="tooltip"]').tooltip();
 
     $('.close').on('click',function() {
-      $(this).closest('.card').fadeOut();
+      $(this).closest('.row').fadeOut();
     });
 
     
@@ -111,6 +111,67 @@ $(document).ready( function () {
 	    }
 
 	});
+    })
+
+    var currenturl = window.location.pathname;
+    if(currenturl.includes("update")){
+    	
+    	$("a.editable").addClass("active");
+
+    }
+    $("nav a").each(function(){
+    	var href = $(this).attr("href");
+    	if($(this).hasClass("dropdown-item")){
+    		if(currenturl==href){
+    			$(this).parent().prev("a").addClass("active");
+    		}
+    	}
+    	else if(currenturl.split('/')[1]==$(this).attr("id")){
+    		$(this).addClass("active")
+
+    	}
+
+    });
+    $("#sidebar a").each(function(){
+    	var href = $(this).attr("href");
+    	if(currenturl==href){
+    		if($(this).parent().hasClass("collapse")){
+    			$(this).parent().prev("a").addClass("active");
+    		}
+    		else{
+    			$(this).addClass("active")
+    		}   		
+    	}
+    });
+
+    $(".list-group.checkboxsidebar > .list-group-item").each(function(){
+    	var checkitem = $(this);
+    	var thisid = checkitem.attr("name")
+    	checkitem.css('cursor','pointer');
+    	checkbox = $('<input type="checkbox" style="display:none;" checked/>');
+    	checkitem.prepend(checkbox);
+    	var checkedicon = $('<i class="fas checkboxsidebar fa-check-square"></i>')
+    	var uncheckedicon = $('<i class="far checkboxsidebar fa-square"></i>')
+    	// checkitem.addClass("active");
+    	checkitem.prepend(checkedicon)
+    	var relatedsection = document.getElementById(thisid);
+        checkbox.on('change',function(){
+    		if(this.checked){
+    			// checkitem.addClass("active");  
+    			relatedsection.style.display = "block";
+    			checkitem.find(".far").remove()
+    			checkitem.prepend(checkedicon)
+
+    		}
+    		else{
+    			// checkitem.removeClass("active");   			
+    			relatedsection.style.display = "none";
+    			checkitem.find(".fas").remove()
+    			checkitem.prepend(uncheckedicon)
+
+    		}
+    	})
+
     })
 
 } );

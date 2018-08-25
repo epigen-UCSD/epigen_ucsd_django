@@ -187,18 +187,18 @@ class RunDetailView2(DetailView):
 #     return render(request, 'nextseq_app/details.html', context=context)
 
 
-@method_decorator(login_required, name='dispatch')
-class RunDetailViewhome(DetailView):
-    model = RunInfo
-    template_name = 'nextseq_app/homedetails.html'
-    summaryfield = ['jobstatus','date','operator','read_type','read_length','nextseqdir']
+# @method_decorator(login_required, name='dispatch')
+# class RunDetailViewhome(DetailView):
+#     model = RunInfo
+#     template_name = 'nextseq_app/homedetails.html'
+#     summaryfield = ['jobstatus','date','operator','read_type','read_length','nextseqdir']
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        #context['barcode'] = barcodes_dic
-        context['barcode'] = BarcodeDic()
-        context['summaryfield'] = self.summaryfield
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         #context['barcode'] = barcodes_dic
+#         context['barcode'] = BarcodeDic()
+#         context['summaryfield'] = self.summaryfield
+#         return context
 
 # @method_decorator(login_required, name='dispatch')
 # class RunCreateView(CreateView):

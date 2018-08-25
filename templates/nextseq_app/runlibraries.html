@@ -1,0 +1,46 @@
+{% load nextseq_app_tags %}
+{% load humanize %}
+<div class="row" id="libraries">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="card bottom15">
+      <div class="card-header fortable collapseheader">
+        <a data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapse2"><i class="fa fas fa-caret-right collapseheader fa-lg fa-fw"></i><i class="fa fa-caret-down collapseheader fa-lg fa-fw"></i></a>
+        Libraries
+        <button type="button" class="close" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+        </button>
+      </div><!-- /.card-header -->
+      <div class="collapse show" id="collapse2">
+        <div class="card-body">
+          <p><a class="linkblue toright" href="{% url 'nextseq_app:samplesheet_create' runinfo.id %}"> <i class="fas fa-save"></i>Save as SampleSheet.csv</a></p>
+          <br />
+          <table class="table table-sm table-striped text-center table-responsive-xl">
+            <thead>
+            <tr>
+              <th>Library ID</th>
+              <th>i7index</th>
+              <th>i7sequence</th>
+              <th>i5index</th>
+              <th>i5sequence</th>
+              <th>#Reads</th>
+            </tr>
+            </thead>                  
+          {% for samples in runinfo.librariesinrun_set.all %}
+            <tr>                  
+              <td>{{samples.Library_ID}}</td>
+              <td>{{samples.i7index|default_if_none:""}}</td>
+              <td>{{ barcode|key:samples.i7index }}</td>    
+              <td>{{samples.i5index|default_if_none:""}}</td>
+              <td>{{ barcode|key:samples.i5index }}</td>
+              {% with firstfilter=samples.numberofreads|default_if_none:"" %}
+              <td>{{ firstfilter|intcomma }}</td>
+              {% endwith %}
+            </tr>
+          {% endfor %}                  
+          </table>
+        </div><!-- /.card-body --> 
+      </div><!-- /.collapse -->             
+    </div><!-- /.card -->
+  
+  </div>
+</div>

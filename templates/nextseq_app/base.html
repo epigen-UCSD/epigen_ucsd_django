@@ -1,44 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>NextseqApp</title>
-     
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  {% load static %}
+{% extends 'common/base.html' %}
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
+{% block sidebar %}
+<div id="sidebar" class="col-sm-2 col-md-2 col-lg-2" role="navigation">
+  <div class="list-group navsiebar">
+    <li class="sidebar-header">Nextseq App</li>
+    <a href="{% url 'nextseq_app:userruns' %}" class="list-group-item list-group-item-action-custom editable">My Runs</a>      
+    <a href="{% url 'nextseq_app:usersamples' %}" class="list-group-item list-group-item-action-custom" >My Libraries</a>      
+    <a href="#addrun" class="list-group-item list-group-item-action-custom" data-toggle="collapse" ><i class="fas fa-plus"></i> Add a Run <i class="fa fa-caret-down"></i></a>
+      <div class="collapse" id="addrun">
+      <a href="{% url 'nextseq_app:runandsample_add' %}" class="list-group-item list-group-item-action-custom submenu">One by One Entry of Libraries</a>
+      <a href="{% url 'nextseq_app:runandsample_add_inbulky' %}" class="list-group-item list-group-item-action-custom submenu">Bulk Entry of Libraries</a>
+      </div>
+    <a href="{% url 'nextseq_app:allruns' %}" class="list-group-item list-group-item-action-custom">All Runs</a>      
+    <a href="{% url 'nextseq_app:allsamples' %}" class="list-group-item list-group-item-action-custom" >All Libraries</a>
+  </div>
+</div> 
+{% endblock %}
 
-  
-  <link rel="stylesheet" type="text/css" href="{% static 'nextseq_app/css/jquery.dataTables.min.css' %}">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" type="text/css" href="{% static 'nextseq_app/css/style.css' %}?v=1.0.2"/>
-
-</head>
-<body>
-
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-
-  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script src="{% static 'nextseq_app/js/jquery.dataTables.min.js' %}" ></script>
-  
-  <script src="{% static 'nextseq_app/js/jquery.formset.js' %}"></script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
-  <script src="{% static 'nextseq_app/js/epigen.js' %}?v=1.0.2"></script>
-
-
-  {% block body %}
-  {% endblock %}
-</body>
-  
-
-</html>
+{% block content %}
+{% endblock %}

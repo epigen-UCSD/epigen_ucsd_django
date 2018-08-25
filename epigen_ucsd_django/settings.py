@@ -71,6 +71,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'epigen_ucsd_django.wsgi.application'
 
+STATICFILES_DIRS = [
+
+    os.path.join(BASE_DIR, 'static'),
+
+]
+
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -135,6 +141,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_URL = '/nextseq_app/login/'
+LOGIN_URL = '/login/'
 
 NEXTSEQAPP_DMPDIR = config['database']['NEXTSEQAPP_DMPDIR']
