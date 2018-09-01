@@ -834,7 +834,8 @@ def DemultiplexingView2(request, run_pk):
             break
     # print(data)
     if 'is_direxists' in data:
-        #os.mkdir(os.path.join(basedirname, 'Data/Fastqs'))
+        shutil.rmtree(os.path.join(basedirname, 'Data/Fastqs'))
+        os.mkdir(os.path.join(basedirname, 'Data/Fastqs'))
 
         samples_list = runinfo.librariesinrun_set.all()
 
