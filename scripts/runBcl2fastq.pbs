@@ -48,7 +48,7 @@ do
     do
 	fastqs=($(find . -name "${l}*.gz"))
 	nreads=$(zcat ${fastqs[0]}| wc -l ) && echo -e "$l\t$[nreads/4]" >> $reads_cnt_file & sleep 1
-	if [ -f Undertermined*R2* ];	then
+	if [ -f Undetermined*R2* ];	then
 	    find . -name "${l}*.gz" |xargs -n1 -I '{}' echo "cp -pfs $(pwd)/{} /home/zhc268/data/seqdata/{}" | sed "s/_S[0-9]*_/_/2;s/\/\.//g;s/_001.fastq/.fastq/2" |bash
 	else
 	    find . -name "${l}*.gz" |xargs -n1 -I '{}' echo "cp -pfs $(pwd)/{} /home/zhc268/data/seqdata/{}" | sed "s/_S[0-9]*_/_/2;s/\/\.//g;s/_001.fastq/.fastq/2;s/_R1//2" |bash
