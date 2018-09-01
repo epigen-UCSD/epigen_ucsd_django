@@ -846,6 +846,8 @@ def DemultiplexingView2(request, run_pk):
             towritefiles = [os.path.join(
                 basedirname, 'Data/Fastqs', 'SampleSheet.csv')]
         else:
+            os.makedirs(os.path.join(basedirname, 'Data/Fastqs/OnePrimer'),exist_ok=True)
+            os.makedirs(os.path.join(basedirname, 'Data/Fastqs/TwoPrimers'),exist_ok=True)           
             towritefiles = [os.path.join(basedirname, 'Data/Fastqs/OnePrimer', 'SampleSheet.csv'),
                             os.path.join(basedirname, 'Data/Fastqs/TwoPrimers', 'SampleSheet.csv')]
         try:
