@@ -12,7 +12,7 @@ class LibrariesSetQC(models.Model):
 	experiment_type_choice = (('ATAC-seq','ATAC-seq'),('ChIP-seq','ChIP-seq'), ('HiC','HiC'),('other','other'))
 	experiment_type = models.CharField(max_length=10,choices=experiment_type_choice)
 	libraries_to_include = models.ManyToManyField(LibrariesInRun)
-	notes = models.TextField()
+	notes = models.TextField(blank=True)
 	last_modified = models.DateTimeField(auto_now=True)
 
 
