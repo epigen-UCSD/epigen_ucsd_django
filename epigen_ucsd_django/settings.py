@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'nextseq_app',
+    'setqc_app',
     'django.contrib.humanize',
 ]
 

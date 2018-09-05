@@ -1,0 +1,19 @@
+{% extends 'common/base.html' %}
+
+  {% block title %}
+  <title>SetQCApp</title>
+  {% endblock %}
+
+{% block sidebar %}
+<div id="sidebar" class="col-sm-2 col-md-2 col-lg-2" role="navigation">
+  <div class="list-group navsiebar">
+    <li class="sidebar-header">SetQC App</li>
+    <a href="{% url 'setqc_app:usersetqcs' %}" class="list-group-item list-group-item-action-custom editable">My Sets</a> 
+    <a href="{% url 'setqc_app:setqc_add' %}" class="list-group-item list-group-item-action-custom">Add a new Set</a>
+    <a href="{% url 'setqc_app:allsetqcs' %}" class="list-group-item list-group-item-action-custom">All Sets</a>      
+  </div>
+</div> 
+{% endblock %}
+
+{% block content %}
+{% endblock %}

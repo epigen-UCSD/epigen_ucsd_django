@@ -33,11 +33,13 @@ $(document).ready( function () {
     $('.datatablesort2').DataTable({
     	"order": [[ 2, "desc" ]]
     });
+    
     $('.datatablesort1').DataTable({
 		"order": [[ 1, "asc" ]]
     });
 
     $( "#id_date" ).datepicker();
+    $( "#id_date_requested" ).datepicker();
 
     $('[data-toggle="tooltip"]').tooltip();
 

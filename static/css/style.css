@@ -9,8 +9,14 @@
  }*/
 #contentlogin {
   margin-top: 60px;
+}
 
+p.textarea {
+  margin-bottom: 0;
+}
 
+.navbar-nav {
+  margin: 0 0 0 40px;
 }
  .tooltip {
   font-family:"Mr Eaves Modern",Arial,sans-serif;

@@ -29,3 +29,19 @@ def humantitle(oldtitle):
 @register.filter
 def get_value(obj, field_name):
 	return getattr(obj,field_name)
+
+@register.filter
+def get_type(value):
+    return type(value)
+
+@register.filter
+def get_class(ob):
+    return ob.__class__.__name__
+
+
+
+
+
+
+
+
