@@ -24,15 +24,19 @@ def grouplibraries(librarieslist):
     groupedlibraries = []
     presuffix_number = {}
     for item in librarieslist:
-        prefix = item.split('_',2)[0]
-        try:
-            suffix = item.split('_',2)[2]
-        except IndexError as e:
-            suffix = ''
-        presuffix = ':'.join([prefix,suffix])
-        if presuffix not in presuffix_number.keys():
-            presuffix_number[presuffix]=[]
-        presuffix_number[presuffix].append(int(item.split('_',2)[1]))
+        splititem = item.split('_',2)
+        if len(splititem) == 1:
+            groupedlibraries.append(item)
+        else:
+            prefix = item.split('_',2)[0]
+            try:
+                suffix = item.split('_',2)[2]
+            except IndexError as e:
+                suffix = ''
+            presuffix = ':'.join([prefix,suffix])
+            if presuffix not in presuffix_number.keys():
+                presuffix_number[presuffix]=[]
+            presuffix_number[presuffix].append(int(item.split('_',2)[1]))
 
     for k,v in presuffix_number.items():
         prefix = k.split(':')[0]
