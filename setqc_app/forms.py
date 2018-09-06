@@ -29,7 +29,7 @@ class LibrariesForm(forms.ModelForm):
 class LibrariesToIncludeCreatForm(forms.Form):
 	librariestoinclude = forms.CharField(
 			label='Libraries to Include:',
-			widget=forms.Textarea(attrs={'cols': 100, 'rows': 8}),
+			widget=forms.Textarea(attrs={'cols': 100, 'rows': 6}),
 			initial='Please enter Library_IDs separated by a comma(,), group the' \
 			' libraries with consecutive numbers by concatenating the min and max'\
 			' with dash(–) or hyphen(-), eg. AVD_173 - AVD_187,AVD_37, AVD_38:\n\n'

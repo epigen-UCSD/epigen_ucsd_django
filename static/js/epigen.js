@@ -38,6 +38,54 @@ $(document).ready( function () {
 		"order": [[ 1, "asc" ]]
     });
 
+
+    $('#datatabledetailnotes').DataTable({
+    	"order": [[ 1, "asc" ]],
+    	"columnDefs": [ {
+    	    "orderable":false,
+    	    "targets": [0,-1],            
+        } ,
+        // {
+        // 	"className": 'details-control',
+        // 	"targets": 0,
+        // }
+
+        ]
+
+    });
+
+    $('#datatabledetailnotes tbody').on('click', 'td.details-control', function () {
+    	var thisurl=$(this).attr("data-href");
+    	var tr = $(this).closest('tr');
+    	if ($(this).hasClass("closing")){
+    		$(this).removeClass("closing")
+    		tr.next().closest(".detailnotes").remove()
+
+
+    	}
+    	else{
+    		$(this).addClass("closing")
+
+           	$.ajax({
+           		url:thisurl,
+           		cache:false,
+           		dataType: 'json',
+           		success:function (data){
+
+           		if(data.notes){
+           			tr.after('<tr class="detailnotes"><td class="detailnotes" colspan="8">Notes:'+data.notes+'</td></tr>')
+
+
+           			}
+           		}
+           	})
+
+    	}
+
+    });
+
+
+
     $( "#id_date" ).datepicker();
     $( "#id_date_requested" ).datepicker();
 

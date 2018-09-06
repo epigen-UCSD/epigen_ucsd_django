@@ -5,6 +5,7 @@ from django.db import transaction
 from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse
 from itertools import groupby
 from operator import itemgetter
 
@@ -151,7 +152,14 @@ def SetQCUpdateView(request,setqc_pk):
 
     return render(request, 'setqc_app/setqcupdate.html', context)
 
-
+@login_required
+def GetNotesView(request,setqc_pk):
+    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
+    if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+        raise PermissionDenied
+    data = {}
+    data['notes'] = setinfo.notes
+    return JsonResponse(data)
 
 
 
