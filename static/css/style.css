@@ -24,17 +24,24 @@ td.details-control.closing {
 }
 
 tr.detailnotes {
-  line-height: 35px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
   text-align: left;
-  background-color: #D0F0C0 !important;
+  background-color: white !important;
 
   
 }
 td.detailnotes {
-  padding-left: 30px !important;
+  padding: 10px 30px !important;
 
+}
+div.detailnotes {
+  background-color: #D0F0C0 !important;
+  padding:10px 15px;
+  border-style: solid;
+  border-color: #C0C0C0;
+  border-width: 1px;
+  border-radius: 5px;
 }
 
 .navbar-nav {

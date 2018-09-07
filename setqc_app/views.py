@@ -10,7 +10,7 @@ from itertools import groupby
 from operator import itemgetter
 
 # Create your views here.
-DisplayField1 = ['setID','set_name','date_requested','requestor','experiment_type','last_modified']
+DisplayField1 = ['setID','set_name','date_requested','experiment_type','last_modified','url']
 DisplayField2 = ['setID','set_name','date_requested','requestor','experiment_type']
 
 def groupnumber(datalist):

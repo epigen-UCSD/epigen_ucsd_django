@@ -43,7 +43,7 @@ $(document).ready( function () {
     	"order": [[ 1, "asc" ]],
     	"columnDefs": [ {
     	    "orderable":false,
-    	    "targets": [0,-1],            
+    	    "targets": [0,-1,-2],            
         } ,
         // {
         // 	"className": 'details-control',
@@ -73,7 +73,7 @@ $(document).ready( function () {
            		success:function (data){
 
            		if(data.notes){
-           			tr.after('<tr class="detailnotes"><td class="detailnotes" colspan="8">Notes:'+data.notes+'</td></tr>')
+           			tr.after('<tr class="detailnotes"><td class="detailnotes" colspan="8"><div class="detailnotes">Notes:'+data.notes+'</div></td></tr>')
 
 
            			}

@@ -14,6 +14,7 @@ class LibrariesSetQC(models.Model):
 	libraries_to_include = models.ManyToManyField(LibrariesInRun)
 	notes = models.TextField(blank=True)
 	last_modified = models.DateTimeField(auto_now=True)
+	url = models.URLField(blank=True)
 
 
 
