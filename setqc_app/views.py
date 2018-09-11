@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import LibrariesSetQC
-from nextseq_app.models import LibrariesInRun
+from masterseq_app.models import SequencingInfo
 from django.db import transaction
 from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm
 from django.shortcuts import render, redirect, get_object_or_404
@@ -100,7 +100,7 @@ def SetQCCreateView(request):
 
         for item in librariestoinclude:
             if item:
-                setinfo.libraries_to_include.add(LibrariesInRun.objects.get(Library_ID=item))
+                setinfo.libraries_to_include.add(SequencingInfo.objects.get(sequencing_id=item))
         
 
         return redirect('setqc_app:usersetqcs')
@@ -128,7 +128,7 @@ def SetQCUpdateView(request,setqc_pk):
         raise PermissionDenied
     set_form = LibrariesSetQCCreationForm(request.POST or None, instance=setinfo)
     librariesall = setinfo.libraries_to_include.all()
-    librarieslist = list(librariesall.values_list('Library_ID', flat=True))
+    librarieslist = list(librariesall.values_list('sequencing_id', flat=True))
     libraries_form = LibrariesToIncludeCreatForm(request.POST or None, \
         initial={'librariestoinclude': grouplibraries(librarieslist)})
     if set_form.is_valid() and libraries_form.is_valid():
@@ -140,7 +140,7 @@ def SetQCUpdateView(request,setqc_pk):
 
         for item in librariestoinclude:
             if item:
-                setinfo.libraries_to_include.add(LibrariesInRun.objects.get(Library_ID=item))
+                setinfo.libraries_to_include.add(SequencingInfo.objects.get(sequencing_id=item))
         
 
         return redirect('setqc_app:usersetqcs')

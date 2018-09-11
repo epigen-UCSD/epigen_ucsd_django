@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from nextseq_app.models import LibrariesInRun
+from masterseq_app.models import SequencingInfo
 
 # Create your models here.
 class LibrariesSetQC(models.Model):
@@ -11,10 +11,12 @@ class LibrariesSetQC(models.Model):
 	requestor = models.ForeignKey(User, on_delete=models.CASCADE)
 	experiment_type_choice = (('ATAC-seq','ATAC-seq'),('ChIP-seq','ChIP-seq'), ('HiC','HiC'),('other','other'))
 	experiment_type = models.CharField(max_length=10,choices=experiment_type_choice)
-	libraries_to_include = models.ManyToManyField(LibrariesInRun)
+	libraries_to_include = models.ManyToManyField(SequencingInfo)
 	notes = models.TextField(blank=True)
 	last_modified = models.DateTimeField(auto_now=True)
 	url = models.URLField(blank=True)
+	def __str__(self):
+		return self.set_name
 
 
 

@@ -1,5 +1,5 @@
 from django import forms
-from nextseq_app.models import LibrariesInRun
+from masterseq_app.models import SequencingInfo
 from .models import LibrariesSetQC
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
@@ -15,7 +15,7 @@ class LibrariesSetQCCreationForm(forms.ModelForm):
 		}
 
 class LibrariesForm(forms.ModelForm):
-	libraries = forms.ModelMultipleChoiceField(queryset=LibrariesInRun.objects.all(),
+	libraries = forms.ModelMultipleChoiceField(queryset=SequencingInfo.objects.all(),
 		widget=FilteredSelectMultiple("Libraries", is_stacked=False)
 		)	
 
@@ -30,7 +30,7 @@ class LibrariesToIncludeCreatForm(forms.Form):
 	librariestoinclude = forms.CharField(
 			label='Libraries to Include:',
 			widget=forms.Textarea(attrs={'cols': 100, 'rows': 6}),
-			initial='Please enter Library_IDs separated by a comma(,), group the' \
+			initial='Please enter Sequencing_IDs separated by a comma(,), group the' \
 			' libraries with consecutive numbers by concatenating the min and max'\
 			' with dash(–) or hyphen(-), eg. AVD_173 - AVD_187,AVD_37, AVD_38:\n\n'
 		)
@@ -63,7 +63,7 @@ class LibrariesToIncludeCreatForm(forms.Form):
 						tosave_list.append(library.strip())
 		for item in tosave_list:
 			if item:
-				if not LibrariesInRun.objects.filter(Library_ID=item).exists():
+				if not SequencingInfo.objects.filter(sequencing_id=item).exists():
 					raise forms.ValidationError(item+' is not a stored library.')
 		return tosave_list
 

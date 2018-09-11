@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'nextseq_app',
     'setqc_app',
+    'masterseq_app',
     'django.contrib.humanize',
 ]
 
