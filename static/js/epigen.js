@@ -40,7 +40,7 @@ $(document).ready( function () {
 
 
     $('#datatabledetailnotes').DataTable({
-    	"order": [[ 1, "asc" ]],
+    	"order": [[ 1, "desc" ]],
     	"columnDefs": [ {
     	    "orderable":false,
     	    "targets": [0,-1,-2],            

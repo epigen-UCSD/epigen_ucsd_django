@@ -8,15 +8,20 @@
             All Reports
           </div><!-- /.card-header -->
           <div class="card-body">
-            <table class="table table-striped table-sm datatable text-center">
+            <table id="datatabledetailnotes" class="table table-striped table-sm text-center table-responsive-xl">
               <thead>
                 <tr>
+                  <th scope="col"></th>
                   {% for field in DisplayField %}
+                  {% if field == 'url' %}
+                   <th scope="col">Report</th>
+                   {% else %}
                    <th scope="col">{{ field|humantitle }}</th>
+                   {% endif %}
                   {% endfor %}
                   {% if request.user|has_group:"bioinformatics" %}
-                     <th scope="col">Last Modified</th>
-                     <th scope="col"></th>
+<!--                      <th scope="col">Last Modified</th> -->
+                     <th scope="col" width="25px"></th>
                   {% endif %}
 
                 </tr>
@@ -24,15 +29,26 @@
               <tbody>
                 {% for Set in Sets_list %}
                 <tr>
+                  {% if Set.notes %}
+                  <td class='details-control' data-href="{% url 'setqc_app:setqc_getnotes' Set.id %}"></td>
+                  {% else %}
+                  <td></td>
+                  {% endif %}
                   {% for field in DisplayField %}
                     {% if field == 'date_requested' %}
                     <td>{{ Set.date_requested|date:"m/d/Y" }}</td>
+                    {% elif field == 'url' %}
+                      {% if Set.url%}
+                        <td><a href="{{Set.url}}" target="_blank"><i class="fas fa-file-alt" style="font-size: 17px;color:#26D07C"></i></a></td>
+                      {% else %}
+                        <td></td>
+                      {% endif %}
                     {% else %}
                     <td>{{ Set|get_value:field }}</td>
                     {% endif %}
                   {% endfor %}
                   {% if request.user|has_group:"bioinformatics" %}
-                    <td>{{ Set.last_modified|date:"m/d/Y H:i" }}</td>
+<!--                     <td>{{ Set.last_modified|date:"m/d/Y H:i" }}</td> -->
                     <td>
                       <a class="spacing" href="{% url 'setqc_app:setqc_update' Set.id %}"><i class="fas fa-edit"></i></a>
                       <a onclick="return confirm('Are you sure you want to delete {{ Set.set_name }} ?');" href="{% url 'setqc_app:setqc_delete' Set.id %}"><i class="fas fa-trash-alt"></i></a>                

@@ -50,7 +50,12 @@ class LibrariesToIncludeCreatForm(forms.Form):
 						except IndexError as e:
 							print(e)
 							suffix = ''
-						numberrange = [x.strip().split('_')[1] for x in librarytemp]
+						startlib = librarytemp[0].strip().split('_')
+						endlib = librarytemp[1].strip().split('_')
+						if len(startlib) == len(endlib):
+							numberrange = [startlib[1],endlib[1]]
+						else:
+							numberrange =[startlib[1],endlib[0]]
 						if int(numberrange[1])<int(numberrange[0]):
 							raise forms.ValidationError('Please check the order: '+ library)
 
@@ -58,7 +63,6 @@ class LibrariesToIncludeCreatForm(forms.Form):
 							tosave_list += ['_'.join([prefix,str(x)]) for x in range(int(numberrange[0]),int(numberrange[1])+1)]
 						else:
 							tosave_list += ['_'.join([prefix,str(x),suffix]) for x in range(int(numberrange[0]),int(numberrange[1])+1)]
-
 					else:
 						tosave_list.append(library.strip())
 		for item in tosave_list:
