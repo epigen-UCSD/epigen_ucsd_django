@@ -17,13 +17,13 @@ class RunInfo(models.Model):
 	date = models.DateField('I did this run on...',help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03',blank=True,null=True)
 	read_type_choice = (('SE','Single-end'),('PE','Paired-end'))
 	read_type = models.CharField(max_length=2,choices=read_type_choice)
-	#is_pe = models.BooleanField('Is it paired-end?', default=True)
-	#reads_length = models.IntegerField(default=75)
-	# read_length = models.IntegerField()
+	total_reads = models.IntegerField(blank=True,null=True)
+	total_libraries = models.IntegerField(blank=True,null=True)
+	fraction_of_reads_demultiplexed = models.FloatField(blank=True,null=True)
 	read_length = models.CharField(max_length=50,help_text='e.g. if R1=R2=75, enter 75, if R1=50,R2=75, enter 50+75')
 	updated_at = models.DateTimeField(auto_now=True)
 	nextseqdir = models.CharField(max_length=200,blank=True,null=True)
-	# jobid = models.CharField(max_length=200,blank=True,null=True)
+
 	jobstatus = models.CharField(max_length=200,blank=True,null=True,default='ClickToSubmit')
 
 	def get_absolute_url(self):

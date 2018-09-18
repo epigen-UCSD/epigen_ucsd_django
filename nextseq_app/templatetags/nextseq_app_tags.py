@@ -29,3 +29,7 @@ def humantitle(oldtitle):
 @register.filter
 def get_value(obj, field_name):
 	return getattr(obj,field_name)
+
+@register.filter
+def percentage(value):
+            return format(value, "%")

@@ -2,6 +2,8 @@
 
 {% block content %}
 {% load nextseq_app_tags %}
+{% load humanize %}
+
 <div id="content" class="col-sm-10 col-md-10 col-lg-10">
   <div class="card">
     <div class="card-header fortable">
@@ -21,6 +23,9 @@
             <th scope="col">Date</th>
             <th scope="col">Read Type</th>
             <th scope="col">Read Length</th>
+            <th scope="col">Total libraries</th>
+            <th scope="col">Total reads</th>
+            <th scope="col">%demultiplexed</th>	    	    
             {% if request.user|has_group:"bioinformatics" %}
             <th scope="col">Last Modified</th>
             {% endif %}
@@ -38,6 +43,9 @@
             <td id="date-{{Run.Flowcell_ID}}">{{ Run.date|date:"m/d/Y" }}</td>
             <td>{{ Run.read_type }}</td>
             <td>{{ Run.read_length }}</td>
+            <td>{{ Run.total_libraries }}</td>
+            <td>{{ Run.total_reads|intcomma }}</td>
+            <td>{{ Run.fraction_of_reads_demultiplexed|floatformat }}</td>	  	  	  
             {% if request.user|has_group:"bioinformatics" %}
             <td>{{ Run.updated_at|date:"m/d/Y H:i" }}</td>
             {% endif %}

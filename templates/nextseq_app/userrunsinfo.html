@@ -1,6 +1,9 @@
 {% extends 'nextseq_app/base.html' %}
 
 {% block content %}
+{% load nextseq_app_tags %}
+{% load humanize %}
+
 <div id="content" class="col-sm-10 col-md-10 col-lg-10">
   <div class="card">
     <div class="card-header fortable">
@@ -16,6 +19,9 @@
             <th scope="col">Date</th>
             <th scope="col">Read Type</th>
             <th scope="col">Read Length</th>
+            <th scope="col">Total libraries</th>
+            <th scope="col">Total reads</th>
+            <th scope="col">%demultiplexed</th>	    	    
             <th scope="col">Last Modified</th>
             <th scope="col">Demultiplexing</th>
             <th scope="col"></th>
@@ -27,8 +33,11 @@
           <td><a href="{% url 'nextseq_app:rundetail' Run.pk %}"> {{ Run.Flowcell_ID }} </a></td>
             <td>{{ Run.operator }}</td>
             <td id="date-{{Run.Flowcell_ID}}">{{ Run.date|date:"m/d/Y" }}</td>
-            <td >{{ Run.read_type }}</td>
+            <td>{{ Run.read_type }}</td>
             <td>{{ Run.read_length }}</td>
+            <td>{{ Run.total_libraries }}</td>
+            <td>{{ Run.total_reads | intcomma }}</td>
+            <td>{{ Run.fraction_of_reads_demultiplexed |floatformat }}</td>	  	  	  
             <td>{{ Run.updated_at|date:"m/d/Y H:i" }}</td>
             {% if Run.jobstatus == 'Done'%}
             <td><span class="badge badge-success badge-status-green">Done</span></td>
