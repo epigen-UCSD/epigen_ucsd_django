@@ -32,4 +32,4 @@ def get_value(obj, field_name):
 
 @register.filter
 def percentage(value):
-            return format(value, "%")
+        return str(value)+"%"

@@ -17,8 +17,7 @@
       {% endif %}
         <thead>
           <tr>
-            
-            <th scope="col">FlowcellSerialNumber</th>
+            <th scope="col">Flowcell</th>
             <th scope="col">Operator</th>
             <th scope="col">Date</th>
             <th scope="col">Read Type</th>
@@ -44,8 +43,11 @@
             <td>{{ Run.read_type }}</td>
             <td>{{ Run.read_length }}</td>
             <td>{{ Run.total_libraries }}</td>
-            <td>{{ Run.total_reads|intcomma }}</td>
-            <td>{{ Run.fraction_of_reads_demultiplexed|floatformat }}</td>	  	  	  
+       	<td>{{ Run.total_reads|intcomma }}</td>
+		<td>  <div class="progress">
+		    <div class="progress-bar" role="progressbar" aria-valuenow={{Run.percent_of_reads_demultiplexed}} aria-valuemin="0" aria-valuemax="100" style="width:{{ Run.percent_of_reads_demultiplexed|percentage}}">
+            {{ Run.percent_of_reads_demultiplexed|percentage }}
+	  </div></td>
             {% if request.user|has_group:"bioinformatics" %}
             <td>{{ Run.updated_at|date:"m/d/Y H:i" }}</td>
             {% endif %}
