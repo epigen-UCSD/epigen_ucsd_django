@@ -3,6 +3,35 @@ from masterseq_app.models import SequencingInfo
 from .models import LibrariesSetQC
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
+
+def libraryparse(libraries):
+	tosave_list = []
+	for library in libraries.split(','):
+		librarytemp = library.replace('\xe2\x80\x93','-').replace('\xe2\x80\x94','-').split('-')
+		if len(librarytemp) > 1:
+			prefix = librarytemp[0].strip().split('_')[0]
+			try:
+				suffix = librarytemp[0].strip().split('_',2)[2]
+			except IndexError as e:
+				#print(e)
+				suffix = ''
+			startlib = librarytemp[0].strip().split('_')
+			endlib = librarytemp[1].strip().split('_')
+			if len(startlib) == len(endlib):
+				numberrange = [startlib[1],endlib[1]]
+			else:
+				numberrange =[startlib[1],endlib[0]]
+			if int(numberrange[1])<int(numberrange[0]):
+				raise forms.ValidationError('Please check the order: '+ library)
+			if not suffix:
+				tosave_list += ['_'.join([prefix,str(x)]) for x in range(int(numberrange[0]),int(numberrange[1])+1)]
+			else:
+				tosave_list += ['_'.join([prefix,str(x),suffix]) for x in range(int(numberrange[0]),int(numberrange[1])+1)]
+		else:
+			tosave_list.append(library.strip())
+
+	return tosave_list
+
 class LibrariesSetQCCreationForm(forms.ModelForm):
 
 	class Meta:
@@ -41,30 +70,7 @@ class LibrariesToIncludeCreatForm(forms.Form):
 		tosave_list = []
 		for libraries in data.strip().split('\n'):
 			if not libraries.startswith('Please enter') and libraries != '\r':
-				for library in libraries.split(','):
-					librarytemp = library.replace('\xe2\x80\x93','-').replace('\xe2\x80\x94','-').split('-')
-					if len(librarytemp) > 1:
-						prefix = librarytemp[0].strip().split('_')[0]
-						try:
-							suffix = librarytemp[0].strip().split('_',2)[2]
-						except IndexError as e:
-							print(e)
-							suffix = ''
-						startlib = librarytemp[0].strip().split('_')
-						endlib = librarytemp[1].strip().split('_')
-						if len(startlib) == len(endlib):
-							numberrange = [startlib[1],endlib[1]]
-						else:
-							numberrange =[startlib[1],endlib[0]]
-						if int(numberrange[1])<int(numberrange[0]):
-							raise forms.ValidationError('Please check the order: '+ library)
-
-						if not suffix:
-							tosave_list += ['_'.join([prefix,str(x)]) for x in range(int(numberrange[0]),int(numberrange[1])+1)]
-						else:
-							tosave_list += ['_'.join([prefix,str(x),suffix]) for x in range(int(numberrange[0]),int(numberrange[1])+1)]
-					else:
-						tosave_list.append(library.strip())
+				tosave_list = libraryparse(libraries)
 		for item in tosave_list:
 			if item:
 				if not SequencingInfo.objects.filter(sequencing_id=item).exists():
@@ -72,7 +78,38 @@ class LibrariesToIncludeCreatForm(forms.Form):
 		return tosave_list
 
 
-
+class ChIPLibrariesToIncludeCreatForm(forms.Form):
+	librariestoincludeInput = forms.CharField(
+			label='Libraries to Include(Input):',
+			widget=forms.Textarea(attrs={'cols': 20, 'rows': 2}),
+		)
+	librariestoincludeIP = forms.CharField(
+			label='Libraries to Include(IP):',
+			widget=forms.Textarea(attrs={'cols': 40, 'rows': 2}),
+		)
+		
+	def clean_librariestoincludeInput(self):
+		data = self.cleaned_data['librariestoincludeInput']
+		tosave_list = []
+		for libraries in data.strip().split('\n'):
+			if not libraries.startswith('Please enter') and libraries != '\r':
+				tosave_list = libraryparse(libraries)
+		for item in tosave_list:
+			if item:
+				if not SequencingInfo.objects.filter(sequencing_id=item).exists():
+					raise forms.ValidationError(item+' is not a stored library.')
+		return tosave_list
+	def clean_librariestoincludeIP(self):
+		data = self.cleaned_data['librariestoincludeIP']
+		tosave_list = []
+		for libraries in data.strip().split('\n'):
+			if not libraries.startswith('Please enter') and libraries != '\r':
+				tosave_list = libraryparse(libraries)
+		for item in tosave_list:
+			if item:
+				if not SequencingInfo.objects.filter(sequencing_id=item).exists():
+					raise forms.ValidationError(item+' is not a stored library.')
+		return tosave_list
 
 
 

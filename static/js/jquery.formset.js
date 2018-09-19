@@ -144,6 +144,9 @@
                     insertDeleteLink(row);
                     applyExtraClasses(row, i);
                 }
+                else {
+                    insertDeleteLink(row);
+                }
             }
         });
 

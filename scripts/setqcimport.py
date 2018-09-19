@@ -44,16 +44,18 @@ def libraryparse(libraries):
 	return tosave_list
 
 def main():
-	#for example: python setqcimport.py -i 'scripts/MSQcTS.tsv'
+	#for example: python setqcimport.py -i 'scripts/MSQcTS.tsv' -date '2018-07-18'
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-i',help = 'setQC.tsv file')
+	parser.add_argument('-date',help = 'import all the data that later than this date')
 	setqcfile = parser.parse_args().i
+	comdate = parser.parse_args().date
 	print(setqcfile)
 	ignorline = ('IMPORTANT NOTE','To be completed','Date requested')
 	with open(setqcfile,'r') as f:
 		for line in f:
-			fields = line.strip('\n').strip('\s').split('\t')
-			if len(fields) > 8 and fields[0] > '2018-07-18' and not fields[0].startswith(ignorline):
+			fields = line.strip('\n').split('\t')
+			if len(fields) > 8 and fields[0] > comdate and not fields[0].startswith(ignorline):
 				print(fields)
 				setinfo,created = LibrariesSetQC.objects.get_or_create(set_name=fields[2],setID=fields[7],\
 					date_requested=fields[0],experiment_type=fields[3].split('(')[0],notes=fields[5],\

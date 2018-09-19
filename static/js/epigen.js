@@ -102,6 +102,43 @@ $(document).ready( function () {
 	prefix: 'librariesinrun_set'
     });
 
+   $('.chipformset_row').formset({
+    addText: 'add another group',
+    deleteText: 'remove',
+    prefix: 'form'
+    });
+
+    $('select#id_experiment_type').on('change', function() {
+        if (this.value=="ChIP-seq" ){
+            //document.getElementById('changeble_librariesform').innerHTML='{% include "setqc_app/libraiestoincludeformchip.html"%}'
+            //location.reload();
+            document.getElementById('regform').style.display = "none";
+            document.getElementById('chipform').style.display = '';
+
+        }
+        else{
+            document.getElementById('regform').style.display = '';
+            document.getElementById('chipform').style.display = "none";
+        }
+    });
+    //console.log(document.getElementById('changeble_librariesform'))
+    var changeble_form = $('#changeble_librariesform').find("select#id_experiment_type option:selected").text()
+    if (changeble_form=="ChIP-seq" ){
+        $('#chipform').css('display','');
+        $('#regform').css('display','none');
+        
+
+    }
+    else{
+        $('#regform').css('display','');
+        $('#chipform').css('display','none');
+    }
+
+    
+    $('form#chiponly').find("select#id_experiment_type option:not(:contains('ChIP-seq'))").attr('disabled','disabled')
+    $('form#notchip').find("select#id_experiment_type option:contains('ChIP-seq')").attr('disabled','disabled')
+
+
     $(".dmpajax").on("click",function(e){
 	e.preventDefault();
 

@@ -1,13 +1,15 @@
 from django.contrib.auth.decorators import login_required, permission_required
-from .models import LibrariesSetQC
+from .models import LibrariesSetQC,ChipLibraryInSet
 from masterseq_app.models import SequencingInfo
 from django.db import transaction
-from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm
+from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm,ChIPLibrariesToIncludeCreatForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from itertools import groupby
 from operator import itemgetter
+from django.forms import formset_factory
+from django.forms.models import model_to_dict
 
 # Create your views here.
 DisplayField1 = ['setID','set_name','date_requested','experiment_type','url']
@@ -84,7 +86,9 @@ def UserSetQCView(request):
 def SetQCCreateView(request):
     set_form = LibrariesSetQCCreationForm(request.POST or None)
     libraries_form = LibrariesToIncludeCreatForm(request.POST or None)
-    if set_form.is_valid() and libraries_form.is_valid():
+    ChIPLibrariesFormSet = formset_factory(ChIPLibrariesToIncludeCreatForm,can_delete=True)
+    chiplibraries_formset = ChIPLibrariesFormSet(request.POST or None)
+    if set_form.is_valid():
         setinfo = set_form.save(commit=False)
         setinfo.requestor = request.user
         setids = list(LibrariesSetQC.objects.values_list('setID', flat=True))
@@ -92,21 +96,55 @@ def SetQCCreateView(request):
             setinfo.setID = 'Set_165'
         else:
             maxid = max([int(x.split('_')[1]) for x in setids])
-
             setinfo.setID = '_'.join(['Set',str(maxid+1)])
-        setinfo.save()
-        librariestoinclude = libraries_form.cleaned_data['librariestoinclude']
-        print(librariestoinclude)
+        if set_form.cleaned_data['experiment_type'] != 'ChIP-seq':
+            if libraries_form.is_valid():
+                setinfo.save()
+                librariestoinclude = libraries_form.cleaned_data['librariestoinclude']
+                print(librariestoinclude)
 
-        for item in librariestoinclude:
-            if item:
-                setinfo.libraries_to_include.add(SequencingInfo.objects.get(sequencing_id=item))
+                for item in librariestoinclude:
+                    if item:
+                        setinfo.libraries_to_include.add(SequencingInfo.objects.get(sequencing_id=item))
         
 
-        return redirect('setqc_app:usersetqcs')
+                return redirect('setqc_app:usersetqcs')
+        else:
+            #if chiplibraries_formset.is_valid():
+            print(chiplibraries_formset.empty_form)
+
+            if chiplibraries_formset.is_valid():
+                setinfo.save()
+                groupnum = 1 
+                tosave_list=[]
+                for form in chiplibraries_formset.forms:
+                    if form not in chiplibraries_formset.deleted_forms and form != chiplibraries_formset.empty_form:
+                        libinputs = form.cleaned_data['librariestoincludeInput']
+                        libips = form.cleaned_data['librariestoincludeIP']
+                        for item in libinputs:
+                            toave_item = ChipLibraryInSet(
+                                librariesetqc=setinfo,
+                                sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                                is_input=True,
+                                group_number=groupnum,
+                                )
+                            tosave_list.append(toave_item)
+                        for item in libips:
+                            toave_item = ChipLibraryInSet(
+                                librariesetqc=setinfo,
+                                sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                                is_input=False,
+                                group_number=groupnum,
+                                )
+                            tosave_list.append(toave_item)
+                        groupnum += 1
+                ChipLibraryInSet.objects.bulk_create(tosave_list)
+                return redirect('setqc_app:usersetqcs')
+
     context = {
         'set_form': set_form,
         'libraries_form': libraries_form,
+        'sample_formset':chiplibraries_formset,
     }
 
     return render(request, 'setqc_app/setqcadd.html', context)
@@ -127,30 +165,84 @@ def SetQCUpdateView(request,setqc_pk):
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     set_form = LibrariesSetQCCreationForm(request.POST or None, instance=setinfo)
-    librariesall = setinfo.libraries_to_include.all()
-    librarieslist = list(librariesall.values_list('sequencing_id', flat=True))
-    libraries_form = LibrariesToIncludeCreatForm(request.POST or None, \
-        initial={'librariestoinclude': grouplibraries(librarieslist)})
-    if set_form.is_valid() and libraries_form.is_valid():
-        setinfo = set_form.save(commit=False)
-        setinfo.save()
-        librariestoinclude = libraries_form.cleaned_data['librariestoinclude']
-        print(librariestoinclude)
-        setinfo.libraries_to_include.clear()
+    if setinfo.experiment_type != 'ChIP-seq':
+        librariesall = setinfo.libraries_to_include.all()
+        librarieslist = list(librariesall.values_list('sequencing_id', flat=True))
+        libraries_form = LibrariesToIncludeCreatForm(request.POST or None, \
+            initial={'librariestoinclude': grouplibraries(librarieslist)})
+        if set_form.is_valid() and libraries_form.is_valid():
+            setinfo = set_form.save(commit=False)
+            setinfo.save()
+            librariestoinclude = libraries_form.cleaned_data['librariestoinclude']
+            print(librariestoinclude)
+            setinfo.libraries_to_include.clear()
+    
+            for item in librariestoinclude:
+                if item:
+                    setinfo.libraries_to_include.add(SequencingInfo.objects.get(sequencing_id=item))
+            
+    
+            return redirect('setqc_app:usersetqcs')
+        context = {
+            'set_form': set_form,
+            'libraries_form': libraries_form,
+            'setinfo': setinfo,
+        }
+    
+        return render(request, 'setqc_app/setqcupdate.html', context)
+    else:
+        #librariesall = setinfo.libraries_to_include_forChIP.all()
+        chipset = ChipLibraryInSet.objects.filter(librariesetqc=setinfo)
+        groupitem = list(chipset.values_list('group_number', flat=True).distinct())
+        initialgroup=[]
+        for i in groupitem:
+            temdic = {}
+            temdic['librariestoincludeInput']=grouplibraries([x.sequencinginfo.sequencing_id for x in chipset.filter(group_number=i,is_input=True)])
+            temdic['librariestoincludeIP']=grouplibraries([x.sequencinginfo.sequencing_id for x in chipset.filter(group_number=i,is_input=False)])
+            initialgroup.append(temdic)
+            print([x for x in chipset.filter(group_number=i,is_input=True)])
+        ChIPLibrariesFormSet = formset_factory(ChIPLibrariesToIncludeCreatForm,can_delete=True)
+        chiplibraries_formset = ChIPLibrariesFormSet(request.POST or None,
+            initial=initialgroup)
 
-        for item in librariestoinclude:
-            if item:
-                setinfo.libraries_to_include.add(SequencingInfo.objects.get(sequencing_id=item))
-        
-
-        return redirect('setqc_app:usersetqcs')
-    context = {
-        'set_form': set_form,
-        'libraries_form': libraries_form,
-        'setinfo': setinfo,
-    }
-
-    return render(request, 'setqc_app/setqcupdate.html', context)
+        if set_form.is_valid() and chiplibraries_formset.is_valid():
+            setinfo = set_form.save(commit=False)
+            setinfo.save()
+            groupnum = 1 
+            tosave_list=[]
+            for form in chiplibraries_formset.forms:
+                if form not in chiplibraries_formset.deleted_forms and form != chiplibraries_formset.empty_form:
+                    libinputs = form.cleaned_data['librariestoincludeInput']
+                    libips = form.cleaned_data['librariestoincludeIP']
+                    #print(libinputs)
+                    #print(libips)
+                    for item in libinputs:
+                        toave_item = ChipLibraryInSet(
+                            librariesetqc=setinfo,
+                            sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                            is_input=True,
+                            group_number=groupnum,
+                            )
+                        tosave_list.append(toave_item)
+                    for item in libips:
+                        toave_item = ChipLibraryInSet(
+                            librariesetqc=setinfo,
+                            sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                            is_input=False,
+                            group_number=groupnum,
+                            )
+                        tosave_list.append(toave_item)
+                    groupnum += 1
+            setinfo.libraries_to_include_forChIP.clear()
+            ChipLibraryInSet.objects.bulk_create(tosave_list)
+            return redirect('setqc_app:usersetqcs')
+        context = {
+            'set_form': set_form,
+            'sample_formset':chiplibraries_formset,
+            'setinfo': setinfo,
+        }
+    
+        return render(request, 'setqc_app/setqcchipupdate.html', context)
 
 @login_required
 def GetNotesView(request,setqc_pk):
