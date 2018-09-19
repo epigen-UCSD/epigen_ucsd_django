@@ -62,5 +62,5 @@ wait
 ############################################################
 # update status to finish or warning @ VM
 ############################################################
-cmd="source activate django; python \$(which updateReadsNumberPerRun.py) -f $flowcell_id -i $reads_cnt_file; python \$(which updateRunReads.py) -i $flowcell_id"
+cmd="source activate django; python \$(which updateReadsNumberPerRun.py) -f $flowcell_id -i $reads_cnt_file; python \$(which updateRunReads.py) -f $flowcell_id"
 ssh zhc268@epigenomics.sdsc.edu $cmd
