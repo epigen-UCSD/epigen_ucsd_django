@@ -30,3 +30,18 @@ python updateRunStatus.py -s '0' -d '/Users/180705_AH5GLYBGX5431' -f 'H5GLYBGX5f
 ```shell
 python saveReadsNumber.py -i 'scripts/readsnumber.tsv'
 ```
+
+## import existed sequencing id in MSeqTS to database:
+
+```shell
+python mseqinfoimport.py -i 'scripts/MSeqTS.tsv'
+python mseqinfoimport.py -i 'scripts/MSeqTSarchive.tsv'
+```
+
+## import existed setQC reports with requested date later than -date in MSQcTS to database:
+
+```shell
+python setqcimport.py -i 'scripts/MSQcTS.tsv' -date '2018-07-18'
+```
+* Note: the libraries in 'Libraries to include' column should be separated by comma. This script can understand grouped-libraries format, but you still need adhere to some rules, like enter in 'JYH_554 - 556, JYH_558 - 560, JYH_570' instead of 'JYH_554 - 556, 558 - 560, 570'. The cells with a date later than '2018-07-18' that cann't be parsed has been corrected manually.
+
