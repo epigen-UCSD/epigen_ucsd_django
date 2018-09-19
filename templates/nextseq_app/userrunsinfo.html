@@ -36,7 +36,6 @@
             <td>{{ Run.read_length }}</td>
             <td>{{ Run.total_libraries }}</td>
             <td>{{ Run.total_reads | intcomma }}</td>
-       	<td>{{ Run.total_reads|intcomma }}</td>
 		<td>  <div class="progress">
 		    <div class="progress-bar" role="progressbar" aria-valuenow={{Run.percent_of_reads_demultiplexed}} aria-valuemin="0" aria-valuemax="100" style="width:{{ Run.percent_of_reads_demultiplexed|percentage}}">
             {{ Run.percent_of_reads_demultiplexed|percentage }}
