@@ -16,6 +16,8 @@ class LibrariesSetQC(models.Model):
 	notes = models.TextField(blank=True)
 	last_modified = models.DateTimeField(auto_now=True)
 	url = models.URLField(blank=True)
+	version = models.CharField(max_length=200,blank=True)
+	status = models.CharField(max_length=200,blank=True,default='ClickToSubmit')
 	def __str__(self):
 		return self.set_name
 

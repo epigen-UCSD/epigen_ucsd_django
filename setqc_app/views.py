@@ -10,6 +10,9 @@ from itertools import groupby
 from operator import itemgetter
 from django.forms import formset_factory
 from django.forms.models import model_to_dict
+from django.conf import settings
+import os
+import subprocess
 
 # Create your views here.
 DisplayField1 = ['setID','set_name','date_requested','experiment_type','url']
@@ -252,6 +255,61 @@ def GetNotesView(request,setqc_pk):
     data = {}
     data['notes'] = setinfo.notes
     return JsonResponse(data)
+
+@login_required
+@transaction.atomic
+def RunSetQC(request, setqc_pk):
+    libdir = settings.LIBQC_DIR
+    setqcoutdir = settings.SETQC_DIR
+    data = {}
+    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
+    if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+        raise PermissionDenied
+    allfolder = [ fname for fname in os.listdir(libdir) if os.path.isdir(os.path.join(libdir, fname))]
+
+    if setinfo.experiment_type == 'ChIP-seq':
+        chipset = ChipLibraryInSet.objects.filter(librariesetqc=setinfo)
+        list1tem = list(chipset.values_list('sequencinginfo', flat=True))
+        list1 = [SequencingInfo.objects.values_list('sequencing_id', flat=True).get(id=x)
+         for x in list1tem]
+        list2 = list(chipset.values_list('group_number', flat=True))
+        list3 = list(chipset.values_list('is_input', flat=True))
+        writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list2,list3)])
+    else:
+        regset = setinfo.libraries_to_include.all()
+        list1 = [x.sequencing_id for x in regset]
+        writecontent = '\n'.join(list1)
+
+    #list1 is a list of libraries name in a specific set
+    #check if the library folder exists and if it is finished
+    for item in list1:
+        if item not in allfolder:
+            data['libdirnotexisterror'] = 'There is not a folder named ' + item
+            return JsonResponse(data)
+        else:
+            if not os.path.isfile(os.path.join(libdir, item,'finished.txt')):
+                data['notfinishederror'] = item +' is not finished'
+                return JsonResponse(data)
+
+    #write Set_**.txt to setqcoutdir
+    try:
+        with open(os.path.join(setqcoutdir,setinfo.setID+'.txt'), 'w') as f:
+            f.write(writecontent)
+    except Exception as e:
+        data['writeseterror'] = 'Unexpected writing to Set.txt Error!'
+    setinfo.status='JobSubmitted'
+    setinfo.save()
+
+    #run setQC script
+    cmd1 = './scripts/runsetqctest.sh ' + setinfo.setID
+    print(cmd1)
+    p = subprocess.Popen(
+        cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    data['writesetdone'] = 1
+    return JsonResponse(data)
+
+
+
 
 
 

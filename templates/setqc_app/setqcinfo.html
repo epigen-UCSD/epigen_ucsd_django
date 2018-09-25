@@ -22,6 +22,7 @@
                   {% if request.user|has_group:"bioinformatics" %}
 <!--                      <th scope="col">Last Modified</th> -->
                      <th scope="col" width="25px"></th>
+                     <th scope="col" width="25px"></th>
                   {% endif %}
 
                 </tr>
@@ -48,7 +49,19 @@
                     {% endif %}
                   {% endfor %}
                   {% if request.user|has_group:"bioinformatics" %}
-<!--                     <td>{{ Set.last_modified|date:"m/d/Y H:i" }}</td> -->
+                    {% if Set.status == 'Done'%}
+                    <td><span class="badge badge-success badge-status-green">Done</span></td>
+                    {% elif Set.status == 'ClickToSubmit' %}
+                    <td><a class="btn btn-danger btn-sm btn-status-orange runsetqc" href="" data-href="{% url 'setqc_app:runsetqc' Set.id %}" id={{Set.setID}}>ClickToSubmit</a></td>
+                    {% elif Set.status == 'JobSubmitted'%}
+                    <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
+                    {% elif Set.status == 'JobStarted'%}
+                    <td><span class="badge badge-success badge-status-lightblue">JobStarted</span></td>
+                    {% elif Set.status == 'Error'%}
+                    <td><span class="badge badge-success badge-status-yellow">Error</span></td>
+                    {% elif Set.status == 'Warning'%}
+                    <td><span class="badge badge-success badge-status-yellow" data-toggle="tooltip" data-placement="right" title="contain libraries with reads number less than 1000">Warning</span></td>
+                    {% endif %}
                     <td>
                       <a class="spacing" href="{% url 'setqc_app:setqc_update' Set.id %}"><i class="fas fa-edit"></i></a>
                       <a onclick="return confirm('Are you sure you want to delete {{ Set.set_name }} ?');" href="{% url 'setqc_app:setqc_delete' Set.id %}"><i class="fas fa-trash-alt"></i></a>                

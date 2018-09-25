@@ -261,4 +261,33 @@ $(document).ready( function () {
 
     })
 
+    $(".runsetqc").on("click",function(e){
+        e.preventDefault();
+        that = $(this)
+        var url1=$(this).attr("data-href");
+        var errorname = ['notfinishederror','libdirnotexisterror','writeseterror']
+        $.ajax({
+        url:url1,
+        cache:false,
+        dataType: 'json',
+        success:function (data){
+            $.each(errorname, function( index, value ) {
+                if (value in data){
+                    alert(data[value])
+                    return
+                }
+            });
+            if (data.writesetdone){
+            $(that).replaceWith('<span class="badge badge-success badge-status-blue">JobSubmitted</span>')
+
+            }
+
+
+        }
+
+
+
+        })
+    })
+
 } );

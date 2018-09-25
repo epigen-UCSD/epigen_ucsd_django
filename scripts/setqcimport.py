@@ -59,7 +59,7 @@ def main():
 				print(fields)
 				setinfo,created = LibrariesSetQC.objects.get_or_create(set_name=fields[2],setID=fields[7],\
 					date_requested=fields[0],experiment_type=fields[3].split('(')[0],notes=fields[5],\
-					url=fields[6],requestor=User.objects.get(username=fields[1]))
+					url=fields[6],requestor=User.objects.get(username=fields[1]),version=fields[10])
 
 				tosave_librarylist = libraryparse(fields[4])
 				for item in tosave_librarylist:
