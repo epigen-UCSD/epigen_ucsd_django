@@ -159,7 +159,8 @@ def UserSamplesView(request):
 class RunDetailView2(DetailView):
     model = RunInfo
     template_name = 'nextseq_app/details.html'
-    summaryfield = ['jobstatus','date','operator','read_type','read_length','nextseqdir']
+    summaryfield = ['jobstatus','date','operator','read_type','total_libraries','total_reads',
+                    'percent_of_reads_demultiplexed','read_length','nextseqdir']
     #object = FooForm(data=model_to_dict(Foo.objects.get(pk=object_id)))
 
     def get_context_data(self, **kwargs):
@@ -834,7 +835,8 @@ def DemultiplexingView2(request, run_pk):
             break
     # print(data)
     if 'is_direxists' in data:
-        #os.mkdir(os.path.join(basedirname, 'Data/Fastqs'))
+        shutil.rmtree(os.path.join(basedirname, 'Data/Fastqs'))
+        os.mkdir(os.path.join(basedirname, 'Data/Fastqs'))
 
         samples_list = runinfo.librariesinrun_set.all()
 
@@ -846,6 +848,8 @@ def DemultiplexingView2(request, run_pk):
             towritefiles = [os.path.join(
                 basedirname, 'Data/Fastqs', 'SampleSheet.csv')]
         else:
+            os.makedirs(os.path.join(basedirname, 'Data/Fastqs/OnePrimer'),exist_ok=True)
+            os.makedirs(os.path.join(basedirname, 'Data/Fastqs/TwoPrimers'),exist_ok=True)           
             towritefiles = [os.path.join(basedirname, 'Data/Fastqs/OnePrimer', 'SampleSheet.csv'),
                             os.path.join(basedirname, 'Data/Fastqs/TwoPrimers', 'SampleSheet.csv')]
         try:

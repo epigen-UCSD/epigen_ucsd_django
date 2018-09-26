@@ -41,10 +41,6 @@ def get_type(value):
 def get_class(ob):
     return ob.__class__.__name__
 
-
-
-
-
-
-
-
+@register.filter
+def percentage(value):
+        return str(value)+"%"
