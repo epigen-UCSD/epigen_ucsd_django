@@ -15,8 +15,8 @@ import os
 import subprocess
 
 # Create your views here.
-DisplayField1 = ['setID','set_name','date_requested','experiment_type','url']
-DisplayField2 = ['setID','set_name','date_requested','requestor','experiment_type','url']
+DisplayField1 = ['set_id','set_name','date_requested','experiment_type','url']
+DisplayField2 = ['set_id','set_name','date_requested','requestor','experiment_type','url']
 
 def groupnumber(datalist):
     ranges =[]
@@ -94,12 +94,12 @@ def SetQCCreateView(request):
     if set_form.is_valid():
         setinfo = set_form.save(commit=False)
         setinfo.requestor = request.user
-        setids = list(LibrariesSetQC.objects.values_list('setID', flat=True))
-        if not setids:
-            setinfo.setID = 'Set_165'
+        set_ids = list(LibrariesSetQC.objects.values_list('set_id', flat=True))
+        if not set_ids:
+            setinfo.set_id = 'Set_165'
         else:
-            maxid = max([int(x.split('_')[1]) for x in setids])
-            setinfo.setID = '_'.join(['Set',str(maxid+1)])
+            maxid = max([int(x.split('_')[1]) for x in set_ids])
+            setinfo.set_id = '_'.join(['Set',str(maxid+1)])
         if set_form.cleaned_data['experiment_type'] != 'ChIP-seq':
             if libraries_form.is_valid():
                 setinfo.save()
@@ -111,7 +111,7 @@ def SetQCCreateView(request):
                         setinfo.libraries_to_include.add(SequencingInfo.objects.get(sequencing_id=item))
         
 
-                return redirect('setqc_app:usersetqcs')
+                return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
         else:
             #if chiplibraries_formset.is_valid():
             print(chiplibraries_formset.empty_form)
@@ -142,7 +142,7 @@ def SetQCCreateView(request):
                             tosave_list.append(toave_item)
                         groupnum += 1
                 ChipLibraryInSet.objects.bulk_create(tosave_list)
-                return redirect('setqc_app:usersetqcs')
+                return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
 
     context = {
         'set_form': set_form,
@@ -185,7 +185,7 @@ def SetQCUpdateView(request,setqc_pk):
                     setinfo.libraries_to_include.add(SequencingInfo.objects.get(sequencing_id=item))
             
     
-            return redirect('setqc_app:usersetqcs')
+            return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
         context = {
             'set_form': set_form,
             'libraries_form': libraries_form,
@@ -238,7 +238,7 @@ def SetQCUpdateView(request,setqc_pk):
                     groupnum += 1
             setinfo.libraries_to_include_forChIP.clear()
             ChipLibraryInSet.objects.bulk_create(tosave_list)
-            return redirect('setqc_app:usersetqcs')
+            return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
         context = {
             'set_form': set_form,
             'sample_formset':chiplibraries_formset,
@@ -293,7 +293,7 @@ def RunSetQC(request, setqc_pk):
 
     #write Set_**.txt to setqcoutdir
     try:
-        with open(os.path.join(setqcoutdir,setinfo.setID+'.txt'), 'w') as f:
+        with open(os.path.join(setqcoutdir,setinfo.set_id+'.txt'), 'w') as f:
             f.write(writecontent)
     except Exception as e:
         data['writeseterror'] = 'Unexpected writing to Set.txt Error!'
@@ -301,12 +301,36 @@ def RunSetQC(request, setqc_pk):
     setinfo.save()
 
     #run setQC script
-    cmd1 = './scripts/runsetqctest.sh ' + setinfo.setID
+    cmd1 = './scripts/runsetqctest.sh ' + setinfo.set_id
     print(cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     data['writesetdone'] = 1
     return JsonResponse(data)
+
+@login_required
+def SetQCDetailView(request,setqc_pk):
+    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
+    summaryfield = ['status','set_id','set_name','date_requested','requestor','experiment_type','notes','url','version']
+    #print([x.sequencing_id for x in setinfo.libraries_to_include_forChIP.all()])
+    groupinfo = ''
+    isinputinfo = ''
+    if setinfo.experiment_type == 'ChIP-seq':
+        chipset = ChipLibraryInSet.objects.filter(librariesetqc=setinfo)
+        list1tem = list(chipset.values_list('sequencinginfo', flat=True))
+        list1 = [SequencingInfo.objects.values_list('sequencing_id', flat=True).get(id=x)
+         for x in list1tem]
+        list2 = list(chipset.values_list('group_number', flat=True))
+        list3 = list(chipset.values_list('is_input', flat=True))
+        groupinfo = dict(zip(list1,list2))
+        isinputinfo = dict(zip(list1,list3))
+    context = {
+        'setinfo':setinfo,
+        'summaryfield':summaryfield,
+        'groupinfo':groupinfo,
+        'isinputinfo':isinputinfo,
+    }
+    return render(request, 'setqc_app/details.html', context=context)
 
 
 

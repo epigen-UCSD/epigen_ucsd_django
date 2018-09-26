@@ -354,6 +354,9 @@ a[aria-expanded=false] .fa-caret-down {
   color:#5bc0de;
   font-size: 16px;
 }
+.checkboxsidebar >.green >.fa-check-square{
+  color:#26D07C !important; 
+}
 
 .checkboxsidebar > .list-group-item {
   display:block;

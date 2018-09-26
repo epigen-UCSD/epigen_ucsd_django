@@ -21,7 +21,7 @@
                   {% endfor %}
                   {% if request.user|has_group:"bioinformatics" %}
 <!--                      <th scope="col">Last Modified</th> -->
-                     <th scope="col" width="25px"></th>
+                     <th scope="col"></th>
                      <th scope="col" width="25px"></th>
                   {% endif %}
 
@@ -44,6 +44,8 @@
                       {% else %}
                         <td></td>
                       {% endif %}
+                    {% elif field == 'set_name' %}
+                    <td><a href="{% url 'setqc_app:setqc_detail' Set.id %}">{{Set.set_name}}</a></td>
                     {% else %}
                     <td>{{ Set|get_value:field }}</td>
                     {% endif %}
@@ -52,7 +54,7 @@
                     {% if Set.status == 'Done'%}
                     <td><span class="badge badge-success badge-status-green">Done</span></td>
                     {% elif Set.status == 'ClickToSubmit' %}
-                    <td><a class="btn btn-danger btn-sm btn-status-orange runsetqc" href="" data-href="{% url 'setqc_app:runsetqc' Set.id %}" id={{Set.setID}}>ClickToSubmit</a></td>
+                    <td><a class="btn btn-danger btn-sm btn-status-orange runsetqc" href="" data-href="{% url 'setqc_app:runsetqc' Set.id %}" id={{Set.set_id}}>ClickToSubmit</a></td>
                     {% elif Set.status == 'JobSubmitted'%}
                     <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
                     {% elif Set.status == 'JobStarted'%}

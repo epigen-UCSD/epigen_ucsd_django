@@ -21,10 +21,13 @@ def has_group(user, group_name):
 def humantitle(oldtitle):
 	titlechange = {
 		'jobstatus': 'Demultiplexing Status',
+		'set_id': 'Set ID',
+
 	}
 	if oldtitle in titlechange.keys():
-		oldtitle = titlechange[oldtitle]
-	return oldtitle.title().replace('_',' ')
+		return titlechange[oldtitle]
+	else:
+		return oldtitle.title().replace('_',' ')
 
 @register.filter
 def get_value(obj, field_name):

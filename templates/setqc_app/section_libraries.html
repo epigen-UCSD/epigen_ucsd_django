@@ -1,0 +1,55 @@
+{% load nextseq_app_tags %}
+{% load humanize %}
+<div class="row" id="libraries">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="card bottom15">
+      <div class="card-header fortable collapseheader">
+        <a data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapse2"><i class="fa fas fa-caret-right collapseheader fa-lg fa-fw"></i><i class="fa fa-caret-down collapseheader fa-lg fa-fw"></i></a>
+        Libraries
+        <button type="button" class="close" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+        </button>
+      </div><!-- /.card-header -->
+      <div class="collapse show" id="collapse2">
+        <div class="card-body">
+          <br />
+          <table class="table table-sm table-striped text-center table-responsive-xl">
+
+            {% if setinfo.experiment_type == 'ChIP-seq' %}
+            <thead>
+            <tr>
+              <th>Library ID</th>
+              <th>Group ID</th>
+              <th>Is Input</th>
+            </tr>
+            </thead>                  
+            {% for library,group in groupinfo.items %}
+            <tr>
+              <td><a href="">{{ library }}</a></td>                 
+              <td>{{ group }}</td>
+              <td>{{ isinputinfo|key:library }}</td>
+            </tr>
+            {% endfor %} 
+
+            {% else %}
+            <thead>
+            <tr>
+              <th>Library ID</th>
+              <th>other features</th>
+            </tr>
+            </thead>                  
+            {% for library in setinfo.libraries_to_include.all %}
+            <tr>                  
+              <td><a href="">{{library.sequencing_id}}</a></td>
+              <td></td>
+            </tr>
+            {% endfor %} 
+
+            {% endif %}                 
+          </table>
+        </div><!-- /.card-body --> 
+      </div><!-- /.collapse -->             
+    </div><!-- /.card -->
+  
+  </div>
+</div>

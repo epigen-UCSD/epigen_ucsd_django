@@ -5,7 +5,7 @@ from masterseq_app.models import SequencingInfo
 # Create your models here.
 class LibrariesSetQC(models.Model):
 	set_name = models.CharField(max_length=200,unique=True)
-	setID = models.CharField(max_length=20,unique=True)
+	set_id = models.CharField(max_length=20,unique=True)
 	date_requested = models.DateField(help_text='If the datepicker is not working, \
 		please enter in this form: yyyy-mm-dd, like 2018-04-03',blank=True,null=True)
 	requestor = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -25,7 +25,7 @@ class ChipLibraryInSet(models.Model):
 	librariesetqc = models.ForeignKey(LibrariesSetQC, on_delete=models.CASCADE)
 	sequencinginfo = models.ForeignKey(SequencingInfo, on_delete=models.CASCADE)
 	group_number = models.CharField(max_length=10)
-	is_input = models.BooleanField('Is it paired-end?', default=False)
+	is_input = models.BooleanField('Is it input?', default=False)
 
 
 

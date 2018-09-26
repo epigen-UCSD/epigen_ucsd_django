@@ -13,5 +13,6 @@ urlpatterns = [
     path('<int:setqc_pk>/update/',views.SetQCUpdateView, name='setqc_update'),
     path('<int:setqc_pk>/getnotes/',views.GetNotesView, name='setqc_getnotes'),
     path('<int:setqc_pk>/runsetqc/',views.RunSetQC, name='runsetqc'),
+    path('<int:setqc_pk>/',views.SetQCDetailView, name='setqc_detail'),
 
 ]
