@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'nextseq_app',
+    'setqc_app',
+    'masterseq_app',
     'django.contrib.humanize',
 ]
 
@@ -144,3 +146,5 @@ STATIC_URL = '/static/'
 LOGIN_URL = '/login/'
 
 NEXTSEQAPP_DMPDIR = config['database']['NEXTSEQAPP_DMPDIR']
+LIBQC_DIR = config['database']['LIBQC_DIR']
+SETQC_DIR = config['database']['SETQC_DIR']

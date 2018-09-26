@@ -21,14 +21,25 @@ def has_group(user, group_name):
 def humantitle(oldtitle):
 	titlechange = {
 		'jobstatus': 'Demultiplexing Status',
+		'set_id': 'Set ID',
+
 	}
 	if oldtitle in titlechange.keys():
-		oldtitle = titlechange[oldtitle]
-	return oldtitle.title().replace('_',' ')
+		return titlechange[oldtitle]
+	else:
+		return oldtitle.title().replace('_',' ')
 
 @register.filter
 def get_value(obj, field_name):
 	return getattr(obj,field_name)
+
+@register.filter
+def get_type(value):
+    return type(value)
+
+@register.filter
+def get_class(ob):
+    return ob.__class__.__name__
 
 @register.filter
 def percentage(value):

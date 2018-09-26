@@ -33,11 +33,61 @@ $(document).ready( function () {
     $('.datatablesort2').DataTable({
     	"order": [[ 2, "desc" ]]
     });
+    
     $('.datatablesort1').DataTable({
 		"order": [[ 1, "asc" ]]
     });
 
+
+    $('#datatabledetailnotes').DataTable({
+    	"order": [[ 1, "desc" ]],
+    	"columnDefs": [ {
+    	    "orderable":false,
+    	    "targets": [0,-1,-2],            
+        } ,
+        // {
+        // 	"className": 'details-control',
+        // 	"targets": 0,
+        // }
+
+        ]
+
+    });
+
+    $('#datatabledetailnotes tbody').on('click', 'td.details-control', function () {
+    	var thisurl=$(this).attr("data-href");
+    	var tr = $(this).closest('tr');
+    	if ($(this).hasClass("closing")){
+    		$(this).removeClass("closing")
+    		tr.next().closest(".detailnotes").remove()
+
+
+    	}
+    	else{
+    		$(this).addClass("closing")
+
+           	$.ajax({
+           		url:thisurl,
+           		cache:false,
+           		dataType: 'json',
+           		success:function (data){
+
+           		if(data.notes){
+           			tr.after('<tr class="detailnotes"><td class="detailnotes" colspan="8"><div class="detailnotes">Notes:'+data.notes+'</div></td></tr>')
+
+
+           			}
+           		}
+           	})
+
+    	}
+
+    });
+
+
+
     $( "#id_date" ).datepicker();
+    $( "#id_date_requested" ).datepicker();
 
     $('[data-toggle="tooltip"]').tooltip();
 
@@ -51,6 +101,43 @@ $(document).ready( function () {
 	deleteText: 'remove',
 	prefix: 'librariesinrun_set'
     });
+
+   $('.chipformset_row').formset({
+    addText: 'add another group',
+    deleteText: 'remove',
+    prefix: 'form'
+    });
+
+    $('select#id_experiment_type').on('change', function() {
+        if (this.value=="ChIP-seq" ){
+            //document.getElementById('changeble_librariesform').innerHTML='{% include "setqc_app/libraiestoincludeformchip.html"%}'
+            //location.reload();
+            document.getElementById('regform').style.display = "none";
+            document.getElementById('chipform').style.display = '';
+
+        }
+        else{
+            document.getElementById('regform').style.display = '';
+            document.getElementById('chipform').style.display = "none";
+        }
+    });
+    //console.log(document.getElementById('changeble_librariesform'))
+    var changeble_form = $('#changeble_librariesform').find("select#id_experiment_type option:selected").text()
+    if (changeble_form=="ChIP-seq" ){
+        $('#chipform').css('display','');
+        $('#regform').css('display','none');
+        
+
+    }
+    else{
+        $('#regform').css('display','');
+        $('#chipform').css('display','none');
+    }
+
+    
+    $('form#chiponly').find("select#id_experiment_type option:not(:contains('ChIP-seq'))").attr('disabled','disabled')
+    $('form#notchip').find("select#id_experiment_type option:contains('ChIP-seq')").attr('disabled','disabled')
+
 
     $(".dmpajax").on("click",function(e){
 	e.preventDefault();
@@ -172,6 +259,35 @@ $(document).ready( function () {
     		}
     	})
 
+    })
+
+    $(".runsetqc").on("click",function(e){
+        e.preventDefault();
+        that = $(this)
+        var url1=$(this).attr("data-href");
+        var errorname = ['notfinishederror','libdirnotexisterror','writeseterror']
+        $.ajax({
+        url:url1,
+        cache:false,
+        dataType: 'json',
+        success:function (data){
+            $.each(errorname, function( index, value ) {
+                if (value in data){
+                    alert(data[value])
+                    return
+                }
+            });
+            if (data.writesetdone){
+            $(that).replaceWith('<span class="badge badge-success badge-status-blue">JobSubmitted</span>')
+
+            }
+
+
+        }
+
+
+
+        })
     })
 
 } );
