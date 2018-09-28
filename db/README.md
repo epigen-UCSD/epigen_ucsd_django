@@ -1,0 +1,25 @@
+# Setup Database #
+
+## cmds
+* switch user: `su postgres`
+* init: `initdb -D /usr/local/pgsql/data`
+* start: `postgres -D /usr/local/pgsql/data >pg_logfile 2>&1 &`  or `pg_ctl start -l logfile #use wrapper`
+* createdb: `createdb django_data`
+* enter db:`psql -d django_data`
+* stop: `pg_ctl -D /usr/local/pgsql/data/ stop`
+* kill; `pkill postgres` or `sudo pkill -u postgres`
+* createdb: `createdb django_data`
+* check status: `/sbin/service postgresql status`
+* backup & recover all: `pg_dumpall > outfile` and `psql -f infile postgres`
+* backup & recover db: `pg_dump django_data > pg.backup` and `psql -f infile postgres`
+* cron: [setup](https://www.saltycrane.com/blog/2008/12/postgres-backup-cron/)
+
+## SQLs
+* Change user to test: 
+``` SQL
+CREATE DATABASE nextseqapp OWNER test;
+ALTER USER test WITH PASSWORD '123456';
+```
+## psql shell 
+* list: `\l`
+
