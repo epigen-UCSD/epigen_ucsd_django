@@ -1,49 +1,50 @@
 Table masterseq_app_libraryinfo {
   id int PK
-    library_id varchar
-    }
+  library_id varchar
+}
 
 Table masterseq_app_samplesinfo {
   id int PK
-    sample_id varchar
-    }
+  sample_id varchar
+}
 
 
 Table masterseq_app_sequencinginfo {
   id int PK
-    sequencing_id varchar
-    }
+  sequencing_id varchar
+}
 
 Table setqc_app_chiplibraryinset {
   id int PK
-    group_number int
-      is_input varbinary
-        librariesetqc_id int
-	  sequencinginfo_id int
-	  }
+  group_number int 
+  is_input varbinary
+  librariesetqc_id int
+  sequencinginfo_id int 
+}
 
 
 Table setqc_app_librariessetqc {
   id int PK
-    set_name varchar
-      set_id varchar
-        date_requested date
-	  experiment_type varchar
-	    notes varchar
-	      last_modified datetime
-	        url varchar
-		  version varchar
-		    status varchar
-		      requestor_id varchar
-		      }
+  set_name varchar
+  set_id varchar
+  date_requested date
+  experiment_type varchar
+  notes varchar
+  last_modified datetime
+  url varchar
+  version varchar
+  status varchar
+  requestor_id varchar
+}
 
 Table setqc_app_librariessetqc_libraries_to_include {
-  id int PK
-    librariesetqc_id int
-      sequencinginfo_id int
-      }
+  id int PK 
+  librariesetqc_id int
+  sequencinginfo_id int 
+}
 
-// Links
+// Links 
 Ref: setqc_app_chiplibraryinset.librariesetqc_id > setqc_app_librariessetqc.id
 
 Ref: setqc_app_chiplibraryinset.sequencinginfo_id > masterseq_app_sequencinginfo.id
+
