@@ -82,15 +82,17 @@ class ChIPLibrariesToIncludeCreatForm(forms.Form):
 	librariestoincludeInput = forms.CharField(
 			label='Libraries to Include(Input):',
 			widget=forms.Textarea(attrs={'cols': 20, 'rows': 2}),
+			required=False,
 		)
 	librariestoincludeIP = forms.CharField(
 			label='Libraries to Include(IP):',
 			widget=forms.Textarea(attrs={'cols': 40, 'rows': 2}),
+			required=False,
 		)
 		
 	def clean_librariestoincludeInput(self):
-		data = self.cleaned_data['librariestoincludeInput']
 		tosave_list = []
+		data = self.cleaned_data['librariestoincludeInput']	
 		for libraries in data.strip().split('\n'):
 			if not libraries.startswith('Please enter') and libraries != '\r':
 				tosave_list = libraryparse(libraries)
@@ -100,8 +102,8 @@ class ChIPLibrariesToIncludeCreatForm(forms.Form):
 					raise forms.ValidationError(item+' is not a stored library.')
 		return tosave_list
 	def clean_librariestoincludeIP(self):
-		data = self.cleaned_data['librariestoincludeIP']
 		tosave_list = []
+		data = self.cleaned_data['librariestoincludeIP']		
 		for libraries in data.strip().split('\n'):
 			if not libraries.startswith('Please enter') and libraries != '\r':
 				tosave_list = libraryparse(libraries)

@@ -113,33 +113,33 @@ def SetQCCreateView(request):
 
                 return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
         else:
-            #if chiplibraries_formset.is_valid():
-            print(chiplibraries_formset.empty_form)
 
             if chiplibraries_formset.is_valid():
                 setinfo.save()
                 groupnum = 1 
                 tosave_list=[]
                 for form in chiplibraries_formset.forms:
-                    if form not in chiplibraries_formset.deleted_forms and form != chiplibraries_formset.empty_form:
+                    if form not in chiplibraries_formset.deleted_forms and form.cleaned_data:                       
                         libinputs = form.cleaned_data['librariestoincludeInput']
                         libips = form.cleaned_data['librariestoincludeIP']
                         for item in libinputs:
-                            toave_item = ChipLibraryInSet(
-                                librariesetqc=setinfo,
-                                sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
-                                is_input=True,
-                                group_number=groupnum,
-                                )
-                            tosave_list.append(toave_item)
+                            if item:
+                                toave_item = ChipLibraryInSet(
+                                    librariesetqc=setinfo,
+                                    sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                                    is_input=True,
+                                    group_number=groupnum,
+                                    )
+                                tosave_list.append(toave_item)
                         for item in libips:
-                            toave_item = ChipLibraryInSet(
-                                librariesetqc=setinfo,
-                                sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
-                                is_input=False,
-                                group_number=groupnum,
-                                )
-                            tosave_list.append(toave_item)
+                            if item:
+                                toave_item = ChipLibraryInSet(
+                                    librariesetqc=setinfo,
+                                    sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                                    is_input=False,
+                                    group_number=groupnum,
+                                    )
+                                tosave_list.append(toave_item)
                         groupnum += 1
                 ChipLibraryInSet.objects.bulk_create(tosave_list)
                 return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
@@ -214,27 +214,29 @@ def SetQCUpdateView(request,setqc_pk):
             groupnum = 1 
             tosave_list=[]
             for form in chiplibraries_formset.forms:
-                if form not in chiplibraries_formset.deleted_forms and form != chiplibraries_formset.empty_form:
+                if form not in chiplibraries_formset.deleted_forms and form.cleaned_data:
                     libinputs = form.cleaned_data['librariestoincludeInput']
                     libips = form.cleaned_data['librariestoincludeIP']
                     #print(libinputs)
                     #print(libips)
                     for item in libinputs:
-                        toave_item = ChipLibraryInSet(
-                            librariesetqc=setinfo,
-                            sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
-                            is_input=True,
-                            group_number=groupnum,
-                            )
-                        tosave_list.append(toave_item)
+                        if item:
+                            toave_item = ChipLibraryInSet(
+                                librariesetqc=setinfo,
+                                sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                                is_input=True,
+                                group_number=groupnum,
+                                )
+                            tosave_list.append(toave_item)
                     for item in libips:
-                        toave_item = ChipLibraryInSet(
-                            librariesetqc=setinfo,
-                            sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
-                            is_input=False,
-                            group_number=groupnum,
-                            )
-                        tosave_list.append(toave_item)
+                        if item:
+                            toave_item = ChipLibraryInSet(
+                                librariesetqc=setinfo,
+                                sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                                is_input=False,
+                                group_number=groupnum,
+                                )
+                            tosave_list.append(toave_item)
                     groupnum += 1
             setinfo.libraries_to_include_forChIP.clear()
             ChipLibraryInSet.objects.bulk_create(tosave_list)

@@ -23,7 +23,7 @@
 <div id="content" class="col-sm-10 col-md-10 col-lg-10">
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      {% if 'my' in request.META.HTTP_REFERER or 'add' in request.META.HTTP_REFERER %}
+      {% if 'my' in request.META.HTTP_REFERER or 'add' in request.META.HTTP_REFERER or 'update' in request.META.HTTP_REFERER%}
       <li class="breadcrumb-item"><a class="linkblue" href="{% url 'setqc_app:usersetqcs' %}">My Reports</a></li>
       {% else %}
       <li class="breadcrumb-item"><a class="linkblue" href="{% url 'setqc_app:allsetqcs' %}">Reports</a></li>
