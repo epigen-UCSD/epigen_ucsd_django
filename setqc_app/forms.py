@@ -75,7 +75,7 @@ class LibrariesToIncludeCreatForm(forms.Form):
 			if item:
 				if not SequencingInfo.objects.filter(sequencing_id=item).exists():
 					raise forms.ValidationError(item+' is not a stored library.')
-		return tosave_list
+		return list(set(tosave_list))
 
 
 class ChIPLibrariesToIncludeCreatForm(forms.Form):
@@ -100,7 +100,7 @@ class ChIPLibrariesToIncludeCreatForm(forms.Form):
 			if item:
 				if not SequencingInfo.objects.filter(sequencing_id=item).exists():
 					raise forms.ValidationError(item+' is not a stored library.')
-		return tosave_list
+		return list(set(tosave_list))
 	def clean_librariestoincludeIP(self):
 		tosave_list = []
 		data = self.cleaned_data['librariestoincludeIP']		
@@ -111,7 +111,7 @@ class ChIPLibrariesToIncludeCreatForm(forms.Form):
 			if item:
 				if not SequencingInfo.objects.filter(sequencing_id=item).exists():
 					raise forms.ValidationError(item+' is not a stored library.')
-		return tosave_list
+		return list(set(tosave_list))
 
 
 

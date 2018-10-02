@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required, permission_required
-from .models import LibrariesSetQC,ChipLibraryInSet
+from .models import LibrariesSetQC,LibraryInSet
 from masterseq_app.models import SequencingInfo
 from django.db import transaction
 from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm,ChIPLibrariesToIncludeCreatForm
@@ -103,14 +103,18 @@ def SetQCCreateView(request):
         if set_form.cleaned_data['experiment_type'] != 'ChIP-seq':
             if libraries_form.is_valid():
                 setinfo.save()
+                tosave_list = []
                 librariestoinclude = libraries_form.cleaned_data['librariestoinclude']
                 print(librariestoinclude)
 
                 for item in librariestoinclude:
                     if item:
-                        setinfo.libraries_to_include.add(SequencingInfo.objects.get(sequencing_id=item))
-        
-
+                        tosave_item = LibraryInSet(
+                            librariesetqc=setinfo,
+                            sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                            )
+                        tosave_list.append(tosave_item)
+                LibraryInSet.objects.bulk_create(tosave_list)
                 return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
         else:
 
@@ -124,24 +128,24 @@ def SetQCCreateView(request):
                         libips = form.cleaned_data['librariestoincludeIP']
                         for item in libinputs:
                             if item:
-                                toave_item = ChipLibraryInSet(
+                                tosave_item = LibraryInSet(
                                     librariesetqc=setinfo,
                                     sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
                                     is_input=True,
                                     group_number=groupnum,
                                     )
-                                tosave_list.append(toave_item)
+                                tosave_list.append(tosave_item)
                         for item in libips:
                             if item:
-                                toave_item = ChipLibraryInSet(
+                                tosave_item = LibraryInSet(
                                     librariesetqc=setinfo,
                                     sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
                                     is_input=False,
                                     group_number=groupnum,
                                     )
-                                tosave_list.append(toave_item)
+                                tosave_list.append(tosave_item)
                         groupnum += 1
-                ChipLibraryInSet.objects.bulk_create(tosave_list)
+                LibraryInSet.objects.bulk_create(tosave_list)
                 return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
 
     context = {
@@ -169,20 +173,26 @@ def SetQCUpdateView(request,setqc_pk):
         raise PermissionDenied
     set_form = LibrariesSetQCCreationForm(request.POST or None, instance=setinfo)
     if setinfo.experiment_type != 'ChIP-seq':
-        librariesall = setinfo.libraries_to_include.all()
-        librarieslist = list(librariesall.values_list('sequencing_id', flat=True))
+        regset = LibraryInSet.objects.filter(librariesetqc=setinfo)
+        librarieslist = [x.sequencinginfo.sequencing_id for x in regset]
         libraries_form = LibrariesToIncludeCreatForm(request.POST or None, \
             initial={'librariestoinclude': grouplibraries(librarieslist)})
         if set_form.is_valid() and libraries_form.is_valid():
             setinfo = set_form.save(commit=False)
             setinfo.save()
+            tosave_list = []
             librariestoinclude = libraries_form.cleaned_data['librariestoinclude']
             print(librariestoinclude)
             setinfo.libraries_to_include.clear()
     
             for item in librariestoinclude:
                 if item:
-                    setinfo.libraries_to_include.add(SequencingInfo.objects.get(sequencing_id=item))
+                    tosave_item = LibraryInSet(
+                        librariesetqc=setinfo,
+                        sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                        )
+                    tosave_list.append(tosave_item)
+            LibraryInSet.objects.bulk_create(tosave_list)
             
     
             return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
@@ -194,8 +204,7 @@ def SetQCUpdateView(request,setqc_pk):
     
         return render(request, 'setqc_app/setqcupdate.html', context)
     else:
-        #librariesall = setinfo.libraries_to_include_forChIP.all()
-        chipset = ChipLibraryInSet.objects.filter(librariesetqc=setinfo)
+        chipset = LibraryInSet.objects.filter(librariesetqc=setinfo)
         groupitem = list(chipset.values_list('group_number', flat=True).distinct())
         initialgroup=[]
         for i in groupitem:
@@ -221,25 +230,26 @@ def SetQCUpdateView(request,setqc_pk):
                     #print(libips)
                     for item in libinputs:
                         if item:
-                            toave_item = ChipLibraryInSet(
+                            tosave_item = LibraryInSet(
                                 librariesetqc=setinfo,
                                 sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
                                 is_input=True,
                                 group_number=groupnum,
                                 )
-                            tosave_list.append(toave_item)
+                            tosave_list.append(tosave_item)
                     for item in libips:
                         if item:
-                            toave_item = ChipLibraryInSet(
+                            tosave_item = LibraryInSet(
                                 librariesetqc=setinfo,
                                 sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
                                 is_input=False,
                                 group_number=groupnum,
                                 )
-                            tosave_list.append(toave_item)
+                            tosave_list.append(tosave_item)
                     groupnum += 1
-            setinfo.libraries_to_include_forChIP.clear()
-            ChipLibraryInSet.objects.bulk_create(tosave_list)
+            setinfo.libraries_to_include.clear()
+            print(tosave_list)
+            LibraryInSet.objects.bulk_create(tosave_list)
             return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
         context = {
             'set_form': set_form,
@@ -268,18 +278,19 @@ def RunSetQC(request, setqc_pk):
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     allfolder = [ fname for fname in os.listdir(libdir) if os.path.isdir(os.path.join(libdir, fname))]
+    librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
+    list1tem = list(librariesset.values_list('sequencinginfo', flat=True))
+    list1 = [SequencingInfo.objects.values_list('sequencing_id', flat=True).get(id=x)
+     for x in list1tem]
 
     if setinfo.experiment_type == 'ChIP-seq':
-        chipset = ChipLibraryInSet.objects.filter(librariesetqc=setinfo)
-        list1tem = list(chipset.values_list('sequencinginfo', flat=True))
-        list1 = [SequencingInfo.objects.values_list('sequencing_id', flat=True).get(id=x)
-         for x in list1tem]
-        list2 = list(chipset.values_list('group_number', flat=True))
-        list3 = list(chipset.values_list('is_input', flat=True))
+
+        list2 = list(librariesset.values_list('group_number', flat=True))
+        list3 = list(librariesset.values_list('is_input', flat=True))
         writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list2,list3)])
     else:
-        regset = setinfo.libraries_to_include.all()
-        list1 = [x.sequencing_id for x in regset]
+        # regset = setinfo.libraries_to_include.all()
+        # list1 = [x.sequencing_id for x in regset]
         writecontent = '\n'.join(list1)
 
     #list1 is a list of libraries name in a specific set
@@ -314,23 +325,20 @@ def RunSetQC(request, setqc_pk):
 def SetQCDetailView(request,setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     summaryfield = ['status','set_id','set_name','date_requested','requestor','experiment_type','notes','url','version']
-    #print([x.sequencing_id for x in setinfo.libraries_to_include_forChIP.all()])
-    groupinfo = ''
-    isinputinfo = ''
+    groupinputinfo = ''
+    librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
+    list1tem = list(librariesset.values_list('sequencinginfo', flat=True))
+    list1 = [SequencingInfo.objects.values_list('sequencing_id', flat=True).get(id=x)
+     for x in list1tem]
     if setinfo.experiment_type == 'ChIP-seq':
-        chipset = ChipLibraryInSet.objects.filter(librariesetqc=setinfo)
-        list1tem = list(chipset.values_list('sequencinginfo', flat=True))
-        list1 = [SequencingInfo.objects.values_list('sequencing_id', flat=True).get(id=x)
-         for x in list1tem]
-        list2 = list(chipset.values_list('group_number', flat=True))
-        list3 = list(chipset.values_list('is_input', flat=True))
-        groupinfo = dict(zip(list1,list2))
-        isinputinfo = dict(zip(list1,list3))
+        list2 = list(librariesset.values_list('group_number', flat=True))
+        list3 = list(librariesset.values_list('is_input', flat=True))
+        groupinputinfo = list(zip(list1,list2,list3))
     context = {
         'setinfo':setinfo,
         'summaryfield':summaryfield,
-        'groupinfo':groupinfo,
-        'isinputinfo':isinputinfo,
+        'libraryinfo': list1,
+        'groupinputinfo':groupinputinfo,
     }
     return render(request, 'setqc_app/details.html', context=context)
 

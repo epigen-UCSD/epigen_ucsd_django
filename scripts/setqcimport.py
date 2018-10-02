@@ -11,7 +11,7 @@ sys.path.append(basedir)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "epigen_ucsd_django.settings")
 django.setup()
 
-from setqc_app.models import LibrariesSetQC
+from setqc_app.models import LibrariesSetQC,LibraryInSet
 from django.contrib.auth.models import User
 from masterseq_app.models import SequencingInfo
 
@@ -52,6 +52,7 @@ def main():
 	comdate = parser.parse_args().date
 	print(setqcfile)
 	ignorline = ('IMPORTANT NOTE','To be completed','Date requested')
+	tosave_list = []
 	with open(setqcfile,'r') as f:
 		for line in f:
 			fields = line.strip('\n').split('\t')
@@ -64,7 +65,12 @@ def main():
 				tosave_librarylist = libraryparse(fields[4])
 				for item in tosave_librarylist:
 					if item:
-						setinfo.libraries_to_include.add(SequencingInfo.objects.get(sequencing_id=item))
+						tosave_item = LibraryInSet(
+							librariesetqc=setinfo,
+							sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+							)
+						tosave_list.append(tosave_item)
+	LibraryInSet.objects.bulk_create(tosave_list)
 
 if __name__ == '__main__':
 	main()

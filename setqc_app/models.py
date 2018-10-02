@@ -11,8 +11,7 @@ class LibrariesSetQC(models.Model):
 	requestor = models.ForeignKey(User, on_delete=models.CASCADE)
 	experiment_type_choice = (('ATAC-seq','ATAC-seq'),('ChIP-seq','ChIP-seq'), ('HiC','HiC'),('Other','Other'))
 	experiment_type = models.CharField(max_length=10,choices=experiment_type_choice)
-	libraries_to_include = models.ManyToManyField(SequencingInfo,related_name='reglibrary')
-	libraries_to_include_forChIP = models.ManyToManyField(SequencingInfo,through='ChipLibraryInSet',related_name='chiplibrary')
+	libraries_to_include = models.ManyToManyField(SequencingInfo,through='LibraryInSet')
 	notes = models.TextField(blank=True)
 	last_modified = models.DateTimeField(auto_now=True)
 	url = models.URLField(blank=True)
@@ -21,11 +20,11 @@ class LibrariesSetQC(models.Model):
 	def __str__(self):
 		return self.set_name
 
-class ChipLibraryInSet(models.Model):
+class LibraryInSet(models.Model):
 	librariesetqc = models.ForeignKey(LibrariesSetQC, on_delete=models.CASCADE)
 	sequencinginfo = models.ForeignKey(SequencingInfo, on_delete=models.CASCADE)
-	group_number = models.CharField(max_length=10)
-	is_input = models.BooleanField('Is it input?', default=False)
+	group_number = models.CharField(max_length=10, blank=True)
+	is_input = models.NullBooleanField('Is it input?', blank=True)
 
 
 

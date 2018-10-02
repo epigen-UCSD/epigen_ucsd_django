@@ -23,11 +23,11 @@
               <th>Is Input</th>
             </tr>
             </thead>                  
-            {% for library,group in groupinfo.items %}
+            {% for x in groupinputinfo %}
             <tr>
-              <td><a href="">{{ library }}</a></td>                 
-              <td>{{ group }}</td>
-              <td>{{ isinputinfo|key:library }}</td>
+              <td><a href="">{{ x.0 }}</a></td>                 
+              <td>{{ x.1 }}</td>
+              <td>{{ x.2 | default_if_none:"" }}</td>
             </tr>
             {% endfor %} 
 
@@ -38,9 +38,9 @@
               <th>other features</th>
             </tr>
             </thead>                  
-            {% for library in setinfo.libraries_to_include.all %}
+            {% for library in libraryinfo %}
             <tr>                  
-              <td><a href="">{{library.sequencing_id}}</a></td>
+              <td><a href="">{{ library }}</a></td>
               <td></td>
             </tr>
             {% endfor %} 
