@@ -1,6 +1,7 @@
 from django import forms
 from masterseq_app.models import SequencingInfo
 from .models import LibrariesSetQC
+from django.contrib.auth.models import User
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
@@ -36,12 +37,15 @@ class LibrariesSetQCCreationForm(forms.ModelForm):
 
 	class Meta:
 		model = LibrariesSetQC
-		fields = ['set_name','date_requested','experiment_type','notes']
+		fields = ['set_name','collaborator','date_requested','experiment_type','notes']
 		widgets ={
 			 'date_requested': forms.DateInput(),
 			 'notes':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
 
 		}
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.fields['collaborator'].queryset = User.objects.filter(groups__name='epigencollaborators')
 
 class LibrariesForm(forms.ModelForm):
 	libraries = forms.ModelMultipleChoiceField(queryset=SequencingInfo.objects.all(),
@@ -61,7 +65,8 @@ class LibrariesToIncludeCreatForm(forms.Form):
 			widget=forms.Textarea(attrs={'cols': 100, 'rows': 6}),
 			initial='Please enter Sequencing_IDs separated by a comma(,), group the' \
 			' libraries with consecutive numbers by concatenating the min and max'\
-			' with dash(–) or hyphen(-), eg. AVD_173 - AVD_187,AVD_37, AVD_38:\n\n'
+			' with dash(–) or hyphen(-), eg. AVD_173 - AVD_187,AVD_37, AVD_38:\n\n',
+			required=False,
 		)
 
 

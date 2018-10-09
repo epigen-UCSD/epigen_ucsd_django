@@ -54,6 +54,18 @@ $(document).ready( function () {
 
     });
 
+
+    $('#datatabledetailnotes2').DataTable({
+        "order": [[ 1, "desc" ]],
+        "columnDefs": [ {
+            "orderable":false,
+            "targets": [0],            
+        } ,
+
+        ]
+
+    });
+
     $('#datatabledetailnotes tbody').on('click', 'td.details-control', function () {
     	var thisurl=$(this).attr("data-href");
     	var tr = $(this).closest('tr');
@@ -83,6 +95,38 @@ $(document).ready( function () {
     	}
 
     });
+
+
+    $('#datatabledetailnotes2 tbody').on('click', 'td.details-control', function () {
+        var thisurl=$(this).attr("data-href");
+        var tr = $(this).closest('tr');
+        if ($(this).hasClass("closing")){
+            $(this).removeClass("closing")
+            tr.next().closest(".detailnotes").remove()
+
+
+        }
+        else{
+            $(this).addClass("closing")
+
+            $.ajax({
+                url:thisurl,
+                cache:false,
+                dataType: 'json',
+                success:function (data){
+
+                if(data.notes){
+                    tr.after('<tr class="detailnotes"><td class="detailnotes" colspan="8"><div class="detailnotes">Notes:'+data.notes+'</div></td></tr>')
+
+
+                    }
+                }
+            })
+
+        }
+
+    });
+
 
 
 

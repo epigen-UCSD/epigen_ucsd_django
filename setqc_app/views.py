@@ -17,6 +17,7 @@ import subprocess
 # Create your views here.
 DisplayField1 = ['set_id','set_name','date_requested','experiment_type','url']
 DisplayField2 = ['set_id','set_name','date_requested','requestor','experiment_type','url']
+DisplayFieldforcollab = ['set_name','date_requested','requestor','experiment_type','url']
 
 def groupnumber(datalist):
     ranges =[]
@@ -262,8 +263,8 @@ def SetQCUpdateView(request,setqc_pk):
 @login_required
 def GetNotesView(request,setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
-    if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
-        raise PermissionDenied
+    # if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+    #     raise PermissionDenied
     data = {}
     data['notes'] = setinfo.notes
     return JsonResponse(data)
@@ -324,7 +325,7 @@ def RunSetQC(request, setqc_pk):
 @login_required
 def SetQCDetailView(request,setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
-    summaryfield = ['status','set_id','set_name','date_requested','requestor','experiment_type','notes','url','version']
+    summaryfield = ['status','set_id','set_name','collaborator','date_requested','requestor','experiment_type','notes','url','version']
     groupinputinfo = ''
     librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
     list1tem = list(librariesset.values_list('sequencinginfo', flat=True))
@@ -343,11 +344,48 @@ def SetQCDetailView(request,setqc_pk):
     return render(request, 'setqc_app/details.html', context=context)
 
 
+@login_required
+def CollaboratorSetQCView(request):
+    SetQC_list = LibrariesSetQC.objects.filter(collaborator=request.user)
+    context = {
+        'Sets_list': SetQC_list,
+        'DisplayField':DisplayFieldforcollab,
+    }
+    return render(request, 'setqc_app/collaboratorsetqcinfo.html', context)
 
 
 
+@login_required
+def CollaboratorGetNotesView(request,setqc_pk):
+    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
+    if setinfo.collaborator != request.user:
+        raise PermissionDenied
+    data = {}
+    data['notes'] = setinfo.notes
+    return JsonResponse(data)
 
-
+@login_required
+def CollaboratorSetQCDetailView(request,setqc_pk):
+    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
+    if setinfo.collaborator != request.user:
+        raise PermissionDenied
+    summaryfield = ['set_name','collaborator','date_requested','requestor','experiment_type','notes','url','version']
+    groupinputinfo = ''
+    librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
+    list1tem = list(librariesset.values_list('sequencinginfo', flat=True))
+    list1 = [SequencingInfo.objects.values_list('sequencing_id', flat=True).get(id=x)
+     for x in list1tem]
+    if setinfo.experiment_type == 'ChIP-seq':
+        list2 = list(librariesset.values_list('group_number', flat=True))
+        list3 = list(librariesset.values_list('is_input', flat=True))
+        groupinputinfo = list(zip(list1,list2,list3))
+    context = {
+        'setinfo':setinfo,
+        'summaryfield':summaryfield,
+        'libraryinfo': list1,
+        'groupinputinfo':groupinputinfo,
+    }
+    return render(request, 'setqc_app/collaboratordetails.html', context=context)
 
 
 

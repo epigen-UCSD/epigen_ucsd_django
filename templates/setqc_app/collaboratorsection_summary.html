@@ -1,0 +1,43 @@
+{% load nextseq_app_tags %}
+<div class="row" id="summary">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="card bottom15">
+      <div class="card-header fortable collapseheader">
+        <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1"><i class="fa fas fa-caret-right collapseheader fa-lg fa-fw"></i><i class="fa fa-caret-down collapseheader fa-lg fa-fw"></i></a>
+        Summary
+        <button type="button" class="close" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+        </button>
+      </div><!-- /.card-header -->
+      <div class="collapse show" id="collapse1">
+        <div class="card-body">
+          <table class="summarytable">
+            <tbody>  
+                {% for field in summaryfield %}
+              <tr>
+                <th>
+                  {{ field|humantitle}}:
+                  
+                </th>
+                {% if field == 'url' %}
+                  {% if setinfo.url%}
+                    <td><a href="{{setinfo.url}}" target="_blank"><i class="fas fa-file-alt" style="font-size: 17px;color:#26D07C"></i></a></td>
+                  {% else %}
+                    <td></td>
+                  {% endif %}
+                {% else %}  
+                <td>
+                  {{ setinfo|get_value:field|default_if_none:""}}
+                </td>
+                {% endif %}
+              </tr>
+               
+              {% endfor %}  
+            </tbody>
+            
+          </table>
+        </div><!-- /.card-body -->              
+      </div><!-- /.collapse --> 
+    </div><!-- /.card -->
+  </div>
+</div>

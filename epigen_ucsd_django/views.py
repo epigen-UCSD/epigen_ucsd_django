@@ -10,6 +10,9 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
+def is_member(user,group):
+    return user.groups.filter(name=group).exists()
+
 @method_decorator(never_cache, name='dispatch')
 class UserLoginView(View):
     form_class = UserLoginForm
@@ -28,7 +31,10 @@ class UserLoginView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return redirect('nextseq_app:userruns')
+                    if is_member(user,'epigencollaborators'):
+                        return redirect('setqc_app:collaboratorsetqcs')
+                    else:
+                        return redirect('nextseq_app:userruns')
             else:
                 return render(request, self.template_name, {'form': form, 'error_message': 'Invalid login'})
 

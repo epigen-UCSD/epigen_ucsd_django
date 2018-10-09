@@ -8,7 +8,7 @@ class LibrariesSetQC(models.Model):
 	set_id = models.CharField(max_length=20,unique=True)
 	date_requested = models.DateField(help_text='If the datepicker is not working, \
 		please enter in this form: yyyy-mm-dd, like 2018-04-03',blank=True,null=True)
-	requestor = models.ForeignKey(User, on_delete=models.CASCADE)
+	requestor = models.ForeignKey(User, on_delete=models.CASCADE,related_name='requestor')
 	experiment_type_choice = (('ATAC-seq','ATAC-seq'),('ChIP-seq','ChIP-seq'), ('HiC','HiC'),('Other','Other'))
 	experiment_type = models.CharField(max_length=10,choices=experiment_type_choice)
 	libraries_to_include = models.ManyToManyField(SequencingInfo,through='LibraryInSet')
@@ -17,6 +17,8 @@ class LibrariesSetQC(models.Model):
 	url = models.URLField(blank=True)
 	version = models.CharField(max_length=200,blank=True)
 	status = models.CharField(max_length=200,blank=True,default='ClickToSubmit')
+	collaborator = models.ForeignKey(User, on_delete=models.CASCADE,related_name='collaborator',blank=True,null=True)
+
 	def __str__(self):
 		return self.set_name
 
