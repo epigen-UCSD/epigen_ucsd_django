@@ -29,4 +29,3 @@ class LibraryInSet(models.Model):
 	is_input = models.NullBooleanField('Is it input?', blank=True)
 
 
-

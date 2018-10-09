@@ -11,4 +11,3 @@ class LibraryInfo(models.Model):
 	library_id = models.CharField(max_length=100,unique=True)
 
 
-
