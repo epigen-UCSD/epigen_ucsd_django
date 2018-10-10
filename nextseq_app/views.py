@@ -83,14 +83,14 @@ def IndexValidation(i7list, i5list):
     return duplicate
 
 
-@login_required
+
 def IndexView(request):
 
     RunInfo_list = RunInfo.objects.filter(operator=request.user)
     return render(request, 'nextseq_app/userrunsinfo.html', {'RunInfo_list': RunInfo_list})
 
 
-@method_decorator(login_required, name='dispatch')
+
 class HomeView(ListView):
     template_name = "nextseq_app/runsinfo.html"
     context_object_name = 'RunInfo_list'
@@ -116,7 +116,7 @@ class HomeView(ListView):
         return context
 
 
-@login_required
+
 def AllSamplesView(request):
     Samples_list = LibrariesInRun.objects.all()
     barcodes_dic = BarcodeDic()
@@ -131,7 +131,7 @@ def AllSamplesView(request):
     return render(request, 'nextseq_app/samplesinfo.html', context)
 
 
-@login_required
+
 def UserSamplesView(request):
     userruns = RunInfo.objects.filter(operator=request.user)
     Samples_list = LibrariesInRun.objects.filter(singlerun__in=userruns)
@@ -155,7 +155,7 @@ def UserSamplesView(request):
 # 		context['barcode'] = barcodes_dic
 # 		return context
 
-@method_decorator(login_required, name='dispatch')
+
 class RunDetailView2(DetailView):
     model = RunInfo
     template_name = 'nextseq_app/details.html'
@@ -235,7 +235,6 @@ class RunDetailView2(DetailView):
 # 		return redirect('nextseq_app:rundetail',pk=runinfo.id)
 # 	return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form':run_form,'sample_formset':sample_formset})
 
-@login_required
 @transaction.atomic
 def RunCreateView4(request):
     run_form = RunCreationForm(request.POST or None)
@@ -283,7 +282,7 @@ def RunCreateView4(request):
     return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form': run_form, 'sample_formset': sample_formset})
 
 
-@login_required
+
 @transaction.atomic
 def RunCreateView6(request):
     run_form = RunCreationForm(request.POST or None)
@@ -396,7 +395,6 @@ def RunCreateView6(request):
     return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
 
-@login_required
 @transaction.atomic
 def RunUpdateView2(request, username, run_pk):
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
@@ -543,7 +541,6 @@ def RunUpdateView2(request, username, run_pk):
 # 		form = SamplesToCreatForm()
 # 	return render(request, 'nextseq_app/createsamples_inbulk.html',{'form':form,'runinfo':runinfo})
 
-@login_required
 def SampleSheetCreateView(request, run_pk):
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
     response = HttpResponse(content_type='text/csv')
@@ -598,7 +595,6 @@ def SampleSheetCreateView(request, run_pk):
 # 	model = RunInfo
 # 	success_url = reverse_lazy('nextseq_app:userruns')
 
-@login_required
 def RunDeleteView2(request, run_pk):
     deleterun = get_object_or_404(RunInfo, pk=run_pk)
     if deleterun.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
@@ -619,7 +615,7 @@ class UserRegisterView(FormView):
         return HttpResponseRedirect(self.success_url)
 
 
-@method_decorator(never_cache, name='dispatch')
+
 class UserLoginView(View):
     form_class = UserLoginForm
     template_name = 'nextseq_app/login.html'
@@ -649,7 +645,6 @@ def logout_view(request):
     return redirect('nextseq_app:userruns')
 
 
-@login_required
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(user=request.user, data=request.POST)
@@ -667,7 +662,6 @@ def change_password(request):
     })
 
 
-@login_required
 @transaction.atomic
 def DemultiplexingView(request, run_pk):
     dmpdir = settings.NEXTSEQAPP_DMPDIR
@@ -815,7 +809,6 @@ def DemultiplexingView(request, run_pk):
         return JsonResponse(data)
 
 
-@login_required
 @transaction.atomic
 def DemultiplexingView2(request, run_pk):
     dmpdir = settings.NEXTSEQAPP_DMPDIR

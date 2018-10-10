@@ -51,6 +51,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'epigen_ucsd_django.middleware.LoginRequiredMiddleware',
+    'epigen_ucsd_django.middleware.InternalRequiredMiddleware',
+
 ]
 
 ROOT_URLCONF = 'epigen_ucsd_django.urls'
@@ -144,6 +147,20 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
+
+LOGIN_EXEMPT_URLS =(
+
+    r'register/',
+
+    )
+INTERNAL_EXEMPT_URLS=(
+    r'setqc_app/myreports/',
+    r'changepassword/',
+    r'setqc_app/(\d+)/details/',
+    r'setqc_app/(\d+)/getnotes/',
+    r'logout/',
+
+    )
 
 NEXTSEQAPP_DMPDIR = config['database']['NEXTSEQAPP_DMPDIR']
 LIBQC_DIR = config['database']['LIBQC_DIR']

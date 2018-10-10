@@ -4,7 +4,7 @@ from masterseq_app.models import SequencingInfo
 from django.db import transaction
 from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm,ChIPLibrariesToIncludeCreatForm
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import JsonResponse
 from itertools import groupby
 from operator import itemgetter
@@ -67,7 +67,6 @@ def grouplibraries(librarieslist):
                     groupedlibraries.append('-'.join([start,end]))
     return ','.join(groupedlibraries)
 
-@login_required
 def AllSetQCView(request):
 
     context = {
@@ -76,7 +75,6 @@ def AllSetQCView(request):
     }
     return render(request, 'setqc_app/setqcinfo.html', context)
 
-@login_required
 def UserSetQCView(request):
     SetQC_list = LibrariesSetQC.objects.filter(requestor=request.user)
     context = {
@@ -85,7 +83,6 @@ def UserSetQCView(request):
     }
     return render(request, 'setqc_app/usersetqcinfo.html', context)
 
-@login_required
 @transaction.atomic
 def SetQCCreateView(request):
     set_form = LibrariesSetQCCreationForm(request.POST or None)
@@ -158,7 +155,6 @@ def SetQCCreateView(request):
     return render(request, 'setqc_app/setqcadd.html', context)
 
 
-@login_required
 def SetQCDeleteView(request, setqc_pk):
     deleteset = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if deleteset.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
@@ -166,7 +162,6 @@ def SetQCDeleteView(request, setqc_pk):
     deleteset.delete()
     return redirect('setqc_app:usersetqcs')
 
-@login_required
 @transaction.atomic
 def SetQCUpdateView(request,setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
@@ -260,7 +255,7 @@ def SetQCUpdateView(request,setqc_pk):
     
         return render(request, 'setqc_app/setqcchipupdate.html', context)
 
-@login_required
+
 def GetNotesView(request,setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     # if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
@@ -269,7 +264,7 @@ def GetNotesView(request,setqc_pk):
     data['notes'] = setinfo.notes
     return JsonResponse(data)
 
-@login_required
+
 @transaction.atomic
 def RunSetQC(request, setqc_pk):
     libdir = settings.LIBQC_DIR
@@ -322,7 +317,6 @@ def RunSetQC(request, setqc_pk):
     data['writesetdone'] = 1
     return JsonResponse(data)
 
-@login_required
 def SetQCDetailView(request,setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     summaryfield = ['status','set_id','set_name','collaborator','date_requested','requestor','experiment_type','notes','url','version']
@@ -344,7 +338,6 @@ def SetQCDetailView(request,setqc_pk):
     return render(request, 'setqc_app/details.html', context=context)
 
 
-@login_required
 def CollaboratorSetQCView(request):
     SetQC_list = LibrariesSetQC.objects.filter(collaborator=request.user)
     context = {
@@ -355,7 +348,6 @@ def CollaboratorSetQCView(request):
 
 
 
-@login_required
 def CollaboratorGetNotesView(request,setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.collaborator != request.user:
@@ -364,7 +356,6 @@ def CollaboratorGetNotesView(request,setqc_pk):
     data['notes'] = setinfo.notes
     return JsonResponse(data)
 
-@login_required
 def CollaboratorSetQCDetailView(request,setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.collaborator != request.user:

@@ -15,7 +15,7 @@ urlpatterns = [
     path('<int:setqc_pk>/runsetqc/',views.RunSetQC, name='runsetqc'),
     path('<int:setqc_pk>/',views.SetQCDetailView, name='setqc_detail'),
     path('myreports/', views.CollaboratorSetQCView, name='collaboratorsetqcs'),
-    path('<int:setqc_pk>/details',views.CollaboratorSetQCDetailView, name='setqc_collaboratordetail'),
+    path('<int:setqc_pk>/details/',views.CollaboratorSetQCDetailView, name='setqc_collaboratordetail'),
     path('<int:setqc_pk>/getnotes/',views.CollaboratorGetNotesView, name='setqc_collaboratorgetnotes'),
 
 ]

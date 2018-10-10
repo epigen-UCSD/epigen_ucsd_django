@@ -9,9 +9,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-
-def is_member(user,group):
-    return user.groups.filter(name=group).exists()
+from .shared import is_member
 
 @method_decorator(never_cache, name='dispatch')
 class UserLoginView(View):
@@ -44,7 +42,7 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-@login_required
+
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(user=request.user, data=request.POST)
@@ -52,7 +50,10 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, form.user)
             #messages.success(request, 'Your password was successfully updated!')
-            return redirect('nextseq_app:userruns')
+            if is_member(user,'epigencollaborators'):
+                return redirect('setqc_app:collaboratorsetqcs')
+            else:
+                return redirect('nextseq_app:userruns')
         # else:
             #messages.error(request, 'Please correct the error below.')
     else:
