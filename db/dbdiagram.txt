@@ -63,6 +63,7 @@ Table setqc_LibraryInSet {
   librariesetqc_id int
   sequencinginfo_id int
   label varchar
+  genomeinfo_id int
 }
 
 
@@ -79,7 +80,7 @@ Table setqc_librariessetqc {
   status varchar
   requestor_id int
   collaborator_id int
-  genomeinfo_id int
+ 
 }
 
 
@@ -97,4 +98,4 @@ Ref: masterseq_sequencinginfo.libraryinfo_id > masterseq_libraryinfo.id
 
 Ref: masterseq_sequencinginfo.sequencingmachineinfo_id > masterseq_sequencingmachineinfo.id
 
-Ref: setqc_librariessetqc.genomeinfo_id > masterseq_GenomeInfo.id
+Ref: setqc_LibraryInSet.genomeinfo_id > masterseq_GenomeInfo.id

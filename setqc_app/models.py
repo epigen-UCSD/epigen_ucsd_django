@@ -18,7 +18,7 @@ class LibrariesSetQC(models.Model):
 	version = models.CharField(max_length=200,blank=True)
 	status = models.CharField(max_length=200,blank=True,default='ClickToSubmit')
 	collaborator = models.ForeignKey(User, on_delete=models.CASCADE,related_name='collaborator',blank=True,null=True)
-	genome  =  models.ForeignKey(GenomeInfo, on_delete=models.CASCADE,blank=True,null=True)
+	
 
 	def __str__(self):
 		return self.set_name
@@ -29,5 +29,5 @@ class LibraryInSet(models.Model):
 	group_number = models.CharField(max_length=10, blank=True)
 	is_input = models.NullBooleanField('Is it input?', blank=True)
 	label = models.CharField(max_length=10, blank=True)
-
+	genome  =  models.ForeignKey(GenomeInfo, on_delete=models.CASCADE,blank=True,null=True)
 

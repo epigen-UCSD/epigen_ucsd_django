@@ -17,7 +17,7 @@ import subprocess
 # Create your views here.
 DisplayField1 = ['set_id','set_name','date_requested','experiment_type','url']
 DisplayField2 = ['set_id','set_name','date_requested','requestor','experiment_type','url']
-DisplayFieldforcollab = ['set_name','date_requested','experiment_type','genome','url']
+DisplayFieldforcollab = ['set_name','date_requested','experiment_type','url']
 
 def groupnumber(datalist):
     ranges =[]
@@ -319,7 +319,7 @@ def RunSetQC(request, setqc_pk):
 
 def SetQCDetailView(request,setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
-    summaryfield = ['status','set_id','set_name','genome','collaborator','date_requested','requestor','experiment_type','notes','url','version']
+    summaryfield = ['status','set_id','set_name','collaborator','date_requested','requestor','experiment_type','notes','url','version']
     groupinputinfo = ''
     librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
     list1tem = list(librariesset.values_list('sequencinginfo', flat=True))
