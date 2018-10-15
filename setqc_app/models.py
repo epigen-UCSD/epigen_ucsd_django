@@ -28,5 +28,6 @@ class LibraryInSet(models.Model):
 	sequencinginfo = models.ForeignKey(SequencingInfo, on_delete=models.CASCADE)
 	group_number = models.CharField(max_length=10, blank=True)
 	is_input = models.NullBooleanField('Is it input?', blank=True)
+	label = models.CharField(max_length=10, blank=True)
 
 
