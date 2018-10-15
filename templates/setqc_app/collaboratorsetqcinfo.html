@@ -43,7 +43,7 @@
                     {% elif field == 'set_name' %}
                     <td>{{Set.set_name}}</td>
                     {% else %}
-                    <td>{{ Set|get_value:field }}</td>
+                    <td>{{ Set|get_value:field|default_if_none:"" }}</td>
                     {% endif %}
                   {% endfor %}
                 </tr>

@@ -151,6 +151,7 @@ LOGIN_URL = '/login/'
 LOGIN_EXEMPT_URLS =(
 
     r'register/',
+    r'admin/',
 
     )
 INTERNAL_EXEMPT_URLS=(

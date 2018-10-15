@@ -37,7 +37,7 @@ class LibrariesSetQCCreationForm(forms.ModelForm):
 
 	class Meta:
 		model = LibrariesSetQC
-		fields = ['set_name','collaborator','date_requested','experiment_type','notes']
+		fields = ['set_name','genome','collaborator','date_requested','experiment_type','notes']
 		widgets ={
 			 'date_requested': forms.DateInput(),
 			 'notes':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
@@ -117,9 +117,3 @@ class ChIPLibrariesToIncludeCreatForm(forms.Form):
 				if not SequencingInfo.objects.filter(sequencing_id=item).exists():
 					raise forms.ValidationError(item+' is not a stored library.')
 		return list(set(tosave_list))
-
-
-
-
-
-

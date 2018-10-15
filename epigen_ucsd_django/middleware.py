@@ -44,8 +44,8 @@ class InternalRequiredMiddleware(object):
  
     def __call__(self, request):
         assert hasattr(request, 'user')
-        print(request.user)
-        print(is_member(request.user,'epigencollaborators'))
+        #print(request.user)
+        #print(is_member(request.user,'epigencollaborators'))
         if is_member(request.user,'epigencollaborators'):
             path = request.path_info.lstrip('/')
             print(path)

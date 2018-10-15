@@ -47,7 +47,7 @@
                     {% elif field == 'set_name' %}
                     <td><a href="{% url 'setqc_app:setqc_detail' Set.id %}">{{Set.set_name}}</a></td>
                     {% else %}
-                    <td>{{ Set|get_value:field }}</td>
+                    <td>{{ Set|get_value:field|default_if_none:"" }}</td>
                     {% endif %}
                   {% endfor %}
                   {% if request.user|has_group:"bioinformatics" %}
