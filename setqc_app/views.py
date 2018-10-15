@@ -17,7 +17,7 @@ import subprocess
 # Create your views here.
 DisplayField1 = ['set_id','set_name','date_requested','experiment_type','url']
 DisplayField2 = ['set_id','set_name','date_requested','requestor','experiment_type','url']
-DisplayFieldforcollab = ['set_name','date_requested','requestor','experiment_type','url']
+DisplayFieldforcollab = ['set_name','date_requested','experiment_type','url']
 
 def groupnumber(datalist):
     ranges =[]

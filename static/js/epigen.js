@@ -56,7 +56,7 @@ $(document).ready( function () {
 
 
     $('#datatabledetailnotes2').DataTable({
-        "order": [[ 1, "desc" ]],
+        "order": [[ 2, "desc" ]],
         "columnDefs": [ {
             "orderable":false,
             "targets": [0],            

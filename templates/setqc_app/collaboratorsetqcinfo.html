@@ -41,7 +41,7 @@
                         <td></td>
                       {% endif %}
                     {% elif field == 'set_name' %}
-                    <td><a href="{% url 'setqc_app:setqc_collaboratordetail' Set.id %}">{{Set.set_name}}</a></td>
+                    <td>{{Set.set_name}}</td>
                     {% else %}
                     <td>{{ Set|get_value:field }}</td>
                     {% endif %}
