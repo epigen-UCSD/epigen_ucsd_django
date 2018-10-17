@@ -23,3 +23,5 @@ ALTER USER test WITH PASSWORD '123456';
 ## psql shell 
 * list: `\l`
 
+## URL
+* [dbdiagram.io](https://dbdiagram.io/d/5bb396d8e63c1f0014dab57d)

@@ -20,24 +20,38 @@ Table masterseq_sampleinfo {
   sample_type varchar
   preparation varchar
   description varchar
+  notes archar
 }
 
 
-Table masterseq_sequencinginfo {
+Table masterseq_seqinfo {
   id int PK
-  sequencing_id varchar
+  seq_id varchar
   libraryinfo_id int
   team_member_initails_id int
-  sequencingmachineinfo_id int
+  seqmachineinfo_id int
   sequencing_length varchar
   read_type varchar
   portion_of_lane float
   i7index_id int
   i5index_id int
+  total_reads int
   
 }
+Table masterseq_SeqBioInfo {
+  id int PK
+  seqinfo_id int
+  genome_id int
+  pipeline_version varchar
+  final_reads int
+  final_yield float
+  mito_frac float
+  tss_enrichment float
+  frop float
+}
+
  
-Table masterseq_sequencingmachineinfo {
+Table masterseq_seqmachineinfo {
   id int PK
   machine_name varchar
   sequencing_core varchar
@@ -61,9 +75,9 @@ Table setqc_LibraryInSet {
   group_number int 
   is_input varbinary
   librariesetqc_id int
-  sequencinginfo_id int
+  seqinfo_id int
   label varchar
-  genomeinfo_id int
+  genome_id int
 }
 
 
@@ -88,14 +102,19 @@ Table setqc_librariessetqc {
 // Links 
 Ref: setqc_LibraryInSet.librariesetqc_id > setqc_librariessetqc.id
 
-Ref: setqc_LibraryInSet.sequencinginfo_id > masterseq_sequencinginfo.id
+Ref: setqc_LibraryInSet.seqinfo_id > masterseq_seqinfo.id
 
 Ref: masterseq_libraryinfo.sampleinfo_id > masterseq_sampleinfo.id
 
 Ref: masterseq_libraryinfo.protocalinfo_id > masterseq_protocalinfo.id
 
-Ref: masterseq_sequencinginfo.libraryinfo_id > masterseq_libraryinfo.id
+Ref: masterseq_seqinfo.libraryinfo_id > masterseq_libraryinfo.id
 
-Ref: masterseq_sequencinginfo.sequencingmachineinfo_id > masterseq_sequencingmachineinfo.id
+Ref: masterseq_seqinfo.seqmachineinfo_id > masterseq_seqmachineinfo.id
 
-Ref: setqc_LibraryInSet.genomeinfo_id > masterseq_GenomeInfo.id
+Ref: setqc_LibraryInSet.genome_id > masterseq_GenomeInfo.id
+
+Ref: masterseq_SeqBioInfo.seqinfo_id > masterseq_seqinfo.id
+
+Ref: masterseq_SeqBioInfo.genome_id > masterseq_GenomeInfo.id
+

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ProtocalInfo,SequencingMachineInfo,GenomeInfo
+from .models import ProtocalInfo,SeqMachineInfo,GenomeInfo
 
 # Register your models here.
 class GenomeInfoAdmin(admin.ModelAdmin):
@@ -7,10 +7,10 @@ class GenomeInfoAdmin(admin.ModelAdmin):
 
 admin.site.register(GenomeInfo,GenomeInfoAdmin)
 
-class SequencingMachineInfoAdmin(admin.ModelAdmin):
+class SeqMachineInfoAdmin(admin.ModelAdmin):
 	list_display = ('sequencing_core','machine_name')
 
-admin.site.register(SequencingMachineInfo,SequencingMachineInfoAdmin)
+admin.site.register(SeqMachineInfo,SeqMachineInfoAdmin)
 
 class ProtocalInfoAdmin(admin.ModelAdmin):
 	list_display = ('experiment_type','protocal_name')

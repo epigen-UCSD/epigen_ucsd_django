@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import LibrariesSetQC,LibraryInSet
-from masterseq_app.models import SequencingInfo
+from masterseq_app.models import SeqInfo
 from django.db import transaction
 from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm,ChIPLibrariesToIncludeCreatForm
 from django.shortcuts import render, redirect, get_object_or_404
@@ -109,7 +109,7 @@ def SetQCCreateView(request):
                     if item:
                         tosave_item = LibraryInSet(
                             librariesetqc=setinfo,
-                            sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                            seqinfo=SeqInfo.objects.get(seq_id=item),
                             )
                         tosave_list.append(tosave_item)
                 LibraryInSet.objects.bulk_create(tosave_list)
@@ -128,7 +128,7 @@ def SetQCCreateView(request):
                             if item:
                                 tosave_item = LibraryInSet(
                                     librariesetqc=setinfo,
-                                    sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                                    seqinfo=SeqInfo.objects.get(seq_id=item),
                                     is_input=True,
                                     group_number=groupnum,
                                     )
@@ -137,7 +137,7 @@ def SetQCCreateView(request):
                             if item:
                                 tosave_item = LibraryInSet(
                                     librariesetqc=setinfo,
-                                    sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                                    seqinfo=SeqInfo.objects.get(seq_id=item),
                                     is_input=False,
                                     group_number=groupnum,
                                     )
@@ -170,7 +170,7 @@ def SetQCUpdateView(request,setqc_pk):
     set_form = LibrariesSetQCCreationForm(request.POST or None, instance=setinfo)
     if setinfo.experiment_type != 'ChIP-seq':
         regset = LibraryInSet.objects.filter(librariesetqc=setinfo)
-        librarieslist = [x.sequencinginfo.sequencing_id for x in regset]
+        librarieslist = [x.seqinfo.seq_id for x in regset]
         libraries_form = LibrariesToIncludeCreatForm(request.POST or None, \
             initial={'librariestoinclude': grouplibraries(librarieslist)})
         if set_form.is_valid() and libraries_form.is_valid():
@@ -185,7 +185,7 @@ def SetQCUpdateView(request,setqc_pk):
                 if item:
                     tosave_item = LibraryInSet(
                         librariesetqc=setinfo,
-                        sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                        seqinfo=SeqInfo.objects.get(seq_id=item),
                         )
                     tosave_list.append(tosave_item)
             LibraryInSet.objects.bulk_create(tosave_list)
@@ -205,8 +205,8 @@ def SetQCUpdateView(request,setqc_pk):
         initialgroup=[]
         for i in groupitem:
             temdic = {}
-            temdic['librariestoincludeInput']=grouplibraries([x.sequencinginfo.sequencing_id for x in chipset.filter(group_number=i,is_input=True)])
-            temdic['librariestoincludeIP']=grouplibraries([x.sequencinginfo.sequencing_id for x in chipset.filter(group_number=i,is_input=False)])
+            temdic['librariestoincludeInput']=grouplibraries([x.seqinfo.seq_id for x in chipset.filter(group_number=i,is_input=True)])
+            temdic['librariestoincludeIP']=grouplibraries([x.seqinfo.seq_id for x in chipset.filter(group_number=i,is_input=False)])
             initialgroup.append(temdic)
             print([x for x in chipset.filter(group_number=i,is_input=True)])
         ChIPLibrariesFormSet = formset_factory(ChIPLibrariesToIncludeCreatForm,can_delete=True)
@@ -228,7 +228,7 @@ def SetQCUpdateView(request,setqc_pk):
                         if item:
                             tosave_item = LibraryInSet(
                                 librariesetqc=setinfo,
-                                sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                                seqinfo=SeqInfo.objects.get(seq_id=item),
                                 is_input=True,
                                 group_number=groupnum,
                                 )
@@ -237,7 +237,7 @@ def SetQCUpdateView(request,setqc_pk):
                         if item:
                             tosave_item = LibraryInSet(
                                 librariesetqc=setinfo,
-                                sequencinginfo=SequencingInfo.objects.get(sequencing_id=item),
+                                seqinfo=SeqInfo.objects.get(seq_id=item),
                                 is_input=False,
                                 group_number=groupnum,
                                 )
@@ -275,8 +275,8 @@ def RunSetQC(request, setqc_pk):
         raise PermissionDenied
     allfolder = [ fname for fname in os.listdir(libdir) if os.path.isdir(os.path.join(libdir, fname))]
     librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
-    list1tem = list(librariesset.values_list('sequencinginfo', flat=True))
-    list1 = [SequencingInfo.objects.values_list('sequencing_id', flat=True).get(id=x)
+    list1tem = list(librariesset.values_list('seqinfo', flat=True))
+    list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x)
      for x in list1tem]
 
     if setinfo.experiment_type == 'ChIP-seq':
@@ -286,7 +286,7 @@ def RunSetQC(request, setqc_pk):
         writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list2,list3)])
     else:
         # regset = setinfo.libraries_to_include.all()
-        # list1 = [x.sequencing_id for x in regset]
+        # list1 = [x.seq_id for x in regset]
         writecontent = '\n'.join(list1)
 
     #list1 is a list of libraries name in a specific set
@@ -322,8 +322,8 @@ def SetQCDetailView(request,setqc_pk):
     summaryfield = ['status','set_id','set_name','collaborator','date_requested','requestor','experiment_type','notes','url','version']
     groupinputinfo = ''
     librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
-    list1tem = list(librariesset.values_list('sequencinginfo', flat=True))
-    list1 = [SequencingInfo.objects.values_list('sequencing_id', flat=True).get(id=x)
+    list1tem = list(librariesset.values_list('seqinfo', flat=True))
+    list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x)
      for x in list1tem]
     if setinfo.experiment_type == 'ChIP-seq':
         list2 = list(librariesset.values_list('group_number', flat=True))
@@ -363,8 +363,8 @@ def CollaboratorSetQCDetailView(request,setqc_pk):
     summaryfield = ['set_name','collaborator','date_requested','requestor','experiment_type','notes','url','version']
     groupinputinfo = ''
     librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
-    list1tem = list(librariesset.values_list('sequencinginfo', flat=True))
-    list1 = [SequencingInfo.objects.values_list('sequencing_id', flat=True).get(id=x)
+    list1tem = list(librariesset.values_list('seqinfo', flat=True))
+    list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x)
      for x in list1tem]
     if setinfo.experiment_type == 'ChIP-seq':
         list2 = list(librariesset.values_list('group_number', flat=True))

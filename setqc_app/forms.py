@@ -1,5 +1,5 @@
 from django import forms
-from masterseq_app.models import SequencingInfo
+from masterseq_app.models import SeqInfo
 from .models import LibrariesSetQC
 from django.contrib.auth.models import User
 from django.contrib.admin.widgets import FilteredSelectMultiple
@@ -48,7 +48,7 @@ class LibrariesSetQCCreationForm(forms.ModelForm):
 		self.fields['collaborator'].queryset = User.objects.filter(groups__name='epigencollaborators')
 
 class LibrariesForm(forms.ModelForm):
-	libraries = forms.ModelMultipleChoiceField(queryset=SequencingInfo.objects.all(),
+	libraries = forms.ModelMultipleChoiceField(queryset=SeqInfo.objects.all(),
 		widget=FilteredSelectMultiple("Libraries", is_stacked=False)
 		)	
 
@@ -78,7 +78,7 @@ class LibrariesToIncludeCreatForm(forms.Form):
 				tosave_list = libraryparse(libraries)
 		for item in tosave_list:
 			if item:
-				if not SequencingInfo.objects.filter(sequencing_id=item).exists():
+				if not SeqInfo.objects.filter(seq_id=item).exists():
 					raise forms.ValidationError(item+' is not a stored library.')
 		return list(set(tosave_list))
 
@@ -103,7 +103,7 @@ class ChIPLibrariesToIncludeCreatForm(forms.Form):
 				tosave_list = libraryparse(libraries)
 		for item in tosave_list:
 			if item:
-				if not SequencingInfo.objects.filter(sequencing_id=item).exists():
+				if not SeqInfo.objects.filter(seq_id=item).exists():
 					raise forms.ValidationError(item+' is not a stored library.')
 		return list(set(tosave_list))
 	def clean_librariestoincludeIP(self):
@@ -114,6 +114,6 @@ class ChIPLibrariesToIncludeCreatForm(forms.Form):
 				tosave_list = libraryparse(libraries)
 		for item in tosave_list:
 			if item:
-				if not SequencingInfo.objects.filter(sequencing_id=item).exists():
+				if not SeqInfo.objects.filter(seq_id=item).exists():
 					raise forms.ValidationError(item+' is not a stored library.')
 		return list(set(tosave_list))
