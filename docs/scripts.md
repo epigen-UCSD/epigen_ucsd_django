@@ -45,3 +45,22 @@ python setqcimport.py -i 'scripts/MSQcTS.tsv' -date '2018-07-18'
 ```
 * Note: the libraries in 'Libraries to include' column should be separated by comma. This script can understand grouped-libraries format, but you still need adhere to some rules, like enter in 'JYH_554 - 556, JYH_558 - 560, JYH_570' instead of 'JYH_554 - 556, 558 - 560, 570'. The cells with a date later than '2018-07-18' that cann't be parsed has been corrected manually.
 
+## import existing data to the tables in masterseq app
+
+1. check if member exist, if not, add it through admin. But it is okay to skip this step, if you are fine with setting the team_member_initails to null in database, and moving it to the notes field:
+```shell
+AVD,JIB,JYH,RMM,XH,XW,DUG,SP,ZC
+```
+2. clear the data in masterseq app and setqc app
+3. makemigrations and migrate:
+```shell
+python manage.py makemigrations
+python manage.py migrate
+```
+4. go to scripts/ folder, run this command:
+
+```shell
+python import_masterseq_data_inial.py
+```
+
+
