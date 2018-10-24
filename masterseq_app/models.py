@@ -8,8 +8,7 @@ from nextseq_app.models import Barcode
 choice_for_experiment_type = (
 	('ATAC-seq','ATAC-seq'),
 	('ChIP-seq','ChIP-seq'),
-	('Hi-C Arima Kit','Hi-C Arima Kit'),
-	('Hi-C Epigen','Hi-C Epigen'),
+	('Hi-C','Hi-C'),
 	('scATAC-seq','scATAC-seq'),
 	('scRNA-seq','scRNA-seq'),
 	('snRNA-seq','snRNA-seq'),
@@ -34,12 +33,14 @@ choice_for_preparation = (
 		)
 choice_for_read_type = (
 	('SE','Single-end'),
-	('PE','Paired-end')
+	('PE','Paired-end'),
+	('Other (please explain in notes)','Other (please explain in notes)'),
 	)
 choice_for_species = (
-	('Human','Human'),
-	('Mouse','Mouse'),
-	('Other','Other')
+	('human','Human'),
+	('mouse','Mouse'),
+	('rat','rat'),
+	('other','other')
 	)
 
 class ProtocalInfo(models.Model):
@@ -78,11 +79,11 @@ class SampleInfo(models.Model):
 
 
 class LibraryInfo(models.Model):
-	library_id = models.CharField(max_length=100,unique=True)
+	library_id = models.CharField(max_length=100)
 	sampleinfo = models.ForeignKey(SampleInfo, on_delete=models.CASCADE,null=True)
 	experiment_index = models.CharField(max_length=20,blank=True)
 	experiment_type_choice = choice_for_experiment_type
-	experiment_type = models.CharField(max_length=10,choices=experiment_type_choice,null=True)
+	experiment_type = models.CharField(max_length=50,choices=experiment_type_choice,null=True)
 	protocalinfo =  models.ForeignKey(ProtocalInfo, on_delete=models.CASCADE,null=True)
 	reference_to_notebook_and_page_number = models.CharField(max_length=50,null=True)
 	date_started = models.DateField(blank=True,null=True)
@@ -98,11 +99,13 @@ class SeqInfo(models.Model):
 	machine = models.ForeignKey(SeqMachineInfo, on_delete=models.CASCADE,null=True)
 	read_length = models.CharField(max_length=50,blank=True)
 	read_type_choice = choice_for_read_type
-	read_type = models.CharField(max_length=2,choices=read_type_choice,null=True)
+	read_type = models.CharField(max_length=50,choices=read_type_choice,null=True)
 	portion_of_lane = models.FloatField(blank=True,null=True)
 	i7index = models.ForeignKey(Barcode,related_name='sequencing_i7_index', on_delete=models.CASCADE, blank=True, null=True)
 	i5index = models.ForeignKey(Barcode,related_name='sequencing_i5_index',on_delete=models.CASCADE, blank=True, null=True)
 	total_reads = models.IntegerField(blank=True,null=True)
+	date_submitted_for_sequencing = models.DateField(blank=True,null=True)
+	notes = models.TextField(blank=True)
 
 class SeqBioInfo(models.Model):
 	seqinfo = models.ForeignKey(SeqInfo, on_delete=models.CASCADE)

@@ -20,7 +20,7 @@ Table masterseq_sampleinfo {
   sample_type varchar
   preparation varchar
   description varchar
-  notes archar
+  notes varchar
 }
 
 
@@ -36,6 +36,8 @@ Table masterseq_seqinfo {
   i7index_id int
   i5index_id int
   total_reads int
+  date_submitted_for_sequencing date
+  notes varchar
   
 }
 Table masterseq_SeqBioInfo {
