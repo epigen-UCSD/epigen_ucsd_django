@@ -42,7 +42,7 @@ def main():
     
     # would not update 'Last Modified' column in this way
     # LibrariesSetQC.objects.filter(setID=thissetid).update(status=statuscode[thisstatus])
-    obj = LibrariesSetQC.objects.get(setID=thissetid)
+    obj = LibrariesSetQC.objects.get(set_id=thissetid)
     if thisstatus:
         obj.status = statuscode[thisstatus]
     if thisurl:

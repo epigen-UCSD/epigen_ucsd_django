@@ -22,6 +22,7 @@ def humantitle(oldtitle):
 	titlechange = {
 		'jobstatus': 'Demultiplexing Status',
 		'set_id': 'Set ID',
+		'set_name':'Title',
 
 	}
 	if oldtitle in titlechange.keys():

@@ -309,6 +309,7 @@ $(document).ready( function () {
         e.preventDefault();
         that = $(this)
         var url1=$(this).attr("data-href");
+        var url2=url1.replace("runsetqc","runsetqc2")
         var errorname = ['notfinishederror','libdirnotexisterror','writeseterror']
         $.ajax({
         url:url1,
@@ -321,6 +322,23 @@ $(document).ready( function () {
                     return
                 }
             });
+            if (data.setidexisterror){
+                
+                if (!confirm(data.setidexisterror)){
+                return 
+                }else{
+                
+                $.ajax({
+                  type:"POST",
+                  url:url2,
+                  cache:false,
+                  data: {somedata: 'somedata'}
+                  })
+                $(that).replaceWith('<span class="badge badge-success badge-status-blue">JobSubmitted</span>')
+                return
+            }
+
+        }
             if (data.writesetdone){
             $(that).replaceWith('<span class="badge badge-success badge-status-blue">JobSubmitted</span>')
 

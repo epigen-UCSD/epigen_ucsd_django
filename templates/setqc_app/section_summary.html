@@ -22,8 +22,8 @@
                 {% if field == 'status'%}
                   {% if setinfo.status == 'Done'%}
                   <td><span class="badge badge-success badge-status-green">Done</span></td>
-                  {% elif setinfo.status == 'ClickToSubmit' %}      
-                  <td><span class="badge badge-success badge-status-orange">ToSubmit</span></td>
+                  {% elif setinfo.status == 'ClickToSubmit' %}
+                  <td><a class="btn btn-danger btn-sm btn-status-orange runsetqc" href="" data-href="{% url 'setqc_app:runsetqc' setinfo.id %}" id={{setinfo.set_id}}>ClickToSubmit</a></td>
                   {% elif setinfo.status == 'JobSubmitted'%}
                   <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
                   {% elif setinfo.status == 'JobStarted'%}
