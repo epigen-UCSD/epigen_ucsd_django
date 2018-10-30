@@ -1,8 +1,9 @@
 from django import forms
-from masterseq_app.models import SeqInfo
+from masterseq_app.models import SeqInfo,GenomeInfo
 from .models import LibrariesSetQC
 from django.contrib.auth.models import User
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.forms import BaseFormSet
 
 
 def libraryparse(libraries):
@@ -117,3 +118,29 @@ class ChIPLibrariesToIncludeCreatForm(forms.Form):
 				if not SeqInfo.objects.filter(seq_id=item).exists():
 					raise forms.ValidationError(item+' is not a stored library.')
 		return list(set(tosave_list))
+
+class SeqLabelGenomeCreationForm(forms.Form):
+	sequencingid = forms.CharField(label='Sequencing ID',disabled=True)
+	speciesbelong = forms.CharField(label='Species',disabled=True,widget=forms.TextInput(attrs={'size': '8'}))
+	genomeinthisset = forms.ChoiceField(label='Genome',choices = [(x.genome_name,x.genome_name) for x in GenomeInfo.objects.all()]
+		)
+
+	lableinthisset = forms.CharField(label='Label')
+	def __init__(self, *args, **kwargs):
+		self.thisspecies = kwargs.pop('thisspecies')
+		self.thisspecies_list = kwargs.pop('thisspecies_list')
+		super(SeqLabelGenomeCreationForm, self).__init__(*args, **kwargs)
+		self.fields['genomeinthisset'] = forms.ChoiceField(label='Genome',
+				choices = [(x.genome_name,x.genome_name) for x in GenomeInfo.objects.filter(species=self.thisspecies)]
+				)
+
+class BaseSeqLabelGenomeCreationFormSet(BaseFormSet):
+	def get_form_kwargs(self, index):
+		kwargs = super().get_form_kwargs(index)
+		#print(kwargs['thisspecies_list'])
+		#print(index)
+		kwargs['thisspecies'] = kwargs['thisspecies_list'][index]
+		return kwargs
+
+
+

@@ -28,6 +28,6 @@ class LibraryInSet(models.Model):
 	seqinfo = models.ForeignKey(SeqInfo, on_delete=models.CASCADE,blank=True,null=True)
 	group_number = models.CharField(max_length=10, blank=True)
 	is_input = models.NullBooleanField('Is it input?', blank=True)
-	label = models.CharField(max_length=10, blank=True)
+	label = models.CharField(max_length=50, blank=True)
 	genome  =  models.ForeignKey(GenomeInfo, on_delete=models.CASCADE,blank=True,null=True)
 

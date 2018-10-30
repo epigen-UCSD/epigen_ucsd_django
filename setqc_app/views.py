@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import LibrariesSetQC,LibraryInSet
-from masterseq_app.models import SeqInfo
+from masterseq_app.models import SeqInfo,GenomeInfo
 from django.db import transaction
-from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm,ChIPLibrariesToIncludeCreatForm
+from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm,\
+ChIPLibrariesToIncludeCreatForm,SeqLabelGenomeCreationForm,BaseSeqLabelGenomeCreationFormSet
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import JsonResponse
@@ -18,6 +19,7 @@ import subprocess
 DisplayField1 = ['set_id','set_name','date_requested','experiment_type','url']
 DisplayField2 = ['set_id','set_name','date_requested','requestor','experiment_type','url']
 DisplayFieldforcollab = ['set_name','date_requested','experiment_type','url']
+defaultgenome = {'human':'hg38','mouse':'mm10','rat':'rn6'}
 
 def groupnumber(datalist):
     ranges =[]
@@ -113,7 +115,8 @@ def SetQCCreateView(request):
                             )
                         tosave_list.append(tosave_item)
                 LibraryInSet.objects.bulk_create(tosave_list)
-                return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
+                #return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
+                return redirect('setqc_app:libraylabelgenome_add',setqc_pk=setinfo.id)
         else:
 
             if chiplibraries_formset.is_valid():
@@ -144,7 +147,8 @@ def SetQCCreateView(request):
                                 tosave_list.append(tosave_item)
                         groupnum += 1
                 LibraryInSet.objects.bulk_create(tosave_list)
-                return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
+                #return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
+                return redirect('setqc_app:libraylabelgenome_add',setqc_pk=setinfo.id)
 
     context = {
         'set_form': set_form,
@@ -153,6 +157,59 @@ def SetQCCreateView(request):
     }
 
     return render(request, 'setqc_app/setqcadd.html', context)
+
+@transaction.atomic
+def SetQCgenomelabelCreateView(request,setqc_pk):
+    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
+    if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+        raise PermissionDenied
+    regset = LibraryInSet.objects.filter(librariesetqc=setinfo).order_by('seqinfo')
+    temdic = {}
+    formsetcustom = []
+    initaldic = []
+    speci_list = []
+    for x in regset:
+        temdic = {}
+        temdic['sequencingid'] = x.seqinfo.seq_id
+        speci = x.seqinfo.libraryinfo.sampleinfo.species
+        speci_list.append(speci)
+        temdic['speciesbelong'] = speci
+        temdic['genomeinthisset'] = defaultgenome[speci]
+        if LibraryInSet.objects.filter(seqinfo=x.seqinfo).count()>1:
+            obj = LibraryInSet.objects.filter(seqinfo=x.seqinfo).order_by('-pk')[1]
+            if obj.label:
+                temdic['lableinthisset'] = obj.label
+            else:
+                temdic['lableinthisset'] = x.seqinfo.seq_id
+        else:
+            temdic['lableinthisset'] = x.seqinfo.seq_id
+        initaldic.append(temdic)
+    librarieslabelgenomeFormSet = formset_factory(SeqLabelGenomeCreationForm,
+        can_delete=False,
+        formset=BaseSeqLabelGenomeCreationFormSet,
+        extra=0)
+    formsetcustom = librarieslabelgenomeFormSet(request.POST or None,
+        initial=initaldic,
+        form_kwargs={'thisspecies_list': speci_list}
+        )
+    if formsetcustom.is_valid():
+        print('right')
+        for form in formsetcustom.forms:
+            print(form)
+            seqidtm = form.cleaned_data['sequencingid']
+            genometm = form.cleaned_data['genomeinthisset']
+            labeltm = form.cleaned_data['lableinthisset']
+            obj = regset.get(seqinfo=SeqInfo.objects.get(seq_id=seqidtm))
+            obj.genome = GenomeInfo.objects.get(genome_name=genometm)
+            obj.label = labeltm
+            obj.save()
+        return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
+
+    context = {
+        'formsetcustom': formsetcustom,
+    }
+
+    return render(request, 'setqc_app/librarylabelgenomeadd.html', context)
 
 
 def SetQCDeleteView(request, setqc_pk):
@@ -321,19 +378,25 @@ def SetQCDetailView(request,setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     summaryfield = ['status','set_id','set_name','collaborator','date_requested','requestor','experiment_type','notes','url','version']
     groupinputinfo = ''
-    librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
+    librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo).order_by('group_number','-is_input')
     list1tem = list(librariesset.values_list('seqinfo', flat=True))
-    list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x)
-     for x in list1tem]
+    list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x) for x in list1tem]
+    list4 = list(librariesset.values_list('genome', flat=True))
+    list5 = list(librariesset.values_list('label', flat=True))
+     
     if setinfo.experiment_type == 'ChIP-seq':
         list2 = list(librariesset.values_list('group_number', flat=True))
         list3 = list(librariesset.values_list('is_input', flat=True))
-        groupinputinfo = list(zip(list1,list2,list3))
+        featureinfo = list(zip(list1,list2,list3,list4,list5))
+        featureheader = ['Library ID','Group ID','Is Input','Genome','Label']
+    else:
+        featureinfo = list(zip(list1,list4,list5))
+        featureheader = ['Library ID','Genome','Label']
     context = {
         'setinfo':setinfo,
         'summaryfield':summaryfield,
-        'libraryinfo': list1,
-        'groupinputinfo':groupinputinfo,
+        'featureinfo':featureinfo,
+        'featureheader':featureheader
     }
     return render(request, 'setqc_app/details.html', context=context)
 

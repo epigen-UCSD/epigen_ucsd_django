@@ -107,6 +107,9 @@ class SeqInfo(models.Model):
 	date_submitted_for_sequencing = models.DateField(blank=True,null=True)
 	notes = models.TextField(blank=True)
 
+	def __str__(self):
+		return self.seq_id
+
 class SeqBioInfo(models.Model):
 	seqinfo = models.ForeignKey(SeqInfo, on_delete=models.CASCADE)
 	genome  =  models.ForeignKey(GenomeInfo, on_delete=models.CASCADE,blank=True,null=True)

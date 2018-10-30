@@ -193,6 +193,24 @@ table a, .linkblue{
   border-radius: 5px;
 
 }
+
+#labelgenomecreatetable td {
+  padding-left: 50px;
+
+}
+#labelgenomecreatetable th {
+  padding-left: 50px;
+
+}
+#labelgenomecreatetable {
+  padding-top: 50px;
+
+}
+
+.bigtoppadcardbody {
+  padding-top: 30px
+}
+
 .card-body {
   font-size:14.5px;
 }

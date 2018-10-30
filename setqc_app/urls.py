@@ -9,6 +9,7 @@ urlpatterns = [
     path('mysets/', views.UserSetQCView, name='usersetqcs'),
     path('allsets/', views.AllSetQCView, name='allsetqcs'),
     path('adds/', views.SetQCCreateView, name='setqc_add'),
+    path('<int:setqc_pk>/labelgenomeadds/', views.SetQCgenomelabelCreateView, name='libraylabelgenome_add'),
     path('<int:setqc_pk>/delete/', views.SetQCDeleteView, name='setqc_delete'),
     path('<int:setqc_pk>/update/',views.SetQCUpdateView, name='setqc_update'),
     path('<int:setqc_pk>/getmynotes/',views.GetNotesView, name='setqc_getnotes'),

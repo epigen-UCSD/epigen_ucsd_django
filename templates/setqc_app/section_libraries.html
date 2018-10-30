@@ -15,33 +15,32 @@
           <br />
           <table class="table table-sm table-striped text-center table-responsive-xl">
 
-            {% if setinfo.experiment_type == 'ChIP-seq' %}
+            
             <thead>
             <tr>
-              <th>Library ID</th>
-              <th>Group ID</th>
-              <th>Is Input</th>
+              {% for x in featureheader %}
+              <th>{{ x }}</th>
+              {% endfor %} 
             </tr>
-            </thead>                  
-            {% for x in groupinputinfo %}
+            </thead>
+
+            {% if setinfo.experiment_type == 'ChIP-seq' %}                  
+            {% for x in featureinfo %}
             <tr>
               <td><a href="">{{ x.0 }}</a></td>                 
               <td>{{ x.1 }}</td>
               <td>{{ x.2 | default_if_none:"" }}</td>
+              <td>{{ x.3 | default_if_none:"" }}</td>
+              <td>{{ x.4 | default_if_none:"" }}</td>
             </tr>
             {% endfor %} 
 
-            {% else %}
-            <thead>
-            <tr>
-              <th>Library ID</th>
-              <th>other features</th>
-            </tr>
-            </thead>                  
-            {% for library in libraryinfo %}
+            {% else %}                 
+            {% for x in featureinfo  %}
             <tr>                  
-              <td><a href="">{{ library }}</a></td>
-              <td></td>
+              <td><a href="">{{ x.0 }}</a></td>                 
+              <td>{{ x.1 | default_if_none:""}}</td>
+              <td>{{ x.2 | default_if_none:"" }}</td>
             </tr>
             {% endfor %} 
 
