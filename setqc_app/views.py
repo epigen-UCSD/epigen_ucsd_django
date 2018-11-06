@@ -175,12 +175,17 @@ def SetQCgenomelabelCreateView(request,setqc_pk):
         speci_list.append(speci)
         temdic['speciesbelong'] = speci
         temdic['genomeinthisset'] = defaultgenome[speci]
-        if LibraryInSet.objects.filter(seqinfo=x.seqinfo).count()>1:
-            obj = LibraryInSet.objects.filter(seqinfo=x.seqinfo).order_by('-pk')[1]
-            if obj.label:
-                temdic['lableinthisset'] = obj.label
-            else:
-                temdic['lableinthisset'] = x.seqinfo.seq_id
+        # if LibraryInSet.objects.filter(seqinfo=x.seqinfo).count()>1:
+        #     obj = LibraryInSet.objects.filter(seqinfo=x.seqinfo).order_by('-pk')[1]
+        #     if obj.label:
+        #         temdic['lableinthisset'] = obj.label
+        #     else:
+        #         temdic['lableinthisset'] = x.seqinfo.seq_id
+        # else:
+        #     temdic['lableinthisset'] = x.seqinfo.seq_id
+
+        if x.seqinfo.default_label:
+            temdic['lableinthisset'] = x.seqinfo.default_label
         else:
             temdic['lableinthisset'] = x.seqinfo.seq_id
         initaldic.append(temdic)
@@ -354,14 +359,14 @@ def SetQCgenomelabelUpdateView(request,setqc_pk):
         speci_list.append(speci)
         temdic['speciesbelong'] = speci
         temdic['genomeinthisset'] = defaultgenome[speci]
-        if LibraryInSet.objects.filter(seqinfo=x.seqinfo).count()>1:
-            obj = LibraryInSet.objects.filter(seqinfo=x.seqinfo).order_by('-pk')[1]
-            if obj.label:
-                temdic['lableinthisset'] = obj.label
+        if x.label:
+            temdic['lableinthisset'] = x.label
+        else:
+            if x.seqinfo.default_label:
+                temdic['lableinthisset'] = x.seqinfo.default_label
             else:
                 temdic['lableinthisset'] = x.seqinfo.seq_id
-        else:
-            temdic['lableinthisset'] = x.seqinfo.seq_id
+
         initaldic.append(temdic)
     librarieslabelgenomeFormSet = formset_factory(SeqLabelGenomeCreationForm,
         can_delete=False,

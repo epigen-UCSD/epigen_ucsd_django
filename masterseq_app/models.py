@@ -14,7 +14,7 @@ choice_for_experiment_type = (
 	('snRNA-seq','snRNA-seq'),
 	('4C','4C'),
 	('CUT&RUN','CUT&RUN'),
-	('Other','Other')
+	('other (please explain in notes)','other (please explain in notes)')
 		)
 choice_for_sample_type = (
 	('cultured cells','cultured cells'),
@@ -22,25 +22,25 @@ choice_for_sample_type = (
 	('isolated nuclei','isolated nuclei'),
 	('PcA cell line','PcA cell line'),
 	('tissue','tissue'),
-	('other','other')
+	('other (please explain in notes)','other (please explain in notes)')
 		)
 choice_for_preparation = (
 	('flash frozen without cryopreservant','flash frozen without cryopreservant'),
 	('flash frozen with cryopreservant','flash frozen with cryopreservant'),
 	('slow frozen with cryopreservant','slow frozen with cryopreservant'),
 	('fresh','fresh'),
-	('other','other')
+	('other (please explain in notes)','other (please explain in notes)')
 		)
 choice_for_read_type = (
 	('SE','Single-end'),
 	('PE','Paired-end'),
-	('Other (please explain in notes)','Other (please explain in notes)'),
+	('other (please explain in notes)','other (please explain in notes)'),
 	)
 choice_for_species = (
 	('human','Human'),
 	('mouse','Mouse'),
 	('rat','rat'),
-	('other','other')
+	('other (please explain in notes)','other (please explain in notes)')
 	)
 
 class ProtocalInfo(models.Model):
@@ -105,6 +105,7 @@ class SeqInfo(models.Model):
 	i5index = models.ForeignKey(Barcode,related_name='sequencing_i5_index',on_delete=models.CASCADE, blank=True, null=True)
 	total_reads = models.IntegerField(blank=True,null=True)
 	date_submitted_for_sequencing = models.DateField(blank=True,null=True)
+	default_label = models.CharField('Default Label(for setQC report)',max_length=200,blank=True)
 	notes = models.TextField(blank=True)
 
 	def __str__(self):
