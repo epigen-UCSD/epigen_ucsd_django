@@ -20,7 +20,6 @@ choice_for_sample_type = (
 	('cultured cells','cultured cells'),
 	('isolated cells','isolated cells'),
 	('isolated nuclei','isolated nuclei'),
-	('PcA cell line','PcA cell line'),
 	('tissue','tissue'),
 	('other (please explain in notes)','other (please explain in notes)')
 		)
@@ -66,7 +65,9 @@ class GenomeInfo(models.Model):
 
 
 class SampleInfo(models.Model):
-	sample_id = models.CharField(max_length=100)
+	sample_id = models.CharField('sample name',max_length=100)
+	date = models.DateField(blank=True,null=True)
+	team_member = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
 	sample_index = models.CharField(max_length=20,blank=True)
 	species_choice = choice_for_species
 	species = models.CharField(max_length=10,choices=species_choice)
@@ -76,10 +77,11 @@ class SampleInfo(models.Model):
 	preparation = models.CharField(max_length=50,choices=preparation_choice)
 	description = models.TextField(blank=True)
 	notes = models.TextField(blank=True)
-
+	def __str__(self):
+		return self.sample_index+'_'+self.sample_id
 
 class LibraryInfo(models.Model):
-	library_id = models.CharField(max_length=100)
+	library_id = models.CharField('library name',max_length=100)
 	sampleinfo = models.ForeignKey(SampleInfo, on_delete=models.CASCADE,null=True)
 	experiment_index = models.CharField(max_length=20,blank=True)
 	experiment_type_choice = choice_for_experiment_type

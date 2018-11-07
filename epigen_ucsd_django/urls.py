@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('nextseq_app/', include('nextseq_app.urls')),
     path('setqc_app/', include('setqc_app.urls')),
+    path('masterseq_app/', include('masterseq_app.urls')),
     path('nextseq_app/login/', views.UserLoginView.as_view(), name='loginfromnexseq'),
     path('login/', views.UserLoginView.as_view(), name='login'),
     path('logout/', views.logout_view, name='logout'),

@@ -209,7 +209,7 @@ def main():
 	print("importing LibraryInfo and SeqInfo ........... ")
 	i = 1
 	j = 1
-	mseqtsfile = ['scripts/MSeqTS_Active.tsv','scripts/MSeqTS.tsv']
+	mseqtsfile = ['scripts/MSeqTS.tsv','scripts/MSeqTS_Active.tsv']
 	#mseqtsfile = ['scripts/MSeqTS_merged.tsv']
 	#mseqtsfile = ['scripts/MSeqTS.tsv']
 	for files in mseqtsfile:
