@@ -9,6 +9,7 @@ urlpatterns = [
 	path('index/', TemplateView.as_view(template_name="masterseq_app/base.html"), name='index'),
     path('sample/adds/', views.SampleCreateView, name='sample_add'),
     path('library/adds/', views.LibraryCreateView, name='library_add'),
+    path('seq/adds/', views.SeqCreateView, name='seq_add'),
 
 
 ]

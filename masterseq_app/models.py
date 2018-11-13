@@ -66,7 +66,7 @@ class GenomeInfo(models.Model):
 
 class SampleInfo(models.Model):
 	sample_id = models.CharField('sample name',max_length=100)
-	date = models.DateField(blank=True,null=True)
+	date = models.DateField(help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03',blank=True,null=True)
 	team_member = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
 	sample_index = models.CharField(max_length=20,blank=True)
 	species_choice = choice_for_species
@@ -88,8 +88,8 @@ class LibraryInfo(models.Model):
 	experiment_type = models.CharField(max_length=50,choices=experiment_type_choice,null=True)
 	protocalinfo =  models.ForeignKey(ProtocalInfo, on_delete=models.CASCADE,null=True)
 	reference_to_notebook_and_page_number = models.CharField(max_length=50,null=True)
-	date_started = models.DateField(blank=True,null=True)
-	date_completed = models.DateField(blank=True,null=True)
+	date_started = models.DateField(help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03',blank=True,null=True)
+	date_completed = models.DateField(help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03',blank=True,null=True)
 	team_member_initails = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
 	notes = models.TextField(blank=True)
 
@@ -106,7 +106,7 @@ class SeqInfo(models.Model):
 	i7index = models.ForeignKey(Barcode,related_name='sequencing_i7_index', on_delete=models.CASCADE, blank=True, null=True)
 	i5index = models.ForeignKey(Barcode,related_name='sequencing_i5_index',on_delete=models.CASCADE, blank=True, null=True)
 	total_reads = models.IntegerField(blank=True,null=True)
-	date_submitted_for_sequencing = models.DateField(blank=True,null=True)
+	date_submitted_for_sequencing = models.DateField(help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03',blank=True,null=True)
 	default_label = models.CharField('Default Label(for setQC report)',max_length=200,blank=True)
 	notes = models.TextField(blank=True)
 

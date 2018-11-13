@@ -132,6 +132,9 @@ $(document).ready( function () {
 
     $( "#id_date" ).datepicker();
     $( "#id_date_requested" ).datepicker();
+    $( "#id_date_started" ).datepicker();
+    $( "#id_date_completed" ).datepicker();
+    $( "#id_date_submitted_for_sequencing" ).datepicker();
 
     $('[data-toggle="tooltip"]').tooltip();
 
