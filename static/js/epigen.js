@@ -126,6 +126,21 @@ $(document).ready( function () {
         }
 
     });
+    $('#id_experiment_type').change(function (){
+        var url = $("#librayspec").attr("data-protocal-url");
+        console.log(url)
+        var expId = $(this).val();
+        console.log(expId)
+        $.ajax({
+            url:url,
+            data: {
+                'exptype':expId
+            },
+            success:function (data){
+                $("#id_protocalinfo").html(data);
+            }
+        })
+    });
 
 
 

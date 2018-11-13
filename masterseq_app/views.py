@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm,LibraryCreationForm,SeqCreationForm
-from .models import SampleInfo,LibraryInfo,SeqInfo
+from .models import SampleInfo,LibraryInfo,SeqInfo,ProtocalInfo
 from django.contrib.auth.models import User
 from nextseq_app.models import Barcode
 # Create your views here.
@@ -103,4 +103,13 @@ def SeqCreateView(request):
     }
 
     return render(request, 'masterseq_app/seqadd.html', context)
+
+
+
+def load_protocals(request):
+    exptype = request.GET.get('exptype')
+    protocals = ProtocalInfo.objects.filter(experiment_type=exptype).order_by('protocal_name')
+    print(protocals)
+    return render(request, 'masterseq_app/protocal_dropdown_list_options.html', {'protocals': protocals})
+
 

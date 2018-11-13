@@ -10,6 +10,7 @@ urlpatterns = [
     path('sample/adds/', views.SampleCreateView, name='sample_add'),
     path('library/adds/', views.LibraryCreateView, name='library_add'),
     path('seq/adds/', views.SeqCreateView, name='seq_add'),
+    path('ajax/load-protocals/', views.load_protocals, name='ajax_load_protocals'),
 
 
 ]
