@@ -114,11 +114,11 @@ class SamplesCreationForm(forms.Form):
 		flagdate = 0
 		flagspecies = 0
 		flagtype = 0
-		flagprep = 0
+		#flagprep = 0
 		invaliddate = []
 		invalidspecies = []
 		invalidtype = []
-		invalidprep = []
+		#invalidprep = []
 		for lineitem in data.strip().split('\n'):
 			if lineitem != '\r':
 				fields = lineitem.split('\t')
@@ -137,13 +137,14 @@ class SamplesCreationForm(forms.Form):
 				if samtype not in [x[0].split('(')[0].strip() for x in choice_for_sample_type]:
 					invalidtype.append(samtype)
 					flagtype = 1
-				samprep = fields[12].split('(')[0].strip()
-				if samprep == 'flash frozen':
-					raise forms.ValidationError('Please denote whether the preparation is\
-						flash frozen without cryopreservant or flash frozen with cryopreservant')
-				if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:
-					invalidprep.append(samprep)
-					flagprep = 1
+				# samprep = fields[12].split('(')[0].strip()
+				# if samprep == 'flash frozen':
+				# 	samprep = 'flash frozen without cryopreservant'
+				# 	# raise forms.ValidationError('Please denote whether the preparation is\
+				# 	# 	flash frozen without cryopreservant or flash frozen with cryopreservant')
+				# if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:
+				# 	invalidprep.append(samprep)
+				# 	flagprep = 1
 				samnotes = fields[20].strip()
 				print(samnotes)
 				samindex = fields[21].strip()
@@ -156,8 +157,8 @@ class SamplesCreationForm(forms.Form):
 			raise forms.ValidationError('Invalid species:'+','.join(invaliddate))
 		if flagtype == 1:
 			raise forms.ValidationError('Invalid sample type:'+','.join(invalidtype))
-		if flagprep == 1:
-			raise forms.ValidationError('Invalid sample preparation:'+','.join(invalidprep))
+		# if flagprep == 1:
+		# 	raise forms.ValidationError('Invalid sample preparation:'+','.join(invalidprep))
 		return '\n'.join(cleaneddata)
 
 
