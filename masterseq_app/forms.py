@@ -114,10 +114,12 @@ class SamplesCreationForm(forms.Form):
 		flagdate = 0
 		flagspecies = 0
 		flagtype = 0
+		flagindex = 0
 		#flagprep = 0
 		invaliddate = []
 		invalidspecies = []
 		invalidtype = []
+		invalidindex = []
 		#invalidprep = []
 		for lineitem in data.strip().split('\n'):
 			if lineitem != '\r':
@@ -149,7 +151,9 @@ class SamplesCreationForm(forms.Form):
 				print(samnotes)
 				samindex = fields[21].strip()
 				if SampleInfo.objects.filter(sample_index=samindex).exists():
-					raise forms.ValidationError(samindex+' is already existed in database')
+					invalidindex.append(samindex)
+					flagindex = 1
+					
 				cleaneddata.append(lineitem)
 		if flagdate == 1:
 			raise forms.ValidationError('Invalid date:'+','.join(invaliddate)+'. Please enter like this: 10/30/2018')
@@ -157,6 +161,8 @@ class SamplesCreationForm(forms.Form):
 			raise forms.ValidationError('Invalid species:'+','.join(invaliddate))
 		if flagtype == 1:
 			raise forms.ValidationError('Invalid sample type:'+','.join(invalidtype))
+		if flagindex  == 1:
+			raise forms.ValidationError(','.join(invalidindex)+' is already existed in database')
 		# if flagprep == 1:
 		# 	raise forms.ValidationError('Invalid sample preparation:'+','.join(invalidprep))
 		return '\n'.join(cleaneddata)
@@ -174,10 +180,12 @@ class LibsCreationForm(forms.Form):
 		flagsam = 0
 		flagdate = 0
 		flagexp = 0
+		flaglibid = 0
 		invalidsam = []
 		invaliddate = []
 		invalidexp = []
 		selflibs = []
+		invalidlibid =[]
 		for lineitem in data.strip().split('\n'):
 			if lineitem != '\r':
 				cleaneddata.append(lineitem)
@@ -202,7 +210,9 @@ class LibsCreationForm(forms.Form):
 					flagexp = 1
 				libid = fields[10].strip()
 				if LibraryInfo.objects.filter(library_id=libid).exists():
-					raise forms.ValidationError(libid+' is already existed in database')
+					invalidlibid.append(libid)
+					flaglibid = 1
+					
 				selflibs.append(libid)
 
 		if flagsam == 1:
@@ -211,6 +221,8 @@ class LibsCreationForm(forms.Form):
 			raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
 		if flagexp == 1:
 			raise forms.ValidationError('Invalid experiment type:'+','.join(invalidexp))
+		if flaglibid == 1:
+			raise forms.ValidationError(','.join(invalidlibid)+' is already existed in database')
 		libraryselfduplicate = SelfUniqueValidation(selflibs)
 		if len(libraryselfduplicate) > 0:
 			raise forms.ValidationError('Duplicate Library within this bulk entry:'+','.join(libraryselfduplicate))
