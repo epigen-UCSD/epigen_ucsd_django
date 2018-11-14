@@ -1,8 +1,11 @@
 from django import forms
-from .models import SampleInfo,LibraryInfo,SeqMachineInfo,choice_for_read_type
+from .models import SampleInfo,LibraryInfo,SeqMachineInfo,\
+choice_for_read_type,choice_for_species,choice_for_sample_type,\
+choice_for_preparation,choice_for_experiment_type
 from django.contrib.auth.models import User
 import datetime
 from nextseq_app.models import Barcode
+from epigen_ucsd_django.shared import datetransform,SelfUniqueValidation
 
 class SampleCreationForm(forms.ModelForm):
 
@@ -99,10 +102,119 @@ class SeqCreationForm(forms.Form):
 			raise forms.ValidationError('Invalid portion of lane:'+','.join(invalidpolane))
 		return '\n'.join(cleadata)
 
+class SamplesCreationForm(forms.Form):
+	samplesinfo = forms.CharField(
+			label='SampleInfo(Please copy and paste the columnA-V from TrackingSheet 1):',
+			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
+			required=False,
+					)
+	def clean_samplesinfo(self):
+		data = self.cleaned_data['samplesinfo']
+		cleaneddata = []
+		flagdate = 0
+		flagspecies = 0
+		flagtype = 0
+		flagprep = 0
+		invaliddate = []
+		invalidspecies = []
+		invalidtype = []
+		invalidprep = []
+		for lineitem in data.strip().split('\n'):
+			if lineitem != '\r':
+				fields = lineitem.split('\t')
+				try:
+					samdate = datetransform(fields[0].strip())
+				except:
+					invaliddate.append(fields[0].strip())
+					flagdate = 1
+				samid = fields[8].strip()
+				samdescript = fields[9].strip()
+				samspecies = fields[10].split('(')[0].lower().strip()
+				if samspecies not in [x[0].split('(')[0].strip() for x in choice_for_species]:
+					invalidspecies.append(samspecies)
+					flagspecies = 1
+				samtype = fields[11].split('(')[0].strip()
+				if samtype not in [x[0].split('(')[0].strip() for x in choice_for_sample_type]:
+					invalidtype.append(samtype)
+					flagtype = 1
+				samprep = fields[12].split('(')[0].strip()
+				if samprep == 'flash frozen':
+					raise forms.ValidationError('Please denote whether the preparation is\
+						flash frozen without cryopreservant or flash frozen with cryopreservant')
+				if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:
+					invalidprep.append(samprep)
+					flagprep = 1
+				samnotes = fields[20].strip()
+				print(samnotes)
+				samindex = fields[21].strip()
+				if SampleInfo.objects.filter(sample_index=samindex).exists():
+					raise forms.ValidationError(samindex+' is already existed in database')
+				cleaneddata.append(lineitem)
+		if flagdate == 1:
+			raise forms.ValidationError('Invalid date:'+','.join(invaliddate)+'. Please enter like this: 10/30/2018')
+		if flagspecies == 1:
+			raise forms.ValidationError('Invalid species:'+','.join(invaliddate))
+		if flagtype == 1:
+			raise forms.ValidationError('Invalid sample type:'+','.join(invalidtype))
+		if flagprep == 1:
+			raise forms.ValidationError('Invalid sample preparation:'+','.join(invalidprep))
+		return '\n'.join(cleaneddata)
 
 
+class LibsCreationForm(forms.Form):
+	libsinfo = forms.CharField(
+			label='LibsInfo(Please copy and paste the columnA-M from TrackingSheet 2):',
+			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
+			required=False,
+					)
+	def clean_libsinfo(self):
+		data = self.cleaned_data['libsinfo']
+		cleaneddata = []
+		flagsam = 0
+		flagdate = 0
+		flagexp = 0
+		invalidsam = []
+		invaliddate = []
+		invalidexp = []
+		selflibs = []
+		for lineitem in data.strip().split('\n'):
+			if lineitem != '\r':
+				cleaneddata.append(lineitem)
+				fields = lineitem.split('\t')
+				samindex = fields[0].strip()
+				if not SampleInfo.objects.filter(sample_index=samindex).exists():
+					invalidsam.append(samindex)
+					flagsam = 1
+				try:
+					datestart = datetransform(fields[3].strip())					
+				except:
+					invaliddate.append(fields[3].strip())
+					flagdate = 1
+				try:
+					dateend = datetransform(fields[4].strip())
+				except:
+					invaliddate.append(fields[4].strip())
+					flagdate = 1
+				libexp = fields[5].strip()
+				if libexp not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
+					invalidexp.append(libexp)
+					flagexp = 1
+				libid = fields[10].strip()
+				if LibraryInfo.objects.filter(library_id=libid).exists():
+					raise forms.ValidationError(libid+' is already existed in database')
+				selflibs.append(libid)
 
+		if flagsam == 1:
+			raise forms.ValidationError('Invalid sample info:'+','.join(invalidsam))
+		if flagdate == 1:
+			raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
+		if flagexp == 1:
+			raise forms.ValidationError('Invalid experiment type:'+','.join(invalidexp))
+		libraryselfduplicate = SelfUniqueValidation(selflibs)
+		if len(libraryselfduplicate) > 0:
+			raise forms.ValidationError('Duplicate Library within this bulk entry:'+','.join(libraryselfduplicate))
 
+		return '\n'.join(cleaneddata)
 
 
 

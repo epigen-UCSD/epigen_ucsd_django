@@ -101,22 +101,22 @@ Other	K_562_0.2	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Ye
 Other	K_562_0.5	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_19		EXP-419
 Other	K_562_1.0	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_20		EXP-420
 Other	K_562_2.0	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_21		EXP-421
-NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_89	Chromatin shearing Input testing - varying DF	EXP-422
-NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_90	Chromatin shearing Input testing - varying DF	EXP-423
-NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_92	Chromatin shearing Input testing - varying DF	EXP-424
-NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_112	Chromatin shearing Input testing - varying DF	EXP-425
-NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_87	Chromatin shearing Input testing - varying DF	EXP-426
-NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_88	Chromatin shearing Input testing - varying DF	EXP-427
-NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_91	Chromatin shearing Input testing - varying DF	EXP-428
-NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_93	Chromatin shearing Input testing - varying DF	EXP-429
-NA	NA	AVD	2/8/2018	3/23/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_135	Chromatin shearing Input testing - reproducibility	EXP-430
-NA	NA	AVD	2/8/2018	3/23/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_136	Chromatin shearing Input testing - reproducibility	EXP-431
-NA	NA	AVD	2/8/2018	3/23/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_137	Chromatin shearing Input testing - reproducibility	EXP-432
-NA	NA	AVD	2/8/2018	3/23/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_138	Chromatin shearing Input testing - reproducibility	EXP-433
-NA	NA	AVD	2/8/2018	3/23/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_139	Chromatin shearing Input testing - reproducibility	EXP-434
-NA	NA	AVD	2/8/2018	3/23/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_140	Chromatin shearing Input testing - reproducibility	EXP-435
-NA	NA	AVD	2/8/2018	3/23/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_141	Chromatin shearing Input testing - reproducibility	EXP-436
-NA	NA	AVD	2/8/2018	3/23/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_142	Chromatin shearing Input testing - reproducibility	EXP-437
+NA	NA	AVD	2/6/2018	2/9/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_89	Chromatin shearing Input testing - varying DF	EXP-422
+NA	NA	AVD	2/6/2018	2/9/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_90	Chromatin shearing Input testing - varying DF	EXP-423
+NA	NA	AVD	2/6/2018	2/9/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_92	Chromatin shearing Input testing - varying DF	EXP-424
+NA	NA	AVD	2/6/2018	2/9/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_112	Chromatin shearing Input testing - varying DF	EXP-425
+NA	NA	AVD	2/6/2018	2/9/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_87	Chromatin shearing Input testing - varying DF	EXP-426
+NA	NA	AVD	2/6/2018	2/9/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_88	Chromatin shearing Input testing - varying DF	EXP-427
+NA	NA	AVD	2/6/2018	2/9/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_91	Chromatin shearing Input testing - varying DF	EXP-428
+NA	NA	AVD	2/6/2018	2/9/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_93	Chromatin shearing Input testing - varying DF	EXP-429
+NA	NA	AVD	2/8/2018	3/23/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_135	Chromatin shearing Input testing - reproducibility	EXP-430
+NA	NA	AVD	2/8/2018	3/23/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_136	Chromatin shearing Input testing - reproducibility	EXP-431
+NA	NA	AVD	2/8/2018	3/23/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_137	Chromatin shearing Input testing - reproducibility	EXP-432
+NA	NA	AVD	2/8/2018	3/23/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_138	Chromatin shearing Input testing - reproducibility	EXP-433
+NA	NA	AVD	2/8/2018	3/23/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_139	Chromatin shearing Input testing - reproducibility	EXP-434
+NA	NA	AVD	2/8/2018	3/23/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_140	Chromatin shearing Input testing - reproducibility	EXP-435
+NA	NA	AVD	2/8/2018	3/23/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_141	Chromatin shearing Input testing - reproducibility	EXP-436
+NA	NA	AVD	2/8/2018	3/23/2018	other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_142	Chromatin shearing Input testing - reproducibility	EXP-437
 SAMP-380	DMS114_H3K27me3	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_77_2	Pfizer Chip round 2	EXP-438
 SAMP-380	DMS114_H3K4me3	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_78_2	Pfizer Chip round 3	EXP-439
 SAMP-380	DMS114_Input	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_79_2	Pfizer Chip round 4	EXP-440
@@ -526,7 +526,7 @@ SAMP-672	CEMBA180529_5B	XH	5/29/18	5/30/18	scATAC-seq	scATAC-seq for tissue	Nb1_
 SAMP-673	CEMBA180612_5D	XH	6/12/18	6/13/18	scATAC-seq	scATAC-seq for tissue	Nb1_p_85	Yes	Yes	XH_41		EXP-845
 SAMP-674	CEMBA180618_5D	XH	6/18/18	6/20/18	scATAC-seq	scATAC-seq for tissue	Nb1_p_88	Yes	Yes	XH_42		EXP-846
 SAMP-675	CEMBA180619_4G	XH	6/19/18	6/20/18	scATAC-seq	scATAC-seq for tissue	Nb1_p_88	Yes	Yes	XH_43		EXP-847
-Other	Epigen GM19240	RMM	5/10/18	5/29/18	Other (please explain in notes)	Fast 4C	Nb1_p_105-111	Yes	Yes	RMM_83 & RMM_84	Two Library ID's generated with one sample. Difference is primer sets during PCR. 	EXP-848
+Other	Epigen GM19240	RMM	5/10/18	5/29/18	other (please explain in notes)	Fast 4C	Nb1_p_105-111	Yes	Yes	RMM_83 & RMM_84	Two Library ID's generated with one sample. Difference is primer sets during PCR. 	EXP-848
 Other	HepG2	JYH	6/8/18	6/8/18	ATAC-seq	ATAC-Seq_Cells	nb1_p220	Yes	Yes	JYH_473	Biomek_19th	EXP-849
 Other	HepG2	JYH	6/8/18	6/8/18	ATAC-seq	ATAC-Seq_Cells	nb1_p220	Yes	Yes	JYH_474	Biomek_19th	EXP-850
 Other	HepG2	JYH	6/8/18	6/8/18	ATAC-seq	ATAC-Seq_Cells	nb1_p220	Yes	Yes	JYH_475	Biomek_19th	EXP-851

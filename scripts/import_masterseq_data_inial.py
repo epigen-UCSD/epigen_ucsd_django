@@ -30,6 +30,7 @@ def datetransform(inputdate):
 
 def main():
 	print("beginning")
+	#alllibs=[]
 
 # import GenomeInfo
 	print("importing  GenomeInfo ........... ")
@@ -56,12 +57,12 @@ def main():
 	'scATAC-seq',
 	'scRNA-seq',
 	'snRNA-seq',
-	'Other (please explain in notes)',
+	'other (please explain in notes)',
 	]
 	for x in exptype:
 		obj,created =ProtocalInfo.objects.get_or_create(
 			experiment_type = x,
-			protocal_name = 'Other (please explain in notes)',
+			protocal_name = 'other (please explain in notes)',
 			)
 
 # import SeqMachineInfo
@@ -95,17 +96,17 @@ def main():
 			if fields[8]:
 				if fields[12].split('(')[0].strip() == 'FACS sorted cells' or fields[12].split('(')[0].strip() == 'douncing homogenization':
 					preparation_tm = 'other'
-					note_tm = ';'.join([fields[28].strip(),fields[12].split('(')[0].strip()]).strip(';')
+					note_tm = ';'.join([fields[20].strip(),fields[12].split('(')[0].strip()]).strip(';')
 
 				elif fields[12].split('(')[0].strip() == 'flash frozen':
 					preparation_tm = 'flash frozen without cryopreservant'
-					note_tm = ';'.join([fields[28].strip(),fields[12].split('(')[0].strip()]).strip(';')
+					note_tm = ';'.join([fields[20].strip(),fields[12].split('(')[0].strip()]).strip(';')
 				else:
 					preparation_tm = fields[12].split('(')[0].strip()
-					note_tm = fields[28].strip()
+					note_tm = fields[20].strip()
 				if fields[11].split('(')[0].strip() == 'PcA cell line':
 					sampletype_tm = 'other'
-					note_tm = ';'.join([fields[28].strip(),fields[11].split('(')[0].strip()]).strip(';')
+					note_tm = ';'.join([fields[20].strip(),fields[11].split('(')[0].strip()]).strip(';')
 				else:
 					sampletype_tm = fields[11].split('(')[0].strip()
 
@@ -131,18 +132,18 @@ def main():
 			if fields[8] and not fields[21].strip() in active_index:
 				if fields[12].split('(')[0].strip() == 'FACS sorted cells' or fields[12].split('(')[0].strip() == 'douncing homogenization':
 					preparation_tm = 'other'
-					note_tm = ';'.join([fields[28].strip(),fields[12].split('(')[0].strip()]).strip(';')
+					note_tm = ';'.join([fields[20].strip(),fields[12].split('(')[0].strip()]).strip(';')
 
 				elif fields[12].split('(')[0].strip() == 'flash frozen':
 					preparation_tm = 'flash frozen without cryopreservant'
-					note_tm = fields[28].strip()
+					note_tm = fields[20].strip()
 				else:
 					preparation_tm = fields[12].split('(')[0].strip()
-					note_tm = fields[28].strip()
+					note_tm = fields[20].strip()
 
 				if fields[11].split('(')[0].strip() == 'PcA cell line':
 					sampletype_tm = 'other'
-					note_tm = ';'.join([fields[28].strip(),fields[11].split('(')[0].strip()]).strip(';')
+					note_tm = ';'.join([fields[20].strip(),fields[11].split('(')[0].strip()]).strip(';')
 				else:
 					sampletype_tm = fields[11].split('(')[0].strip()
 
@@ -225,6 +226,7 @@ def main():
 					libraryid = fields[7].strip()
 					# not importing singlecell data:
 					if not fields[9].startswith('s'):
+						#alllibs.append('\t'.join([libraryid,fields[4].strip()]))
 						if not SeqInfo.objects.filter(seq_id = sequecingid).exists():		
 							experimentindex = fields[4].strip()
 							
@@ -266,6 +268,7 @@ def main():
 								else:
 									experimentindex = fields[4].strip()
 									try:
+										#print(libexperimenttype[experimentindex])
 										protocal = ProtocalInfo.objects.get(experiment_type=libexperimenttype[experimentindex])
 									except:
 										protocal = None
@@ -394,6 +397,8 @@ def main():
 	print('total librayinfo is : '+str(LibraryInfo.objects.count()))
 	print('total seqinfo is : '+str(SeqInfo.objects.count()))
 	print('total seqbioinfo is : '+str(SeqBioInfo.objects.count()))
+	# with open('scripts/ll','w') as fw:
+	# 	fw.write('\n'.join(alllibs))
 
 				
 

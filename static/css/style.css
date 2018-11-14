@@ -13,6 +13,7 @@
 
 p.textarea {
   margin-bottom: 0;
+  white-space: nowrap;
 }
 
 td.details-control {

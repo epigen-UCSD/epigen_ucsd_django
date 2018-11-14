@@ -11,6 +11,8 @@ urlpatterns = [
     path('library/adds/', views.LibraryCreateView, name='library_add'),
     path('seq/adds/', views.SeqCreateView, name='seq_add'),
     path('ajax/load-protocals/', views.load_protocals, name='ajax_load_protocals'),
+    path('samples/adds/', views.SamplesCreateView, name='samples_add'),
+    path('libraries/adds/', views.LibrariesCreateView, name='libraries_add'),
 
 
 ]

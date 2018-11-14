@@ -2,10 +2,12 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import SampleCreationForm,LibraryCreationForm,SeqCreationForm
+from .forms import SampleCreationForm,LibraryCreationForm,SeqCreationForm,\
+SamplesCreationForm,LibsCreationForm
 from .models import SampleInfo,LibraryInfo,SeqInfo,ProtocalInfo
 from django.contrib.auth.models import User
 from nextseq_app.models import Barcode
+from epigen_ucsd_django.shared import datetransform
 # Create your views here.
 @transaction.atomic
 def SampleCreateView(request):
@@ -112,4 +114,79 @@ def load_protocals(request):
     print(protocals)
     return render(request, 'masterseq_app/protocal_dropdown_list_options.html', {'protocals': protocals})
 
+@transaction.atomic
+def SamplesCreateView(request):
+    sample_form = SamplesCreationForm(request.POST or None)
+    tosave_list = []
+    if sample_form.is_valid():
+        sampleinfo = sample_form.cleaned_data['samplesinfo']
+        #print(sequencinginfo)
+        for lineitem in sampleinfo.strip().split('\n'):
+            fields = lineitem.strip('\n').split('\t')
+            samindex = fields[21].strip()
+            samnotes = fields[20].strip()
+            samprep = fields[12].split('(')[0].strip()
+            if samprep == 'other':
+                samprep = 'other (please explain in notes)'
+            samtype = fields[11].split('(')[0].strip()
+            samspecies = fields[10].split('(')[0].lower().strip()
+            samdescript = fields[9].strip()
+            samid = fields[8].strip()
+            samdate = datetransform(fields[0].strip())
 
+            tosave_item = SampleInfo(
+                sample_index=samindex,
+                sample_id=samid,
+                species=samspecies,
+                sample_type=samtype,
+                preparation=samprep,
+                description=samdescript,
+                notes=samnotes,
+                team_member=request.user,
+                date=samdate,
+                )
+            tosave_list.append(tosave_item)
+        SampleInfo.objects.bulk_create(tosave_list)
+        return redirect('masterseq_app:index')
+    context = {
+        'sample_form': sample_form,
+    }
+
+    return render(request, 'masterseq_app/samplesadd.html', context)
+@transaction.atomic
+def LibrariesCreateView(request):
+    library_form = LibsCreationForm(request.POST or None)
+    tosave_list = []
+    if library_form.is_valid():
+        libsinfo = library_form.cleaned_data['libsinfo']
+        #print(sequencinginfo)
+        for lineitem in libsinfo.strip().split('\n'):
+            fields = lineitem.strip('\n').split('\t')
+            saminfo = SampleInfo.objects.get(sample_index=fields[0].strip())
+            libid = fields[10].strip()
+            datestart = datetransform(fields[3].strip())
+            dateend = datetransform(fields[4].strip())
+            libexp = fields[5].strip()
+            libprotocal = ProtocalInfo.objects.get(experiment_type=libexp,protocal_name = 'other (please explain in notes)')   
+            refnotebook = fields[7].strip()
+            libnote = ';'.join([fields[11].strip(),fields[6].strip()]).strip(';')
+            tosave_item = LibraryInfo(
+                library_id=libid,
+                sampleinfo=saminfo,
+                experiment_index=fields[12].strip(),
+                experiment_type=libexp,
+                protocalinfo=libprotocal,
+                reference_to_notebook_and_page_number=refnotebook,
+                date_started=datestart,
+                date_completed=dateend,
+                team_member_initails=request.user,
+                notes=libnote
+                )
+            tosave_list.append(tosave_item)
+        LibraryInfo.objects.bulk_create(tosave_list)
+        return redirect('masterseq_app:index')
+    context = {
+        'library_form': library_form,
+    }
+
+    return render(request, 'masterseq_app/libsadd.html', context)

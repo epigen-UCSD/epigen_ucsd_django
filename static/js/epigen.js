@@ -201,6 +201,8 @@ $(document).ready( function () {
     $('form#notchip').find("select#id_experiment_type option:contains('ChIP-seq')").attr('disabled','disabled')
 
 
+    $("#id_samplesinfo").attr("wrap", "off");
+    $("#id_libsinfo").attr("wrap", "off");
     $(".dmpajax").on("click",function(e){
 	e.preventDefault();
 
