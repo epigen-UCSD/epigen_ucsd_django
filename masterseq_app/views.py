@@ -62,8 +62,10 @@ def SeqCreateView(request):
         #print(sequencinginfo)
         for lineitem in sequencinginfo.strip().split('\n'):
             if not lineitem.startswith('SeqID\tLibID') and lineitem != '\r':
+                lineitem = lineitem+'\t\t\t\t\t\t'
                 fields = lineitem.strip('\n').split('\t')
                 seqid = fields[0]
+                print(seqid)
                 libid = LibraryInfo.objects.get(library_id=fields[1])
                 dflabel = fields[2]
                 tmem = User.objects.get(username=fields[3])
