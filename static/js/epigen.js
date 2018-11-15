@@ -23,23 +23,38 @@ $.ajaxSetup({
 });
 
 
+
 $(document).ready( function () {
-    $('.datatable').DataTable();
+
+    // datatable js related
+    // https://stackoverflow.com/questions/10630853/change-values-of-select-box-of-show-10-entries-of-jquery-datatable
+    $('.datatable').DataTable({
+	"aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+	"iDisplayLength": 20
+    });
 
     $('.datatablesort5').DataTable({
+	"aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+	"iDisplayLength": 20,
     	"order": [[ 5, "desc" ]]
     });
 
     $('.datatablesort2').DataTable({
+	"aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+	"iDisplayLength": 20,
     	"order": [[ 2, "desc" ]]
     });
     
     $('.datatablesort1').DataTable({
-		"order": [[ 1, "asc" ]]
+	"aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+	"iDisplayLength": 20,
+	"order": [[ 1, "asc" ]]
     });
 
 
     $('#datatabledetailnotes').DataTable({
+	"aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+	"iDisplayLength": 20,
     	"order": [[ 1, "desc" ]],
     	"columnDefs": [ {
     	    "orderable":false,
@@ -72,8 +87,6 @@ $(document).ready( function () {
     	if ($(this).hasClass("closing")){
     		$(this).removeClass("closing")
     		tr.next().closest(".detailnotes").remove()
-
-
     	}
     	else{
     		$(this).addClass("closing")

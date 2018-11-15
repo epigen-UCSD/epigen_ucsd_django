@@ -794,7 +794,7 @@ def DemultiplexingView(request, run_pk):
         RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSubmitted')
 
         # runBcl2fastq
-        cmd1 = './scripts/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
+        cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
             ' ' + basedirname + ' ' + request.user.email
         p = subprocess.Popen(
             cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -915,7 +915,7 @@ def DemultiplexingView2(request, run_pk):
         RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSubmitted')
 
         # runBcl2fastq
-        cmd1 = './scripts/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
+        cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
             ' ' + basedirname + ' ' + request.user.email
         p = subprocess.Popen(
             cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

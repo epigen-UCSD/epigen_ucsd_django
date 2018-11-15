@@ -533,7 +533,7 @@ def RunSetQC2(request, setqc_pk):
     setinfo.save()
 
     #run setQC script
-    cmd1 = './scripts/runsetqctest.sh ' + setinfo.set_id
+    cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id
     print(cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
