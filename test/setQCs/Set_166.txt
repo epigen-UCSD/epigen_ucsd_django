@@ -1,0 +1,17 @@
+Library ID	Genome	Label	Processed Or Not
+JYH_715	hg38	LNZ308 (glioma cell line)	No
+JYH_716	hg38	LNZ308 (glioma cell line)	No
+JYH_717	hg38	U87 (glioma cell line)	No
+JYH_718	hg38	U87 (glioma cell line)	No
+JYH_719	hg38	GSC23 (glioma cell line)	No
+JYH_720	hg38	GSC23 (glioma cell line)	No
+JYH_721	hg38	LN229 (glioma cell line)	No
+JYH_722	hg38	LN229 (glioma cell line)	No
+JYH_723	hg38	T98G (glioma cell line)	No
+JYH_724	hg38	T98G (glioma cell line)	No
+JYH_725	hg38	TS576 (glioma cell line)	No
+JYH_726	hg38	TS576 (glioma cell line)	No
+JYH_727	hg38	H522 (lung cell line)	No
+JYH_728	hg38	H522 (lung cell line)	No
+JYH_729	hg38	HCC827 (lung cell line)	No
+JYH_730	hg38	HCC827 (lung cell line)	No
