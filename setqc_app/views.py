@@ -444,24 +444,15 @@ def RunSetQC(request, setqc_pk):
         # list1 = [x.seq_id for x in regset]
         writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list4,list5,seqstatus)])
         featureheader = ['Library ID','Genome','Label','Processed Or Not']
-    # #list1 is a list of libraries name in a specific set
-    # #check if the library folder exists and if it is finished
-    # for item in list1:
-    #     if item not in allfolder:
-    #         data['libdirnotexisterror'] = 'There is not a folder named ' + item
-    #         return JsonResponse(data)
-    #     else:
-    #         if not os.path.isfile(os.path.join(libdir, item,'finished.txt')):
-    #             data['notfinishederror'] = item +' is not finished'
-    #             return JsonResponse(data)
 
-    #write Set_**.txt to setqcoutdir
-    if os.path.isfile(os.path.join(setqcoutdir,setinfo.set_id+'.txt')):
-        data['setidexisterror'] = setinfo.set_id+'.txt is already existed. Do you want to override it and continue to run the pipeline and SetQC script?'
+    ## write Set_**.txt to setqcoutdir
+    setStatusFile = os.path.join(setqcoutdir,'.'+setinfo.set_id+'.txt')
+    if os.path.isfile(setStatusFile):
+        data['setidexisterror'] = '.'+setinfo.set_id+'.txt is already existed. Do you want to override it and continue to run the pipeline and SetQC script?'
         print(data['setidexisterror'])
         return JsonResponse(data)
     try:
-        with open(os.path.join(setqcoutdir,setinfo.set_id+'.txt'), 'w') as f:
+        with open(setStatusFile, 'w') as f:
             f.write('\t'.join(featureheader)+'\n')
             f.write(writecontent)
     except Exception as e:
@@ -512,20 +503,11 @@ def RunSetQC2(request, setqc_pk):
         # list1 = [x.seq_id for x in regset]
         writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list4,list5,seqstatus)])
         featureheader = ['Library ID','Genome','Label','Processed Or Not']
-    # #list1 is a list of libraries name in a specific set
-    # #check if the library folder exists and if it is finished
-    # for item in list1:
-    #     if item not in allfolder:
-    #         data['libdirnotexisterror'] = 'There is not a folder named ' + item
-    #         return JsonResponse(data)
-    #     else:
-    #         if not os.path.isfile(os.path.join(libdir, item,'finished.txt')):
-    #             data['notfinishederror'] = item +' is not finished'
-    #             return JsonResponse(data)
-
-    #write Set_**.txt to setqcoutdir
+        
+    ## write Set_**.txt to setqcoutdir
+    setStatusFile = os.path.join(setqcoutdir,'.'+setinfo.set_id+'.txt')
     try:
-        with open(os.path.join(setqcoutdir,setinfo.set_id+'.txt'), 'w') as f:
+        with open(setStatusFile, 'w') as f:
             f.write('\t'.join(featureheader)+'\n')
             f.write(writecontent)
     except Exception as e:
@@ -558,7 +540,7 @@ def SetQCDetailView(request,setqc_pk):
         if item not in allfolder:
             seqstatus.append('No')
         else:
-            if not os.path.isfile(os.path.join(libdir, item,'finished.txt')):
+            if not os.path.isfile(os.path.join(libdir, item,'.finished.txt')):
                 seqstatus.append('No')
             else:
                 seqstatus.append('Yes')
