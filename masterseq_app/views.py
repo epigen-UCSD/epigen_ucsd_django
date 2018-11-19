@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm,LibraryCreationForm,SeqCreationForm,\
-SamplesCreationForm,LibsCreationForm
-from .models import SampleInfo,LibraryInfo,SeqInfo,ProtocalInfo
+SamplesCreationForm,LibsCreationForm,SeqsCreationForm,SeqsCreationForm
+from .models import SampleInfo,LibraryInfo,SeqInfo,ProtocalInfo,SeqMachineInfo
 from django.contrib.auth.models import User
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
@@ -192,3 +192,65 @@ def LibrariesCreateView(request):
     }
 
     return render(request, 'masterseq_app/libsadd.html', context)
+
+@transaction.atomic
+def SeqsCreateView(request):
+    seqs_form = SeqsCreationForm(request.POST or None)
+    tosave_list = []
+    if seqs_form.is_valid():
+        seqsinfo = seqs_form.cleaned_data['seqsinfo']
+        for lineitem in seqsinfo.strip().split('\n'):
+            lineitem = lineitem+'\t\t\t\t\t\t'
+            fields = lineitem.split('\t')
+            libinfo = LibraryInfo.objects.get(library_id = fields[7].strip())
+            if '-' in fields[6].strip():
+                datesub = fields[6].strip()
+            else:
+                datesub = datetransform(fields[6].strip())
+            memebername = User.objects.get(username=fields[5].strip())
+            indexname = fields[15].strip()
+            if indexname and indexname not in ['NA','Other (please explain in notes)','N/A']:
+                i7index = Barcode.objects.get(indexid=indexname)
+            else:
+                i7index = None
+            indexname2 = fields[16].strip()
+            if indexname2 and indexname2 not in ['NA','Other (please explain in notes)','N/A']:
+                i5index = Barcode.objects.get(indexid=indexname2)
+            else:
+                i5index = None
+            polane = fields[14].strip()
+            if polane and polane not in ['NA','Other (please explain in notes)','N/A']:
+                polane = float(polane)
+            else:
+                polane = None
+            seqid = fields[8].strip()
+            seqcore = fields[10].split('(')[0].strip()
+            seqmachine = fields[11].split('(')[0].strip()
+            machineused = SeqMachineInfo.objects.get(sequencing_core = seqcore,machine_name = seqmachine)
+            tosave_item = SeqInfo(
+                seq_id = seqid,
+                libraryinfo = libinfo,
+                team_member_initails = memebername,
+                read_length = fields[12].strip(),
+                read_type = fields[13].strip(),
+                portion_of_lane = polane,
+                notes = fields[17].strip(),
+                machine = machineused,
+                i7index = i7index,
+                i5index = i5index,
+                default_label = fields[2].strip(),
+                date_submitted_for_sequencing = datesub,
+                )
+            tosave_list.append(tosave_item)
+        SeqInfo.objects.bulk_create(tosave_list)
+        return redirect('masterseq_app:index')
+    context = {
+        'seqs_form': seqs_form,
+    }
+
+    return render(request, 'masterseq_app/seqsadd.html', context)
+
+
+
+
+
