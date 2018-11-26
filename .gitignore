@@ -6,6 +6,7 @@
 deploy.ini
 groupUsers.cfg
 logfile
-*migrations/*
-!*/migrations/__init__.py
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
 *.cfg
