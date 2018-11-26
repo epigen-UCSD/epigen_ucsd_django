@@ -216,6 +216,7 @@ $(document).ready( function () {
 
     $("#id_samplesinfo").attr("wrap", "off");
     $("#id_libsinfo").attr("wrap", "off");
+    $("#id_seqsinfo").attr("wrap", "off");
     $(".dmpajax").on("click",function(e){
 	e.preventDefault();
 

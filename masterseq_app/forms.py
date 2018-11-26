@@ -1,5 +1,5 @@
 from django import forms
-from .models import SampleInfo,LibraryInfo,SeqMachineInfo,\
+from .models import SampleInfo,LibraryInfo,SeqMachineInfo,SeqInfo,\
 choice_for_read_type,choice_for_species,choice_for_sample_type,\
 choice_for_preparation,choice_for_experiment_type
 from django.contrib.auth.models import User
@@ -230,5 +230,108 @@ class LibsCreationForm(forms.Form):
 		return '\n'.join(cleaneddata)
 
 
+class SeqsCreationForm(forms.Form):
+	seqsinfo = forms.CharField(
+			label='SeqsInfo(Please copy and paste the columnA-R from TrackingSheet 3):',
+			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
+			required=False,
+					)
+	def clean_seqsinfo(self):
+		data = self.cleaned_data['seqsinfo']
+		cleaneddata = []
+		flaglib = 0 
+		flagdate = 0
+		flaguser = 0
+		flagbarcode = 0
+		flagbarcode2 = 0
+		flagseqid = 0
+		flagmachine = 0
+		flagtype = 0
+		flagpolane = 0
+		invalidlib = []
+		invaliddate = []
+		invaliduserlist = []
+		invalidbarcodelist = []
+		invalidbarcodelist2 = []
+		invalidseqid = []
+		selfseqs = []
+		invalidmachine = []
+		invalidtype = []
+		invalidpolane = []
 
+		for lineitem in data.strip().split('\n'):
+			if lineitem != '\r':
+				cleaneddata.append(lineitem)
+				fields = lineitem.split('\t')
+				libraryid = fields[7].strip()
+				if not LibraryInfo.objects.filter(library_id = libraryid).exists():
+					invalidlib.append(libraryid)
+					flaglib = 1
 
+				if '-' in fields[6].strip():
+					datesub = fields[6].strip()
+				else:
+					try:
+						datesub = datetransform(fields[6].strip())
+					except:
+						invaliddate.append(fields[3].strip())
+						flagdate = 1
+				membername = fields[5].strip()
+				if not User.objects.filter(username=membername).exists():
+					invaliduserlist.append(membername)
+					flaguser = 1
+
+				indexname = fields[15].strip()
+				if indexname and indexname not in ['NA','Other (please explain in notes)','N/A']:
+					if not Barcode.objects.filter(indexid=indexname).exists():
+						invalidbarcodelist.append(indexname)
+						flagbarcode = 1
+				indexname2 = fields[16].strip()
+				if indexname2 and indexname2 not in ['NA','Other (please explain in notes)','N/A']:
+					if not Barcode.objects.filter(indexid=indexname2).exists():
+						invalidbarcodelist2.append(indexname2)
+						flagbarcode2 = 1
+				polane = fields[14].strip()
+				if polane and polane not in ['NA','Other (please explain in notes)','N/A']:
+					try:
+						float(polane)
+					except:
+						invalidpolane.append(polane)
+						flagpolane = 1	
+				seqid = fields[8].strip()
+				if SeqInfo.objects.filter(seq_id=seqid).exists():
+					invalidseqid.append(seqid)
+					flagseqid = 1
+				selfseqs.append(seqid)
+				seqcore = fields[10].split('(')[0].strip()
+				seqmachine = fields[11].split('(')[0].strip()
+				if not SeqMachineInfo.objects.filter(sequencing_core = seqcore,machine_name = seqmachine).exists():
+					invalidmachine.append(seqcore+'_'+seqmachine)
+					flagmachine = 1
+				seqtype = fields[13].strip()
+				if seqtype not in [x[0].split('(')[0].strip() for x in choice_for_read_type]:
+					invalidtype.append(seqtype)
+					flagtype = 1
+		if flaglib == 1:
+			raise forms.ValidationError('Invalid library info:'+','.join(invalidlib))
+		if flagdate == 1:
+			raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
+		if flaguser == 1:
+			raise forms.ValidationError('Invalid Member Name:'+','.join(invaliduserlist))
+		if flagbarcode == 1:
+			raise forms.ValidationError('Invalid i7 Barcode:'+','.join(invalidbarcodelist))
+		if flagbarcode2 == 1:
+			raise forms.ValidationError('Invalid i5 Barcode:'+','.join(invalidbarcodelist2))
+		if flagpolane == 1:
+			raise forms.ValidationError('Invalid portion of lane:'+','.join(invalidpolane))
+		if flagseqid == 1:
+			raise forms.ValidationError(','.join(invalidseqid)+' is already existed in database')
+		seqselfduplicate = SelfUniqueValidation(selfseqs)
+		if len(seqselfduplicate) > 0:
+			raise forms.ValidationError('Duplicate Seq within this bulk entry:'+','.join(seqselfduplicate))
+		if flagmachine == 1:
+			raise forms.ValidationError('Invalid seqmachine:'+','.join(invalidmachine))
+		if flagtype == 1:
+			raise forms.ValidationError('Invalid read type:'+','.join(invalidtype))
+
+		return '\n'.join(cleaneddata)
