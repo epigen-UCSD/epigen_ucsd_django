@@ -10,6 +10,19 @@
 #contentlogin {
   margin-top: 60px;
 }
+.modal-header {
+  padding:10px;
+  font-size: 14px;
+}
+.modal-body {
+
+     overflow-x: auto;
+     font-size: 12px;
+}
+.modal-footer {
+  padding:10px;
+  font-size: 14px;
+}
 
 p.textarea {
   margin-bottom: 0;

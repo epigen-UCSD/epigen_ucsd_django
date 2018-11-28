@@ -197,11 +197,14 @@ def LibrariesCreateView(request):
 def SeqsCreateView(request):
     seqs_form = SeqsCreationForm(request.POST or None)
     tosave_list = []
+    data = {}
     if seqs_form.is_valid():
-        seqsinfo = seqs_form.cleaned_data['seqsinfo']
+        seqsinfo = seqs_form.cleaned_data['seqsinfo']       
         for lineitem in seqsinfo.strip().split('\n'):
             lineitem = lineitem+'\t\t\t\t\t\t'
             fields = lineitem.split('\t')
+            seqid = fields[8].strip()
+            data[seqid] = {}
             libinfo = LibraryInfo.objects.get(library_id = fields[7].strip())
             if '-' in fields[6].strip():
                 datesub = fields[6].strip()
@@ -227,6 +230,20 @@ def SeqsCreateView(request):
             seqcore = fields[10].split('(')[0].strip()
             seqmachine = fields[11].split('(')[0].strip()
             machineused = SeqMachineInfo.objects.get(sequencing_core = seqcore,machine_name = seqmachine)
+            data[seqid] = {
+                 'libraryinfo':fields[7].strip(),
+                 'default_label':fields[2].strip(),
+                 'team_member_initails':fields[5].strip(),
+                 'read_length':fields[12].strip(),
+                 'read_type':fields[13].strip(),
+                 'portion_of_lane':fields[14].strip(),
+                 'seqcore':fields[10].split('(')[0].strip(),
+                 'machine':seqmachine,
+                 'i7index':indexname,
+                 'i5index':indexname2,
+                 'date':datesub,
+                 'notes':fields[17].strip(),
+             }                
             tosave_item = SeqInfo(
                 seq_id = seqid,
                 libraryinfo = libinfo,
@@ -242,15 +259,98 @@ def SeqsCreateView(request):
                 date_submitted_for_sequencing = datesub,
                 )
             tosave_list.append(tosave_item)
-        SeqInfo.objects.bulk_create(tosave_list)
-        return redirect('masterseq_app:index')
+        if 'Save' in request.POST:
+            SeqInfo.objects.bulk_create(tosave_list)
+            return redirect('masterseq_app:index')
+        if 'Preview' in request.POST:
+            displayorder = ['libraryinfo','default_label','team_member_initails','read_length',\
+            'read_type','portion_of_lane','seqcore','machine','i7index','i5index','date','notes']
+            context = {
+                'seqs_form': seqs_form,
+                'modalshow': 1,
+                'displayorder': displayorder,
+                'data':data,
+            }       
+
+            return render(request, 'masterseq_app/seqsadd.html', context)
     context = {
         'seqs_form': seqs_form,
     }
 
     return render(request, 'masterseq_app/seqsadd.html', context)
 
+# @transaction.atomic
+# def SeqsCreateConfirmView(request,seqsdata):
+#     data = {}
+#     for lineitem in seqsdata.strip().split('\n'):
+#         lineitem = lineitem+'\t\t\t\t\t\t'
+#         fields = lineitem.split('\t')
+#         seqid = fields[8].strip()
+#         data[seqid] = {}
+#         libinfo = LibraryInfo.objects.get(library_id = fields[7].strip())
+#         if '-' in fields[6].strip():
+#             datesub = fields[6].strip()
+#         else:
+#             datesub = datetransform(fields[6].strip())
+#         memebername = User.objects.get(username=fields[5].strip())
+#         indexname = fields[15].strip()
+#         if indexname and indexname not in ['NA','Other (please explain in notes)','N/A']:
+#             i7index = Barcode.objects.get(indexid=indexname)
+#         else:
+#             i7index = None
+#         indexname2 = fields[16].strip()
+#         if indexname2 and indexname2 not in ['NA','Other (please explain in notes)','N/A']:
+#             i5index = Barcode.objects.get(indexid=indexname2)
+#         else:
+#             i5index = None
+#         polane = fields[14].strip()
+#         if polane and polane not in ['NA','Other (please explain in notes)','N/A']:
+#             polane = float(polane)
+#         else:
+#             polane = None
+        
+#         seqcore = fields[10].split('(')[0].strip()
+#         seqmachine = fields[11].split('(')[0].strip()
+#         machineused = SeqMachineInfo.objects.get(sequencing_core = seqcore,machine_name = seqmachine)
+#         data[seqid] = {
+#             'libraryinfo':fields[7].strip(),
+#             'default_label':fields[2].strip(),
+#             'team_member_initails':fields[5].strip(),
+#             'read_length':fields[12].strip(),
+#             'read_type':fields[13].strip(),
+#             'portion_of_lane':fields[14].strip(),
+#             'seqcore':fields[10].split('(')[0].strip(),
+#             'machine':seqmachine,
+#             'i7index':indexname,
+#             'i5index':indexname2,
+#             'date':datesub,
+#             'notes':fields[17].strip(),
+#         }
+#         tosave_item = SeqInfo(
+#             seq_id = seqid,
+#             libraryinfo = libinfo,
+#             team_member_initails = memebername,
+#             read_length = fields[12].strip(),
+#             read_type = fields[13].strip(),
+#             portion_of_lane = polane,
+#             notes = fields[17].strip(),
+#             machine = machineused,
+#             i7index = i7index,
+#             i5index = i5index,
+#             default_label = fields[2].strip(),
+#             date_submitted_for_sequencing = datesub,
+#             )
+#         tosave_list.append(tosave_item)
+#     if request.method == "POST":
+#         SeqInfo.objects.bulk_create(tosave_list)
+#         return redirect('masterseq_app:index')
+#     else:
+#         displayorder = ['libraryinfo','default_label','team_member_initails','read_length',\
+#         'read_type','portion_of_lane','seqcore','machine','i7index','i5index','date','notes']
+#         context = {
+#             'displayorder': displayorder,
+#             'data':data
+#         }   
 
-
-
+#         return render(request, 'masterseq_app/seqsaddconfirm.html', context)
 

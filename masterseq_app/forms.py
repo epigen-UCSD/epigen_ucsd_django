@@ -274,7 +274,7 @@ class SeqsCreationForm(forms.Form):
 					try:
 						datesub = datetransform(fields[6].strip())
 					except:
-						invaliddate.append(fields[3].strip())
+						invaliddate.append(fields[6].strip())
 						flagdate = 1
 				membername = fields[5].strip()
 				if not User.objects.filter(username=membername).exists():
