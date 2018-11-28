@@ -433,17 +433,21 @@ def RunSetQC(request, setqc_pk):
                 seqstatus.append('No')
             else:
                 seqstatus.append('Yes')
+
+
     if setinfo.experiment_type == 'ChIP-seq':
 
         list2 = list(librariesset.values_list('group_number', flat=True))
         list3 = list(librariesset.values_list('is_input', flat=True))
         writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list2,list3,list4,list5,seqstatus)])
         featureheader = ['Library ID','Group ID','Is Input','Genome','Label','Processed Or Not']
+        cmd1 = './utility/runSetQC_chipseq.sh ' + setinfo.set_id + ' ' + request.user.email    
     else:
         # regset = setinfo.libraries_to_include.all()
         # list1 = [x.seq_id for x in regset]
         writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list4,list5,seqstatus)])
         featureheader = ['Library ID','Genome','Label','Processed Or Not']
+        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email    
 
     ## write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir,'.'+setinfo.set_id+'.txt')
@@ -461,7 +465,7 @@ def RunSetQC(request, setqc_pk):
     setinfo.save()
 
     #run setQC script
-    cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
+    #cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
     print(cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -498,11 +502,13 @@ def RunSetQC2(request, setqc_pk):
         list3 = list(librariesset.values_list('is_input', flat=True))
         writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list2,list3,list4,list5,seqstatus)])
         featureheader = ['Library ID','Group ID','Is Input','Genome','Label','Processed Or Not']
+        cmd1 = './utility/runSetQC_chipseq.sh ' + setinfo.set_id + ' ' + request.user.email            
     else:
         # regset = setinfo.libraries_to_include.all()
         # list1 = [x.seq_id for x in regset]
         writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list4,list5,seqstatus)])
         featureheader = ['Library ID','Genome','Label','Processed Or Not']
+        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email    
         
     ## write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir,'.'+setinfo.set_id+'.txt')
@@ -516,7 +522,7 @@ def RunSetQC2(request, setqc_pk):
     setinfo.save()
 
     #run setQC script
-    cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
+    #cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
     print(cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
