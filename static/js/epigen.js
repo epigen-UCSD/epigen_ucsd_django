@@ -168,7 +168,10 @@ $(document).ready( function () {
 //     return false;
 // });
 
-$('#myModal').modal('show')
+    $('#myModal').modal('show')
+    $('#confirmtosave').on('click',function() {
+      $( "#bindtomodalok" ).trigger( "click" );
+    });   
 
     $( "#id_date" ).datepicker();
     $( "#id_date_requested" ).datepicker();

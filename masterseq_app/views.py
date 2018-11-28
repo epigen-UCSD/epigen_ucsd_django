@@ -241,7 +241,7 @@ def SeqsCreateView(request):
                  'machine':seqmachine,
                  'i7index':indexname,
                  'i5index':indexname2,
-                 'date':datesub,
+                 'date_submitted':datesub,
                  'notes':fields[17].strip(),
              }                
             tosave_item = SeqInfo(
@@ -263,8 +263,8 @@ def SeqsCreateView(request):
             SeqInfo.objects.bulk_create(tosave_list)
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
-            displayorder = ['libraryinfo','default_label','team_member_initails','read_length',\
-            'read_type','portion_of_lane','seqcore','machine','i7index','i5index','date','notes']
+            displayorder = ['libraryinfo','default_label','date_submitted','team_member_initails','read_length',\
+            'read_type','portion_of_lane','seqcore','machine','i7index','i5index','notes']
             context = {
                 'seqs_form': seqs_form,
                 'modalshow': 1,
