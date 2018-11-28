@@ -106,7 +106,7 @@ class SamplesCreationForm(forms.Form):
 	samplesinfo = forms.CharField(
 			label='SampleInfo(Please copy and paste the columnA-V from TrackingSheet 1):',
 			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
-			required=False,
+			required=True,
 					)
 	def clean_samplesinfo(self):
 		data = self.cleaned_data['samplesinfo']
@@ -172,7 +172,7 @@ class LibsCreationForm(forms.Form):
 	libsinfo = forms.CharField(
 			label='LibsInfo(Please copy and paste the columnA-M from TrackingSheet 2):',
 			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
-			required=False,
+			required=True,
 					)
 	def clean_libsinfo(self):
 		data = self.cleaned_data['libsinfo']
@@ -234,7 +234,7 @@ class SeqsCreationForm(forms.Form):
 	seqsinfo = forms.CharField(
 			label='SeqsInfo(Please copy and paste the columnA-R from TrackingSheet 3):',
 			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
-			required=False,
+			required=True,
 					)
 	def clean_seqsinfo(self):
 		data = self.cleaned_data['seqsinfo']
