@@ -172,6 +172,12 @@ $(document).ready( function () {
     $('#confirmtosave').on('click',function() {
       $( "#bindtomodalok" ).trigger( "click" );
     });   
+    // $('#review-tab').on('click',function(e) {
+    //   location.reload();
+    //   $( "#previewsub" ).trigger( "click" );
+      
+    //   console.log(e)
+    // });
 
     $( "#id_date" ).datepicker();
     $( "#id_date_requested" ).datepicker();

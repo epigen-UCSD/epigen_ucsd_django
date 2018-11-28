@@ -181,11 +181,13 @@ class LibsCreationForm(forms.Form):
 		flagdate = 0
 		flagexp = 0
 		flaglibid = 0
+		flaguser = 0
 		invalidsam = []
 		invaliddate = []
 		invalidexp = []
 		selflibs = []
 		invalidlibid =[]
+		invaliduserlist = []
 		for lineitem in data.strip().split('\n'):
 			if lineitem != '\r':
 				cleaneddata.append(lineitem)
@@ -212,6 +214,10 @@ class LibsCreationForm(forms.Form):
 				if LibraryInfo.objects.filter(library_id=libid).exists():
 					invalidlibid.append(libid)
 					flaglibid = 1
+				membername = fields[2].strip()
+				if not User.objects.filter(username=membername).exists():
+					invaliduserlist.append(membername)
+					flaguser = 1
 					
 				selflibs.append(libid)
 
@@ -226,7 +232,8 @@ class LibsCreationForm(forms.Form):
 		libraryselfduplicate = SelfUniqueValidation(selflibs)
 		if len(libraryselfduplicate) > 0:
 			raise forms.ValidationError('Duplicate Library within this bulk entry:'+','.join(libraryselfduplicate))
-
+		if flaguser == 1:
+			raise forms.ValidationError('Invalid Member Name:'+','.join(invaliduserlist))
 		return '\n'.join(cleaneddata)
 
 
