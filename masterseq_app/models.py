@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from nextseq_app.models import Barcode
-
+from epigen_ucsd_django.models import CollaboratorPersonInfo
 # Create your models here.
 
 
@@ -41,6 +41,14 @@ choice_for_species = (
 	('rat','rat'),
 	('other (please explain in notes)','other (please explain in notes)')
 	)
+choice_for_unit = (
+	('cells','cells'),
+	('mg','mg'),
+	('nuclei','nuclei'),
+	('other (please explain in notes)','other (please explain in notes)')
+
+	)
+
 
 class ProtocalInfo(models.Model):
 	protocal_name = models.CharField(max_length=50)	
@@ -77,6 +85,14 @@ class SampleInfo(models.Model):
 	preparation = models.CharField(max_length=50,choices=preparation_choice)
 	description = models.TextField(blank=True)
 	notes = models.TextField(blank=True)
+	sample_amount = models.CharField(max_length=20,blank=True,null=True)
+	unit_choice = choice_for_unit
+	unit = models.CharField(max_length=50,choices=unit_choice,null=True)
+	experiment_type_choice = choice_for_experiment_type
+	service_requested = models.CharField(max_length=50,choices=experiment_type_choice,null=True)
+	contact_person = models.ForeignKey(CollaboratorPersonInfo,related_name='contact_person', on_delete=models.CASCADE,null=True)
+	fiscal_person = models.ForeignKey(CollaboratorPersonInfo,related_name='fiscal_person', on_delete=models.CASCADE,null=True)
+	status = models.CharField(max_length=20,blank=True,null=True)
 	def __str__(self):
 		return self.sample_index+'_'+self.sample_id
 

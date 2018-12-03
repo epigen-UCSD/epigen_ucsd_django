@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'nextseq_app',
     'setqc_app',
     'masterseq_app',
+    'epigen_ucsd_django',
     'django.contrib.humanize',
 ]
 
