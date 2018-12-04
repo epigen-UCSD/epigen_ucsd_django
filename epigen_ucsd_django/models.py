@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 
 choice_for_roles = (
 	('PI','PI'),
-	('fiscal','fiscal'),
+	('Fiscal','Fiscal'),
+	('Research','Research'),
 	('other','other'),
 	)
 

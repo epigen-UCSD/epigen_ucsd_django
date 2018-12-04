@@ -9,7 +9,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from .shared import is_member
+from .shared import is_member,is_in_multiple_groups
 
 @method_decorator(never_cache, name='dispatch')
 class UserLoginView(View):
@@ -29,7 +29,7 @@ class UserLoginView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    if is_member(user,'epigencollaborators'):
+                    if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
                         return redirect('setqc_app:collaboratorsetqcs')
                     else:
                         return redirect('nextseq_app:userruns')
@@ -50,7 +50,7 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, form.user)
             #messages.success(request, 'Your password was successfully updated!')
-            if is_member(user,'epigencollaborators'):
+            if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
                 return redirect('setqc_app:collaboratorsetqcs')
             else:
                 return redirect('nextseq_app:userruns')

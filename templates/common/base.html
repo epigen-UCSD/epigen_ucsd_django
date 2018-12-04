@@ -31,7 +31,7 @@
        <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
-      {% if request.user|has_group:"epigencollaborators" %}
+      {% if not request.user|has_groups:"wetlab;bioinformatics"%}
       <ul class="navbar-nav">
         <li class="nav-item">
           <a id="setqc_app" class="nav-link" href="{% url 'setqc_app:collaboratorsetqcs' %}"> SetQC </a>

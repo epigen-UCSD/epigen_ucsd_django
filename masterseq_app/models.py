@@ -90,7 +90,7 @@ class SampleInfo(models.Model):
 	unit = models.CharField(max_length=50,choices=unit_choice,null=True)
 	experiment_type_choice = choice_for_experiment_type
 	service_requested = models.CharField(max_length=50,choices=experiment_type_choice,null=True)
-	contact_person = models.ForeignKey(CollaboratorPersonInfo,related_name='contact_person', on_delete=models.CASCADE,null=True)
+	research_person = models.ForeignKey(CollaboratorPersonInfo,related_name='contact_person', on_delete=models.CASCADE,null=True)
 	fiscal_person = models.ForeignKey(CollaboratorPersonInfo,related_name='fiscal_person', on_delete=models.CASCADE,null=True)
 	status = models.CharField(max_length=20,blank=True,null=True)
 	def __str__(self):

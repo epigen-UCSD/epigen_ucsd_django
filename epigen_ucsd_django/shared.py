@@ -3,6 +3,9 @@
 def is_member(user,group):
     return user.groups.filter(name=group).exists()
 
+def is_in_multiple_groups(user,grouplist):
+    return user.groups.filter(name__in=grouplist).exists()
+
 def datetransform(inputdate):
 	#from 2/6/2018 to 2018-02-06
 	if inputdate == '':
