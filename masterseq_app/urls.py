@@ -14,5 +14,7 @@ urlpatterns = [
     path('samples/adds/', views.SamplesCreateView, name='samples_add'),
     path('libraries/adds/', views.LibrariesCreateView, name='libraries_add'),
     path('seqs/adds/', views.SeqsCreateView, name='seqs_add'),
+    #path('seqs/adds/confirm', views.SeqsCreateConfirmView, name='seqs_add_confirm'),
+    #path('ajaxtest/', TemplateView.as_view(template_name="masterseq_app/ajaxtest.html"), name='ajaxtest'),
 
 ]

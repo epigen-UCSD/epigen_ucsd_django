@@ -155,8 +155,29 @@ $(document).ready( function () {
         })
     });
 
+// $('[data-toggle="tabajax"]').click(function(e) {
+//     var $this = $(this),
+//         loadurl = $this.attr('href'),
+//         targ = $this.attr('data-target');
 
+//     $.get(loadurl, function(data) {
+//         $(targ).html(data);
+//     });
 
+//     $this.tab('show');
+//     return false;
+// });
+
+    $('#myModal').modal('show')
+    $('#confirmtosave').on('click',function() {
+      $( "#bindtomodalok" ).trigger( "click" );
+    });   
+    // $('#review-tab').on('click',function(e) {
+    //   location.reload();
+    //   $( "#previewsub" ).trigger( "click" );
+      
+    //   console.log(e)
+    // });
 
     $( "#id_date" ).datepicker();
     $( "#id_date_requested" ).datepicker();

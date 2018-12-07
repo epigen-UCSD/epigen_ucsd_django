@@ -106,7 +106,7 @@ class SamplesCreationForm(forms.Form):
 	samplesinfo = forms.CharField(
 			label='SampleInfo(Please copy and paste the columnA-V from TrackingSheet 1):',
 			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
-			required=False,
+			required=True,
 					)
 	def clean_samplesinfo(self):
 		data = self.cleaned_data['samplesinfo']
@@ -172,7 +172,7 @@ class LibsCreationForm(forms.Form):
 	libsinfo = forms.CharField(
 			label='LibsInfo(Please copy and paste the columnA-M from TrackingSheet 2):',
 			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
-			required=False,
+			required=True,
 					)
 	def clean_libsinfo(self):
 		data = self.cleaned_data['libsinfo']
@@ -181,11 +181,13 @@ class LibsCreationForm(forms.Form):
 		flagdate = 0
 		flagexp = 0
 		flaglibid = 0
+		flaguser = 0
 		invalidsam = []
 		invaliddate = []
 		invalidexp = []
 		selflibs = []
 		invalidlibid =[]
+		invaliduserlist = []
 		for lineitem in data.strip().split('\n'):
 			if lineitem != '\r':
 				cleaneddata.append(lineitem)
@@ -212,6 +214,10 @@ class LibsCreationForm(forms.Form):
 				if LibraryInfo.objects.filter(library_id=libid).exists():
 					invalidlibid.append(libid)
 					flaglibid = 1
+				membername = fields[2].strip()
+				if not User.objects.filter(username=membername).exists():
+					invaliduserlist.append(membername)
+					flaguser = 1
 					
 				selflibs.append(libid)
 
@@ -226,7 +232,8 @@ class LibsCreationForm(forms.Form):
 		libraryselfduplicate = SelfUniqueValidation(selflibs)
 		if len(libraryselfduplicate) > 0:
 			raise forms.ValidationError('Duplicate Library within this bulk entry:'+','.join(libraryselfduplicate))
-
+		if flaguser == 1:
+			raise forms.ValidationError('Invalid Member Name:'+','.join(invaliduserlist))
 		return '\n'.join(cleaneddata)
 
 
@@ -234,7 +241,7 @@ class SeqsCreationForm(forms.Form):
 	seqsinfo = forms.CharField(
 			label='SeqsInfo(Please copy and paste the columnA-R from TrackingSheet 3):',
 			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
-			required=False,
+			required=True,
 					)
 	def clean_seqsinfo(self):
 		data = self.cleaned_data['seqsinfo']
@@ -274,7 +281,7 @@ class SeqsCreationForm(forms.Form):
 					try:
 						datesub = datetransform(fields[6].strip())
 					except:
-						invaliddate.append(fields[3].strip())
+						invaliddate.append(fields[6].strip())
 						flagdate = 1
 				membername = fields[5].strip()
 				if not User.objects.filter(username=membername).exists():

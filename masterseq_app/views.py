@@ -120,6 +120,7 @@ def load_protocals(request):
 def SamplesCreateView(request):
     sample_form = SamplesCreationForm(request.POST or None)
     tosave_list = []
+    data = {}
     if sample_form.is_valid():
         sampleinfo = sample_form.cleaned_data['samplesinfo']
         #print(sequencinginfo)
@@ -134,8 +135,18 @@ def SamplesCreateView(request):
             samspecies = fields[10].split('(')[0].lower().strip()
             samdescript = fields[9].strip()
             samid = fields[8].strip()
+            data[samid] = {}
             samdate = datetransform(fields[0].strip())
-
+            data[samid] = {
+                'sample_index':samindex,
+                'team_member':request.user.username,
+                'date':samdate,
+                'species':samspecies,
+                'sample_type':samtype,
+                'preparation':samprep,
+                'description':samdescript,
+                'notes':samnotes
+             }  
             tosave_item = SampleInfo(
                 sample_index=samindex,
                 sample_id=samid,
@@ -148,8 +159,20 @@ def SamplesCreateView(request):
                 date=samdate,
                 )
             tosave_list.append(tosave_item)
-        SampleInfo.objects.bulk_create(tosave_list)
-        return redirect('masterseq_app:index')
+        if 'Save' in request.POST:
+            SampleInfo.objects.bulk_create(tosave_list)
+            return redirect('masterseq_app:index')
+        if 'Preview' in request.POST:
+            displayorder = ['sample_index','team_member','date','species','sample_type',\
+            'preparation','description','notes']
+            context = {
+                'sample_form': sample_form,
+                'modalshow': 1,
+                'displayorder': displayorder,
+                'data':data,
+            }       
+
+            return render(request, 'masterseq_app/samplesadd.html', context)
     context = {
         'sample_form': sample_form,
     }
@@ -159,19 +182,34 @@ def SamplesCreateView(request):
 def LibrariesCreateView(request):
     library_form = LibsCreationForm(request.POST or None)
     tosave_list = []
+    data = {}
     if library_form.is_valid():
         libsinfo = library_form.cleaned_data['libsinfo']
         #print(sequencinginfo)
         for lineitem in libsinfo.strip().split('\n'):
             fields = lineitem.strip('\n').split('\t')
+            
             saminfo = SampleInfo.objects.get(sample_index=fields[0].strip())
             libid = fields[10].strip()
+            data[libid] = {}
             datestart = datetransform(fields[3].strip())
             dateend = datetransform(fields[4].strip())
             libexp = fields[5].strip()
             libprotocal = ProtocalInfo.objects.get(experiment_type=libexp,protocal_name = 'other (please explain in notes)')   
             refnotebook = fields[7].strip()
             libnote = ';'.join([fields[11].strip(),fields[6].strip()]).strip(';')
+            memebername = User.objects.get(username=fields[2].strip())
+            data[libid] = {
+                'sampleinfo':fields[0].strip(),
+                'team_member_initails':fields[2].strip(),
+                'experiment_index':fields[12].strip(),
+                'date_started':datestart,
+                'date_completed':dateend,
+                'experiment_type':libexp,
+                'protocal_name':'other (please explain in notes)',
+                'reference_to_notebook_and_page_number':fields[7].strip(),
+                'notes':libnote
+             }  
             tosave_item = LibraryInfo(
                 library_id=libid,
                 sampleinfo=saminfo,
@@ -181,12 +219,25 @@ def LibrariesCreateView(request):
                 reference_to_notebook_and_page_number=refnotebook,
                 date_started=datestart,
                 date_completed=dateend,
-                team_member_initails=request.user,
+                team_member_initails=memebername,
                 notes=libnote
                 )
             tosave_list.append(tosave_item)
-        LibraryInfo.objects.bulk_create(tosave_list)
-        return redirect('masterseq_app:index')
+        if 'Save' in request.POST:
+            LibraryInfo.objects.bulk_create(tosave_list)
+            return redirect('masterseq_app:index')
+        if 'Preview' in request.POST:
+            displayorder = ['sampleinfo','team_member_initails','experiment_index','date_started',\
+            'date_completed','experiment_type','protocal_name','reference_to_notebook_and_page_number',\
+            'notes']
+            context = {
+                'library_form': library_form,
+                'modalshow': 1,
+                'displayorder': displayorder,
+                'data':data,
+            }       
+
+            return render(request, 'masterseq_app/libsadd.html', context)
     context = {
         'library_form': library_form,
     }
@@ -197,11 +248,14 @@ def LibrariesCreateView(request):
 def SeqsCreateView(request):
     seqs_form = SeqsCreationForm(request.POST or None)
     tosave_list = []
+    data = {}
     if seqs_form.is_valid():
-        seqsinfo = seqs_form.cleaned_data['seqsinfo']
+        seqsinfo = seqs_form.cleaned_data['seqsinfo']       
         for lineitem in seqsinfo.strip().split('\n'):
             lineitem = lineitem+'\t\t\t\t\t\t'
             fields = lineitem.split('\t')
+            seqid = fields[8].strip()
+            data[seqid] = {}
             libinfo = LibraryInfo.objects.get(library_id = fields[7].strip())
             if '-' in fields[6].strip():
                 datesub = fields[6].strip()
@@ -227,6 +281,20 @@ def SeqsCreateView(request):
             seqcore = fields[10].split('(')[0].strip()
             seqmachine = fields[11].split('(')[0].strip()
             machineused = SeqMachineInfo.objects.get(sequencing_core = seqcore,machine_name = seqmachine)
+            data[seqid] = {
+                 'libraryinfo':fields[7].strip(),
+                 'default_label':fields[2].strip(),
+                 'team_member_initails':fields[5].strip(),
+                 'read_length':fields[12].strip(),
+                 'read_type':fields[13].strip(),
+                 'portion_of_lane':fields[14].strip(),
+                 'seqcore':fields[10].split('(')[0].strip(),
+                 'machine':seqmachine,
+                 'i7index':indexname,
+                 'i5index':indexname2,
+                 'date_submitted':datesub,
+                 'notes':fields[17].strip(),
+             }                
             tosave_item = SeqInfo(
                 seq_id = seqid,
                 libraryinfo = libinfo,
@@ -242,15 +310,98 @@ def SeqsCreateView(request):
                 date_submitted_for_sequencing = datesub,
                 )
             tosave_list.append(tosave_item)
-        SeqInfo.objects.bulk_create(tosave_list)
-        return redirect('masterseq_app:index')
+        if 'Save' in request.POST:
+            SeqInfo.objects.bulk_create(tosave_list)
+            return redirect('masterseq_app:index')
+        if 'Preview' in request.POST:
+            displayorder = ['libraryinfo','default_label','date_submitted','team_member_initails','read_length',\
+            'read_type','portion_of_lane','seqcore','machine','i7index','i5index','notes']
+            context = {
+                'seqs_form': seqs_form,
+                'modalshow': 1,
+                'displayorder': displayorder,
+                'data':data,
+            }       
+
+            return render(request, 'masterseq_app/seqsadd.html', context)
     context = {
         'seqs_form': seqs_form,
     }
 
     return render(request, 'masterseq_app/seqsadd.html', context)
 
+# @transaction.atomic
+# def SeqsCreateConfirmView(request,seqsdata):
+#     data = {}
+#     for lineitem in seqsdata.strip().split('\n'):
+#         lineitem = lineitem+'\t\t\t\t\t\t'
+#         fields = lineitem.split('\t')
+#         seqid = fields[8].strip()
+#         data[seqid] = {}
+#         libinfo = LibraryInfo.objects.get(library_id = fields[7].strip())
+#         if '-' in fields[6].strip():
+#             datesub = fields[6].strip()
+#         else:
+#             datesub = datetransform(fields[6].strip())
+#         memebername = User.objects.get(username=fields[5].strip())
+#         indexname = fields[15].strip()
+#         if indexname and indexname not in ['NA','Other (please explain in notes)','N/A']:
+#             i7index = Barcode.objects.get(indexid=indexname)
+#         else:
+#             i7index = None
+#         indexname2 = fields[16].strip()
+#         if indexname2 and indexname2 not in ['NA','Other (please explain in notes)','N/A']:
+#             i5index = Barcode.objects.get(indexid=indexname2)
+#         else:
+#             i5index = None
+#         polane = fields[14].strip()
+#         if polane and polane not in ['NA','Other (please explain in notes)','N/A']:
+#             polane = float(polane)
+#         else:
+#             polane = None
+        
+#         seqcore = fields[10].split('(')[0].strip()
+#         seqmachine = fields[11].split('(')[0].strip()
+#         machineused = SeqMachineInfo.objects.get(sequencing_core = seqcore,machine_name = seqmachine)
+#         data[seqid] = {
+#             'libraryinfo':fields[7].strip(),
+#             'default_label':fields[2].strip(),
+#             'team_member_initails':fields[5].strip(),
+#             'read_length':fields[12].strip(),
+#             'read_type':fields[13].strip(),
+#             'portion_of_lane':fields[14].strip(),
+#             'seqcore':fields[10].split('(')[0].strip(),
+#             'machine':seqmachine,
+#             'i7index':indexname,
+#             'i5index':indexname2,
+#             'date':datesub,
+#             'notes':fields[17].strip(),
+#         }
+#         tosave_item = SeqInfo(
+#             seq_id = seqid,
+#             libraryinfo = libinfo,
+#             team_member_initails = memebername,
+#             read_length = fields[12].strip(),
+#             read_type = fields[13].strip(),
+#             portion_of_lane = polane,
+#             notes = fields[17].strip(),
+#             machine = machineused,
+#             i7index = i7index,
+#             i5index = i5index,
+#             default_label = fields[2].strip(),
+#             date_submitted_for_sequencing = datesub,
+#             )
+#         tosave_list.append(tosave_item)
+#     if request.method == "POST":
+#         SeqInfo.objects.bulk_create(tosave_list)
+#         return redirect('masterseq_app:index')
+#     else:
+#         displayorder = ['libraryinfo','default_label','team_member_initails','read_length',\
+#         'read_type','portion_of_lane','seqcore','machine','i7index','i5index','date','notes']
+#         context = {
+#             'displayorder': displayorder,
+#             'data':data
+#         }   
 
-
-
+#         return render(request, 'masterseq_app/seqsaddconfirm.html', context)
 
