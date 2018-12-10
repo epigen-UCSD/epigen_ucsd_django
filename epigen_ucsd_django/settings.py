@@ -26,6 +26,7 @@ SECRET_KEY = '$omp0lc+c$5b&)e+c7xyk_zsddr#a4x4y+196bre5+f6pl2hlg'
 DEBUG =  True
 
 ALLOWED_HOSTS = ['epigenomics.sdsc.edu','127.0.0.1']
+INTERNAL_IPS = ['127.0.0.1']
 
 
 # Application definition
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'masterseq_app',
     'epigen_ucsd_django',
     'django.contrib.humanize',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +56,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'epigen_ucsd_django.middleware.LoginRequiredMiddleware',
     'epigen_ucsd_django.middleware.InternalRequiredMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 
 ]
 
