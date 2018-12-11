@@ -30,7 +30,7 @@ class UserLoginView(View):
                 if user.is_active:
                     login(request, user)
                     if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
-                        return redirect('setqc_app:collaboratorsetqcs')
+                        return redirect('collaborator_app:collaboratorsetqcs')
                     else:
                         return redirect('nextseq_app:userruns')
             else:
@@ -50,10 +50,8 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, form.user)
             #messages.success(request, 'Your password was successfully updated!')
-            if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
-                return redirect('setqc_app:collaboratorsetqcs')
-            else:
-                return redirect('nextseq_app:userruns')
+
+            return redirect('nextseq_app:userruns')
         # else:
             #messages.error(request, 'Please correct the error below.')
     else:
@@ -61,6 +59,8 @@ def change_password(request):
     return render(request, 'common/change_password.html', {
         'form': form
     })
+
+
 
 class UserRegisterView(FormView):
     form_class = UserRegisterForm

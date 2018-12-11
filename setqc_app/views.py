@@ -18,7 +18,6 @@ import subprocess
 # Create your views here.
 DisplayField1 = ['set_id','set_name','date_requested','experiment_type','url']
 DisplayField2 = ['set_id','set_name','date_requested','requestor','experiment_type','url']
-DisplayFieldforcollab = ['set_name','date_requested','experiment_type','url']
 defaultgenome = {'human':'hg38','mouse':'mm10','rat':'rn6'}
 
 def groupnumber(datalist):
@@ -562,45 +561,6 @@ def SetQCDetailView(request,setqc_pk):
     return render(request, 'setqc_app/details.html', context=context)
 
 
-def CollaboratorSetQCView(request):
-    SetQC_list = LibrariesSetQC.objects.filter(collaborator=request.user)
-    context = {
-        'Sets_list': SetQC_list,
-        'DisplayField':DisplayFieldforcollab,
-    }
-    return render(request, 'setqc_app/collaboratorsetqcinfo.html', context)
-
-
-
-def CollaboratorGetNotesView(request,setqc_pk):
-    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
-    if setinfo.collaborator != request.user:
-        raise PermissionDenied
-    data = {}
-    data['notes'] = setinfo.notes
-    return JsonResponse(data)
-
-def CollaboratorSetQCDetailView(request,setqc_pk):
-    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
-    if setinfo.collaborator != request.user:
-        raise PermissionDenied
-    summaryfield = ['set_name','collaborator','date_requested','requestor','experiment_type','notes','url','version']
-    groupinputinfo = ''
-    librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
-    list1tem = list(librariesset.values_list('seqinfo', flat=True))
-    list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x)
-     for x in list1tem]
-    if setinfo.experiment_type == 'ChIP-seq':
-        list2 = list(librariesset.values_list('group_number', flat=True))
-        list3 = list(librariesset.values_list('is_input', flat=True))
-        groupinputinfo = list(zip(list1,list2,list3))
-    context = {
-        'setinfo':setinfo,
-        'summaryfield':summaryfield,
-        'libraryinfo': list1,
-        'groupinputinfo':groupinputinfo,
-    }
-    return render(request, 'setqc_app/collaboratordetails.html', context=context)
 
 
 

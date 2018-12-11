@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'masterseq_app',
     'epigen_ucsd_django',
     'django.contrib.humanize',
+    'collaborator_app',
     'debug_toolbar',
 ]
 
@@ -159,11 +160,12 @@ LOGIN_EXEMPT_URLS =(
 
     )
 INTERNAL_EXEMPT_URLS=(
-    r'setqc_app/myreports/',
-    r'changepassword/',
-    r'setqc_app/(\d+)/details/',
-    r'setqc_app/(\d+)/getnotes/',
+    r'setqc/myreports/',
+    r'epigen/',
+    r'setqc/(\d+)/details/',
+    r'setqc/(\d+)/getnotes/',
     r'logout/',
+    r'__debug__/',
 
     )
 

@@ -139,11 +139,31 @@ $(document).ready( function () {
         }
 
     });
+
+    var samplesurl=$('#collab_samples').attr("data-href");
+    console.log(samplesurl)
+    $('#collab_samples').DataTable({
+    "iDisplayLength": 10,
+    "processing": true,
+    "ajax": {
+         url: samplesurl,
+         dataSrc: ''
+        },
+    "columns": [
+            { "data": "sample_id"},
+            { "data": "date"},
+            { "data": "sample_type"},
+            { "data": "service_requested"},
+            { "data": "status"},
+        ],
+    "deferRender": true,
+    "select": true,
+    });
+
+
     $('#id_experiment_type').change(function (){
         var url = $("#librayspec").attr("data-protocal-url");
-        console.log(url)
         var expId = $(this).val();
-        console.log(expId)
         $.ajax({
             url:url,
             data: {
