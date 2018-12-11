@@ -77,5 +77,15 @@ def CollaboratorSampleView(request):
 
 	return JsonResponse(data,safe=False)
 
-
+def CollaboratorSampleComView(request):
+	collab_person = CollaboratorPersonInfo.objects.get(person_id=request.user)
+	SetQC_list = LibrariesSetQC.objects.filter(collaborator=request.user)
+	Sample_list = SampleInfo.objects.filter(research_person=collab_person).values(\
+		'pk','sample_id','date','sample_type','service_requested','status')
+	context = {
+		'Sets_list': SetQC_list,
+		'DisplayField':DisplayFieldforcollab,
+		'Sample_list':Sample_list,
+	}
+	return render(request, 'collaborator_app/collaboratorsetqcinfocom.html', context)
 

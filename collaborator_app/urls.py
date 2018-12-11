@@ -10,5 +10,6 @@ urlpatterns = [
     path('<int:setqc_pk>/details/',views.CollaboratorSetQCDetailView, name='setqc_collaboratordetail'),
     path('<int:setqc_pk>/getnotes/',views.CollaboratorGetNotesView, name='setqc_collaboratorgetnotes'),
     path('mysamples/', views.CollaboratorSampleView, name='collab_samples'),
+    path('mysamples_com/', views.CollaboratorSampleComView, name='collab_samples_compare'),
 
 ]

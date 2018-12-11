@@ -158,7 +158,18 @@ $(document).ready( function () {
         ],
     "deferRender": true,
     "select": true,
+
+    "columnDefs": [{
+        "targets": 0,
+        "render": function ( data, type, row ) {
+            var itemID = row["pk"];                   
+            return '<a href="/epigen/samples/' + itemID + '">' + data + '</a>';
+        }
+    }], 
     });
+    $('#collab_samples_com').DataTable({
+        
+    })
 
 
     $('#id_experiment_type').change(function (){
