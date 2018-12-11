@@ -104,7 +104,7 @@ class SeqCreationForm(forms.Form):
 
 class SamplesCreationForm(forms.Form):
 	samplesinfo = forms.CharField(
-			label='SampleInfo(Please copy and paste the columnA-V from TrackingSheet 1):',
+			label='SampleInfo(Please copy and paste the columnA-V from TrackingSheet 1)',
 			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
 			required=True,
 					)

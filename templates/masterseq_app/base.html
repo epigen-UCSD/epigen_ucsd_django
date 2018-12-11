@@ -8,14 +8,12 @@
 <div id="sidebar" class="col-sm-2 col-md-2 col-lg-2" role="navigation">
   <div class="list-group navsiebar">
     <li class="sidebar-header">MetaData App</li>
-    <a href="{% url 'masterseq_app:sample_add' %}" class="list-group-item list-group-item-action-custom-orange editable">Add a new sample</a> 
-    <a href="{% url 'masterseq_app:library_add' %}" class="list-group-item list-group-item-action-custom-orange ">Add a new library</a>
-    <a href="{% url 'masterseq_app:seq_add' %}" class="list-group-item list-group-item-action-custom-orange">Add new seqs</a>
-    <a href="{% url 'masterseq_app:samples_add' %}" class="list-group-item list-group-item-action-custom-orange editable">Add new samples</a> 
-    <a href="{% url 'masterseq_app:libraries_add' %}" class="list-group-item list-group-item-action-custom-orange ">Add new libraries</a>
-    <a href="{% url 'masterseq_app:seqs_add' %}" class="list-group-item list-group-item-action-custom-orange ">Add new seqs</a>     
+    <a href="{% url 'masterseq_app:samples_add' %}" class="list-group-item list-group-item-action-custom-orange editable">Add new <em><strong>Samples</strong></em></a> 
+    <a href="{% url 'masterseq_app:libraries_add' %}" class="list-group-item list-group-item-action-custom-orange ">Add new <em><strong>Libraries</strong></em></a>
+    <a href="{% url 'masterseq_app:seqs_add' %}" class="list-group-item list-group-item-action-custom-orange ">Add new <em><strong>Seqs</strong></em></a>     
   </div>
 </div> 
+
 {% endblock %}
 
 {% block content %}
