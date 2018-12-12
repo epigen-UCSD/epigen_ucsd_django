@@ -8,6 +8,7 @@ from .models import SampleInfo,LibraryInfo,SeqInfo,ProtocalInfo,SeqMachineInfo
 from django.contrib.auth.models import User
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
+from django.http import JsonResponse
 # Create your views here.
 # @transaction.atomic
 # def SampleCreateView(request):
@@ -404,4 +405,28 @@ def SeqsCreateView(request):
 #         }   
 
 #         return render(request, 'masterseq_app/seqsaddconfirm.html', context)
+
+def SampleDataView(request):
+    Samples_list = SampleInfo.objects.all().values(\
+        'pk','sample_id','date','sample_type','service_requested','status')
+    data=list(Samples_list)
+
+    return JsonResponse(data,safe=False)
+def LibDataView(request):
+    Libs_list = LibraryInfo.objects.all().values(\
+        'pk','library_id','date_started','date_completed','experiment_type')
+    data=list(Libs_list)
+
+    return JsonResponse(data,safe=False)
+
+
+def SeqDataView(request):
+    Seqs_list = SeqInfo.objects.all().values(\
+        'pk','seq_id','date_submitted_for_sequencing','read_length','read_type')
+    data=list(Seqs_list)
+
+    return JsonResponse(data,safe=False)
+
+
+
 

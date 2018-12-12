@@ -141,7 +141,6 @@ $(document).ready( function () {
     });
 
     var samplesurl=$('#collab_samples').attr("data-href");
-    console.log(samplesurl)
     $('#collab_samples').DataTable({
     "iDisplayLength": 10,
     "processing": true,
@@ -170,6 +169,90 @@ $(document).ready( function () {
     $('#collab_samples_com').DataTable({
         
     })
+
+
+    var metasampsurl=$('#metadata_samples').attr("data-href");
+    $('#metadata_samples').DataTable({
+    "iDisplayLength": 10,
+    "processing": true,
+    "ajax": {
+         url: metasampsurl,
+         dataSrc: ''
+        },
+    "columns": [
+            { "data": "sample_id"},
+            { "data": "date"},
+            { "data": "sample_type"},
+            { "data": "service_requested"},
+            { "data": "status"},
+        ],
+    "deferRender": true,
+    "select": true,
+
+    "columnDefs": [{
+        "targets": 0,
+        "render": function ( data, type, row ) {
+            var itemID = row["pk"];                   
+            return '<a href="/metadata/samples/' + itemID + '">' + data + '</a>';
+        }
+    }], 
+    });
+
+    var metalibsurl=$('#metadata_libs').attr("data-href");
+    console.log(metalibsurl)
+    $('#metadata_libs').DataTable({
+    "iDisplayLength": 10,
+    "processing": true,
+    "ajax": {
+         url: metalibsurl,
+         dataSrc: ''
+        },
+    "columns": [
+            { "data": "library_id"},
+            { "data": "date_started"},
+            { "data": "date_completed"},
+            { "data": "experiment_type"},
+        ],
+    "deferRender": true,
+    "select": true,
+
+    "columnDefs": [{
+        "targets": 0,
+        "render": function ( data, type, row ) {
+            var itemID = row["pk"];                   
+            return '<a href="/metadata/libs/' + itemID + '">' + data + '</a>';
+        }
+    }], 
+    });
+    var metaseqsurl=$('#metadata_seqs').attr("data-href");
+    $('#metadata_seqs').DataTable({
+    "iDisplayLength": 10,
+    "processing": true,
+    "ajax": {
+         url: metaseqsurl,
+         dataSrc: ''
+        },
+    "columns": [
+            { "data": "seq_id"},
+            { "data": "date_submitted_for_sequencing"},
+            { "data": "read_length"},
+            { "data": "read_type"},
+            
+        ],
+    "deferRender": true,
+    "select": true,
+
+    "columnDefs": [{
+        "targets": 0,
+        "render": function ( data, type, row ) {
+            var itemID = row["pk"];                   
+            return '<a href="/metadata/seqs/' + itemID + '">' + data + '</a>';
+        }
+    }], 
+    });
+
+
+
 
 
     $('#id_experiment_type').change(function (){
