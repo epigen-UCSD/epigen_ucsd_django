@@ -161,7 +161,7 @@ $(document).ready( function () {
     "columnDefs": [{
         "targets": 0,
         "render": function ( data, type, row ) {
-            var itemID = row["pk"];                   
+            var itemID = row["pk"]; 
             return '<a href="/epigen/samples/' + itemID + '">' + data + '</a>';
         }
     }], 
