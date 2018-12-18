@@ -166,6 +166,9 @@ $(document).ready( function () {
         }
     }], 
     });
+
+
+
     $('#collab_samples_com').DataTable({
         
     })
@@ -173,6 +176,16 @@ $(document).ready( function () {
 
     var metasampsurl=$('#metadata_samples').attr("data-href");
     $('#metadata_samples').DataTable({
+    dom: 'lBfrtip',
+    buttons: [
+        'excel',
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv'
+            }
+    ],
     "iDisplayLength": 10,
     "processing": true,
     "ajax": {
@@ -198,9 +211,64 @@ $(document).ready( function () {
     }], 
     });
 
+    var metasampsurl=$('#metadata_samples_bio').attr("data-href");
+    $('#metadata_samples_bio').DataTable({
+    dom: 'lBfrtip',
+    buttons: [
+        'excel',
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv'
+            }
+    ],
+    "iDisplayLength": 10,
+    "processing": true,
+    "ajax": {
+         url: metasampsurl,
+         dataSrc: ''
+        },
+    "columns": [
+            { "data": "sample_id"},
+            { "data": "date"},
+            { "data": "sample_type"},
+            { "data": "service_requested"},
+            { "data": "status"},
+            { "data": null, defaultContent: ""},
+        ],
+    "deferRender": true,
+    "select": true,
+
+    "columnDefs": [{
+        "targets": 0,
+        "render": function ( data, type, row ) {
+            var itemID = row["pk"];                   
+            return '<a href="/metadata/samples/' + itemID + '">' + data + '</a>';
+        }
+    },
+    {
+        "targets": 5,
+        "render": function ( data, type, row ) {
+            var itemID = row["pk"];                   
+            return '<a class="spacing" href=""><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete sample '+row["sample_id"]+' ?\');" href=""><i class="fas fa-trash-alt"></i></a>';
+        }        
+
+    } ], 
+    });
+
     var metalibsurl=$('#metadata_libs').attr("data-href");
-    console.log(metalibsurl)
     $('#metadata_libs').DataTable({
+    dom: 'lBfrtip',
+    buttons: [
+        'excel',
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv'
+            }
+    ],
     "iDisplayLength": 10,
     "processing": true,
     "ajax": {
@@ -224,8 +292,66 @@ $(document).ready( function () {
         }
     }], 
     });
+
+    var metalibsurl=$('#metadata_libs_bio').attr("data-href");
+    $('#metadata_libs_bio').DataTable({
+    dom: 'lBfrtip',
+    buttons: [
+         'excel',
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv'
+            }
+    ],
+    "iDisplayLength": 10,
+    "processing": true,
+    "ajax": {
+         url: metalibsurl,
+         dataSrc: ''
+        },
+    "columns": [
+            { "data": "library_id"},
+            { "data": "date_started"},
+            { "data": "date_completed"},
+            { "data": "experiment_type"},
+            { "data": null, defaultContent: ""},
+        ],
+    "deferRender": true,
+    "select": true,
+
+    "columnDefs": [{
+        "targets": 0,
+        "render": function ( data, type, row ) {
+            var itemID = row["pk"];                   
+            return '<a href="/metadata/libs/' + itemID + '">' + data + '</a>';
+        }
+    },
+    {
+        "targets": 4,
+        "render": function ( data, type, row ) {
+            var itemID = row["pk"];                   
+            return '<a class="spacing" href=""><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete library '+row["library_id"]+' ?\');" href=""><i class="fas fa-trash-alt"></i></a>';
+        }        
+
+    } 
+    ], 
+    });
+
+
     var metaseqsurl=$('#metadata_seqs').attr("data-href");
     $('#metadata_seqs').DataTable({
+    dom: 'lBfrtip',
+    buttons: [
+        'excel', 
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv'
+            }
+    ],
     "iDisplayLength": 10,
     "processing": true,
     "ajax": {
@@ -251,6 +377,53 @@ $(document).ready( function () {
     }], 
     });
 
+
+    var metaseqsurl=$('#metadata_seqs_bio').attr("data-href");
+    $('#metadata_seqs_bio').DataTable({
+    dom: 'lBfrtip',
+    buttons: [
+        'excel',
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv'
+            }
+    ],
+    "iDisplayLength": 10,
+    "processing": true,
+    "ajax": {
+         url: metaseqsurl,
+         dataSrc: ''
+        },
+    "columns": [
+            { "data": "seq_id"},
+            { "data": "date_submitted_for_sequencing"},
+            { "data": "read_length"},
+            { "data": "read_type"},
+            { "data": null, defaultContent: ""},
+            
+        ],
+    "deferRender": true,
+    "select": true,
+
+    "columnDefs": [{
+        "targets": 0,
+        "render": function ( data, type, row ) {
+            var itemID = row["pk"];                   
+            return '<a href="/metadata/seqs/' + itemID + '">' + data + '</a>';
+        }
+    },
+    {
+        "targets": 4,
+        "render": function ( data, type, row ) {
+            var itemID = row["pk"];                   
+            return '<a class="spacing" href=""><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete sequencing '+row["seq_id"]+' ?\');" href=""><i class="fas fa-trash-alt"></i></a>';
+        }        
+
+    } 
+    ], 
+    });
 
 
 

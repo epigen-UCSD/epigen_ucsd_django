@@ -239,7 +239,7 @@ table a, .linkblue{
 }
 
 .card-body {
-  font-size:14.5px;
+  font-size:14px;
 }
 a[aria-expanded=true] .fa-caret-right {
    display: none;

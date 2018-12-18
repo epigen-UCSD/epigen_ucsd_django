@@ -411,6 +411,7 @@ def SampleDataView(request):
         'pk','sample_id','date','sample_type','service_requested','status')
     data=list(Samples_list)
 
+
     return JsonResponse(data,safe=False)
 def LibDataView(request):
     Libs_list = LibraryInfo.objects.all().values(\
@@ -427,6 +428,35 @@ def SeqDataView(request):
 
     return JsonResponse(data,safe=False)
 
+
+def IndexView(request):
+    if not request.user.groups.filter(name='bioinformatics').exists():
+        return render(request, 'masterseq_app/metadata.html')
+    else:
+        # sample_disp = ['sample_id','date','sample_type','service_requested','status']
+        # Samples_list = SampleInfo.objects.all().values(\
+        #    'pk','sample_id','date','sample_type','service_requested','status')
+        # #print(Samples_list)
+        # #sample_data=list(Samples_list)
+        # libs_disp = ['library_id','date_started','date_completed','experiment_type']
+        # Libs_list = LibraryInfo.objects.all().values(\
+        #     'pk','library_id','date_started','date_completed','experiment_type')
+        # #data=list(Libs_list)
+        # seqs_disp = ['seq_id','date_submitted_for_sequencing','read_length','read_type']
+        # Seqs_list = SeqInfo.objects.all().values(\
+        #     'pk','seq_id','date_submitted_for_sequencing','read_length','read_type')
+        # #data=list(Seqs_list)
+        # #print(data)
+        # context = {
+        #     'sample_disp': sample_disp,
+        #     'Samples_list': Samples_list,
+        #     'libs_disp':libs_disp,
+        #     'Libs_list ': Libs_list,
+        #     'seqs_disp':seqs_disp,
+        #     'Seqs_list': Seqs_list,
+        # }
+        # return render(request, 'masterseq_app/metadata_bio.html',context=context)
+        return render(request, 'masterseq_app/metadata_bio.html')
 
 
 

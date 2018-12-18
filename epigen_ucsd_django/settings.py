@@ -166,6 +166,7 @@ INTERNAL_EXEMPT_URLS=(
     r'setqc/(\d+)/getnotes/',
     r'logout/',
     r'__debug__/',
+    r'admin/',
 
     )
 
