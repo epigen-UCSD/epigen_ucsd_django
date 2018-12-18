@@ -458,5 +458,27 @@ def IndexView(request):
         # return render(request, 'masterseq_app/metadata_bio.html',context=context)
         return render(request, 'masterseq_app/metadata_bio.html')
 
+def SampleDeleteView(request, pk):
+    sampleinfo = get_object_or_404(SampleInfo, pk=pk)
+    if sampleinfo.team_member != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+        raise PermissionDenied
+    sampleinfo.delete()
+    return redirect('masterseq_app:index')
+
+def LibDeleteView(request, pk):
+    libinfo = get_object_or_404(LibraryInfo, pk=pk)
+    if libinfo.team_member_initails != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+        raise PermissionDenied
+    libinfo.delete()
+    return redirect('masterseq_app:index')
+
+def SeqDeleteView(request, pk):
+    seqinfo = get_object_or_404(SeqInfo, pk=pk)
+    if seqinfo.team_member_initails != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+        raise PermissionDenied
+    seqinfo.delete()
+    return redirect('masterseq_app:index')
+
+
 
 
