@@ -48,6 +48,11 @@ choice_for_unit = (
 	('other (please explain in notes)','other (please explain in notes)')
 
 	)
+choice_for_fixation = (
+	('Yes','Yes'),
+	('No','No'),
+	('other (please explain in notes)','other (please explain in notes)')
+	)
 
 
 class ProtocalInfo(models.Model):
@@ -84,12 +89,17 @@ class SampleInfo(models.Model):
 	preparation_choice = choice_for_preparation
 	preparation = models.CharField(max_length=50,choices=preparation_choice)
 	description = models.TextField(blank=True)
+	fixation_choice = choice_for_fixation
+	fixation = models.CharField(max_length=50,choices=choice_for_fixation,null=True)
 	notes = models.TextField(blank=True)
 	sample_amount = models.CharField(max_length=20,blank=True,null=True)
 	unit_choice = choice_for_unit
 	unit = models.CharField(max_length=50,choices=unit_choice,null=True)
 	experiment_type_choice = choice_for_experiment_type
 	service_requested = models.CharField(max_length=50,choices=experiment_type_choice,null=True)
+	seq_depth_to_target = models.CharField(max_length=50,blank=True,null=True)
+	seq_length_requested = models.CharField(max_length=50,blank=True,null=True)
+	seq_type_requested = models.CharField(max_length=50,blank=True,null=True)
 	research_person = models.ForeignKey(CollaboratorPersonInfo,related_name='contact_person', on_delete=models.CASCADE,null=True)
 	fiscal_person = models.ForeignKey(CollaboratorPersonInfo,related_name='fiscal_person', on_delete=models.CASCADE,null=True)
 	status = models.CharField(max_length=20,blank=True,null=True)

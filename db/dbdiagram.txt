@@ -21,10 +21,14 @@ Table masterseq_sampleinfo {
   species varchar
   sample_type varchar
   preparation varchar
+  fixation varchar
   description varchar
   sample_amount varchar
   unit varchar
   service_requested varchar
+  seq_depth_to_target varchar
+  seq_length_requested varchar
+  seq_type_requested varchar
   research_person int
   fiscal_person int
   status varchar
