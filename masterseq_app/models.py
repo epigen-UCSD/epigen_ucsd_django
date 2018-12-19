@@ -104,7 +104,7 @@ class SampleInfo(models.Model):
 	fiscal_person = models.ForeignKey(CollaboratorPersonInfo,related_name='fiscal_person', on_delete=models.CASCADE,null=True)
 	status = models.CharField(max_length=20,blank=True,null=True)
 	def __str__(self):
-		return self.sample_index+'_'+self.sample_id
+		return self.sample_index+':'+self.sample_id
 
 class LibraryInfo(models.Model):
 	library_id = models.CharField('library name',max_length=100)

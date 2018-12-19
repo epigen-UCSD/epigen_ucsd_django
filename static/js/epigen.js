@@ -251,7 +251,7 @@ $(document).ready( function () {
         "targets": 5,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
-            return '<a class="spacing" href=""><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete sample '+row["sample_id"]+'?\');" href="/metadata/sample/'+itemID+'/delete/"><i class="fas fa-trash-alt"></i></a>';
+            return '<a class="spacing" href="/metadata/sample/'+itemID+'/update/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete sample '+row["sample_id"]+'?\');" href="/metadata/sample/'+itemID+'/delete/"><i class="fas fa-trash-alt"></i></a>';
         }        
 
     } ], 
@@ -332,7 +332,7 @@ $(document).ready( function () {
         "targets": 4,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
-            return '<a class="spacing" href=""><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete library '+row["library_id"]+'?\');" href="/metadata/lib/'+itemID+'/delete/"><i class="fas fa-trash-alt"></i></a>';
+            return '<a class="spacing" href="/metadata/lib/'+itemID+'/update/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete library '+row["library_id"]+'?\');" href="/metadata/lib/'+itemID+'/delete/"><i class="fas fa-trash-alt"></i></a>';
         }        
 
     } 

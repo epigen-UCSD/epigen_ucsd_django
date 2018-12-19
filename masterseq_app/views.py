@@ -111,11 +111,11 @@ from django.http import JsonResponse
 
 
 
-# def load_protocals(request):
-#     exptype = request.GET.get('exptype')
-#     protocals = ProtocalInfo.objects.filter(experiment_type=exptype).order_by('protocal_name')
-#     print(protocals)
-#     return render(request, 'masterseq_app/protocal_dropdown_list_options.html', {'protocals': protocals})
+def load_protocals(request):
+    exptype = request.GET.get('exptype')
+    protocals = ProtocalInfo.objects.filter(experiment_type=exptype).order_by('protocal_name')
+    print(protocals)
+    return render(request, 'masterseq_app/protocal_dropdown_list_options.html', {'protocals': protocals})
 
 @transaction.atomic
 def SamplesCreateView(request):
@@ -478,6 +478,73 @@ def SeqDeleteView(request, pk):
         raise PermissionDenied
     seqinfo.delete()
     return redirect('masterseq_app:index')
+
+
+@transaction.atomic
+def SampleUpdateView(request, pk):
+    sampleinfo = get_object_or_404(SampleInfo, pk=pk)
+    if sampleinfo.team_member != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+        raise PermissionDenied
+    sample_form = SampleCreationForm(request.POST or None,instance=sampleinfo)
+    if sample_form.is_valid():
+        sampleinfo = sample_form.save(commit=False)
+        sampleinfo.team_member = request.user
+        sampleinfo.save()
+        return redirect('masterseq_app:index')
+    context = {
+        'sample_form': sample_form,
+        'sampleinfo':sampleinfo,
+    }
+
+    return render(request, 'masterseq_app/sampleupdate.html', context)
+
+@transaction.atomic
+def LibUpdateView(request, pk):
+    libinfo = get_object_or_404(LibraryInfo, pk=pk)
+    if libinfo.team_member_initails != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+        raise PermissionDenied
+    
+    if request.method == 'POST':
+        post = request.POST.copy()
+        obj = get_object_or_404(SampleInfo, sample_index=post['sampleinfo'].split(':')[0])
+        post['sampleinfo'] = obj.id
+        print(post['sampleinfo']) 
+        library_form =LibraryCreationForm(post, instance=libinfo)
+        if library_form.is_valid():
+            libinfo = library_form.save(commit=False)
+            libinfo.team_member_initails = request.user
+            libinfo.save()
+            return redirect('masterseq_app:index')
+    else:
+        library_form = LibraryCreationForm(instance=libinfo)
+
+    context = {
+        'library_form': library_form,
+        'libinfo':libinfo,
+    }
+
+    return render(request, 'masterseq_app/libraryupdate.html', context)
+
+
+@transaction.atomic
+def SeqUpdateView(request, pk):
+    seqinfo = get_object_or_404(SeqInfo, pk=pk)
+    if seqinfo.team_member_initails != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+        raise PermissionDenied
+    seq_form = LibraryCreationForm(request.POST or None,instance=libinfo)
+    if library_form.is_valid():
+        libinfo = library_form.save(commit=False)
+        libinfo.team_member_initails = request.user
+        libinfo.save()
+        return redirect('masterseq_app:index')
+    context = {
+        'library_form': library_form,
+        'libinfo':libinfo,
+    }
+
+    return render(request, 'masterseq_app/libraryupdate.html', context)
+
+
 
 
 

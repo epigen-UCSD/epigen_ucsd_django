@@ -6,21 +6,23 @@ from django.contrib.auth.models import User
 import datetime
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform,SelfUniqueValidation
+from django.shortcuts import get_object_or_404
 
 class SampleCreationForm(forms.ModelForm):
 
 	class Meta:
 		model = SampleInfo
-		fields = ['sample_id','date','species','sample_type','preparation','description','notes']
+		fields = ['sample_id','date','species','sample_type','preparation',\
+		'fixation','sample_amount','unit','service_requested',\
+		'seq_depth_to_target','seq_length_requested','seq_type_requested','description','notes','status']
 		widgets ={
 			'date': forms.DateInput(),
 			'description':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
 			'notes':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
-
 		}
 
 class LibraryCreationForm(forms.ModelForm):
-
+	sampleinfo = forms.ModelChoiceField(queryset=SampleInfo.objects.all(),widget=forms.TextInput({'class': 'ajax_sampleinput_form','size':50}))
 	class Meta:
 		model = LibraryInfo
 		fields = ['library_id','sampleinfo','date_started','date_completed','experiment_type','protocalinfo',\
@@ -33,7 +35,40 @@ class LibraryCreationForm(forms.ModelForm):
 		}
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.fields['sampleinfo'].queryset = SampleInfo.objects.order_by('-pk')
+		self.initial['sampleinfo'] = self.instance.sampleinfo.__str__
+
+		#self.fields['sampleinfo'].queryset = SampleInfo.objects.order_by('-pk')
+	# def clean(self):
+	# def clean(self, *args, **kwargs):
+	# 	data = self.data.copy()
+	# 	if 'sampleinfo' in data:
+	# 		#print(data['sampleinfo'])
+	# 		obj = get_object_or_404(SampleInfo, sample_index=data['sampleinfo'].split(':')[0])
+	# 		print(obj.id)
+	# 		data['sampleinfo'] = str(obj.id)
+	# 	self.data = data
+	# 	print(self.data)
+	# 	return super(LibraryCreationForm,self).clean()
+
+	# 	if data is not None:
+	# 		print(data)
+	# 		data = data.copy()
+	# 		if data['sampleinfo']:
+	# 			obj = get_object_or_404(SampleInfo, sample_index=data['sampleinfo'].split(':')[0])
+	# 			data['sampleinfo'] = obj.id
+	# 			print(data['sampleinfo'])
+	# 	super().clean(*args, **kwargs)
+	# def save(self, commit=True):
+	# 	instance = super().save(commit=False)
+	# 	cleaned_sample = self.cleaned_data['sampleinfo']
+	# 	if cleaned_sample:
+	# 		f = get_object_or_404(SampleInfo,sample_index=cleaned_sample.split(':')[0])
+	# 		instance.filename = f
+	# 	else:
+	# 		instance.filename = None
+	# 	if commit:
+	# 		instance.save()
+	# 	return instance
 
 class SeqCreationForm(forms.Form):
 	machine = forms.ModelChoiceField(queryset=SeqMachineInfo.objects.all())	
