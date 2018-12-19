@@ -509,7 +509,6 @@ def LibUpdateView(request, pk):
         post = request.POST.copy()
         obj = get_object_or_404(SampleInfo, sample_index=post['sampleinfo'].split(':')[0])
         post['sampleinfo'] = obj.id
-        print(post['sampleinfo']) 
         library_form =LibraryCreationForm(post, instance=libinfo)
         if library_form.is_valid():
             libinfo = library_form.save(commit=False)
@@ -532,18 +531,26 @@ def SeqUpdateView(request, pk):
     seqinfo = get_object_or_404(SeqInfo, pk=pk)
     if seqinfo.team_member_initails != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
-    seq_form = LibraryCreationForm(request.POST or None,instance=libinfo)
-    if library_form.is_valid():
-        libinfo = library_form.save(commit=False)
-        libinfo.team_member_initails = request.user
-        libinfo.save()
-        return redirect('masterseq_app:index')
+    
+    if request.method == 'POST':
+        post = request.POST.copy()
+        obj = get_object_or_404(LibraryInfo, library_id=post['libraryinfo'])
+        post['libraryinfo'] = obj.id
+        seq_form = SeqCreationForm(post, instance=seqinfo)
+        if seq_form.is_valid():
+            seqinfo = seq_form.save(commit=False)
+            seqinfo.team_member_initails = request.user
+            seqinfo.save()
+            return redirect('masterseq_app:index')
+    else:
+        seq_form = SeqCreationForm(instance=seqinfo)
+
     context = {
-        'library_form': library_form,
-        'libinfo':libinfo,
+        'seq_form': seq_form,
+        'seqinfo':seqinfo,
     }
 
-    return render(request, 'masterseq_app/libraryupdate.html', context)
+    return render(request, 'masterseq_app/sequpdate.html', context)
 
 def load_samples(request):
     q =request.GET.get('term','')
@@ -557,5 +564,15 @@ def load_samples(request):
         results.append(samplesearch)
     return JsonResponse(results, safe=False)
 
-
+def load_libs(request):
+    q =request.GET.get('term','')
+    libs = LibraryInfo.objects.filter(library_id__icontains = q).values('library_id')[:20]
+    results = []
+    for lib in libs:
+        libsearch = {}
+        libsearch['id'] = lib['library_id']
+        libsearch['label'] = lib['library_id']
+        libsearch['value'] = lib['library_id']
+        results.append(libsearch)
+    return JsonResponse(results, safe=False)
 

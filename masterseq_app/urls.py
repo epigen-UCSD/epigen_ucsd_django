@@ -15,6 +15,7 @@ urlpatterns = [
     # path('seq/adds/', views.SeqCreateView, name='seq_add'),
     path('ajax/load-protocals/', views.load_protocals, name='ajax_load_protocals'),
     path('ajax/load-samples/', views.load_samples, name='ajax_load_samples'),
+    path('ajax/load-libs/', views.load_libs, name='ajax_load_libs'),
     path('samples/adds/', views.SamplesCreateView, name='samples_add'),
     path('libraries/adds/', views.LibrariesCreateView, name='libraries_add'),
     path('seqs/adds/', views.SeqsCreateView, name='seqs_add'),
@@ -23,6 +24,7 @@ urlpatterns = [
     path('seq/<int:pk>/delete/', views.SeqDeleteView, name='seq_delete'),
     path('sample/<int:pk>/update/', views.SampleUpdateView, name='sample_update'),
     path('lib/<int:pk>/update/', views.LibUpdateView, name='lib_update'),
+    path('seq/<int:pk>/update/', views.SeqUpdateView, name='seq_update'),
     #path('seqs/adds/confirm', views.SeqsCreateConfirmView, name='seqs_add_confirm'),
     #path('ajaxtest/', TemplateView.as_view(template_name="masterseq_app/ajaxtest.html"), name='ajaxtest'),
 

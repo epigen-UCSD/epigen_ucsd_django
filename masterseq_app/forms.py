@@ -70,7 +70,22 @@ class LibraryCreationForm(forms.ModelForm):
 	# 		instance.save()
 	# 	return instance
 
-class SeqCreationForm(forms.Form):
+class SeqCreationForm(forms.ModelForm):
+	libraryinfo = forms.ModelChoiceField(queryset=LibraryInfo.objects.all(),widget=forms.TextInput({'class': 'ajax_libinput_form','size':50}))
+	class Meta:
+		model = SeqInfo
+		fields = ['seq_id','libraryinfo','date_submitted_for_sequencing','machine','read_length','read_type',\
+		'portion_of_lane','i7index','i5index','default_label','notes']
+		widgets ={
+			'date_submitted_for_sequencing': forms.DateInput(),
+			'notes':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
+		}
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.initial['libraryinfo'] = self.instance.libraryinfo.__str__
+
+
+class SeqCreationForm2(forms.Form):
 	machine = forms.ModelChoiceField(queryset=SeqMachineInfo.objects.all())	
 	read_type = forms.ChoiceField(label='read type',choices = (('', '---------'),) +choice_for_read_type,required=False,)
 	read_length = forms.CharField(label='read length:',required=False)

@@ -183,7 +183,8 @@ $(document).ready( function () {
                 text: 'TSV',
                 extend: 'csvHtml5',
                 fieldSeparator: '\t',
-                extension: '.tsv'
+                extension: '.tsv',
+                fieldBoundary:''
             }
     ],
     "iDisplayLength": 10,
@@ -220,7 +221,8 @@ $(document).ready( function () {
                 text: 'TSV',
                 extend: 'csvHtml5',
                 fieldSeparator: '\t',
-                extension: '.tsv'
+                extension: '.tsv',
+                fieldBoundary:''
             }
     ],
     "iDisplayLength": 10,
@@ -266,7 +268,8 @@ $(document).ready( function () {
                 text: 'TSV',
                 extend: 'csvHtml5',
                 fieldSeparator: '\t',
-                extension: '.tsv'
+                extension: '.tsv',
+                fieldBoundary:''
             }
     ],
     "iDisplayLength": 10,
@@ -302,7 +305,8 @@ $(document).ready( function () {
                 text: 'TSV',
                 extend: 'csvHtml5',
                 fieldSeparator: '\t',
-                extension: '.tsv'
+                extension: '.tsv',
+                fieldBoundary:''
             }
     ],
     "iDisplayLength": 10,
@@ -349,7 +353,8 @@ $(document).ready( function () {
                 text: 'TSV',
                 extend: 'csvHtml5',
                 fieldSeparator: '\t',
-                extension: '.tsv'
+                extension: '.tsv',
+                fieldBoundary:''
             }
     ],
     "iDisplayLength": 10,
@@ -387,7 +392,8 @@ $(document).ready( function () {
                 text: 'TSV',
                 extend: 'csvHtml5',
                 fieldSeparator: '\t',
-                extension: '.tsv'
+                extension: '.tsv',
+                fieldBoundary:''
             }
     ],
     "iDisplayLength": 10,
@@ -418,40 +424,22 @@ $(document).ready( function () {
         "targets": 4,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
-            return '<a class="spacing" href=""><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete sequencing '+row["seq_id"]+'?\');" href="/metadata/seq/'+itemID+'/delete/"><i class="fas fa-trash-alt"></i></a>';
+            return '<a class="spacing" href="/metadata/seq/'+itemID+'/update/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete sequencing '+row["seq_id"]+'?\');" href="/metadata/seq/'+itemID+'/delete/"><i class="fas fa-trash-alt"></i></a>';
          }        
 
     } 
     ], 
     });
-    var availableTags = [
-      "ActionScript",
-      "AppleScript",
-      "Asp",
-      "BASIC",
-      "C",
-      "C++",
-      "Clojure",
-      "COBOL",
-      "ColdFusion",
-      "Erlang",
-      "Fortran",
-      "Groovy",
-      "Haskell",
-      "Java",
-      "JavaScript",
-      "Lisp",
-      "Perl",
-      "PHP",
-      "Python",
-      "Ruby",
-      "Scala",
-      "Scheme"
-    ];
     
     $('.ajax_sampleinput_form').parent().addClass('ui-widget');
     $('.ajax_sampleinput_form').autocomplete({
         source: "/metadata/ajax/load-samples/",
+        minLength:2,
+    });
+
+    $('.ajax_libinput_form').parent().addClass('ui-widget');
+    $('.ajax_libinput_form').autocomplete({
+        source: "/metadata/ajax/load-libs/",
         minLength:2,
     });
 

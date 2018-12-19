@@ -118,7 +118,8 @@ class LibraryInfo(models.Model):
 	date_completed = models.DateField(help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03',blank=True,null=True)
 	team_member_initails = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
 	notes = models.TextField(blank=True)
-
+	def __str__(self):
+		return self.library_id
 
 class SeqInfo(models.Model):
 	seq_id =  models.CharField(max_length=100,unique=True)
