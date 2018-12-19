@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
 from django.http import JsonResponse
+from django.db.models import Q
 # Create your views here.
 # @transaction.atomic
 # def SampleCreateView(request):
@@ -544,8 +545,17 @@ def SeqUpdateView(request, pk):
 
     return render(request, 'masterseq_app/libraryupdate.html', context)
 
-
-
+def load_samples(request):
+    q =request.GET.get('term','')
+    samples = SampleInfo.objects.filter(Q(sample_id__icontains = q)|Q(sample_index__icontains = q)).values('sample_index','sample_id')[:20]
+    results = []
+    for sample in samples:
+        samplesearch = {}
+        samplesearch['id'] = sample['sample_index']+':'+sample['sample_id']
+        samplesearch['label'] = sample['sample_index']+':'+sample['sample_id']
+        samplesearch['value'] = sample['sample_index']+':'+sample['sample_id']
+        results.append(samplesearch)
+    return JsonResponse(results, safe=False)
 
 
 

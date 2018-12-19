@@ -424,8 +424,36 @@ $(document).ready( function () {
     } 
     ], 
     });
-
-
+    var availableTags = [
+      "ActionScript",
+      "AppleScript",
+      "Asp",
+      "BASIC",
+      "C",
+      "C++",
+      "Clojure",
+      "COBOL",
+      "ColdFusion",
+      "Erlang",
+      "Fortran",
+      "Groovy",
+      "Haskell",
+      "Java",
+      "JavaScript",
+      "Lisp",
+      "Perl",
+      "PHP",
+      "Python",
+      "Ruby",
+      "Scala",
+      "Scheme"
+    ];
+    
+    $('.ajax_sampleinput_form').parent().addClass('ui-widget');
+    $('.ajax_sampleinput_form').autocomplete({
+        source: "/metadata/ajax/load-samples/",
+        minLength:2,
+    });
 
 
     $('#id_experiment_type').change(function (){
