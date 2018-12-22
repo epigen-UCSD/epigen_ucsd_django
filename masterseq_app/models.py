@@ -74,7 +74,7 @@ class GenomeInfo(models.Model):
 	species = models.CharField(max_length=10,choices=species_choice)
 
 	def __str__(self):
-		return self.species+'_'+self.genome_name
+		return self.genome_name
 
 
 class SampleInfo(models.Model):

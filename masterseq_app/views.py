@@ -4,12 +4,13 @@ from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm,LibraryCreationForm,SeqCreationForm,\
 SamplesCreationForm,LibsCreationForm,SeqsCreationForm,SeqsCreationForm
-from .models import SampleInfo,LibraryInfo,SeqInfo,ProtocalInfo,SeqMachineInfo
+from .models import SampleInfo,LibraryInfo,SeqInfo,ProtocalInfo,SeqMachineInfo,SeqBioInfo
 from django.contrib.auth.models import User
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
 from django.http import JsonResponse
 from django.db.models import Q
+from epigen_ucsd_django.models import CollaboratorPersonInfo
 # Create your views here.
 # @transaction.atomic
 # def SampleCreateView(request):
@@ -551,6 +552,101 @@ def SeqUpdateView(request, pk):
     }
 
     return render(request, 'masterseq_app/sequpdate.html', context)
+
+def SampleDetailView(request,pk):
+    sampleinfo = get_object_or_404(SampleInfo.objects.select_related('team_member'\
+        ,'research_person__person_id','fiscal_person__person_id'), pk=pk)
+    summaryfield = ['status','sample_index','sample_id','team_member','species',\
+    'sample_type','preparation','fixation','sample_amount','unit','description','notes']
+    requestedfield = ['date','service_requested','seq_depth_to_target',\
+    'seq_length_requested','seq_type_requested']
+    libfield = ['library_id','experiment_type','protocalinfo','reference_to_notebook_and_page_number']
+    seqfield = ['seq_id','default_label','machine','read_length','read_type','total_reads']
+    libinfo = sampleinfo.libraryinfo_set.all().select_related('protocalinfo')
+    seqs = SeqInfo.objects.none()
+    for lib in libinfo:
+        seqinfo = lib.seqinfo_set.all().select_related('machine')
+        seqs = seqs | seqinfo
+    try:
+        researchperson = sampleinfo.research_person.person_id
+        researchperson_phone = sampleinfo.research_person.cell_phone
+    except:
+        researchperson = ''
+        researchperson_phone = ''
+    try:
+        fiscalperson = sampleinfo.fiscal_person.person_id
+        fiscalperson_phone = sampleinfo.fiscal_person.cell_phone
+        index = sampleinfo.fiscal_person.fiscal_index
+    except:
+        fiscalperson = ''
+        fiscalperson_phone = ''
+        index = ''
+    groupinfo = []
+    piname = []
+    piemail = []
+    if researchperson:
+        for group in researchperson.groups.all():
+            groupinfo.append(group.name)
+            for user in group.user_set.all():
+                for person in user.collaboratorpersoninfo_set.all():
+                    if person.role == 'PI':
+                        piname.append(user.first_name + ' ' + user.last_name )
+
+    context = {
+        'groupinfo': ';'.join(groupinfo),
+        'piname': ';'.join(piname),
+        'researchperson':researchperson,
+        'researchperson_phone':researchperson_phone,
+        'index':index,
+        'fiscalperson':fiscalperson,
+        'fiscalperson_phone':fiscalperson_phone,
+        'summaryfield':summaryfield,
+        'requestedfield':requestedfield,
+        'sampleinfo':sampleinfo,
+        'libfield':libfield,
+        'seqfield':seqfield,
+        'libinfo':libinfo.order_by('library_id'),
+        'seqs':seqs.order_by('seq_id')
+    }
+    return render(request, 'masterseq_app/sampledetail.html', context=context)
+
+def LibDetailView(request,pk):
+    libinfo = get_object_or_404(LibraryInfo.objects.select_related('sampleinfo',\
+        'protocalinfo','team_member_initails'), pk=pk)
+    sampleinfo = libinfo.sampleinfo
+    summaryfield = ['library_id','sampleinfo','date_started','date_completed',\
+    'team_member_initails','experiment_type','protocalinfo',\
+    'reference_to_notebook_and_page_number','notes']
+    seqfield = ['seq_id','default_label','machine','read_length','read_type','total_reads']
+    relateseq = libinfo.seqinfo_set.all().only('seq_id','machine','read_length','read_type','total_reads')
+    context = {
+        'libinfo':libinfo,
+        'sampleinfo':sampleinfo,
+        'summaryfield':summaryfield,
+        'relateseq':relateseq.order_by('seq_id'),
+        'seqfield':seqfield
+    }
+    return render(request, 'masterseq_app/libdetail.html', context=context)
+
+def SeqDetailView(request,pk):
+    seqinfo = get_object_or_404(SeqInfo.objects.select_related('libraryinfo',\
+        'machine','i7index','i5index','team_member_initails'),pk=pk)
+    libinfo = seqinfo.libraryinfo
+    summaryfield = ['seq_id','libraryinfo','default_label','team_member_initails',\
+    'date_submitted_for_sequencing','machine','read_length','read_type','portion_of_lane',\
+    'i7index','i5index','total_reads','notes']
+    bioinfofield = ['genome','pipeline_version','final_reads','final_yield','mito_frac',\
+    'tss_enrichment','frop']
+    seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
+    context = {
+        'libinfo':libinfo,
+        'seqinfo':seqinfo,
+        'summaryfield':summaryfield,
+        'seqbioinfos':seqbioinfos,
+        'bioinfofield':bioinfofield
+
+    }
+    return render(request, 'masterseq_app/seqdetail.html', context=context)
 
 def load_samples(request):
     q =request.GET.get('term','')

@@ -207,7 +207,7 @@ $(document).ready( function () {
         "targets": 0,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
-            return '<a href="/metadata/samples/' + itemID + '">' + data + '</a>';
+            return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
         }
     }], 
     });
@@ -246,7 +246,7 @@ $(document).ready( function () {
         "targets": 0,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
-            return '<a href="/metadata/samples/' + itemID + '">' + data + '</a>';
+            return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
         }
     },
     {
@@ -291,7 +291,7 @@ $(document).ready( function () {
         "targets": 0,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
-            return '<a href="/metadata/libs/' + itemID + '">' + data + '</a>';
+            return '<a href="/metadata/lib/' + itemID + '">' + data + '</a>';
         }
     }], 
     });
@@ -329,7 +329,7 @@ $(document).ready( function () {
         "targets": 0,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
-            return '<a href="/metadata/libs/' + itemID + '">' + data + '</a>';
+            return '<a href="/metadata/lib/' + itemID + '">' + data + '</a>';
         }
     },
     {
@@ -377,7 +377,7 @@ $(document).ready( function () {
         "targets": 0,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
-            return '<a href="/metadata/seqs/' + itemID + '">' + data + '</a>';
+            return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
         }
     }], 
     });
@@ -417,7 +417,7 @@ $(document).ready( function () {
         "targets": 0,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
-            return '<a href="/metadata/seqs/' + itemID + '">' + data + '</a>';
+            return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
         }
     },
     {

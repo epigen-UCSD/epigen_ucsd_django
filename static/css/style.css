@@ -109,6 +109,16 @@ div.detailnotes {
 .summarytable th {
   padding: 0px 0 10px 0px;
 }
+.persontable td {
+  padding: 0px 0 10px 20px;
+}
+.persontable th {
+  padding: 0px 0 10px 0px;
+  text-align: right;
+}
+.bgyellow {
+  background-color: rgba(246,190,0, 0.2);
+}
 .btn-status-orange {
   background-color: #FF6A39;
   font-size: 12px;
@@ -451,7 +461,9 @@ a[aria-expanded=false] .fa-caret-down {
 .checkboxsidebar >.green >.fa-check-square{
   color:#26D07C !important; 
 }
-
+.checkboxsidebar >.orange >.fa-check-square{
+  color:#FF6A39 !important; 
+}
 .checkboxsidebar > .list-group-item {
   display:block;
   margin-bottom: 10px;

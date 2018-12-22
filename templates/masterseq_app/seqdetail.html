@@ -1,0 +1,42 @@
+{% extends 'masterseq_app/base.html' %}
+{% block sidebar %}
+
+<div class="col-sm-2 col-md-2 col-lg-2">
+  <div class="fixed col-sm-2 col-md-2 col-lg-2">
+  <div class="card checkboxsidebar" >
+    <div class="card-header">
+       Choose To Display
+    </div>
+    <div class="card-body">
+      <ul class="list-group checkboxsidebar">
+      <label class="list-group-item orange" name="summary">Summary</label>
+      <label class="list-group-item orange" name="seqbioinfo">Seq Bioinfomatics</label>
+        
+      </ul>
+    </div>
+  </div>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+{% load nextseq_app_tags %}
+<div id="content" class="col-sm-10 col-md-10 col-lg-10">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      {% if 'my' in request.META.HTTP_REFERER or 'add' in request.META.HTTP_REFERER or 'update' in request.META.HTTP_REFERER%}
+      <li class="breadcrumb-item"><a class="linkblue" href="">My Metadata</a></li>
+      {% else %}
+      <li class="breadcrumb-item"><a class="linkblue" href="{% url 'masterseq_app:index' %}">All Metadata</a></li>
+      {% endif %}
+      <li class="breadcrumb-item active" aria-current="page">Seq: {{ seqinfo.seq_id }}</li>
+    </ol>
+  </nav>  
+
+  {% include "masterseq_app/section_seq_summary.html"%}
+  {% include "masterseq_app/section_seq_bioinfo.html"%}
+
+</div><!-- /#content --> 
+
+
+
+{% endblock %}
