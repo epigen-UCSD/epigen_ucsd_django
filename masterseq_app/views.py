@@ -431,6 +431,30 @@ def SeqDataView(request):
     return JsonResponse(data,safe=False)
 
 
+def UserSampleDataView(request):
+    Samples_list = SampleInfo.objects.filter(team_member=request.user).values(\
+        'pk','sample_id','date','sample_type','service_requested','status')
+    data=list(Samples_list)
+
+
+    return JsonResponse(data,safe=False)
+def UserLibDataView(request):
+    Libs_list = LibraryInfo.objects.filter(team_member_initails=request.user).values(\
+        'pk','library_id','date_started','date_completed','experiment_type')
+    data=list(Libs_list)
+
+    return JsonResponse(data,safe=False)
+
+
+def UserSeqDataView(request):
+    Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user).values(\
+        'pk','seq_id','date_submitted_for_sequencing','read_length','read_type')
+    data=list(Seqs_list)
+
+    return JsonResponse(data,safe=False)
+
+
+
 def IndexView(request):
     if not request.user.groups.filter(name='bioinformatics').exists():
         return render(request, 'masterseq_app/metadata.html')
@@ -460,39 +484,70 @@ def IndexView(request):
         # return render(request, 'masterseq_app/metadata_bio.html',context=context)
         return render(request, 'masterseq_app/metadata_bio.html')
 
+def UserMetaDataView(request):
+    if not request.user.groups.filter(name='bioinformatics').exists():
+        return render(request, 'masterseq_app/metadata.html')
+    else:
+        # sample_disp = ['sample_id','date','sample_type','service_requested','status']
+        # Samples_list = SampleInfo.objects.all().values(\
+        #    'pk','sample_id','date','sample_type','service_requested','status')
+        # #print(Samples_list)
+        # #sample_data=list(Samples_list)
+        # libs_disp = ['library_id','date_started','date_completed','experiment_type']
+        # Libs_list = LibraryInfo.objects.all().values(\
+        #     'pk','library_id','date_started','date_completed','experiment_type')
+        # #data=list(Libs_list)
+        # seqs_disp = ['seq_id','date_submitted_for_sequencing','read_length','read_type']
+        # Seqs_list = SeqInfo.objects.all().values(\
+        #     'pk','seq_id','date_submitted_for_sequencing','read_length','read_type')
+        # #data=list(Seqs_list)
+        # #print(data)
+        # context = {
+        #     'sample_disp': sample_disp,
+        #     'Samples_list': Samples_list,
+        #     'libs_disp':libs_disp,
+        #     'Libs_list ': Libs_list,
+        #     'seqs_disp':seqs_disp,
+        #     'Seqs_list': Seqs_list,
+        # }
+        # return render(request, 'masterseq_app/metadata_bio.html',context=context)
+        return render(request, 'masterseq_app/metadata_bio.html')
+
+
 def SampleDeleteView(request, pk):
     sampleinfo = get_object_or_404(SampleInfo, pk=pk)
     if sampleinfo.team_member != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     sampleinfo.delete()
-    return redirect('masterseq_app:index')
+    return redirect('masterseq_app:user_metadata')
 
 def LibDeleteView(request, pk):
     libinfo = get_object_or_404(LibraryInfo, pk=pk)
     if libinfo.team_member_initails != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     libinfo.delete()
-    return redirect('masterseq_app:index')
+    return redirect('masterseq_app:user_metadata')
 
 def SeqDeleteView(request, pk):
     seqinfo = get_object_or_404(SeqInfo, pk=pk)
     if seqinfo.team_member_initails != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     seqinfo.delete()
-    return redirect('masterseq_app:index')
+    return redirect('masterseq_app:user_metadata')
 
 
 @transaction.atomic
 def SampleUpdateView(request, pk):
     sampleinfo = get_object_or_404(SampleInfo, pk=pk)
+    orig_team_member = sampleinfo.team_member
     if sampleinfo.team_member != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     sample_form = SampleCreationForm(request.POST or None,instance=sampleinfo)
     if sample_form.is_valid():
         sampleinfo = sample_form.save(commit=False)
-        sampleinfo.team_member = request.user
+        sampleinfo.team_member = orig_team_member
         sampleinfo.save()
-        return redirect('masterseq_app:index')
+        return redirect('masterseq_app:user_metadata')
     context = {
         'sample_form': sample_form,
         'sampleinfo':sampleinfo,
@@ -515,7 +570,7 @@ def LibUpdateView(request, pk):
             libinfo = library_form.save(commit=False)
             libinfo.team_member_initails = request.user
             libinfo.save()
-            return redirect('masterseq_app:index')
+            return redirect('masterseq_app:user_metadata')
     else:
         library_form = LibraryCreationForm(instance=libinfo)
 
@@ -542,7 +597,7 @@ def SeqUpdateView(request, pk):
             seqinfo = seq_form.save(commit=False)
             seqinfo.team_member_initails = request.user
             seqinfo.save()
-            return redirect('masterseq_app:index')
+            return redirect('masterseq_app:user_metadata')
     else:
         seq_form = SeqCreationForm(instance=seqinfo)
 

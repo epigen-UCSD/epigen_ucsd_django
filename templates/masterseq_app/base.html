@@ -8,7 +8,7 @@
 <div id="sidebar" class="col-sm-2 col-md-2 col-lg-2" role="navigation">
   <div class="list-group navsiebar">
     <li class="sidebar-header">MetaData App</li>
-    <a href="" class="list-group-item list-group-item-action-custom-orange editable">My Metadata</a>
+    <a href="{% url 'masterseq_app:user_metadata' %}" class="list-group-item list-group-item-action-custom-orange editable">My Metadata</a>
     <a href="{% url 'masterseq_app:samples_add' %}" class="list-group-item list-group-item-action-custom-orange ">Add new <em><strong>Samples</strong></em></a> 
     <a href="{% url 'masterseq_app:libraries_add' %}" class="list-group-item list-group-item-action-custom-orange ">Add new <em><strong>Libraries</strong></em></a>
     <a href="{% url 'masterseq_app:seqs_add' %}" class="list-group-item list-group-item-action-custom-orange ">Add new <em><strong>Seqs</strong></em></a> 

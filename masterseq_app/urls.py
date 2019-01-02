@@ -5,11 +5,14 @@ from django.views.generic import TemplateView
 
 app_name = 'masterseq_app'
 urlpatterns = [
-
     path('index/', views.IndexView, name='index'),
+    path('mymeta/', TemplateView.as_view(template_name="masterseq_app/metadata_user.html"), name='user_metadata'),
     path('samples/',views.SampleDataView, name='samples_display'),
     path('libs/',views.LibDataView, name='libs_display'),
     path('seqs/',views.SeqDataView, name='seqs_display'),
+    path('usersamples/',views.UserSampleDataView, name='user_samples_display'),
+    path('userlibs/',views.UserLibDataView, name='user_libs_display'),
+    path('userseqs/',views.UserSeqDataView, name='user_seqs_display'),
     # path('sample/adds/', views.SampleCreateView, name='sample_add'),
     # path('library/adds/', views.LibraryCreateView, name='library_add'),
     # path('seq/adds/', views.SeqCreateView, name='seq_add'),
