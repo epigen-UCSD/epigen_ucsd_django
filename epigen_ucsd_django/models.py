@@ -13,4 +13,4 @@ class CollaboratorPersonInfo(models.Model):
 	cell_phone = models.CharField(max_length=200,blank=True,null=True)
 	fiscal_index = models.CharField(max_length=200,blank=True,null=True)
 	role_choice = choice_for_roles
-	role = models.CharField(max_length=50,choices=role_choice)
+	role = models.CharField(max_length=200,choices=role_choice)

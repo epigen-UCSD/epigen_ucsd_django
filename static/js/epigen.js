@@ -188,6 +188,7 @@ $(document).ready( function () {
             }
     ],
     "iDisplayLength": 10,
+    "order": [[ 1, "desc" ],[ 2, "desc" ]],
     "processing": true,
     "ajax": {
          url: metasampsurl,
@@ -196,6 +197,7 @@ $(document).ready( function () {
     "columns": [
             { "data": "sample_id"},
             { "data": "date"},
+            { "data": "group"},
             { "data": "sample_type"},
             { "data": "service_requested"},
             { "data": "status"},
@@ -226,6 +228,7 @@ $(document).ready( function () {
             }
     ],
     "iDisplayLength": 10,
+    "order": [[ 1, "desc" ],[ 2, "desc" ]],
     "processing": true,
     "ajax": {
          url: metasampsurl,
@@ -234,6 +237,7 @@ $(document).ready( function () {
     "columns": [
             { "data": "sample_id"},
             { "data": "date"},
+            { "data": "group"},
             { "data": "sample_type"},
             { "data": "service_requested"},
             { "data": "status"},
@@ -250,7 +254,7 @@ $(document).ready( function () {
         }
     },
     {
-        "targets": 5,
+        "targets": 6,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
             return '<a class="spacing" href="/metadata/sample/'+itemID+'/update/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete sample '+row["sample_id"]+'?\');" href="/metadata/sample/'+itemID+'/delete/"><i class="fas fa-trash-alt"></i></a>';

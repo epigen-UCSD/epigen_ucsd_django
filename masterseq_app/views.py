@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm,LibraryCreationForm,SeqCreationForm,\
 SamplesCreationForm,LibsCreationForm,SeqsCreationForm,SeqsCreationForm
 from .models import SampleInfo,LibraryInfo,SeqInfo,ProtocalInfo,SeqMachineInfo,SeqBioInfo
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
 from django.http import JsonResponse
@@ -410,7 +410,7 @@ def SeqsCreateView(request):
 
 def SampleDataView(request):
     Samples_list = SampleInfo.objects.all().values(\
-        'pk','sample_id','date','sample_type','service_requested','status')
+        'pk','sample_id','date','sample_type','service_requested','group','status')
     data=list(Samples_list)
 
 

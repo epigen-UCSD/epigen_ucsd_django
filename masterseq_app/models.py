@@ -100,6 +100,7 @@ class SampleInfo(models.Model):
 	seq_depth_to_target = models.CharField(max_length=50,blank=True,null=True)
 	seq_length_requested = models.CharField(max_length=50,blank=True,null=True)
 	seq_type_requested = models.CharField(max_length=50,blank=True,null=True)
+	group = models.CharField(max_length=100,blank=True,null=True)
 	research_person = models.ForeignKey(CollaboratorPersonInfo,related_name='contact_person', on_delete=models.CASCADE,null=True)
 	fiscal_person = models.ForeignKey(CollaboratorPersonInfo,related_name='fiscal_person', on_delete=models.CASCADE,null=True)
 	status = models.CharField(max_length=20,blank=True,null=True)
