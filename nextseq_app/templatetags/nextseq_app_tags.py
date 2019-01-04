@@ -16,6 +16,10 @@ def has_group(user, group_name):
 	group = Group.objects.get(name=group_name)
 	return True if group in user.groups.all() else False
 
+@register.filter(name='has_groups')
+def has_groups(user, group_name_list):
+	grouplist = group_name_list.split(';')
+	return user.groups.filter(name__in=grouplist).exists()
 
 @register.filter
 def humantitle(oldtitle):
@@ -45,3 +49,17 @@ def get_class(ob):
 @register.filter
 def percentage(value):
         return str(value)+"%"
+
+@register.filter
+def linktrackingsheet(stringtext):
+	linktrans = {
+		'TrackingSheet 1':'<a href="https://docs.google.com/spreadsheets/d/1gjPViUOd-2CQVAIwGUinmqeKQThjJp2cixWogV4qkok/edit" target=”_blank”>TrackingSheet 1</a>',
+		'TrackingSheet 2':'<a href="https://docs.google.com/spreadsheets/d/19Qjv05LZo6pazNIvGrfj9GDzmK6riOwF3eriW7Ufj1o/edit" target=”_blank”>TrackingSheet 2</a>',
+		'TrackingSheet 3':'<a href="https://docs.google.com/spreadsheets/d/1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y/edit" target=”_blank”>TrackingSheet 3</a>',
+
+	}
+	for k,v in linktrans.items():
+		stringtext = stringtext.replace(k,v)
+	return stringtext
+
+

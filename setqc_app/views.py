@@ -14,16 +14,13 @@ from django.forms.models import model_to_dict
 from django.conf import settings
 import os
 import subprocess
+from django.contrib.auth.models import User,Group
+from django.db.models import Q
 
 # Create your views here.
-DisplayField1 = ['set_id', 'set_name',
-                 'date_requested', 'experiment_type', 'url']
-DisplayField2 = ['set_id', 'set_name', 'date_requested',
-                 'requestor', 'experiment_type', 'url']
-DisplayFieldforcollab = ['set_name',
-                         'date_requested', 'experiment_type', 'url']
-defaultgenome = {'human': 'hg38', 'mouse': 'mm10', 'rat': 'rn6'}
-
+DisplayField1 = ['set_id','set_name','date_requested','experiment_type','url']
+DisplayField2 = ['set_id','set_name','date_requested','requestor','experiment_type','url']
+defaultgenome = {'human':'hg38','mouse':'mm10','rat':'rn6'}
 
 def groupnumber(datalist):
     ranges = []
@@ -96,69 +93,81 @@ def UserSetQCView(request):
 
 @transaction.atomic
 def SetQCCreateView(request):
-    set_form = LibrariesSetQCCreationForm(request.POST or None)
+    
     libraries_form = LibrariesToIncludeCreatForm(request.POST or None)
     ChIPLibrariesFormSet = formset_factory(
         ChIPLibrariesToIncludeCreatForm, can_delete=True)
     chiplibraries_formset = ChIPLibrariesFormSet(request.POST or None)
-    if set_form.is_valid():
-        setinfo = set_form.save(commit=False)
-        setinfo.requestor = request.user
-        set_ids = list(LibrariesSetQC.objects.values_list('set_id', flat=True))
-        if not set_ids:
-            setinfo.set_id = 'Set_165'
+    if request.method == 'POST':
+        post = request.POST.copy()
+        if post['collaborator']:
+            obj = get_object_or_404(User, id=post['collaborator'].split(':')[0])
+            groupinfo = post['collaborator'].strip(')').split('(')[-1]
+            post['collaborator'] = obj.id
         else:
-            maxid = max([int(x.split('_')[1]) for x in set_ids])
-            setinfo.set_id = '_'.join(['Set', str(maxid+1)])
-        if set_form.cleaned_data['experiment_type'] != 'ChIP-seq':
-            if libraries_form.is_valid():
-                setinfo.save()
-                tosave_list = []
-                librariestoinclude = libraries_form.cleaned_data['librariestoinclude']
-                # print(librariestoinclude)
+            groupinfo = ''
+        set_form = LibrariesSetQCCreationForm(post)      
+        if set_form.is_valid():
+            setinfo = set_form.save(commit=False)
+            setinfo.requestor = request.user
+            setinfo.group = groupinfo
+            set_ids = list(LibrariesSetQC.objects.values_list('set_id', flat=True))
+            if not set_ids:
+                setinfo.set_id = 'Set_165'
+            else:
+                maxid = max([int(x.split('_')[1]) for x in set_ids])
+                setinfo.set_id = '_'.join(['Set',str(maxid+1)])
+            if set_form.cleaned_data['experiment_type'] != 'ChIP-seq':
+                if libraries_form.is_valid():
+                    setinfo.save()
+                    tosave_list = []
+                    librariestoinclude = libraries_form.cleaned_data['librariestoinclude']
+                    #print(librariestoinclude)  
 
-                for item in librariestoinclude:
-                    if item:
-                        tosave_item = LibraryInSet(
-                            librariesetqc=setinfo,
-                            seqinfo=SeqInfo.objects.get(seq_id=item),
-                        )
-                        tosave_list.append(tosave_item)
-                LibraryInSet.objects.bulk_create(tosave_list)
-                # return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
-                return redirect('setqc_app:libraylabelgenome_add', setqc_pk=setinfo.id)
-        else:
+                    for item in librariestoinclude:
+                        if item:
+                            tosave_item = LibraryInSet(
+                                librariesetqc=setinfo,
+                                seqinfo=SeqInfo.objects.get(seq_id=item),
+                                )
+                            tosave_list.append(tosave_item)
+                    LibraryInSet.objects.bulk_create(tosave_list)
+                    #return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
+                    return redirect('setqc_app:libraylabelgenome_add',setqc_pk=setinfo.id)
+            else:   
 
-            if chiplibraries_formset.is_valid():
-                setinfo.save()
-                groupnum = 1
-                tosave_list = []
-                for form in chiplibraries_formset.forms:
-                    if form not in chiplibraries_formset.deleted_forms and form.cleaned_data:
-                        libinputs = form.cleaned_data['librariestoincludeInput']
-                        libips = form.cleaned_data['librariestoincludeIP']
-                        for item in libinputs:
-                            if item:
-                                tosave_item = LibraryInSet(
-                                    librariesetqc=setinfo,
-                                    seqinfo=SeqInfo.objects.get(seq_id=item),
-                                    is_input=True,
-                                    group_number=groupnum,
-                                )
-                                tosave_list.append(tosave_item)
-                        for item in libips:
-                            if item:
-                                tosave_item = LibraryInSet(
-                                    librariesetqc=setinfo,
-                                    seqinfo=SeqInfo.objects.get(seq_id=item),
-                                    is_input=False,
-                                    group_number=groupnum,
-                                )
-                                tosave_list.append(tosave_item)
-                        groupnum += 1
-                LibraryInSet.objects.bulk_create(tosave_list)
-                # return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
-                return redirect('setqc_app:libraylabelgenome_add', setqc_pk=setinfo.id)
+                if chiplibraries_formset.is_valid():
+                    setinfo.save()
+                    groupnum = 1 
+                    tosave_list=[]
+                    for form in chiplibraries_formset.forms:
+                        if form not in chiplibraries_formset.deleted_forms and form.cleaned_data:                       
+                            libinputs = form.cleaned_data['librariestoincludeInput']
+                            libips = form.cleaned_data['librariestoincludeIP']
+                            for item in libinputs:
+                                if item:
+                                    tosave_item = LibraryInSet(
+                                        librariesetqc=setinfo,
+                                        seqinfo=SeqInfo.objects.get(seq_id=item),
+                                        is_input=True,
+                                        group_number=groupnum,
+                                        )
+                                    tosave_list.append(tosave_item)
+                            for item in libips:
+                                if item:
+                                    tosave_item = LibraryInSet(
+                                        librariesetqc=setinfo,
+                                        seqinfo=SeqInfo.objects.get(seq_id=item),
+                                        is_input=False,
+                                        group_number=groupnum,
+                                        )
+                                    tosave_list.append(tosave_item)
+                            groupnum += 1
+                    LibraryInSet.objects.bulk_create(tosave_list)
+                    #return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
+                    return redirect('setqc_app:libraylabelgenome_add',setqc_pk=setinfo.id)
+    else:
+        set_form = LibrariesSetQCCreationForm(None)
 
     context = {
         'set_form': set_form,
@@ -221,7 +230,8 @@ def SetQCgenomelabelCreateView(request, setqc_pk):
             obj.genome = GenomeInfo.objects.get(genome_name=genometm)
             obj.label = labeltm
             obj.save()
-        return redirect('setqc_app:setqc_detail', setqc_pk=setinfo.id)
+        #return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
+        return redirect('setqc_app:usersetqcs')
 
     context = {
         'formsetcustom': formsetcustom,
@@ -243,46 +253,58 @@ def SetQCUpdateView(request, setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
-    set_form = LibrariesSetQCCreationForm(
-        request.POST or None, instance=setinfo)
-    essentialfields = ['set_name', 'experiment_type']
+    essentialfields = ['set_name','experiment_type']
+
     flag = 0
     if setinfo.experiment_type != 'ChIP-seq':
         regset = LibraryInSet.objects.filter(librariesetqc=setinfo)
         librarieslist = [x.seqinfo.seq_id for x in regset]
-        libraries_form = LibrariesToIncludeCreatForm(request.POST or None,
-                                                     initial={'librariestoinclude': grouplibraries(librarieslist)})
-        if set_form.is_valid() and libraries_form.is_valid():
-            setinfo = set_form.save(commit=False)
-            setinfo.save()
-            for x in essentialfields:
-                if x in set_form.changed_data:
+        libraries_form = LibrariesToIncludeCreatForm(request.POST or None, \
+            initial={'librariestoinclude': grouplibraries(librarieslist)})
+        if request.method == 'POST':
+            post = request.POST.copy()
+            if post['collaborator']:
+                obj = get_object_or_404(User, id=post['collaborator'].split(':')[0])
+                groupinfo = post['collaborator'].strip(')').split('(')[-1]
+                post['collaborator'] = obj.id
+            else:
+                groupinfo = ''
+            set_form = LibrariesSetQCCreationForm(post,instance=setinfo) 
+            if set_form.is_valid() and libraries_form.is_valid():
+                setinfo = set_form.save(commit=False)
+                setinfo.group = groupinfo
+                setinfo.save()           
+                for x in essentialfields:
+                    if x in set_form.changed_data:
+                        flag = 1
+                        break   
+
+                if libraries_form.has_changed():
                     flag = 1
-                    break
+                    tosave_list = []
+                    librariestoinclude = libraries_form.cleaned_data['librariestoinclude']
+                    #print(librariestoinclude)
+                    setinfo.libraries_to_include.clear()
+            
+                    for item in librariestoinclude:
+                        if item:
+                            tosave_item = LibraryInSet(
+                                librariesetqc=setinfo,
+                                seqinfo=SeqInfo.objects.get(seq_id=item),
+                                )
+                            tosave_list.append(tosave_item)
+                    LibraryInSet.objects.bulk_create(tosave_list)   
 
-            if libraries_form.has_changed():
-                flag = 1
-                tosave_list = []
-                librariestoinclude = libraries_form.cleaned_data['librariestoinclude']
-                # print(librariestoinclude)
-                setinfo.libraries_to_include.clear()
+                if flag == 1:
+                    setinfo.url = ''
+                    setinfo.version = ''
+                    setinfo.status = 'ClickToSubmit'
+                    setinfo.save()
+     
+                return redirect('setqc_app:libraylabelgenome_update',setqc_pk=setinfo.id)
+        else:
+            set_form = LibrariesSetQCCreationForm(instance=setinfo)
 
-                for item in librariestoinclude:
-                    if item:
-                        tosave_item = LibraryInSet(
-                            librariesetqc=setinfo,
-                            seqinfo=SeqInfo.objects.get(seq_id=item),
-                        )
-                        tosave_list.append(tosave_item)
-                LibraryInSet.objects.bulk_create(tosave_list)
-
-            if flag == 1:
-                setinfo.url = ''
-                setinfo.version = ''
-                setinfo.status = 'ClickToSubmit'
-                setinfo.save()
-
-            return redirect('setqc_app:libraylabelgenome_update', setqc_pk=setinfo.id)
         context = {
             'set_form': set_form,
             'libraries_form': libraries_form,
@@ -306,54 +328,66 @@ def SetQCUpdateView(request, setqc_pk):
         ChIPLibrariesFormSet = formset_factory(
             ChIPLibrariesToIncludeCreatForm, can_delete=True)
         chiplibraries_formset = ChIPLibrariesFormSet(request.POST or None,
-                                                     initial=initialgroup)
-
-        if set_form.is_valid() and chiplibraries_formset.is_valid():
-            setinfo = set_form.save(commit=False)
-            setinfo.save()
-            for x in essentialfields:
-                if x in set_form.changed_data:
-                    flag = 1
-                    break
-
-            if chiplibraries_formset.has_changed():
-                flag = 1
-                groupnum = 1
-                tosave_list = []
-                for form in chiplibraries_formset.forms:
-                    if form not in chiplibraries_formset.deleted_forms and form.cleaned_data:
-                        libinputs = form.cleaned_data['librariestoincludeInput']
-                        libips = form.cleaned_data['librariestoincludeIP']
-                        # print(libinputs)
-                        # print(libips)
-                        for item in libinputs:
-                            if item:
-                                tosave_item = LibraryInSet(
-                                    librariesetqc=setinfo,
-                                    seqinfo=SeqInfo.objects.get(seq_id=item),
-                                    is_input=True,
-                                    group_number=groupnum,
-                                )
-                                tosave_list.append(tosave_item)
-                        for item in libips:
-                            if item:
-                                tosave_item = LibraryInSet(
-                                    librariesetqc=setinfo,
-                                    seqinfo=SeqInfo.objects.get(seq_id=item),
-                                    is_input=False,
-                                    group_number=groupnum,
-                                )
-                                tosave_list.append(tosave_item)
-                        groupnum += 1
-                setinfo.libraries_to_include.clear()
-                # print(tosave_list)
-                LibraryInSet.objects.bulk_create(tosave_list)
-            if flag == 1:
-                setinfo.url = ''
-                setinfo.version = ''
-                setinfo.status = 'ClickToSubmit'
+            initial=initialgroup)
+        if request.method == 'POST':
+            post = request.POST.copy()
+            if post['collaborator']:
+                obj = get_object_or_404(User, id=post['collaborator'].split(':')[0])
+                groupinfo = post['collaborator'].strip(')').split('(')[-1]
+                post['collaborator'] = obj.id
+            else:
+                groupinfo = ''
+            set_form = LibrariesSetQCCreationForm(post,instance=setinfo) 
+            if set_form.is_valid() and chiplibraries_formset.is_valid():
+                setinfo = set_form.save(commit=False)
+                setinfo.group = groupinfo
                 setinfo.save()
-            return redirect('setqc_app:libraylabelgenome_update', setqc_pk=setinfo.id)
+                for x in essentialfields:
+                    if x in set_form.changed_data:
+                        flag = 1
+                        break
+                                     
+                if chiplibraries_formset.has_changed():
+                    flag = 1
+                    groupnum = 1 
+                    tosave_list=[]
+                    for form in chiplibraries_formset.forms:
+                        if form not in chiplibraries_formset.deleted_forms and form.cleaned_data:
+                            libinputs = form.cleaned_data['librariestoincludeInput']
+                            libips = form.cleaned_data['librariestoincludeIP']
+                            #print(libinputs)
+                            #print(libips)
+                            for item in libinputs:
+                                if item:
+                                    tosave_item = LibraryInSet(
+                                        librariesetqc=setinfo,
+                                        seqinfo=SeqInfo.objects.get(seq_id=item),
+                                        is_input=True,
+                                        group_number=groupnum,
+                                        )
+                                    tosave_list.append(tosave_item)
+                            for item in libips:
+                                if item:
+                                    tosave_item = LibraryInSet(
+                                        librariesetqc=setinfo,
+                                        seqinfo=SeqInfo.objects.get(seq_id=item),
+                                        is_input=False,
+                                        group_number=groupnum,
+                                        )
+                                    tosave_list.append(tosave_item)
+                            groupnum += 1
+                    setinfo.libraries_to_include.clear()
+                    #print(tosave_list)
+                    LibraryInSet.objects.bulk_create(tosave_list)
+                if flag == 1:
+                    setinfo.url = ''
+                    setinfo.version = ''
+                    setinfo.status = 'ClickToSubmit'
+                    setinfo.save()            
+                return redirect('setqc_app:libraylabelgenome_update',setqc_pk=setinfo.id)
+        else:
+            set_form = LibrariesSetQCCreationForm(instance=setinfo)
+
         context = {
             'set_form': set_form,
             'sample_formset': chiplibraries_formset,
@@ -414,8 +448,10 @@ def SetQCgenomelabelUpdateView(request, setqc_pk):
             setinfo.url = ''
             setinfo.version = ''
             setinfo.status = 'ClickToSubmit'
-            setinfo.save()
-        return redirect('setqc_app:setqc_detail', setqc_pk=setinfo.id)
+            setinfo.save()             
+        #return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
+        return redirect('setqc_app:usersetqcs')
+
 
     context = {
         'formsetcustom': formsetcustom,
@@ -570,10 +606,8 @@ def RunSetQC2(request, setqc_pk):
 def SetQCDetailView(request, setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     libdir = settings.LIBQC_DIR
-    allfolder = [fname for fname in os.listdir(
-        libdir) if os.path.isdir(os.path.join(libdir, fname))]
-    summaryfield = ['status', 'set_id', 'set_name', 'collaborator',
-                    'date_requested', 'requestor', 'experiment_type', 'notes', 'url', 'version']
+    allfolder = [ fname for fname in os.listdir(libdir) if os.path.isdir(os.path.join(libdir, fname))]
+    summaryfield = ['status','set_id','set_name','date_requested','requestor','experiment_type','notes','url','version']
     groupinputinfo = ''
     librariesset = LibraryInSet.objects.filter(
         librariesetqc=setinfo).order_by('group_number', '-is_input')
@@ -586,6 +620,10 @@ def SetQCDetailView(request, setqc_pk):
     list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
         id=x) for x in list(librariesset.values_list('genome', flat=True))]
     list5 = list(librariesset.values_list('label', flat=True))
+    if setinfo.collaborator != None:
+        collab = setinfo.collaborator.first_name+' '+setinfo.collaborator.last_name+'('+setinfo.group+')'
+    else:
+        collab = ''
     for item in list1:
         if item not in allfolder:
             seqstatus.append('No')
@@ -607,51 +645,42 @@ def SetQCDetailView(request, setqc_pk):
         featureheader = ['Library ID', 'Read Type',
                          'Genome', 'Label', 'Processed']
     context = {
-        'setinfo': setinfo,
-        'summaryfield': summaryfield,
-        'featureinfo': featureinfo,
-        'featureheader': featureheader
+        'setinfo':setinfo,
+        'summaryfield':summaryfield,
+        'featureinfo':featureinfo,
+        'featureheader':featureheader,
+        'collab':collab
     }
     return render(request, 'setqc_app/details.html', context=context)
 
 
-def CollaboratorSetQCView(request):
-    SetQC_list = LibrariesSetQC.objects.filter(collaborator=request.user)
-    context = {
-        'Sets_list': SetQC_list,
-        'DisplayField': DisplayFieldforcollab,
-    }
-    return render(request, 'setqc_app/collaboratorsetqcinfo.html', context)
+def load_users(request):
+    q =request.GET.get('term','')
+    #collabusers = User.objects.filter(Q(first_name__icontains = q)|Q(last_name__icontains = q)).values('first_name','last_name')[:20]
+    collabusers = User.objects.filter(Q(first_name__icontains = q)|Q(last_name__icontains = q))
+    for f in Group.objects.filter(name__icontains = q):
+        collabusers = collabusers | f.user_set.all()
+    results = []
+    for u in collabusers:
+        uu = {}
+        uu['id'] = str(u.id)+': '+u.first_name+' '+u.last_name+'('+u.groups.all().first().name+')'
+        uu['label'] = str(u.id)+': '+u.first_name+' '+u.last_name+'('+u.groups.all().first().name+')'
+        uu['value'] = str(u.id)+': '+u.first_name+' '+u.last_name+'('+u.groups.all().first().name+')'
+        results.append(uu)
+    return JsonResponse(results, safe=False)
 
 
-def CollaboratorGetNotesView(request, setqc_pk):
-    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
-    if setinfo.collaborator != request.user:
-        raise PermissionDenied
-    data = {}
-    data['notes'] = setinfo.notes
-    return JsonResponse(data)
 
 
-def CollaboratorSetQCDetailView(request, setqc_pk):
-    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
-    if setinfo.collaborator != request.user:
-        raise PermissionDenied
-    summaryfield = ['set_name', 'collaborator', 'date_requested',
-                    'requestor', 'experiment_type', 'notes', 'url', 'version']
-    groupinputinfo = ''
-    librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
-    list1tem = list(librariesset.values_list('seqinfo', flat=True))
-    list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x)
-             for x in list1tem]
-    if setinfo.experiment_type == 'ChIP-seq':
-        list2 = list(librariesset.values_list('group_number', flat=True))
-        list3 = list(librariesset.values_list('is_input', flat=True))
-        groupinputinfo = list(zip(list1, list2, list3))
-    context = {
-        'setinfo': setinfo,
-        'summaryfield': summaryfield,
-        'libraryinfo': list1,
-        'groupinputinfo': groupinputinfo,
-    }
-    return render(request, 'setqc_app/collaboratordetails.html', context=context)
+
+
+
+
+
+
+
+
+
+
+
+

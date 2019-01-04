@@ -1,0 +1,48 @@
+{% load nextseq_app_tags %}
+{% load humanize %}
+<div class="row" id="seqs">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="card bottom15">
+      <div class="card-header fortable collapseheader">
+        <a data-toggle="collapse" href="#collapse4" aria-expanded="true" aria-controls="collapse2"><i class="fa fas fa-caret-right collapseheader fa-lg fa-fw"></i><i class="fa fa-caret-down collapseheader fa-lg fa-fw"></i></a>
+        Sequencings
+        <button type="button" class="close" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+        </button>
+      </div><!-- /.card-header -->
+      <div class="collapse show" id="collapse4">
+        <div class="card-body">
+          <br />
+          <table class="table table-sm table-striped text-center table-responsive-xl">
+
+            
+            <thead>
+            <tr>
+              {% for x in seqfield %}
+              <th>{{ x }}</th>
+              {% endfor %} 
+            </tr>
+            </thead>
+            <tbody></tbody>
+
+            {% for seq in seqs %}
+            <tr>
+              {% for x in seqfield %}
+              <td>
+                {% if x == 'seq_id' %}
+                <a href="{% url 'masterseq_app:seq_detail' seq.pk %}">{{ seq|get_value:x|default_if_none:"" }}</a>
+                {% else %}
+                {{ seq|get_value:x|default_if_none:"" }}
+                {% endif %}
+            </td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+            </tbody>               
+          </table>
+        </div><!-- /.card-body --> 
+      </div><!-- /.collapse -->             
+    </div><!-- /.card -->
+  
+  </div>
+</div>

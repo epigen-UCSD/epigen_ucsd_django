@@ -1,0 +1,84 @@
+{% load nextseq_app_tags %}
+
+<div class="row" id="summary">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="card bottom15">
+      <div class="card-header fortable collapseheader">
+        <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1"><i class="fa fas fa-caret-right collapseheader fa-lg fa-fw"></i><i class="fa fa-caret-down collapseheader fa-lg fa-fw"></i></a>
+        Summary
+        <button type="button" class="close" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+        </button>
+      </div><!-- /.card-header -->
+      <div class="collapse show" id="collapse1">
+        <div class="card-body">
+          <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-6">
+          <table class="summarytable">            
+            <tbody>  
+                {% for field in summaryfield %}
+              <tr>
+                <th>
+                  {{ field|humantitle}}:                  
+                </th> 
+                <td>
+                  {{ sampleinfo|get_value:field|default_if_none:""}}
+                </td>
+              </tr>
+               
+              {% endfor %}  
+            </tbody>
+          </table>
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-6">
+              <div class="card bgyellow">
+                <div class="card-body">
+                  <table class="persontable">
+                    <tbody>
+                      <tr>
+                        <th>Group:</th> 
+                        <td>{{ groupinfo }}</td>
+                      </tr>
+                      <tr>
+                        <th>PI:</th> 
+                        <td>{{ piname }}</td>
+                      </tr>
+                      <tr>
+                        <th>Research Contact:</th> 
+                        <td>{{ researchperson.first_name }}<span> <span>{{ researchperson.last_name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Research Contact email:</th> 
+                        <td>{{ researchperson.email | default_if_none:""}}</td>
+                      </tr>
+                      <tr>
+                        <th>Research Contact cell phone:</th> 
+                        <td>{{ researchperson_phone | default_if_none:"" }}</td>
+                      </tr>
+                      <tr>
+                        <th>Fiscal Contact:</th> 
+                        <td>{{ fiscalperson.first_name }}<span> <span>{{ fiscalperson.last_name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Fiscal Contact email:</th> 
+                        <td>{{ fiscalperson.email | default_if_none:""}}</td>
+                      </tr>
+                      <tr>
+                        <th>Fiscal Contact cell phone:</th> 
+                        <td>{{ fiscalperson_phone | default_if_none:"" }}</td>
+                      </tr>
+                      <tr>
+                        <th>index:</th> 
+                        <td>{{ index | default_if_none:""}}</td>
+                      </tr>
+                    </tbody>                                     
+                  </table>
+                </div>
+              </div>
+            </div>
+           </div>
+        </div><!-- /.card-body -->              
+      </div><!-- /.collapse --> 
+    </div><!-- /.card -->
+  </div>
+</div>

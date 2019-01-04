@@ -15,15 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
 #from nextseq_app import views
 from . import views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('nextseq_app/', include('nextseq_app.urls')),
-    path('setqc_app/', include('setqc_app.urls')),
-    path('masterseq_app/', include('masterseq_app.urls')),
-    path('nextseq_app/login/', views.UserLoginView.as_view(), name='loginfromnexseq'),
+    path('nextseq/', include('nextseq_app.urls')),
+    path('setqc/', include('setqc_app.urls')),
+    path('metadata/', include('masterseq_app.urls')),
+    path('epigen/', include('collaborator_app.urls')),
+    path('nextseq/login/', views.UserLoginView.as_view(), name='loginfromnexseq'),
     path('login/', views.UserLoginView.as_view(), name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('changepassword/', views.change_password, name='change_password'),
@@ -32,3 +35,21 @@ urlpatterns = [
 
 
 ]
+
+
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+
+        # For django versions before 2.0:
+        # url(r'^__debug__/', include(debug_toolbar.urls)),
+
+    ] + urlpatterns
+
+
+
+
+
+

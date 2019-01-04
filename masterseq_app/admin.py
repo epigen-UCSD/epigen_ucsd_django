@@ -16,3 +16,4 @@ class ProtocalInfoAdmin(admin.ModelAdmin):
 	list_display = ('experiment_type','protocal_name')
 
 admin.site.register(ProtocalInfo,ProtocalInfoAdmin)
+

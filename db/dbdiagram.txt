@@ -6,7 +6,7 @@ Table masterseq_libraryinfo {
   reference_to_notebook_and_page_number varchar
   team_member_initails_id int
   date_started date
-  date_completed date
+  date_completed date 
   experiment_type varchar
   notes varchar
 
@@ -15,11 +15,23 @@ Table masterseq_libraryinfo {
 Table masterseq_sampleinfo {
   id int PK
   sample_id varchar
+  sample_date date
+  team_member int
   sample_index varchar
   species varchar
   sample_type varchar
   preparation varchar
+  fixation varchar
   description varchar
+  sample_amount varchar
+  unit varchar
+  service_requested varchar
+  seq_depth_to_target varchar
+  seq_length_requested varchar
+  seq_type_requested varchar
+  research_person int
+  fiscal_person int
+  status varchar
   notes varchar
 }
 
@@ -37,6 +49,7 @@ Table masterseq_seqinfo {
   i5index_id int
   total_reads int
   date_submitted_for_sequencing date
+  default_label varchar
   notes varchar
   
 }

@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 from re import compile
 from django.core.exceptions import PermissionDenied
-from .shared import is_member
+from .shared import is_member,is_in_multiple_groups
  
 EXEMPT_URLS = [compile(settings.LOGIN_URL.lstrip('/'))]
 if hasattr(settings, 'LOGIN_EXEMPT_URLS'):
@@ -46,7 +46,8 @@ class InternalRequiredMiddleware(object):
         assert hasattr(request, 'user')
         #print(request.user)
         #print(is_member(request.user,'epigencollaborators'))
-        if is_member(request.user,'epigencollaborators'):
+        #if is_member(request.user,'epigencollaborators'):
+        if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
             path = request.path_info.lstrip('/')
             print(path)
             if not any(m.match(path) for m in INTERNAL_EXEMPT_URLS):

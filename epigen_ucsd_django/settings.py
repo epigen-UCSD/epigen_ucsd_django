@@ -26,6 +26,7 @@ SECRET_KEY = '$omp0lc+c$5b&)e+c7xyk_zsddr#a4x4y+196bre5+f6pl2hlg'
 DEBUG =  True
 
 ALLOWED_HOSTS = ['epigenomics.sdsc.edu','127.0.0.1']
+INTERNAL_IPS = ['127.0.0.1']
 
 
 # Application definition
@@ -40,7 +41,10 @@ INSTALLED_APPS = [
     'nextseq_app',
     'setqc_app',
     'masterseq_app',
+    'epigen_ucsd_django',
     'django.contrib.humanize',
+    'collaborator_app',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +57,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'epigen_ucsd_django.middleware.LoginRequiredMiddleware',
     'epigen_ucsd_django.middleware.InternalRequiredMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 
 ]
 
@@ -155,11 +160,13 @@ LOGIN_EXEMPT_URLS =(
 
     )
 INTERNAL_EXEMPT_URLS=(
-    r'setqc_app/myreports/',
-    r'changepassword/',
-    r'setqc_app/(\d+)/details/',
-    r'setqc_app/(\d+)/getnotes/',
+    r'setqc/myreports/',
+    r'epigen/',
+    r'setqc/(\d+)/details/',
+    r'setqc/(\d+)/getnotes/',
     r'logout/',
+    r'__debug__/',
+    r'admin/',
 
     )
 
