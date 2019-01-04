@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '$omp0lc+c$5b&)e+c7xyk_zsddr#a4x4y+196bre5+f6pl2hlg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =  True
+DEBUG = True
 
-ALLOWED_HOSTS = ['epigenomics.sdsc.edu','127.0.0.1']
+ALLOWED_HOSTS = ['epigenomics.sdsc.edu', '127.0.0.1']
 INTERNAL_IPS = ['127.0.0.1']
 
 
@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'epigen_ucsd_django',
     'django.contrib.humanize',
     'collaborator_app',
-    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +56,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'epigen_ucsd_django.middleware.LoginRequiredMiddleware',
     'epigen_ucsd_django.middleware.InternalRequiredMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 
 ]
 
@@ -92,26 +90,26 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 # https://docs.python.org/3/library/configparser.html#rawconfigparser-objects
 
-#DATABASES = {
+# DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.sqlite3',
 #        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #    }
-#}
+# }
 
 config = configparser.ConfigParser()
 config.read('deploy.ini')
 
 DATABASES = {
-     'default': {
-         'ENGINE': config['database']['DATABASE_ENGINE'],
-         'NAME': config['database']['DATABASE_NAME'],
-         'USER': config['database']['DATABASE_USER'],
-         'PASSWORD': config['database']['DATABASE_PASSWORD'],
-         'HOST': config['database']['DATABASE_HOST'],
-         'PORT': config['database']['DATABASE_PORT'],
-     }
- }
+    'default': {
+        'ENGINE': config['database']['DATABASE_ENGINE'],
+        'NAME': config['database']['DATABASE_NAME'],
+        'USER': config['database']['DATABASE_USER'],
+        'PASSWORD': config['database']['DATABASE_PASSWORD'],
+        'HOST': config['database']['DATABASE_HOST'],
+        'PORT': config['database']['DATABASE_PORT'],
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -153,13 +151,13 @@ STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
 
-LOGIN_EXEMPT_URLS =(
+LOGIN_EXEMPT_URLS = (
 
     r'register/',
     r'admin/',
 
-    )
-INTERNAL_EXEMPT_URLS=(
+)
+INTERNAL_EXEMPT_URLS = (
     r'setqc/myreports/',
     r'epigen/',
     r'setqc/(\d+)/details/',
@@ -168,7 +166,7 @@ INTERNAL_EXEMPT_URLS=(
     r'__debug__/',
     r'admin/',
 
-    )
+)
 
 NEXTSEQAPP_DMPDIR = config['database']['NEXTSEQAPP_DMPDIR']
 LIBQC_DIR = config['database']['LIBQC_DIR']
