@@ -2,10 +2,10 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import SampleCreationForm,LibraryCreationForm,SeqCreationForm,\
-SamplesCreationForm,LibsCreationForm,SeqsCreationForm,SeqsCreationForm
-from .models import SampleInfo,LibraryInfo,SeqInfo,ProtocalInfo,SeqMachineInfo,SeqBioInfo
-from django.contrib.auth.models import User,Group
+from .forms import SampleCreationForm, LibraryCreationForm, SeqCreationForm,\
+    SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm
+from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, SeqMachineInfo, SeqBioInfo
+from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
 from django.http import JsonResponse
@@ -417,51 +417,53 @@ def SeqsCreateView(request):
 
 #         return render(request, 'masterseq_app/seqsaddconfirm.html', context)
 
+
 def SampleDataView(request):
-    Samples_list = SampleInfo.objects.all().values(\
-        'pk','sample_id','date','sample_type','service_requested','group','status')
-    data=list(Samples_list)
+    Samples_list = SampleInfo.objects.all().values(
+        'pk', 'sample_id', 'date', 'sample_type', 'service_requested', 'group', 'status')
+    data = list(Samples_list)
+
+    return JsonResponse(data, safe=False)
 
 
-    return JsonResponse(data,safe=False)
 def LibDataView(request):
-    Libs_list = LibraryInfo.objects.all().values(\
-        'pk','library_id','date_started','date_completed','experiment_type')
-    data=list(Libs_list)
+    Libs_list = LibraryInfo.objects.all().values(
+        'pk', 'library_id', 'date_started', 'date_completed', 'experiment_type')
+    data = list(Libs_list)
 
-    return JsonResponse(data,safe=False)
+    return JsonResponse(data, safe=False)
 
 
 def SeqDataView(request):
-    Seqs_list = SeqInfo.objects.all().values(\
-        'pk','seq_id','date_submitted_for_sequencing','read_length','read_type')
-    data=list(Seqs_list)
+    Seqs_list = SeqInfo.objects.all().values(
+        'pk', 'seq_id', 'date_submitted_for_sequencing', 'read_length', 'read_type')
+    data = list(Seqs_list)
 
-    return JsonResponse(data,safe=False)
+    return JsonResponse(data, safe=False)
 
 
 def UserSampleDataView(request):
-    Samples_list = SampleInfo.objects.filter(team_member=request.user).values(\
-        'pk','sample_id','date','sample_type','service_requested','status')
-    data=list(Samples_list)
+    Samples_list = SampleInfo.objects.filter(team_member=request.user).values(
+        'pk', 'sample_id', 'date', 'sample_type', 'service_requested', 'group', 'status')
+    data = list(Samples_list)
+
+    return JsonResponse(data, safe=False)
 
 
-    return JsonResponse(data,safe=False)
 def UserLibDataView(request):
-    Libs_list = LibraryInfo.objects.filter(team_member_initails=request.user).values(\
-        'pk','library_id','date_started','date_completed','experiment_type')
-    data=list(Libs_list)
+    Libs_list = LibraryInfo.objects.filter(team_member_initails=request.user).values(
+        'pk', 'library_id', 'date_started', 'date_completed', 'experiment_type')
+    data = list(Libs_list)
 
-    return JsonResponse(data,safe=False)
+    return JsonResponse(data, safe=False)
 
 
 def UserSeqDataView(request):
-    Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user).values(\
-        'pk','seq_id','date_submitted_for_sequencing','read_length','read_type')
-    data=list(Seqs_list)
+    Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user).values(
+        'pk', 'seq_id', 'date_submitted_for_sequencing', 'read_length', 'read_type')
+    data = list(Seqs_list)
 
-    return JsonResponse(data,safe=False)
-
+    return JsonResponse(data, safe=False)
 
 
 def IndexView(request):
@@ -492,6 +494,7 @@ def IndexView(request):
         # }
         # return render(request, 'masterseq_app/metadata_bio.html',context=context)
         return render(request, 'masterseq_app/metadata_bio.html')
+
 
 def UserMetaDataView(request):
     if not request.user.groups.filter(name='bioinformatics').exists():
@@ -530,12 +533,14 @@ def SampleDeleteView(request, pk):
     sampleinfo.delete()
     return redirect('masterseq_app:user_metadata')
 
+
 def LibDeleteView(request, pk):
     libinfo = get_object_or_404(LibraryInfo, pk=pk)
     if libinfo.team_member_initails != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     libinfo.delete()
     return redirect('masterseq_app:user_metadata')
+
 
 def SeqDeleteView(request, pk):
     seqinfo = get_object_or_404(SeqInfo, pk=pk)
@@ -551,7 +556,7 @@ def SampleUpdateView(request, pk):
     orig_team_member = sampleinfo.team_member
     if sampleinfo.team_member != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
-    sample_form = SampleCreationForm(request.POST or None,instance=sampleinfo)
+    sample_form = SampleCreationForm(request.POST or None, instance=sampleinfo)
     if sample_form.is_valid():
         sampleinfo = sample_form.save(commit=False)
         sampleinfo.team_member = orig_team_member
@@ -559,22 +564,24 @@ def SampleUpdateView(request, pk):
         return redirect('masterseq_app:user_metadata')
     context = {
         'sample_form': sample_form,
-        'sampleinfo':sampleinfo,
+        'sampleinfo': sampleinfo,
     }
 
     return render(request, 'masterseq_app/sampleupdate.html', context)
+
 
 @transaction.atomic
 def LibUpdateView(request, pk):
     libinfo = get_object_or_404(LibraryInfo, pk=pk)
     if libinfo.team_member_initails != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
-    
+
     if request.method == 'POST':
         post = request.POST.copy()
-        obj = get_object_or_404(SampleInfo, sample_index=post['sampleinfo'].split(':')[0])
+        obj = get_object_or_404(
+            SampleInfo, sample_index=post['sampleinfo'].split(':')[0])
         post['sampleinfo'] = obj.id
-        library_form =LibraryCreationForm(post, instance=libinfo)
+        library_form = LibraryCreationForm(post, instance=libinfo)
         if library_form.is_valid():
             libinfo = library_form.save(commit=False)
             libinfo.team_member_initails = request.user
@@ -585,7 +592,7 @@ def LibUpdateView(request, pk):
 
     context = {
         'library_form': library_form,
-        'libinfo':libinfo,
+        'libinfo': libinfo,
     }
 
     return render(request, 'masterseq_app/libraryupdate.html', context)
@@ -596,7 +603,7 @@ def SeqUpdateView(request, pk):
     seqinfo = get_object_or_404(SeqInfo, pk=pk)
     if seqinfo.team_member_initails != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
-    
+
     if request.method == 'POST':
         post = request.POST.copy()
         obj = get_object_or_404(LibraryInfo, library_id=post['libraryinfo'])
@@ -612,20 +619,23 @@ def SeqUpdateView(request, pk):
 
     context = {
         'seq_form': seq_form,
-        'seqinfo':seqinfo,
+        'seqinfo': seqinfo,
     }
 
     return render(request, 'masterseq_app/sequpdate.html', context)
 
-def SampleDetailView(request,pk):
-    sampleinfo = get_object_or_404(SampleInfo.objects.select_related('team_member'\
-        ,'research_person__person_id','fiscal_person__person_id'), pk=pk)
-    summaryfield = ['status','sample_index','sample_id','team_member','species',\
-    'sample_type','preparation','fixation','sample_amount','unit','description','notes']
-    requestedfield = ['date','service_requested','seq_depth_to_target',\
-    'seq_length_requested','seq_type_requested']
-    libfield = ['library_id','experiment_type','protocalinfo','reference_to_notebook_and_page_number']
-    seqfield = ['seq_id','default_label','machine','read_length','read_type','total_reads']
+
+def SampleDetailView(request, pk):
+    sampleinfo = get_object_or_404(SampleInfo.objects.select_related(
+        'team_member', 'research_person__person_id', 'fiscal_person__person_id'), pk=pk)
+    summaryfield = ['status', 'sample_index', 'sample_id', 'team_member', 'species',
+                    'sample_type', 'preparation', 'fixation', 'sample_amount', 'unit', 'description', 'notes']
+    requestedfield = ['date', 'service_requested', 'seq_depth_to_target',
+                      'seq_length_requested', 'seq_type_requested']
+    libfield = ['library_id', 'experiment_type',
+                'protocalinfo', 'reference_to_notebook_and_page_number']
+    seqfield = ['seq_id', 'default_label', 'machine',
+                'read_length', 'read_type', 'total_reads']
     libinfo = sampleinfo.libraryinfo_set.all().select_related('protocalinfo')
     seqs = SeqInfo.objects.none()
     for lib in libinfo:
@@ -654,67 +664,73 @@ def SampleDetailView(request,pk):
             for user in group.user_set.all():
                 for person in user.collaboratorpersoninfo_set.all():
                     if 'PI' in person.role:
-                        piname.append(user.first_name + ' ' + user.last_name )
+                        piname.append(user.first_name + ' ' + user.last_name)
 
     context = {
         'groupinfo': ';'.join(groupinfo),
         'piname': ';'.join(piname),
-        'researchperson':researchperson,
-        'researchperson_phone':researchperson_phone,
-        'index':index,
-        'fiscalperson':fiscalperson,
-        'fiscalperson_phone':fiscalperson_phone,
-        'summaryfield':summaryfield,
-        'requestedfield':requestedfield,
-        'sampleinfo':sampleinfo,
-        'libfield':libfield,
-        'seqfield':seqfield,
-        'libinfo':libinfo.order_by('library_id'),
-        'seqs':seqs.order_by('seq_id')
+        'researchperson': researchperson,
+        'researchperson_phone': researchperson_phone,
+        'index': index,
+        'fiscalperson': fiscalperson,
+        'fiscalperson_phone': fiscalperson_phone,
+        'summaryfield': summaryfield,
+        'requestedfield': requestedfield,
+        'sampleinfo': sampleinfo,
+        'libfield': libfield,
+        'seqfield': seqfield,
+        'libinfo': libinfo.order_by('library_id'),
+        'seqs': seqs.order_by('seq_id')
     }
     return render(request, 'masterseq_app/sampledetail.html', context=context)
 
-def LibDetailView(request,pk):
-    libinfo = get_object_or_404(LibraryInfo.objects.select_related('sampleinfo',\
-        'protocalinfo','team_member_initails'), pk=pk)
+
+def LibDetailView(request, pk):
+    libinfo = get_object_or_404(LibraryInfo.objects.select_related('sampleinfo',
+                                                                   'protocalinfo', 'team_member_initails'), pk=pk)
     sampleinfo = libinfo.sampleinfo
-    summaryfield = ['library_id','sampleinfo','date_started','date_completed',\
-    'team_member_initails','experiment_type','protocalinfo',\
-    'reference_to_notebook_and_page_number','notes']
-    seqfield = ['seq_id','default_label','machine','read_length','read_type','total_reads']
-    relateseq = libinfo.seqinfo_set.all().only('seq_id','machine','read_length','read_type','total_reads')
+    summaryfield = ['library_id', 'sampleinfo', 'date_started', 'date_completed',
+                    'team_member_initails', 'experiment_type', 'protocalinfo',
+                    'reference_to_notebook_and_page_number', 'notes']
+    seqfield = ['seq_id', 'default_label', 'machine',
+                'read_length', 'read_type', 'total_reads']
+    relateseq = libinfo.seqinfo_set.all().only(
+        'seq_id', 'machine', 'read_length', 'read_type', 'total_reads')
     context = {
-        'libinfo':libinfo,
-        'sampleinfo':sampleinfo,
-        'summaryfield':summaryfield,
-        'relateseq':relateseq.order_by('seq_id'),
-        'seqfield':seqfield
+        'libinfo': libinfo,
+        'sampleinfo': sampleinfo,
+        'summaryfield': summaryfield,
+        'relateseq': relateseq.order_by('seq_id'),
+        'seqfield': seqfield
     }
     return render(request, 'masterseq_app/libdetail.html', context=context)
 
-def SeqDetailView(request,pk):
-    seqinfo = get_object_or_404(SeqInfo.objects.select_related('libraryinfo',\
-        'machine','i7index','i5index','team_member_initails'),pk=pk)
+
+def SeqDetailView(request, pk):
+    seqinfo = get_object_or_404(SeqInfo.objects.select_related('libraryinfo',
+                                                               'machine', 'i7index', 'i5index', 'team_member_initails'), pk=pk)
     libinfo = seqinfo.libraryinfo
-    summaryfield = ['seq_id','libraryinfo','default_label','team_member_initails',\
-    'date_submitted_for_sequencing','machine','read_length','read_type','portion_of_lane',\
-    'i7index','i5index','total_reads','notes']
-    bioinfofield = ['genome','pipeline_version','final_reads','final_yield','mito_frac',\
-    'tss_enrichment','frop']
+    summaryfield = ['seq_id', 'libraryinfo', 'default_label', 'team_member_initails',
+                    'date_submitted_for_sequencing', 'machine', 'read_length', 'read_type', 'portion_of_lane',
+                    'i7index', 'i5index', 'total_reads', 'notes']
+    bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
+                    'tss_enrichment', 'frop']
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
     context = {
-        'libinfo':libinfo,
-        'seqinfo':seqinfo,
-        'summaryfield':summaryfield,
-        'seqbioinfos':seqbioinfos,
-        'bioinfofield':bioinfofield
+        'libinfo': libinfo,
+        'seqinfo': seqinfo,
+        'summaryfield': summaryfield,
+        'seqbioinfos': seqbioinfos,
+        'bioinfofield': bioinfofield
 
     }
     return render(request, 'masterseq_app/seqdetail.html', context=context)
 
+
 def load_samples(request):
-    q =request.GET.get('term','')
-    samples = SampleInfo.objects.filter(Q(sample_id__icontains = q)|Q(sample_index__icontains = q)).values('sample_index','sample_id')[:20]
+    q = request.GET.get('term', '')
+    samples = SampleInfo.objects.filter(Q(sample_id__icontains=q) | Q(
+        sample_index__icontains=q)).values('sample_index', 'sample_id')[:20]
     results = []
     for sample in samples:
         samplesearch = {}
@@ -724,9 +740,11 @@ def load_samples(request):
         results.append(samplesearch)
     return JsonResponse(results, safe=False)
 
+
 def load_libs(request):
-    q =request.GET.get('term','')
-    libs = LibraryInfo.objects.filter(library_id__icontains = q).values('library_id')[:20]
+    q = request.GET.get('term', '')
+    libs = LibraryInfo.objects.filter(
+        library_id__icontains=q).values('library_id')[:20]
     results = []
     for lib in libs:
         libsearch = {}
@@ -735,4 +753,3 @@ def load_libs(request):
         libsearch['value'] = lib['library_id']
         results.append(libsearch)
     return JsonResponse(results, safe=False)
-
