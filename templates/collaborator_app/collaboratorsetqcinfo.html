@@ -45,7 +45,7 @@
                 {% for Set in Sets_list %}
                 <tr>
                   {% if Set.notes %}
-                  <td class='details-control' data-href="{% url 'setqc_app:setqc_collaboratorgetnotes' Set.id %}"></td>
+                  <td class='details-control' data-href="{% url 'collaborator_app:setqc_collaboratorgetnotes' Set.id %}"></td>
                   {% else %}
                   <td></td>
                   {% endif %}
