@@ -1,9 +1,9 @@
 from django.contrib.auth.decorators import login_required, permission_required
-from .models import LibrariesSetQC,LibraryInSet
-from masterseq_app.models import SeqInfo,GenomeInfo
+from .models import LibrariesSetQC, LibraryInSet
+from masterseq_app.models import SeqInfo, GenomeInfo
 from django.db import transaction
 from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm,\
-ChIPLibrariesToIncludeCreatForm,SeqLabelGenomeCreationForm,BaseSeqLabelGenomeCreationFormSet
+    ChIPLibrariesToIncludeCreatForm, SeqLabelGenomeCreationForm, BaseSeqLabelGenomeCreationFormSet
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import JsonResponse
@@ -23,74 +23,80 @@ DisplayField2 = ['set_id','set_name','date_requested','requestor','experiment_ty
 defaultgenome = {'human':'hg38','mouse':'mm10','rat':'rn6'}
 
 def groupnumber(datalist):
-    ranges =[]
-    for k,g in groupby(enumerate(datalist),lambda x:x[0]-x[1]):
-        group = (map(itemgetter(1),g))
-        group = list(map(int,group))
-        ranges.append((group[0],group[-1]))
+    ranges = []
+    for k, g in groupby(enumerate(datalist), lambda x: x[0]-x[1]):
+        group = (map(itemgetter(1), g))
+        group = list(map(int, group))
+        ranges.append((group[0], group[-1]))
     return ranges
+
 
 def grouplibraries(librarieslist):
     groupedlibraries = []
     presuffix_number = {}
     for item in librarieslist:
-        splititem = item.split('_',2)
+        splititem = item.split('_', 2)
         if len(splititem) == 1:
             groupedlibraries.append(item)
         else:
-            prefix = item.split('_',2)[0]
+            prefix = item.split('_', 2)[0]
             try:
-                suffix = item.split('_',2)[2]
+                suffix = item.split('_', 2)[2]
             except IndexError as e:
                 suffix = ''
-            presuffix = ':'.join([prefix,suffix])
+            presuffix = ':'.join([prefix, suffix])
             if presuffix not in presuffix_number.keys():
-                presuffix_number[presuffix]=[]
-            presuffix_number[presuffix].append(int(item.split('_',2)[1]))
+                presuffix_number[presuffix] = []
+            presuffix_number[presuffix].append(int(item.split('_', 2)[1]))
 
-    for k,v in presuffix_number.items():
+    for k, v in presuffix_number.items():
         prefix = k.split(':')[0]
         suffix = k.split(':')[1]
         ranges = groupnumber(sorted(v))
         if not suffix:
             for x in ranges:
                 if x[0] == x[1]:
-                    groupedlibraries.append('_'.join([prefix,str(x[0])]))
+                    groupedlibraries.append('_'.join([prefix, str(x[0])]))
                 else:
-                    start = '_'.join([prefix,str(x[0])])
-                    end = '_'.join([prefix,str(x[1])])
-                    groupedlibraries.append('-'.join([start,end]))
+                    start = '_'.join([prefix, str(x[0])])
+                    end = '_'.join([prefix, str(x[1])])
+                    groupedlibraries.append('-'.join([start, end]))
         else:
             for x in ranges:
                 if x[0] == x[1]:
-                    groupedlibraries.append('_'.join([prefix,str(x[0]),suffix]))
+                    groupedlibraries.append(
+                        '_'.join([prefix, str(x[0]), suffix]))
                 else:
-                    start = '_'.join([prefix,str(x[0]),suffix])
-                    end = '_'.join([prefix,str(x[1]),suffix])
-                    groupedlibraries.append('-'.join([start,end]))
+                    start = '_'.join([prefix, str(x[0]), suffix])
+                    end = '_'.join([prefix, str(x[1]), suffix])
+                    groupedlibraries.append('-'.join([start, end]))
     return ','.join(groupedlibraries)
+
 
 def AllSetQCView(request):
 
     context = {
         'Sets_list': LibrariesSetQC.objects.all(),
-        'DisplayField':DisplayField2,
+        'DisplayField': DisplayField2,
     }
     return render(request, 'setqc_app/setqcinfo.html', context)
+
 
 def UserSetQCView(request):
     SetQC_list = LibrariesSetQC.objects.filter(requestor=request.user)
     context = {
         'Sets_list': SetQC_list,
-        'DisplayField':DisplayField1,
+        'DisplayField': DisplayField1,
     }
     return render(request, 'setqc_app/usersetqcinfo.html', context)
+
 
 @transaction.atomic
 def SetQCCreateView(request):
     
     libraries_form = LibrariesToIncludeCreatForm(request.POST or None)
-    ChIPLibrariesFormSet = formset_factory(ChIPLibrariesToIncludeCreatForm,can_delete=True)
+    ChIPLibrariesFormSet = formset_factory(
+        ChIPLibrariesToIncludeCreatForm, can_delete=True)
     chiplibraries_formset = ChIPLibrariesFormSet(request.POST or None)
     if request.method == 'POST':
         post = request.POST.copy()
@@ -162,20 +168,23 @@ def SetQCCreateView(request):
                     return redirect('setqc_app:libraylabelgenome_add',setqc_pk=setinfo.id)
     else:
         set_form = LibrariesSetQCCreationForm(None)
+
     context = {
         'set_form': set_form,
         'libraries_form': libraries_form,
-        'sample_formset':chiplibraries_formset,
+        'sample_formset': chiplibraries_formset,
     }
 
     return render(request, 'setqc_app/setqcadd.html', context)
 
+
 @transaction.atomic
-def SetQCgenomelabelCreateView(request,setqc_pk):
+def SetQCgenomelabelCreateView(request, setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
-    regset = LibraryInSet.objects.filter(librariesetqc=setinfo).order_by('seqinfo')
+    regset = LibraryInSet.objects.filter(
+        librariesetqc=setinfo).order_by('seqinfo')
     temdic = {}
     formsetcustom = []
     initaldic = []
@@ -202,17 +211,18 @@ def SetQCgenomelabelCreateView(request,setqc_pk):
             temdic['lableinthisset'] = x.seqinfo.seq_id
         initaldic.append(temdic)
     librarieslabelgenomeFormSet = formset_factory(SeqLabelGenomeCreationForm,
-        can_delete=False,
-        formset=BaseSeqLabelGenomeCreationFormSet,
-        extra=0)
+                                                  can_delete=False,
+                                                  formset=BaseSeqLabelGenomeCreationFormSet,
+                                                  extra=0)
     formsetcustom = librarieslabelgenomeFormSet(request.POST or None,
-        initial=initaldic,
-        form_kwargs={'thisspecies_list': speci_list}
-        )
+                                                initial=initaldic,
+                                                form_kwargs={
+                                                    'thisspecies_list': speci_list}
+                                                )
     if formsetcustom.is_valid():
-        #print('right')
+        # print('right')
         for form in formsetcustom.forms:
-            #print(form)
+            # print(form)
             seqidtm = form.cleaned_data['sequencingid']
             genometm = form.cleaned_data['genomeinthisset']
             labeltm = form.cleaned_data['lableinthisset']
@@ -237,12 +247,14 @@ def SetQCDeleteView(request, setqc_pk):
     deleteset.delete()
     return redirect('setqc_app:usersetqcs')
 
+
 @transaction.atomic
-def SetQCUpdateView(request,setqc_pk):
+def SetQCUpdateView(request, setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     essentialfields = ['set_name','experiment_type']
+
     flag = 0
     if setinfo.experiment_type != 'ChIP-seq':
         regset = LibraryInSet.objects.filter(librariesetqc=setinfo)
@@ -292,24 +304,29 @@ def SetQCUpdateView(request,setqc_pk):
                 return redirect('setqc_app:libraylabelgenome_update',setqc_pk=setinfo.id)
         else:
             set_form = LibrariesSetQCCreationForm(instance=setinfo)
+
         context = {
             'set_form': set_form,
             'libraries_form': libraries_form,
             'setinfo': setinfo,
         }
-    
+
         return render(request, 'setqc_app/setqcupdate.html', context)
     else:
         chipset = LibraryInSet.objects.filter(librariesetqc=setinfo)
-        groupitem = list(chipset.values_list('group_number', flat=True).distinct())
-        initialgroup=[]
+        groupitem = list(chipset.values_list(
+            'group_number', flat=True).distinct())
+        initialgroup = []
         for i in groupitem:
             temdic = {}
-            temdic['librariestoincludeInput']=grouplibraries([x.seqinfo.seq_id for x in chipset.filter(group_number=i,is_input=True)])
-            temdic['librariestoincludeIP']=grouplibraries([x.seqinfo.seq_id for x in chipset.filter(group_number=i,is_input=False)])
+            temdic['librariestoincludeInput'] = grouplibraries(
+                [x.seqinfo.seq_id for x in chipset.filter(group_number=i, is_input=True)])
+            temdic['librariestoincludeIP'] = grouplibraries(
+                [x.seqinfo.seq_id for x in chipset.filter(group_number=i, is_input=False)])
             initialgroup.append(temdic)
             #print([x for x in chipset.filter(group_number=i,is_input=True)])
-        ChIPLibrariesFormSet = formset_factory(ChIPLibrariesToIncludeCreatForm,can_delete=True)
+        ChIPLibrariesFormSet = formset_factory(
+            ChIPLibrariesToIncludeCreatForm, can_delete=True)
         chiplibraries_formset = ChIPLibrariesFormSet(request.POST or None,
             initial=initialgroup)
         if request.method == 'POST':
@@ -370,19 +387,23 @@ def SetQCUpdateView(request,setqc_pk):
                 return redirect('setqc_app:libraylabelgenome_update',setqc_pk=setinfo.id)
         else:
             set_form = LibrariesSetQCCreationForm(instance=setinfo)
+
         context = {
             'set_form': set_form,
-            'sample_formset':chiplibraries_formset,
+            'sample_formset': chiplibraries_formset,
             'setinfo': setinfo,
         }
-    
+
         return render(request, 'setqc_app/setqcchipupdate.html', context)
+
+
 @transaction.atomic
-def SetQCgenomelabelUpdateView(request,setqc_pk):
+def SetQCgenomelabelUpdateView(request, setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
-    regset = LibraryInSet.objects.filter(librariesetqc=setinfo).order_by('seqinfo')
+    regset = LibraryInSet.objects.filter(
+        librariesetqc=setinfo).order_by('seqinfo')
     temdic = {}
     formsetcustom = []
     initaldic = []
@@ -404,17 +425,18 @@ def SetQCgenomelabelUpdateView(request,setqc_pk):
 
         initaldic.append(temdic)
     librarieslabelgenomeFormSet = formset_factory(SeqLabelGenomeCreationForm,
-        can_delete=False,
-        formset=BaseSeqLabelGenomeCreationFormSet,
-        extra=0)
+                                                  can_delete=False,
+                                                  formset=BaseSeqLabelGenomeCreationFormSet,
+                                                  extra=0)
     formsetcustom = librarieslabelgenomeFormSet(request.POST or None,
-        initial=initaldic,
-        form_kwargs={'thisspecies_list': speci_list}
-        )
+                                                initial=initaldic,
+                                                form_kwargs={
+                                                    'thisspecies_list': speci_list}
+                                                )
     if formsetcustom.is_valid():
-        #print('right')
+        # print('right')
         for form in formsetcustom.forms:
-            #print(form)
+            # print(form)
             seqidtm = form.cleaned_data['sequencingid']
             genometm = form.cleaned_data['genomeinthisset']
             labeltm = form.cleaned_data['lableinthisset']
@@ -430,13 +452,15 @@ def SetQCgenomelabelUpdateView(request,setqc_pk):
         #return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
         return redirect('setqc_app:usersetqcs')
 
+
     context = {
         'formsetcustom': formsetcustom,
     }
 
     return render(request, 'setqc_app/librarylabelgenomeadd.html', context)
 
-def GetNotesView(request,setqc_pk):
+
+def GetNotesView(request, setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     # if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
     #     raise PermissionDenied
@@ -453,38 +477,48 @@ def RunSetQC(request, setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
-    allfolder = [ fname for fname in os.listdir(libdir) if os.path.isdir(os.path.join(libdir, fname))]
+    allfolder = [fname for fname in os.listdir(
+        libdir) if os.path.isdir(os.path.join(libdir, fname))]
     librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
     list1tem = list(librariesset.values_list('seqinfo', flat=True))
     list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x)
-     for x in list1tem]
-    list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(id=x) for x in list(librariesset.values_list('genome', flat=True))]
+             for x in list1tem]
+    list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
+        id=x) for x in list(librariesset.values_list('genome', flat=True))]
     list5 = list(librariesset.values_list('label', flat=True))
     seqstatus = []
     for item in list1:
         if item not in allfolder:
             seqstatus.append('No')
         else:
-            if not os.path.isfile(os.path.join(libdir, item,'.finished.txt')):
+            if not os.path.isfile(os.path.join(libdir, item, '.finished.txt')):
                 seqstatus.append('No')
             else:
                 seqstatus.append('Yes')
+
     if setinfo.experiment_type == 'ChIP-seq':
 
         list2 = list(librariesset.values_list('group_number', flat=True))
         list3 = list(librariesset.values_list('is_input', flat=True))
-        writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list2,list3,list4,list5,seqstatus)])
-        featureheader = ['Library ID','Group ID','Is Input','Genome','Label','Processed Or Not']
+        writecontent = '\n'.join(['\t'.join(map(str, x)) for x in zip(
+            list1, list2, list3, list4, list5, seqstatus)])
+        featureheader = ['Library ID', 'Group ID',
+                         'Is Input', 'Genome', 'Label', 'Processed Or Not']
+        cmd1 = './utility/runSetQC_chipseq.sh ' + \
+            setinfo.set_id + ' ' + request.user.email
     else:
         # regset = setinfo.libraries_to_include.all()
         # list1 = [x.seq_id for x in regset]
-        writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list4,list5,seqstatus)])
-        featureheader = ['Library ID','Genome','Label','Processed Or Not']
+        writecontent = '\n'.join(['\t'.join(map(str, x))
+                                  for x in zip(list1, list4, list5, seqstatus)])
+        featureheader = ['Library ID', 'Genome', 'Label', 'Processed Or Not']
+        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
 
-    ## write Set_**.txt to setqcoutdir
-    setStatusFile = os.path.join(setqcoutdir,'.'+setinfo.set_id+'.txt')
+    # write Set_**.txt to setqcoutdir
+    setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
     if os.path.isfile(setStatusFile):
-        data['setidexisterror'] = '.'+setinfo.set_id+'.txt is already existed. Do you want to override it and continue to run the pipeline and SetQC script?'
+        data['setidexisterror'] = '.'+setinfo.set_id + \
+            '.txt is already existed. Do you want to override it and continue to run the pipeline and SetQC script?'
         print(data['setidexisterror'])
         return JsonResponse(data)
     try:
@@ -493,16 +527,17 @@ def RunSetQC(request, setqc_pk):
             f.write(writecontent)
     except Exception as e:
         data['writeseterror'] = 'Unexpected writing to Set.txt Error!'
-    setinfo.status='JobSubmitted'
+    setinfo.status = 'JobSubmitted'
     setinfo.save()
 
-    #run setQC script
-    cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
+    # run setQC script
+    #cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
     print(cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     data['writesetdone'] = 1
     return JsonResponse(data)
+
 
 @transaction.atomic
 def RunSetQC2(request, setqc_pk):
@@ -512,19 +547,21 @@ def RunSetQC2(request, setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
-    allfolder = [ fname for fname in os.listdir(libdir) if os.path.isdir(os.path.join(libdir, fname))]
+    allfolder = [fname for fname in os.listdir(
+        libdir) if os.path.isdir(os.path.join(libdir, fname))]
     librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
     list1tem = list(librariesset.values_list('seqinfo', flat=True))
     list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x)
-     for x in list1tem]
-    list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(id=x) for x in list(librariesset.values_list('genome', flat=True))]
+             for x in list1tem]
+    list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
+        id=x) for x in list(librariesset.values_list('genome', flat=True))]
     list5 = list(librariesset.values_list('label', flat=True))
     seqstatus = []
     for item in list1:
         if item not in allfolder:
             seqstatus.append('No')
         else:
-            if not os.path.isfile(os.path.join(libdir, item,'.finished.txt')):
+            if not os.path.isfile(os.path.join(libdir, item, '.finished.txt')):
                 seqstatus.append('No')
             else:
                 seqstatus.append('Yes')
@@ -532,27 +569,33 @@ def RunSetQC2(request, setqc_pk):
 
         list2 = list(librariesset.values_list('group_number', flat=True))
         list3 = list(librariesset.values_list('is_input', flat=True))
-        writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list2,list3,list4,list5,seqstatus)])
-        featureheader = ['Library ID','Group ID','Is Input','Genome','Label','Processed Or Not']
+        writecontent = '\n'.join(['\t'.join(map(str, x)) for x in zip(
+            list1, list2, list3, list4, list5, seqstatus)])
+        featureheader = ['Library ID', 'Group ID',
+                         'Is Input', 'Genome', 'Label', 'Processed Or Not']
+        cmd1 = './utility/runSetQC_chipseq.sh ' + \
+            setinfo.set_id + ' ' + request.user.email
     else:
         # regset = setinfo.libraries_to_include.all()
         # list1 = [x.seq_id for x in regset]
-        writecontent = '\n'.join(['\t'.join(map(str,x)) for x in zip(list1,list4,list5,seqstatus)])
-        featureheader = ['Library ID','Genome','Label','Processed Or Not']
-        
-    ## write Set_**.txt to setqcoutdir
-    setStatusFile = os.path.join(setqcoutdir,'.'+setinfo.set_id+'.txt')
+        writecontent = '\n'.join(['\t'.join(map(str, x))
+                                  for x in zip(list1, list4, list5, seqstatus)])
+        featureheader = ['Library ID', 'Genome', 'Label', 'Processed Or Not']
+        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
+
+    # write Set_**.txt to setqcoutdir
+    setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
     try:
         with open(setStatusFile, 'w') as f:
             f.write('\t'.join(featureheader)+'\n')
             f.write(writecontent)
     except Exception as e:
         data['writeseterror'] = 'Unexpected writing to Set.txt Error!'
-    setinfo.status='JobSubmitted'
+    setinfo.status = 'JobSubmitted'
     setinfo.save()
 
-    #run setQC script
-    cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
+    # run setQC script
+    #cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
     print(cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -560,17 +603,22 @@ def RunSetQC2(request, setqc_pk):
     return JsonResponse(data)
 
 
-def SetQCDetailView(request,setqc_pk):
+def SetQCDetailView(request, setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     libdir = settings.LIBQC_DIR
     allfolder = [ fname for fname in os.listdir(libdir) if os.path.isdir(os.path.join(libdir, fname))]
     summaryfield = ['status','set_id','set_name','date_requested','requestor','experiment_type','notes','url','version']
     groupinputinfo = ''
-    librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo).order_by('group_number','-is_input')
+    librariesset = LibraryInSet.objects.filter(
+        librariesetqc=setinfo).order_by('group_number', '-is_input')
     list1tem = list(librariesset.values_list('seqinfo', flat=True))
-    list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x) for x in list1tem]
+    list1 = [SeqInfo.objects.values_list(
+        'seq_id', flat=True).get(id=x) for x in list1tem]
+    list_readtype = [SeqInfo.objects.values_list(
+        'read_type', flat=True).get(id=x) for x in list1tem]
     seqstatus = []
-    list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(id=x) for x in list(librariesset.values_list('genome', flat=True))]
+    list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
+        id=x) for x in list(librariesset.values_list('genome', flat=True))]
     list5 = list(librariesset.values_list('label', flat=True))
     if setinfo.collaborator != None:
         collab = setinfo.collaborator.first_name+' '+setinfo.collaborator.last_name+'('+setinfo.group+')'
@@ -580,7 +628,7 @@ def SetQCDetailView(request,setqc_pk):
         if item not in allfolder:
             seqstatus.append('No')
         else:
-            if not os.path.isfile(os.path.join(libdir, item,'.finished.txt')):
+            if not os.path.isfile(os.path.join(libdir, item, '.finished.txt')):
                 seqstatus.append('No')
             else:
                 seqstatus.append('Yes')
@@ -588,11 +636,14 @@ def SetQCDetailView(request,setqc_pk):
     if setinfo.experiment_type == 'ChIP-seq':
         list2 = list(librariesset.values_list('group_number', flat=True))
         list3 = list(librariesset.values_list('is_input', flat=True))
-        featureinfo = list(zip(list1,list2,list3,list4,list5,seqstatus))
-        featureheader = ['Library ID','Group ID','Is Input','Genome','Label','Processed']
+        featureinfo = list(zip(list1, list_readtype, list2,
+                               list3, list4, list5, seqstatus))
+        featureheader = ['Library ID', 'Read Type', 'Group ID',
+                         'Is Input',  'Genome', 'Label', 'Processed']
     else:
-        featureinfo = list(zip(list1,list4,list5,seqstatus))
-        featureheader = ['Library ID','Genome','Label','Processed']
+        featureinfo = list(zip(list1, list_readtype, list4, list5, seqstatus))
+        featureheader = ['Library ID', 'Read Type',
+                         'Genome', 'Label', 'Processed']
     context = {
         'setinfo':setinfo,
         'summaryfield':summaryfield,
@@ -601,7 +652,6 @@ def SetQCDetailView(request,setqc_pk):
         'collab':collab
     }
     return render(request, 'setqc_app/details.html', context=context)
-
 
 
 def load_users(request):
@@ -618,6 +668,7 @@ def load_users(request):
         uu['value'] = str(u.id)+': '+u.first_name+' '+u.last_name+'('+u.groups.all().first().name+')'
         results.append(uu)
     return JsonResponse(results, safe=False)
+
 
 
 

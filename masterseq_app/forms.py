@@ -1,7 +1,7 @@
 from django import forms
-from .models import SampleInfo,LibraryInfo,SeqMachineInfo,SeqInfo,\
-choice_for_read_type,choice_for_species,choice_for_sample_type,\
-choice_for_preparation,choice_for_experiment_type
+from .models import SampleInfo, LibraryInfo, SeqMachineInfo, SeqInfo,\
+    choice_for_read_type, choice_for_species, choice_for_sample_type,\
+    choice_for_preparation, choice_for_experiment_type
 from django.contrib.auth.models import User
 import datetime
 from nextseq_app.models import Barcode
@@ -218,177 +218,195 @@ class SamplesCreationForm(forms.Form):
 		return '\n'.join(cleaneddata)
 
 
-class LibsCreationForm(forms.Form):
-	libsinfo = forms.CharField(
-			label='LibsInfo(Please copy and paste the columnA-M from TrackingSheet 2):',
-			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
-			required=True,
-					)
-	def clean_libsinfo(self):
-		data = self.cleaned_data['libsinfo']
-		cleaneddata = []
-		flagsam = 0
-		flagdate = 0
-		flagexp = 0
-		flaglibid = 0
-		flaguser = 0
-		invalidsam = []
-		invaliddate = []
-		invalidexp = []
-		selflibs = []
-		invalidlibid =[]
-		invaliduserlist = []
-		for lineitem in data.strip().split('\n'):
-			if lineitem != '\r':
-				cleaneddata.append(lineitem)
-				fields = lineitem.split('\t')
-				samindex = fields[0].strip()
-				if not SampleInfo.objects.filter(sample_index=samindex).exists():
-					invalidsam.append(samindex)
-					flagsam = 1
-				try:
-					datestart = datetransform(fields[3].strip())					
-				except:
-					invaliddate.append(fields[3].strip())
-					flagdate = 1
-				try:
-					dateend = datetransform(fields[4].strip())
-				except:
-					invaliddate.append(fields[4].strip())
-					flagdate = 1
-				libexp = fields[5].strip()
-				if libexp not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
-					invalidexp.append(libexp)
-					flagexp = 1
-				libid = fields[10].strip()
-				if LibraryInfo.objects.filter(library_id=libid).exists():
-					invalidlibid.append(libid)
-					flaglibid = 1
-				membername = fields[2].strip()
-				if not User.objects.filter(username=membername).exists():
-					invaliduserlist.append(membername)
-					flaguser = 1
-					
-				selflibs.append(libid)
 
-		if flagsam == 1:
-			raise forms.ValidationError('Invalid sample info:'+','.join(invalidsam))
-		if flagdate == 1:
-			raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
-		if flagexp == 1:
-			raise forms.ValidationError('Invalid experiment type:'+','.join(invalidexp))
-		if flaglibid == 1:
-			raise forms.ValidationError(','.join(invalidlibid)+' is already existed in database')
-		libraryselfduplicate = SelfUniqueValidation(selflibs)
-		if len(libraryselfduplicate) > 0:
-			raise forms.ValidationError('Duplicate Library within this bulk entry:'+','.join(libraryselfduplicate))
-		if flaguser == 1:
-			raise forms.ValidationError('Invalid Member Name:'+','.join(invaliduserlist))
-		return '\n'.join(cleaneddata)
+class LibsCreationForm(forms.Form):
+    libsinfo = forms.CharField(
+        label='LibsInfo(Please copy and paste the columnA-M from TrackingSheet 2):',
+        widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
+        required=True,
+    )
+
+    def clean_libsinfo(self):
+        data = self.cleaned_data['libsinfo']
+        cleaneddata = []
+        flagsam = 0
+        flagdate = 0
+        flagexp = 0
+        flaglibid = 0
+        flaguser = 0
+        invalidsam = []
+        invaliddate = []
+        invalidexp = []
+        selflibs = []
+        invalidlibid = []
+        invaliduserlist = []
+        for lineitem in data.strip().split('\n'):
+            if lineitem != '\r':
+                cleaneddata.append(lineitem)
+                fields = lineitem.split('\t')
+                samindex = fields[0].strip()
+                if not SampleInfo.objects.filter(sample_index=samindex).exists():
+                    invalidsam.append(samindex)
+                    flagsam = 1
+                try:
+                    datestart = datetransform(fields[3].strip())
+                except:
+                    invaliddate.append(fields[3].strip())
+                    flagdate = 1
+                try:
+                    dateend = datetransform(fields[4].strip())
+                except:
+                    invaliddate.append(fields[4].strip())
+                    flagdate = 1
+                libexp = fields[5].strip()
+                if libexp not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
+                    invalidexp.append(libexp)
+                    flagexp = 1
+                libid = fields[10].strip()
+                if LibraryInfo.objects.filter(library_id=libid).exists():
+                    invalidlibid.append(libid)
+                    flaglibid = 1
+                membername = fields[2].strip()
+                if not User.objects.filter(username=membername).exists():
+                    invaliduserlist.append(membername)
+                    flaguser = 1
+
+                selflibs.append(libid)
+
+        if flagsam == 1:
+            raise forms.ValidationError(
+                'Invalid sample info:'+','.join(invalidsam))
+        if flagdate == 1:
+            raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
+        if flagexp == 1:
+            raise forms.ValidationError(
+                'Invalid experiment type:'+','.join(invalidexp))
+        if flaglibid == 1:
+            raise forms.ValidationError(
+                ','.join(invalidlibid)+' is already existed in database')
+        libraryselfduplicate = SelfUniqueValidation(selflibs)
+        if len(libraryselfduplicate) > 0:
+            raise forms.ValidationError(
+                'Duplicate Library within this bulk entry:'+','.join(libraryselfduplicate))
+        if flaguser == 1:
+            raise forms.ValidationError(
+                'Invalid Member Name:'+','.join(invaliduserlist))
+        return '\n'.join(cleaneddata)
 
 
 class SeqsCreationForm(forms.Form):
-	seqsinfo = forms.CharField(
-			label='SeqsInfo(Please copy and paste the columnA-R from TrackingSheet 3):',
-			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
-			required=True,
-					)
-	def clean_seqsinfo(self):
-		data = self.cleaned_data['seqsinfo']
-		cleaneddata = []
-		flaglib = 0 
-		flagdate = 0
-		flaguser = 0
-		flagbarcode = 0
-		flagbarcode2 = 0
-		flagseqid = 0
-		flagmachine = 0
-		flagtype = 0
-		flagpolane = 0
-		invalidlib = []
-		invaliddate = []
-		invaliduserlist = []
-		invalidbarcodelist = []
-		invalidbarcodelist2 = []
-		invalidseqid = []
-		selfseqs = []
-		invalidmachine = []
-		invalidtype = []
-		invalidpolane = []
+    seqsinfo = forms.CharField(
+        label='SeqsInfo(Please copy and paste the columnA-R from TrackingSheet 3):',
+        widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
+        required=True,
+    )
 
-		for lineitem in data.strip().split('\n'):
-			if lineitem != '\r':
-				cleaneddata.append(lineitem)
-				fields = lineitem.split('\t')
-				libraryid = fields[7].strip()
-				if not LibraryInfo.objects.filter(library_id = libraryid).exists():
-					invalidlib.append(libraryid)
-					flaglib = 1
+    def clean_seqsinfo(self):
+        data = self.cleaned_data['seqsinfo']
+        cleaneddata = []
+        flaglib = 0
+        flagdate = 0
+        flaguser = 0
+        flagbarcode = 0
+        flagbarcode2 = 0
+        flagseqid = 0
+        flagmachine = 0
+        flagtype = 0
+        flagpolane = 0
+        invalidlib = []
+        invaliddate = []
+        invaliduserlist = []
+        invalidbarcodelist = []
+        invalidbarcodelist2 = []
+        invalidseqid = []
+        selfseqs = []
+        invalidmachine = []
+        invalidtype = []
+        invalidpolane = []
 
-				if '-' in fields[6].strip():
-					datesub = fields[6].strip()
-				else:
-					try:
-						datesub = datetransform(fields[6].strip())
-					except:
-						invaliddate.append(fields[6].strip())
-						flagdate = 1
-				membername = fields[5].strip()
-				if not User.objects.filter(username=membername).exists():
-					invaliduserlist.append(membername)
-					flaguser = 1
+        for lineitem in data.strip().split('\n'):
+            if lineitem != '\r':
+                cleaneddata.append(lineitem)
+                fields = lineitem.split('\t')
+                libraryid = fields[7].strip()
+                exptype = fields[9].strip()
+                if not LibraryInfo.objects.filter(library_id=libraryid).exists():
+                    invalidlib.append(libraryid)
+                    flaglib = 1
 
-				indexname = fields[15].strip()
-				if indexname and indexname not in ['NA','Other (please explain in notes)','N/A']:
-					if not Barcode.objects.filter(indexid=indexname).exists():
-						invalidbarcodelist.append(indexname)
-						flagbarcode = 1
-				indexname2 = fields[16].strip()
-				if indexname2 and indexname2 not in ['NA','Other (please explain in notes)','N/A']:
-					if not Barcode.objects.filter(indexid=indexname2).exists():
-						invalidbarcodelist2.append(indexname2)
-						flagbarcode2 = 1
-				polane = fields[14].strip()
-				if polane and polane not in ['NA','Other (please explain in notes)','N/A']:
-					try:
-						float(polane)
-					except:
-						invalidpolane.append(polane)
-						flagpolane = 1	
-				seqid = fields[8].strip()
-				if SeqInfo.objects.filter(seq_id=seqid).exists():
-					invalidseqid.append(seqid)
-					flagseqid = 1
-				selfseqs.append(seqid)
-				seqcore = fields[10].split('(')[0].strip()
-				seqmachine = fields[11].split('(')[0].strip()
-				if not SeqMachineInfo.objects.filter(sequencing_core = seqcore,machine_name = seqmachine).exists():
-					invalidmachine.append(seqcore+'_'+seqmachine)
-					flagmachine = 1
-				seqtype = fields[13].strip()
-				if seqtype not in [x[0].split('(')[0].strip() for x in choice_for_read_type]:
-					invalidtype.append(seqtype)
-					flagtype = 1
-		if flaglib == 1:
-			raise forms.ValidationError('Invalid library info:'+','.join(invalidlib))
-		if flagdate == 1:
-			raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
-		if flaguser == 1:
-			raise forms.ValidationError('Invalid Member Name:'+','.join(invaliduserlist))
-		if flagbarcode == 1:
-			raise forms.ValidationError('Invalid i7 Barcode:'+','.join(invalidbarcodelist))
-		if flagbarcode2 == 1:
-			raise forms.ValidationError('Invalid i5 Barcode:'+','.join(invalidbarcodelist2))
-		if flagpolane == 1:
-			raise forms.ValidationError('Invalid portion of lane:'+','.join(invalidpolane))
-		if flagseqid == 1:
-			raise forms.ValidationError(','.join(invalidseqid)+' is already existed in database')
-		seqselfduplicate = SelfUniqueValidation(selfseqs)
-		if len(seqselfduplicate) > 0:
-			raise forms.ValidationError('Duplicate Seq within this bulk entry:'+','.join(seqselfduplicate))
-		if flagmachine == 1:
-			raise forms.ValidationError('Invalid seqmachine:'+','.join(invalidmachine))
-		if flagtype == 1:
-			raise forms.ValidationError('Invalid read type:'+','.join(invalidtype))
+                if '-' in fields[6].strip():
+                    datesub = fields[6].strip()
+                else:
+                    try:
+                        datesub = datetransform(fields[6].strip())
+                    except:
+                        invaliddate.append(fields[6].strip())
+                        flagdate = 1
+                membername = fields[5].strip()
+                if not User.objects.filter(username=membername).exists():
+                    invaliduserlist.append(membername)
+                    flaguser = 1
 
-		return '\n'.join(cleaneddata)
+                indexname = fields[15].strip()
+                if indexname and indexname not in ['NA', 'Other (please explain in notes)', 'N/A']:
+                    if not Barcode.objects.filter(indexid=indexname).exists():
+                        invalidbarcodelist.append(indexname)
+                        flagbarcode = 1
+                indexname2 = fields[16].strip()
+                if indexname2 and indexname2 not in ['NA', 'Other (please explain in notes)', 'N/A']:
+                    if not Barcode.objects.filter(indexid=indexname2).exists():
+                        invalidbarcodelist2.append(indexname2)
+                        flagbarcode2 = 1
+                polane = fields[14].strip()
+                if polane and polane not in ['NA', 'Other (please explain in notes)', 'N/A']:
+                    try:
+                        float(polane)
+                    except:
+                        invalidpolane.append(polane)
+                        flagpolane = 1
+                seqid = fields[8].strip()
+                if SeqInfo.objects.filter(seq_id=seqid).exists():
+                    invalidseqid.append(seqid)
+                    flagseqid = 1
+                selfseqs.append(seqid)
+                seqcore = fields[10].split('(')[0].strip()
+                seqmachine = fields[11].split('(')[0].strip()
+                if not SeqMachineInfo.objects.filter(sequencing_core=seqcore, machine_name=seqmachine).exists():
+                    invalidmachine.append(seqcore+'_'+seqmachine)
+                    flagmachine = 1
+                seqtype = fields[13].strip()
+                if seqtype not in [x[0].split('(')[0].strip() for x in choice_for_read_type]:
+                    invalidtype.append(seqtype)
+                    flagtype = 1
+        if flaglib == 1:
+            raise forms.ValidationError(
+                'Invalid library info:'+','.join(invalidlib))
+        if flagdate == 1:
+            raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
+        if flaguser == 1:
+            raise forms.ValidationError(
+                'Invalid Member Name:'+','.join(invaliduserlist))
+        if flagbarcode == 1 and exptype not in ['scATAC-seq', 'snATAC-seq']:
+            raise forms.ValidationError(
+                'Invalid i7 Barcode:'+','.join(invalidbarcodelist))
+        if flagbarcode2 == 1 and exptype not in ['scATAC-seq', 'snATAC-seq']:
+            raise forms.ValidationError(
+                'Invalid i5 Barcode:'+','.join(invalidbarcodelist2))
+        if flagpolane == 1:
+            raise forms.ValidationError(
+                'Invalid portion of lane:'+','.join(invalidpolane))
+        if flagseqid == 1:
+            raise forms.ValidationError(
+                ','.join(invalidseqid)+' is already existed in database')
+        seqselfduplicate = SelfUniqueValidation(selfseqs)
+        if len(seqselfduplicate) > 0:
+            raise forms.ValidationError(
+                'Duplicate Seq within this bulk entry:'+','.join(seqselfduplicate))
+        if flagmachine == 1:
+            raise forms.ValidationError(
+                'Invalid seqmachine:'+','.join(invalidmachine))
+        if flagtype == 1:
+            raise forms.ValidationError(
+                'Invalid read type:'+','.join(invalidtype))
+
+        return '\n'.join(cleaneddata)

@@ -1,0 +1,53 @@
+Table User {
+  id int PK
+  username varchar
+  email varchar
+  password varchar
+  first_name varchar
+  last_name varchar
+  is_superuser boolean
+  is_staff boolean
+  is_active boolean
+  date_joined date
+  last_login date
+  
+}
+
+Table Group {
+  id int PK
+  name varchar
+  
+}
+
+Table User_Group {
+  id int PK
+  user_id int
+  group_id int
+}
+
+Table CollaboratorPersonInfo {
+  id int PK
+  person_id int
+  cell_phone varchar
+  index varchar
+  role varchar
+}
+
+Table masterseq_sampleinfo {
+  id int PK
+  sample_id varchar
+  sample_index varchar
+  species varchar
+  sample_type varchar
+  preparation varchar
+  description varchar
+  notes varchar
+  contact_person int
+  fiscal_person int
+}
+
+Ref: User_Group.user_id > User.id
+Ref: User_Group.group_id > Group.id
+Ref: CollaboratorPersonInfo.person_id > User.id
+Ref: masterseq_sampleinfo.contact_person > CollaboratorPersonInfo.id
+Ref: masterseq_sampleinfo.fiscal_person > CollaboratorPersonInfo.id
