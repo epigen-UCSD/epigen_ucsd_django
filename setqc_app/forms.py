@@ -35,7 +35,8 @@ def libraryparse(libraries):
 	return tosave_list
 
 class LibrariesSetQCCreationForm(forms.ModelForm):
-
+	collaborator = forms.ModelChoiceField(queryset=User.objects.all(),\
+		widget=forms.TextInput({'class': 'ajax_userinput_form','size':50}),required=False)	
 	class Meta:
 		model = LibrariesSetQC
 		fields = ['set_name','collaborator','date_requested','experiment_type','notes']
@@ -44,9 +45,16 @@ class LibrariesSetQCCreationForm(forms.ModelForm):
 			 'notes':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
 
 		}
+	# def __init__(self, *args, **kwargs):
+	# 	super().__init__(*args, **kwargs)
+	# 	self.fields['collaborator'].queryset = User.objects.filter(groups__name='epigencollaborators')
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.fields['collaborator'].queryset = User.objects.filter(groups__name='epigencollaborators')
+		if self.instance.collaborator:
+			self.initial['collaborator'] = str(self.instance.collaborator.id)+': '+self.instance.collaborator.first_name\
+		+self.instance.collaborator.last_name+'('+\
+		self.instance.collaborator.groups.all().first().name+')'
+
 
 class LibrariesForm(forms.ModelForm):
 	libraries = forms.ModelMultipleChoiceField(queryset=SeqInfo.objects.all(),

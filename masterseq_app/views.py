@@ -644,7 +644,7 @@ def SampleDetailView(request,pk):
             groupinfo.append(group.name)
             for user in group.user_set.all():
                 for person in user.collaboratorpersoninfo_set.all():
-                    if person.role == 'PI':
+                    if 'PI' in person.role:
                         piname.append(user.first_name + ' ' + user.last_name )
 
     context = {

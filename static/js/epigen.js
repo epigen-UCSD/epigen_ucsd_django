@@ -447,6 +447,12 @@ $(document).ready( function () {
         minLength:2,
     });
 
+    $('.ajax_userinput_form').parent().addClass('ui-widget');
+    $('.ajax_userinput_form').autocomplete({
+        source: "/setqc/ajax/load-users/",
+        minLength:2,
+    });   
+
 
     $('#id_experiment_type').change(function (){
         var url = $("#librayspec").attr("data-protocal-url");
