@@ -26,3 +26,21 @@ ALTER USER test WITH PASSWORD '123456';
 ## URL
 * [metadata@dbdiagram.io](https://dbdiagram.io/d/5bb396d8e63c1f0014dab57d)
 * [usrs@dbdigram.io](https://dbdiagram.io/d/5c05a310b155a200149def72)
+
+# Migration Instruction for Special Cases: #
+
+## change group from char to foreign key for SetQC app (existing char group is none, no need to transer data)
+* add group_tm = models.ForeignKey(Group,on_delete=models.CASCADE,blank=True,null=True) to model LibrariesSetQC(models.Model), then run makemigrations and migrate as normal
+* remove group = models.CharField(max_length=100,blank=True,null=True) from model LibrariesSetQC(models.Model), then run makemigrations and migrate as normal
+* change group_tm to group, then run makemigrations and migrate as normal
+* push to master branch
+* merge branch 'liyuxin' where the commit message is 'change group from char to foreign key for SetQC app'
+
+
+
+
+
+
+
+
+
