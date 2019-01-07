@@ -29,6 +29,8 @@ ALLOWED_HOSTS = ['epigenomics.sdsc.edu', '127.0.0.1']
 INTERNAL_IPS = ['127.0.0.1']
 
 
+config = configparser.ConfigParser()
+config.read('deploy.ini')
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'collaborator_app',
 ]
+if config['database']['EXTRA_APP']:
+    INSTALLED_APPS.append(config['database']['EXTRA_APP'])
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,6 +62,8 @@ MIDDLEWARE = [
     'epigen_ucsd_django.middleware.InternalRequiredMiddleware',
 
 ]
+if config['database']['EXTRA_MIDDLEWARE']:
+    MIDDLEWARE.append(config['database']['EXTRA_MIDDLEWARE'])
 
 ROOT_URLCONF = 'epigen_ucsd_django.urls'
 
@@ -97,8 +103,7 @@ STATICFILES_DIRS = [
 #    }
 # }
 
-config = configparser.ConfigParser()
-config.read('deploy.ini')
+
 
 DATABASES = {
     'default': {
