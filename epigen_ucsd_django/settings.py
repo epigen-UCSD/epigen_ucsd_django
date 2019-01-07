@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'collaborator_app',
 ]
-if config['database']['EXTRA_APP']:
+
+if 'extra_app' in dict(config.items('database')).keys():
     INSTALLED_APPS.append(config['database']['EXTRA_APP'])
 
 MIDDLEWARE = [
@@ -62,7 +63,8 @@ MIDDLEWARE = [
     'epigen_ucsd_django.middleware.InternalRequiredMiddleware',
 
 ]
-if config['database']['EXTRA_MIDDLEWARE']:
+
+if 'extra_middleware' in dict(config.items('database')).keys():
     MIDDLEWARE.append(config['database']['EXTRA_MIDDLEWARE'])
 
 ROOT_URLCONF = 'epigen_ucsd_django.urls'
