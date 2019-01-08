@@ -197,7 +197,7 @@ $(document).ready( function () {
     "columns": [
             { "data": "sample_id"},
             { "data": "date"},
-            { "data": "group"},
+            { "data": "group__name"},
             { "data": "sample_type"},
             { "data": "service_requested"},
             { "data": "status"},
@@ -237,7 +237,7 @@ $(document).ready( function () {
     "columns": [
             { "data": "sample_id"},
             { "data": "date"},
-            { "data": "group"},
+            { "data": "group__name"},
             { "data": "sample_type"},
             { "data": "service_requested"},
             { "data": "status"},
@@ -260,7 +260,7 @@ $(document).ready( function () {
             return '<a class="spacing" href="/metadata/sample/'+itemID+'/update/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete sample '+row["sample_id"]+'?\');" href="/metadata/sample/'+itemID+'/delete/"><i class="fas fa-trash-alt"></i></a>';
         }        
 
-    } ], 
+    }], 
     });
 
     var metalibsurl=$('#metadata_libs').attr("data-href");

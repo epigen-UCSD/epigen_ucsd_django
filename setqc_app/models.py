@@ -1,6 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User, Group
-from masterseq_app.models import SeqInfo, GenomeInfo
+from django.contrib.auth.models import User,Group
+from masterseq_app.models import SeqInfo,GenomeInfo
 
 # Create your models here.
 

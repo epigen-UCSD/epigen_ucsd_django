@@ -102,10 +102,10 @@ def SetQCCreateView(request):
         post = request.POST.copy()
         if post['collaborator']:
             obj = get_object_or_404(User, id=post['collaborator'].split(':')[0])
-            groupinfo = post['collaborator'].strip(')').split('(')[-1]
+            groupinfo = get_object_or_404(Group, name=post['collaborator'].strip(')').split('(')[-1])
             post['collaborator'] = obj.id
         else:
-            groupinfo = ''
+            groupinfo = None
         set_form = LibrariesSetQCCreationForm(post)      
         if set_form.is_valid():
             setinfo = set_form.save(commit=False)
@@ -265,10 +265,10 @@ def SetQCUpdateView(request, setqc_pk):
             post = request.POST.copy()
             if post['collaborator']:
                 obj = get_object_or_404(User, id=post['collaborator'].split(':')[0])
-                groupinfo = post['collaborator'].strip(')').split('(')[-1]
+                groupinfo = get_object_or_404(Group,name=post['collaborator'].strip(')').split('(')[-1])
                 post['collaborator'] = obj.id
             else:
-                groupinfo = ''
+                groupinfo = None
             set_form = LibrariesSetQCCreationForm(post,instance=setinfo) 
             if set_form.is_valid() and libraries_form.is_valid():
                 setinfo = set_form.save(commit=False)
@@ -333,10 +333,10 @@ def SetQCUpdateView(request, setqc_pk):
             post = request.POST.copy()
             if post['collaborator']:
                 obj = get_object_or_404(User, id=post['collaborator'].split(':')[0])
-                groupinfo = post['collaborator'].strip(')').split('(')[-1]
+                groupinfo = get_object_or_404(Group,name=post['collaborator'].strip(')').split('(')[-1])
                 post['collaborator'] = obj.id
             else:
-                groupinfo = ''
+                groupinfo = None
             set_form = LibrariesSetQCCreationForm(post,instance=setinfo) 
             if set_form.is_valid() and chiplibraries_formset.is_valid():
                 setinfo = set_form.save(commit=False)
@@ -621,7 +621,7 @@ def SetQCDetailView(request, setqc_pk):
         id=x) for x in list(librariesset.values_list('genome', flat=True))]
     list5 = list(librariesset.values_list('label', flat=True))
     if setinfo.collaborator != None:
-        collab = setinfo.collaborator.first_name+' '+setinfo.collaborator.last_name+'('+setinfo.group+')'
+        collab = setinfo.collaborator.first_name+' '+setinfo.collaborator.last_name+'('+setinfo.group.name+')'
     else:
         collab = ''
     for item in list1:
