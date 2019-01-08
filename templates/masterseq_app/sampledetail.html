@@ -25,7 +25,7 @@
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       {% if 'my' in request.META.HTTP_REFERER or 'add' in request.META.HTTP_REFERER or 'update' in request.META.HTTP_REFERER%}
-      <li class="breadcrumb-item"><a class="linkblue" href="">Me Metadata</a></li>
+      <li class="breadcrumb-item"><a class="linkblue" href="">My Metadata</a></li>
       {% else %}
       <li class="breadcrumb-item"><a class="linkblue" href="{% url 'masterseq_app:index' %}">All Metadata</a></li>
       {% endif %}

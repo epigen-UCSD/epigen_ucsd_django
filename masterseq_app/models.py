@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.models import CollaboratorPersonInfo
 # Create your models here.
@@ -110,7 +110,8 @@ class SampleInfo(models.Model):
     seq_length_requested = models.CharField(
         max_length=50, blank=True, null=True)
     seq_type_requested = models.CharField(max_length=50, blank=True, null=True)
-    group = models.CharField(max_length=100, blank=True, null=True)
+    #group = models.CharField(max_length=100, blank=True, null=True)
+    group = models.ForeignKey(Group,on_delete=models.CASCADE,blank=True,null=True)
     research_person = models.ForeignKey(
         CollaboratorPersonInfo, related_name='contact_person', on_delete=models.CASCADE, null=True)
     fiscal_person = models.ForeignKey(

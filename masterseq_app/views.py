@@ -419,8 +419,13 @@ def SeqsCreateView(request):
 
 
 def SampleDataView(request):
-    Samples_list = SampleInfo.objects.all().values(
-        'pk', 'sample_id', 'date', 'sample_type', 'service_requested', 'group', 'status')
+    Samples_list = SampleInfo.objects.all().select_related('group').values(
+        'pk', 'sample_id', 'date', 'sample_type', 'service_requested', 'group__name', 'status')
+    for sample in Samples_list:
+        try:
+            sample['group__name'] = sample['group__name'].replace('_group','').replace('_',' ')
+        except:
+            pass
     data = list(Samples_list)
 
     return JsonResponse(data, safe=False)
@@ -444,7 +449,12 @@ def SeqDataView(request):
 
 def UserSampleDataView(request):
     Samples_list = SampleInfo.objects.filter(team_member=request.user).values(
-        'pk', 'sample_id', 'date', 'sample_type', 'service_requested', 'group', 'status')
+        'pk', 'sample_id', 'date', 'sample_type', 'service_requested', 'group__name', 'status')
+    for sample in Samples_list:
+        try:
+            sample['group__name'] = sample['group__name'].replace('_group','').replace('_',' ')
+        except:
+            pass
     data = list(Samples_list)
 
     return JsonResponse(data, safe=False)
