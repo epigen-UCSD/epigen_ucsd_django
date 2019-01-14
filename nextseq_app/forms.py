@@ -29,7 +29,8 @@ class UserLoginForm(forms.Form):
 class RunCreationForm(ModelForm):
     class Meta:
         model = RunInfo
-        fields = ['Flowcell_ID', 'date', 'read_type', 'read_length']
+        fields = ['Flowcell_ID', 'date', 'read_type',
+                  'read_length', 'experiment_type']
         widgets = {
             'date': forms.DateInput(),
             # 'read_type': forms.TextInput(attrs={'class': 'myfieldclass'}),

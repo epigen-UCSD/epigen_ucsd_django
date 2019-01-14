@@ -25,8 +25,9 @@ class RunInfo(models.Model):
     exp_type_choice = (('BK', 'bulk'), ('SN', 'snATAC'),
                        ('TA', '10xATAC'), ('TR', '10xRNA'))
     read_type = models.CharField(
-        max_length=2, choices=read_type_choice, default='PE')
-    #exp_type = models.CharField(max_length=2, choies=exp_type_choice)
+        max_length=2, choices=read_type_choice, default='PE', help_text='default:PE')
+    experiment_type = models.CharField(max_length=2, choices=exp_type_choice,
+                                       default='BK', help_text='bulk (default), snATAC:combinatory barcode, 10xATAC, 10xRNAseq')
     total_reads = models.IntegerField(blank=True, null=True)
     total_libraries = models.IntegerField(blank=True, null=True)
     percent_of_reads_demultiplexed = models.IntegerField(blank=True, null=True)
