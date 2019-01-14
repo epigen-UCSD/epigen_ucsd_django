@@ -187,7 +187,7 @@ $(document).ready( function () {
                 fieldBoundary:''
             }
     ],
-    "iDisplayLength": 10,
+    "iDisplayLength": 20,
     "order": [[ 1, "desc" ],[ 2, "desc" ]],
     "processing": true,
     "ajax": {
@@ -227,7 +227,7 @@ $(document).ready( function () {
                 fieldBoundary:''
             }
     ],
-    "iDisplayLength": 10,
+    "iDisplayLength": 20,
     "order": [[ 1, "desc" ],[ 2, "desc" ]],
     "processing": true,
     "ajax": {
@@ -313,7 +313,7 @@ $(document).ready( function () {
                 fieldBoundary:''
             }
     ],
-    "iDisplayLength": 10,
+    "iDisplayLength": 20,
     "processing": true,
     "ajax": {
          url: metalibsurl,
@@ -400,7 +400,7 @@ $(document).ready( function () {
                 fieldBoundary:''
             }
     ],
-    "iDisplayLength": 10,
+    "iDisplayLength": 20,
     "processing": true,
     "ajax": {
          url: metaseqsurl,

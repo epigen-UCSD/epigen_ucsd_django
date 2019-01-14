@@ -2,68 +2,81 @@
 
 {% block content %}
 {% load nextseq_app_tags %}
-      <div id="content" class="col-sm-10 col-md-10 col-lg-10">
-
-        <div class="card bottom15">
-          <div class="card-header fortable">
-            My Samples
-          </div><!-- /.card-header -->
-          <div class="card-body">
-            <table id="metadata_samples_bio" data-href="{% url 'masterseq_app:user_samples_display'%}" class="table table-striped table-hover table-sm text-center table-responsive-xl">
-              <thead>
-                <tr>
-                  <th scope="col">sample_name</th>
-                  <th scope="col">date</th>
-                  <th scope="col">group</th>
-                  <th scope="col">sample_type</th>
-                  <th scope="col">service_requested</th>
-                  <th scope="col">status</th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-            </table>
-          </div><!-- /.card-body -->              
-        </div><!-- /.card -->      
 
 
-        <div class="card bottom15">
-          <div class="card-header fortable">
-            My Libraries
-          </div><!-- /.card-header -->
-          <div class="card-body">
-            <table id="metadata_libs_bio" data-href="{% url 'masterseq_app:user_libs_display'%}" class="table table-striped table-hover table-sm text-center table-responsive-xl">
-              <thead>
-                <tr>
-                  <th scope="col">library_id</th>
-                  <th scope="col">date_started</th>
-                  <th scope="col">date_completed</th>
-                  <th scope="col">experiment_type</th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-            </table>
-          </div><!-- /.card-body -->              
-        </div><!-- /.card -->   
+<div  class="col-sm-10 col-md-10 col-lg-10">
+  <ul class="nav nav-tabs" id="myTab">
+    <li class="active"><a href="#mysample">My Samples</a></li>
+    <li><a href="#mylibs">My Libs</a></li>
+    <li><a href="#myseqs">My Seqs</a></li>    
+  </ul>
+  
 
-        <div class="card bottom15">
-          <div class="card-header fortable">
-            My Sequencings
-          </div><!-- /.card-header -->
-          <div class="card-body">
-            <table id="metadata_seqs_bio" data-href="{% url 'masterseq_app:user_seqs_display'%}" class="table table-striped table-hover table-sm text-center table-responsive-xl">
-              <thead>
-                <tr>
-                  <th scope="col">seq_id</th>
-                  <th scope="col">date_submitted_for_sequencing</th>
-                  <th scope="col">read_length</th>
-                  <th scope="col">read_type</th>
-                  <th scope="col"></th>
+  <div id="content"  class="tab-content">
+    
+    <div class="tab-pane active" id="mysample">
+      <div class="card-header fortable">
+        My Samples
+      </div><!-- /.card-header -->
 
-                </tr>
-              </thead>
-            </table>
-          </div><!-- /.card-body -->              
-        </div><!-- /.card -->   
+      <div class="card-body">
+        <table id="metadata_samples_bio" data-href="{% url 'masterseq_app:user_samples_display'%}" class="table table-striped table-hover table-sm text-center table-responsive-xl">
+          <thead>
+            <tr>
+              <th scope="col">sample_name</th>
+              <th scope="col">date</th>
+              <th scope="col">group</th>
+              <th scope="col">sample_type</th>
+              <th scope="col">service_requested</th>
+              <th scope="col">status</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+        </table>
+      </div><!-- /.card-body -->              
+    </div><!-- /.tab-pane -->      
 
-      </div><!-- /#content --> 
+
+    <div class="tab-pane" id="mylibs">
+      <div class="card-header fortable">
+        My Libs
+      </div><!-- /.card-header -->
+      
+      <div class="card-body">
+        <table id="metadata_libs_bio" data-href="{% url 'masterseq_app:user_libs_display'%}" class="table table-striped table-hover table-sm text-center table-responsive-xl">
+          <thead>
+            <tr>
+              <th scope="col">library_id</th>
+              <th scope="col">date_started</th>
+              <th scope="col">date_completed</th>
+              <th scope="col">experiment_type</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+        </table>
+      </div><!-- /.card-body -->              
+    </div><!-- /.card -->   
+
+    <div class="tab-pane" id="myseqs">
+      <div class="card-header fortable">
+        My Seqs
+      </div><!-- /.card-header -->
+      
+      <div class="card-body">
+        <table id="metadata_seqs_bio" data-href="{% url 'masterseq_app:user_seqs_display'%}" class="table table-striped table-hover table-sm text-center table-responsive-xl">
+          <thead>
+            <tr>
+              <th scope="col">seq_id</th>
+              <th scope="col">date_submitted_for_sequencing</th>
+              <th scope="col">read_length</th>
+              <th scope="col">read_type</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+        </table>
+      </div><!-- /.card-body -->              
+    </div><!-- /.tab-pane -->   
+
+  </div><!-- /#content -->
+</div> <!-- /#col-10 -->
 {% endblock %}
