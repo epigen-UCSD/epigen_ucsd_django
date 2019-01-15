@@ -600,7 +600,10 @@ def DemultiplexingView(request, run_pk):
                             os.path.join(basedirname, 'Data/Fastqs/TwoPrimers', 'SampleSheet.csv')]
         try:
             for filename in towritefiles:
-                # print(filename)
+                if runinfo.experiment_type == 'S2':
+                    i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
+                    i2_file = open(filename.replace('.csv', '_I2.csv'), 'w')
+
                 with open(filename, 'w') as csvfile:
                     writer = csv.writer(csvfile)
                     writer.writerow(['[Header]'])
@@ -640,6 +643,12 @@ def DemultiplexingView(request, run_pk):
                                 indexid=i5id).indexseq if i5id != '' else ''
                             writer.writerow(
                                 [samples.Library_ID, '', '', '', i7id, i7seq, i5id, i5seq, '', ''])
+
+                            # handle snATAC
+                            if runinfo.experiment_type == 'S2':
+                                i1_file.write(i7seq+'\n')
+                                i2_file.write(i5seq+'\n')
+
                         else:
                             if not samples.i5index:
                                 if filename == os.path.join(basedirname, 'Data/Fastqs/OnePrimer', 'SampleSheet.csv'):
@@ -658,6 +667,10 @@ def DemultiplexingView(request, run_pk):
                                         indexid=i5id).indexseq if i5id != '' else ''
                                     writer.writerow(
                                         [samples.Library_ID, '', '', '', i7id, i7seq, i5id, i5seq, '', ''])
+                if runinfo.experiment_type == 'S2':
+                    i1_file.close()
+                    i2_file.close()
+
         except Exception as e:
             data['writesamplesheeterror'] = 'Unexpected writing to SampleSheet.csv Error!'
             print(e)
@@ -769,8 +782,8 @@ def DemultiplexingView2(request, run_pk):
 
                             # handle snATAC
                             if runinfo.experiment_type == 'S2':
-                                i1_file.write(i7id+'\n')
-                                i2_file.write(i5id+'\n')
+                                i1_file.write(i7seq+'\n')
+                                i2_file.write(i5seq+'\n')
 
                         else:
                             if not samples.i5index:
