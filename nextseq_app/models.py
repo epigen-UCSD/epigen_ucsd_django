@@ -6,6 +6,10 @@ from django.urls import reverse
 class Barcode(models.Model):
     indexid = models.CharField(max_length=200, unique=True)
     indexseq = models.CharField(max_length=200)
+    kit_choice = (('BK', 'bulk'), ('S2', 'snATAC_v2'),
+                  ('TA', '10xATAC'), ('TR', '10xRNA'))
+    kit = models.CharField(
+        max_length=2, choices=kit_choice, default='BK', help_text='bulk (default), snATAC_v2:combinatory barcode v2, 10xATAC, 10xRNAseq')
 
     def __str__(self):
         return self.indexid
@@ -22,12 +26,12 @@ class RunInfo(models.Model):
     date = models.DateField('I did this run on...',
                             help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03', blank=True, null=True)
     read_type_choice = (('SE', 'Single-end'), ('PE', 'Paired-end'))
-    exp_type_choice = (('BK', 'bulk'), ('SN', 'snATAC'),
+    exp_type_choice = (('BK', 'bulk'), ('S2', 'snATAC_v2'),
                        ('TA', '10xATAC'), ('TR', '10xRNA'))
     read_type = models.CharField(
         max_length=2, choices=read_type_choice, default='PE', help_text='default:PE')
     experiment_type = models.CharField(max_length=2, choices=exp_type_choice,
-                                       default='BK', help_text='bulk (default), snATAC:combinatory barcode, 10xATAC, 10xRNAseq')
+                                       default='BK', help_text='bulk (default), snATAC_v2:combinatory barcode v2, 10xATAC, 10xRNAseq')
     total_reads = models.IntegerField(blank=True, null=True)
     total_libraries = models.IntegerField(blank=True, null=True)
     percent_of_reads_demultiplexed = models.IntegerField(blank=True, null=True)

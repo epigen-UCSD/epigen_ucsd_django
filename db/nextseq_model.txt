@@ -2,6 +2,7 @@ Table Barcode {
     id int PK
     indexid varchar
     indexseq varchar
+    kit varchar
 }
 
 Table RunInfo {
