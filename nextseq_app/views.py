@@ -1,3 +1,9 @@
+import re
+import csv
+import os
+import subprocess
+import time
+import shutil
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 from django.contrib.auth import authenticate, login, logout
@@ -14,9 +20,6 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.views.decorators.cache import never_cache
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-import re
-import csv
-import os
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.db.models import Q
 from django.db import transaction
@@ -24,12 +27,9 @@ from django.forms import modelformset_factory, inlineformset_factory
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-import subprocess
-import os
-import time
-import shutil
 from django.core import serializers
 from django.forms.models import model_to_dict
+from setqc_app.forms import libraryparse
 
 
 def BarcodeDic():
@@ -142,94 +142,20 @@ def UserSamplesView(request):
     return render(request, 'nextseq_app/usersamplesinfo.html', context)
 
 
-# @method_decorator(login_required, name='dispatch')
-# class RunDetailView(DetailView):
-# 	model = RunInfo
-# 	template_name = 'nextseq_app/detail.html'
-# 	def get_context_data(self, **kwargs):
-# 		context = super().get_context_data(**kwargs)
-# 		context['barcode'] = barcodes_dic
-# 		return context
-
-
 class RunDetailView2(DetailView):
     model = RunInfo
     template_name = 'nextseq_app/details.html'
     summaryfield = ['jobstatus', 'date', 'operator', 'read_type', 'total_libraries', 'total_reads',
                     'percent_of_reads_demultiplexed', 'read_length', 'nextseqdir']
-    #object = FooForm(data=model_to_dict(Foo.objects.get(pk=object_id)))
+    # object = FooForm(data=model_to_dict(Foo.objects.get(pk=object_id)))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        #context['barcode'] = barcodes_dic
+        # context['barcode'] = barcodes_dic
         context['barcode'] = BarcodeDic()
         context['summaryfield'] = self.summaryfield
         return context
 
-# @login_required
-# def RunDetailView(request,pk):
-#     runinfo = get_object_or_404(RunInfo, pk=pk)
-#     runinfosummary = model_to_dict(runinfo, \
-#         fields=['jobstatus','date','operator','read_type','read_length','nextseqdir'])
-#     #runinfosummary = serializers.serialize('python', RunInfo.objects.filter(pk=pk), \
-#         #fields=('jobstatus','date','operator','read_type','read_length','nextseqdir',))
-#     print(runinfosummary)
-
-#     context = {
-#         'runinfosummary':runinfosummary,
-#         'runinfo': runinfo,
-#         'barcode': BarcodeDic(),
-
-#     }
-#     return render(request, 'nextseq_app/details.html', context=context)
-
-
-# @method_decorator(login_required, name='dispatch')
-# class RunDetailViewhome(DetailView):
-#     model = RunInfo
-#     template_name = 'nextseq_app/homedetails.html'
-#     summaryfield = ['jobstatus','date','operator','read_type','read_length','nextseqdir']
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         #context['barcode'] = barcodes_dic
-#         context['barcode'] = BarcodeDic()
-#         context['summaryfield'] = self.summaryfield
-#         return context
-
-# @method_decorator(login_required, name='dispatch')
-# class RunCreateView(CreateView):
-# 	model = RunInfo
-# 	fields = ['Flowcell_ID','date','read_type','read_length']
-# 	template_name = 'nextseq_app/createrun.html'
-
-
-# @method_decorator(login_required, name='dispatch')
-# class RunCreateView2(CreateView):
-# 	form_class = RunCreationForm
-# 	template_name = 'nextseq_app/createrun.html'
-# 	def form_valid(self, form):
-# 		obj = form.save(commit=False)
-# 		obj.operator = self.request.user
-# 		return super().form_valid(form)
-
-
-# @login_required
-# def RunCreateView3(request):
-# 	run_form = RunCreationForm(request.POST or None, prefix = "run")
-# 	formset = modelformset_factory(LibrariesInRun, form=LibrariesInRunForm,extra =3, can_order=True,  can_delete=True )
-# 	sample_formset = formset(request.POST or None, queryset =  LibrariesInRun.objects.none())
-
-# 	if run_form.is_valid() and sample_formset.is_valid():
-# 		runinfo = run_form.save(commit=False)
-# 		runinfo.operator = request.user
-# 		runinfo.save()
-# 		instances = sample_formset.save(commit=False)
-# 		for instance in instances:
-# 			instance.singlerun = runinfo
-# 			instance.save()
-# 		return redirect('nextseq_app:rundetail',pk=runinfo.id)
-# 	return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form':run_form,'sample_formset':sample_formset})
 
 @transaction.atomic
 def RunCreateView4(request):
@@ -296,11 +222,59 @@ def RunCreateView6(request):
         libraryid_list = []
         for samples in samplestocreat.strip().split('\n'):
             samples_info = re.split(r'[\s]', samples)
+
+            # handle snATAC_v2, i7 in range(1-4), i5 in range(1-8)
+            if runinfo.experiment_type == "S2" and samples != '\r' and samples_info[0] != 'Library_ID':
+                try:
+                    if samples_info[1] and samples_info[2]:
+                        i7 = libraryparse(samples_info[1])
+                        i5 = libraryparse(samples_info[2])
+                        print(i7, i5)
+                        # check ranges
+                        if int(i7[0]) in range(1, 5) and int(i7[-1]) in range(1, 5) and int(i5[0]) in range(1, 9) and int(i5[-1]) in range(1, 9):
+                            tosave_sample = LibrariesInRun(
+                                Library_ID=samples_info[0],
+                                i7index=Barcode.objects.get(
+                                    indexid=','.join(i7)),
+                                i5index=Barcode.objects.get(
+                                    indexid=','.join(i5)),
+                            )
+                        else:
+                            context = {
+                                'run_form': run_form,
+                                'form': form,
+                                'error_message': 'either both i7 not in range(1,4) or  i5 in range(1-8) for library input '+'\t'.join(samples_info)
+                            }
+                            return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
+
+                    else:  # require 2 barcodes
+                        context = {
+                            'run_form': run_form,
+                            'form': form,
+                            'error_message': 'Need both i7 and i5 for snATAC for this library: '+'\t'.join(samples_info)
+                        }
+                        return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
+
+                    i7index_list.append(','.join(i7))
+                    i5index_list.append(','.join(i5))
+                    libraryid_list.append(samples_info[0])
+
+                except ObjectDoesNotExist:
+                    context = {
+                        'run_form': run_form,
+                        'form': form,
+                        'error_message': 'There are indexes that are not stored in the database for this library: '+'\t'.join(samples_info)
+                    }
+
+                    return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
+
+                tosave_list.append(tosave_sample)
+
+            # hand bulk barcodes
             if runinfo.experiment_type == "BK" and samples != '\r' and samples_info[0] != 'Library_ID':
                 try:
                     if samples_info[1] and samples_info[2]:
                         tosave_sample = LibrariesInRun(
-
                             Library_ID=samples_info[0],
                             i7index=Barcode.objects.get(
                                 indexid=samples_info[1]),
@@ -340,6 +314,7 @@ def RunCreateView6(request):
                     return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
                 tosave_list.append(tosave_sample)
+
         libraryselfduplicate = SelfUniqueValidation(libraryid_list)
         if len(libraryselfduplicate) > 0:
 
@@ -398,13 +373,13 @@ def RunUpdateView2(request, username, run_pk):
         raise PermissionDenied
     run_form = RunCreationForm(request.POST or None, instance=runinfo)
     SamplesInlineFormSet = inlineformset_factory(RunInfo, LibrariesInRun, fields=[
-                                                 'Library_ID', 'i7index', 'i5index'], extra=3)
+        'Library_ID', 'i7index', 'i5index'], extra=3)
     sample_formset = SamplesInlineFormSet(
         request.POST or None, instance=runinfo)
 
     if run_form.is_valid() and sample_formset.is_valid():
         runinfo = run_form.save(commit=False)
-        #runinfo.operator = request.user
+        # runinfo.operator = request.user
         sample_formset.save(commit=False)
         Library_ID_list = []
         i7index_list = []
@@ -432,7 +407,7 @@ def RunUpdateView2(request, username, run_pk):
             }
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
         if run_form.has_changed() or sample_formset.has_changed():
-            #dmpdir = settings.NEXTSEQAPP_DMPDIR
+            # dmpdir = settings.NEXTSEQAPP_DMPDIR
             # for fname in os.listdir(dmpdir):
             #    if os.path.isdir(os.path.join(dmpdir, fname)) and fname.endswith(runinfo.Flowcell_ID):
             #        basedirname = os.path.join(dmpdir, fname)
@@ -450,92 +425,7 @@ def RunUpdateView2(request, username, run_pk):
     return render(request, 'nextseq_app/runandsamplesupdate.html', {'run_form': run_form, 'sample_formset': sample_formset, 'runinfo': runinfo})
 
 
-# @login_required
-# def SampleCreateView(request, run_pk):
-# 	#form = LibrariesInRunForm(request.POST or None, request.FILES or None)
-# 	form = LibrariesInRunForm(request.POST or None)
-# 	runinfo = get_object_or_404(RunInfo, pk=run_pk)
-# 	if form.is_valid():
-# 		runinfo_samples = runinfo.LibrariesInRun_set.all()
-# 		for s in runinfo_samples:
-# 			if s.Library_ID == form.cleaned_data.get("Library_ID"):
-# 				context ={
-# 					'form':form,
-# 					'runinfo':runinfo,
-# 					'error_message':'You already added that sample',
-# 				}
-# 				return render(request, 'nextseq_app/createsamples.html', context)
-# 		obj = form.save(commit=False)
-# 		obj.singlerun = runinfo
-# 		obj.save()
-# 		return redirect('nextseq_app:rundetail',pk=runinfo.id)
-# 	return render(request, 'nextseq_app/createsamples.html', {'form':form,'runinfo':runinfo})
-
-# @login_required
-# def SamplesDeleteView(request, run_pk):
-# 	delete_list = request.GET.getlist('delete_list')
-# 	if request.method == "POST":
-# 		LibrariesInRun.objects.filter(singlerun=RunInfo.objects.get(pk=run_pk),Library_ID__in=delete_list).delete()
-# 		return redirect('nextseq_app:rundetail',pk=run_pk)
-# 	return render(request, 'nextseq_app/samples_confirm_delete.html', {'delete_list':delete_list,'run_pk':run_pk})
-
-# @login_required
-# def SamplesBulkCreateView(request,run_pk):
-# 	runinfo = get_object_or_404(RunInfo, pk=run_pk)
-# 	if request.method == 'POST':
-# 		form = SamplesToCreatForm(request.POST)
-# 		#print(form)
-# 		if form.is_valid():
-# 			samplestocreat = form.cleaned_data['samplestocreat']
-# 			tosave_list = []
-# 			samplestocreat += '  \nLibrary_ID'
-# 			#print(samplestocreat)
-# 			for samples in samplestocreat.split('\n'):
-# 				#print(samples)
-# 				samples_info = re.split(r'[\s]',samples)
-# 				#print(samples_info)
-# 				if samples_info[0] != 'Library_ID':
-# 					try:
-# 						if samples_info[1] and samples_info[2]:
-# 							tosave_sample = LibrariesInRun(
-# 								singlerun=runinfo,
-# 								Library_ID=samples_info[0],
-# 								i7index=Barcode.objects.get(indexid=samples_info[1]),
-# 								i5index=Barcode.objects.get(indexid=samples_info[2]),
-# 								)
-# 						elif samples_info[1] and not samples_info[2]:
-# 							tosave_sample = LibrariesInRun(
-# 								singlerun=runinfo,
-# 								Library_ID=samples_info[0],
-# 								i7index=Barcode.objects.get(indexid=samples_info[1]),
-# 								)
-# 						elif not samples_info[1] and samples_info[2]:
-# 							tosave_sample = LibrariesInRun(
-# 								singlerun=runinfo,
-# 								Library_ID=samples_info[0],
-# 								i5index=Barcode.objects.get(indexid=samples_info[2]),
-# 								)
-# 						else:
-# 							tosave_sample = LibrariesInRun(
-# 								singlerun=runinfo,
-# 								Library_ID=samples_info[0],
-# 								)
-
-# 					except ObjectDoesNotExist:
-# 						context = {
-# 							'form':form,
-# 							'error_message':'There are indexes that are not stored in the database!'
-# 						}
-# 						return render(request, 'nextseq_app/createsamples_inbulk.html',context)
-
-
-# 					tosave_list.append(tosave_sample)
-# 			LibrariesInRun.objects.bulk_create(tosave_list)
-# 			return redirect('nextseq_app:rundetail',pk=run_pk)
-
-# 	else:
-# 		form = SamplesToCreatForm()
-# 	return render(request, 'nextseq_app/createsamples_inbulk.html',{'form':form,'runinfo':runinfo})
+# @login
 
 def SampleSheetCreateView(request, run_pk):
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
@@ -579,17 +469,6 @@ def SampleSheetCreateView(request, run_pk):
                          i7id, i7seq, i5id, i5seq, '', ''])
     return response
 
-
-# @method_decorator(login_required, name='dispatch')
-# class RunUpdateView(UpdateView):
-# 	model = RunInfo
-# 	fields = ['Flowcell_ID','date','read_type','read_length']
-# 	template_name = 'nextseq_app/updaterun.html'
-
-# @method_decorator(login_required, name='dispatch')
-# class RunDeleteView(DeleteView):
-# 	model = RunInfo
-# 	success_url = reverse_lazy('nextseq_app:userruns')
 
 def RunDeleteView2(request, run_pk):
     deleterun = get_object_or_404(RunInfo, pk=run_pk)
@@ -646,10 +525,10 @@ def change_password(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, form.user)
-            #messages.success(request, 'Your password was successfully updated!')
+            # messages.success(request, 'Your password was successfully updated!')
             return redirect('nextseq_app:userruns')
         # else:
-            #messages.error(request, 'Please correct the error below.')
+            # messages.error(request, 'Please correct the error below.')
     else:
         form = PasswordChangeForm(user=request.user)
     return render(request, 'nextseq_app/change_password.html', {
