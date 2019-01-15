@@ -24,6 +24,7 @@ ALTER USER test WITH PASSWORD '123456';
 * list: `\l`
 
 ## URL
+* [nextseq@dbdiagram.io](https://dbdiagram.io/d/5c3d227619c125001489f837)
 * [metadata@dbdiagram.io](https://dbdiagram.io/d/5bb396d8e63c1f0014dab57d)
 * [usrs@dbdigram.io](https://dbdiagram.io/d/5c05a310b155a200149def72)
 

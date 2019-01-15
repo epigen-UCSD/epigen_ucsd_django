@@ -1,0 +1,36 @@
+Table Barcode {
+    id int PK
+    indexid varchar
+    indexseq varchar
+}
+
+Table RunInfo {
+    id int PK
+    Flowcell_ID varchar
+    operator varchar
+    date date
+    read_type varchar
+    experiment_type varchar
+    total_reads int
+    total_libraries int
+    percent_of_reads_demultiplexed numeric
+    read_length varchar
+    update_at datetime
+    nextseqdir varchar
+    jobstatus varchar
+}
+
+Table LibrariesInRun {
+    id int PK
+    singlerun int
+    Library_ID varchar
+    i7index int
+    i5index int
+    numberofreads int
+}
+
+
+// Links
+Ref: LibrariesInRun.singlerun > RunInfo.id
+Ref: LibrariesInRun.i7index > Barcode.id
+Ref: LibrariesInRun.i5index > Barcode.id

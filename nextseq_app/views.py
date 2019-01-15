@@ -83,12 +83,10 @@ def IndexValidation(i7list, i5list):
     return duplicate
 
 
-
 def IndexView(request):
 
     RunInfo_list = RunInfo.objects.filter(operator=request.user)
     return render(request, 'nextseq_app/userrunsinfo.html', {'RunInfo_list': RunInfo_list})
-
 
 
 class HomeView(ListView):
@@ -116,7 +114,6 @@ class HomeView(ListView):
         return context
 
 
-
 def AllSamplesView(request):
     Samples_list = LibrariesInRun.objects.all()
     barcodes_dic = BarcodeDic()
@@ -129,7 +126,6 @@ def AllSamplesView(request):
 
     }
     return render(request, 'nextseq_app/samplesinfo.html', context)
-
 
 
 def UserSamplesView(request):
@@ -159,15 +155,15 @@ def UserSamplesView(request):
 class RunDetailView2(DetailView):
     model = RunInfo
     template_name = 'nextseq_app/details.html'
-    summaryfield = ['jobstatus','date','operator','read_type','total_libraries','total_reads',
-                    'percent_of_reads_demultiplexed','read_length','nextseqdir']
+    summaryfield = ['jobstatus', 'date', 'operator', 'read_type', 'total_libraries', 'total_reads',
+                    'percent_of_reads_demultiplexed', 'read_length', 'nextseqdir']
     #object = FooForm(data=model_to_dict(Foo.objects.get(pk=object_id)))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         #context['barcode'] = barcodes_dic
         context['barcode'] = BarcodeDic()
-        context['summaryfield'] = self.summaryfield 
+        context['summaryfield'] = self.summaryfield
         return context
 
 # @login_required
@@ -282,7 +278,6 @@ def RunCreateView4(request):
     return render(request, 'nextseq_app/runandsamplesadd.html', {'run_form': run_form, 'sample_formset': sample_formset})
 
 
-
 @transaction.atomic
 def RunCreateView6(request):
     run_form = RunCreationForm(request.POST or None)
@@ -291,6 +286,7 @@ def RunCreateView6(request):
     if run_form.is_valid() and form.is_valid():
         runinfo = run_form.save(commit=False)
         runinfo.operator = request.user
+        print(runinfo.experiment_type)
 
         samplestocreat = form.cleaned_data['samplestocreat']
         tosave_list = []
@@ -300,7 +296,7 @@ def RunCreateView6(request):
         libraryid_list = []
         for samples in samplestocreat.strip().split('\n'):
             samples_info = re.split(r'[\s]', samples)
-            if samples != '\r' and samples_info[0] != 'Library_ID':
+            if runinfo.experiment_type == "BK" and samples != '\r' and samples_info[0] != 'Library_ID':
                 try:
                     if samples_info[1] and samples_info[2]:
                         tosave_sample = LibrariesInRun(
@@ -615,7 +611,6 @@ class UserRegisterView(FormView):
         return HttpResponseRedirect(self.success_url)
 
 
-
 class UserLoginView(View):
     form_class = UserLoginForm
     template_name = 'nextseq_app/login.html'
@@ -841,8 +836,10 @@ def DemultiplexingView2(request, run_pk):
             towritefiles = [os.path.join(
                 basedirname, 'Data/Fastqs', 'SampleSheet.csv')]
         else:
-            os.makedirs(os.path.join(basedirname, 'Data/Fastqs/OnePrimer'),exist_ok=True)
-            os.makedirs(os.path.join(basedirname, 'Data/Fastqs/TwoPrimers'),exist_ok=True)           
+            os.makedirs(os.path.join(
+                basedirname, 'Data/Fastqs/OnePrimer'), exist_ok=True)
+            os.makedirs(os.path.join(
+                basedirname, 'Data/Fastqs/TwoPrimers'), exist_ok=True)
             towritefiles = [os.path.join(basedirname, 'Data/Fastqs/OnePrimer', 'SampleSheet.csv'),
                             os.path.join(basedirname, 'Data/Fastqs/TwoPrimers', 'SampleSheet.csv')]
         try:
