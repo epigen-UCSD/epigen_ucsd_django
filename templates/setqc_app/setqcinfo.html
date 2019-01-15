@@ -37,7 +37,7 @@
                   {% endif %}
                   {% for field in DisplayField %}
                     {% if field == 'date_requested' %}
-                    <td>{{ Set.date_requested|date:"m/d/Y" }}</td>
+                    <td>{{ Set.date_requested|date:"Y-m-d" }}</td>
                     {% elif field == 'url' %}
                       {% if Set.url%}
                         <td><a href="{{Set.url}}" target="_blank"><i class="fas fa-file-alt" style="font-size: 17px;color:#26D07C"></i></a></td>

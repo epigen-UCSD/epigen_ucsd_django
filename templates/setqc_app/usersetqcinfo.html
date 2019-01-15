@@ -33,9 +33,9 @@
                   {% endif %}
                   {% for field in DisplayField %}
                     {% if field == 'date_requested' %}
-                    <td>{{ Set.date_requested|date:"m/d/Y" }}</td>
+                    <td>{{ Set.date_requested|date:"Y-m-d" }}</td>
                     {% elif field == 'last_modified' %}
-                    <td>{{ Set.last_modified|date:"m/d/Y H:i" }}</td>
+                    <td>{{ Set.last_modified|date:"Y-m-d H:i" }}</td>
                     {% elif field == 'url' %}
                       {% if Set.url%}
                         <td><a href="{{Set.url}}" target="_blank"><i class="fas fa-file-alt" style="font-size: 17px;color:#26D07C"></i></a></td>
