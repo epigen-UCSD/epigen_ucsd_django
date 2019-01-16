@@ -681,8 +681,14 @@ def DemultiplexingView(request, run_pk):
         RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSubmitted')
 
         # runBcl2fastq
-        cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
-            ' ' + basedirname + ' ' + request.user.email
+        if runinfo.experiment_type == 'S2':
+            cmd1 = './utility/runDemuxSnATAC.sh ' + runinfo.Flowcell_ID + \
+                ' ' + basedirname + ' ' + request.user.email
+        else:
+            cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
+                ' ' + basedirname + ' ' + request.user.email
+        print(cmd1)
+
         p = subprocess.Popen(
             cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         # thisjobid=p.pid
@@ -715,8 +721,8 @@ def DemultiplexingView2(request, run_pk):
             break
     # print(data)
     if 'is_direxists' in data:
-        shutil.rmtree(os.path.join(basedirname, 'Data/Fastqs'))
-        os.mkdir(os.path.join(basedirname, 'Data/Fastqs'))
+        #shutil.rmtree(os.path.join(basedirname, 'Data/Fastqs'))
+        #os.mkdir(os.path.join(basedirname, 'Data/Fastqs'), exist_ok=True)
 
         samples_list = runinfo.librariesinrun_set.all()
 
@@ -817,8 +823,14 @@ def DemultiplexingView2(request, run_pk):
         RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSubmitted')
 
         # runBcl2fastq
-        cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
-            ' ' + basedirname + ' ' + request.user.email
+        if runinfo.experiment_type == 'S2':
+            cmd1 = './utility/runDemuxSnATAC.sh ' + runinfo.Flowcell_ID + \
+                ' ' + basedirname + ' ' + request.user.email
+
+        else:
+            cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
+                ' ' + basedirname + ' ' + request.user.email
+        print(cmd1)
         p = subprocess.Popen(
             cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         # thisjobid=p.pid
