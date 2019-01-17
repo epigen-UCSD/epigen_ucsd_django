@@ -57,6 +57,7 @@ def IndexValidation(i7list, i5list):
     duplicate = []
 
     combinelist = [x for x in list(zip(i7list, i5list)) if x[1]]
+    print(combinelist)
     combinelistseq = [(barcodes_dic[x[0]], barcodes_dic[x[1]])
                       for x in combinelist]
     for i in range(0, len(combinelistseq)):
@@ -271,7 +272,7 @@ def RunCreateView6(request):
                 tosave_list.append(tosave_sample)
 
             # hand bulk barcodes
-            if runinfo.experiment_type == "BK" and samples != '\r' and samples_info[0] != 'Library_ID':
+            if runinfo.experiment_type in ["BK", "TA"] and samples != '\r' and samples_info[0] != 'Library_ID':
                 try:
                     if samples_info[1] and samples_info[2]:
                         tosave_sample = LibrariesInRun(
@@ -300,6 +301,7 @@ def RunCreateView6(request):
 
                             Library_ID=samples_info[0],
                         )
+
                     i7index_list.append(samples_info[1])
                     i5index_list.append(samples_info[2])
                     libraryid_list.append(samples_info[0])

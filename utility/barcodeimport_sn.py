@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Time-stamp: <2019-01-15 11:24:42>
+# Time-stamp: <2019-01-17 12:04:22>
 
 import os
 import sys
@@ -8,7 +8,7 @@ import io
 import itertools
 
 
-os.chdir("../")
+# os.chdir("../")
 basedir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(basedir)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "epigen_ucsd_django.settings")

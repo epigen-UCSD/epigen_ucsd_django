@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Time-stamp: <2019-01-17 11:57:54>
+# Time-stamp: <2019-01-17 12:40:00>
 
 import os
 import sys
@@ -16,7 +16,8 @@ from nextseq_app.models import Barcode
 
 def getArgs():
     import argparse
-    parser = argparse.ArgumentParser(description='Import barcodes script.')
+    parser = argparse.ArgumentParser(
+        description='Import barcodes script for 10xATAC.')
     parser.add_argument('-b', '--barcode_file', dest='barcode_file',
                         help='input barcode file  (csv format, basedir is ../scripts)')
     if len(sys.argv) == 1:
@@ -27,13 +28,14 @@ def getArgs():
 
 
 def main():
-    fl = getArgs()
-    with io.open(fl, 'r', encoding='utf-8') as f:
+    fn = getArgs()
+    with io.open(fn, 'r', encoding='utf-8') as f:
         lines = f.read().splitlines()
-    indexes = {l.replace(u'\ufeff', '').split(',')[0]: l.replace(
-        u'\ufeff', '').split(',')[1]for l in lines}
-    for k, v in indexes.items():
-        obj, created = Barcode.objects.get_or_create(indexid=k, indexseq=v)
+    indexes = [l.replace(u'\ufeff', '').split(',')[0] for l in lines]
+
+    for nm in indexes:
+        obj, created = Barcode.objects.get_or_create(
+            indexid=nm, indexseq=nm, kit='TA')
 
 
 if __name__ == '__main__':
