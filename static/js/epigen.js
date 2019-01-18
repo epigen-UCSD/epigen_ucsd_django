@@ -57,7 +57,7 @@ $(document).ready( function () {
 	"iDisplayLength": 20,
     	"order": [[ 1, "desc" ]],
     	"columnDefs": [ {
-   	    "orderable":false
+   	    "orderable":false,
    	    "targets": [0,-1,-2],            
         } ,
         // {
