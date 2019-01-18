@@ -57,8 +57,8 @@ $(document).ready( function () {
 	"iDisplayLength": 20,
     	"order": [[ 1, "desc" ]],
     	"columnDefs": [ {
-    	    "orderable":false,
-    	    "targets": [0,-1,-2],            
+   	    "orderable":false
+   	    "targets": [0,-1,-2],            
         } ,
         // {
         // 	"className": 'details-control',
@@ -565,7 +565,8 @@ $(document).ready( function () {
 	var that = this;
 	var url1=$(this).attr("data-href");
 	var url2=url1.replace("demultiplexing","demultiplexing2")
-
+	alert('start')
+	
 	$.ajax({
 	    url:url1,
 	    cache:false,
@@ -720,8 +721,6 @@ $(document).ready( function () {
 
 
         }
-
-
 
         })
     })
