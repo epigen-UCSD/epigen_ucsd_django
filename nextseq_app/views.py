@@ -539,6 +539,7 @@ def change_password(request):
 
 @transaction.atomic
 def DemultiplexingView(request, run_pk):
+    print('started xxxx')
     dmpdir = settings.NEXTSEQAPP_DMPDIR
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
     if runinfo.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
@@ -675,6 +676,8 @@ def DemultiplexingView(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file.close()
                     i2_file.close()
+                elif runinfo.experiment_type == 'TA':
+                    i1_file.close()
 
         except Exception as e:
             data['writesamplesheeterror'] = 'Unexpected writing to SampleSheet.csv Error!'
