@@ -54,8 +54,10 @@
                   <td><a class="btn btn-danger btn-sm btn-status-orange runsetqc" href="" data-href="{% url 'setqc_app:runsetqc' Set.id %}" id={{Set.set_id}}>ClickToSubmit</a></td>
                   {% elif Set.status == 'JobSubmitted'%}
                   <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
-                  {% elif Set.status == 'JobStarted'%}
-                  <td><span class="badge badge-success badge-status-lightblue">JobStarted</span></td>
+                  {% elif Set.status == 'ProcessingLibs'%}
+                  <td><span class="badge badge-success badge-status-lightblue">ProcessingLibs</span></td>
+                  {% elif Set.status == 'RunSetQC'%}
+                  <td><span class="badge badge-success badge-status-lightblue">RunSetQC</span></td>
                   {% elif Set.status == 'Error'%}
                   <td><span class="badge badge-success badge-status-yellow">Error</span></td>
                   {% elif Set.status == 'Warning'%}
