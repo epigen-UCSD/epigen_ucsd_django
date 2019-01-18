@@ -446,12 +446,11 @@ def SampleSheetCreateView(request, run_pk):
     writer.writerow(['Chemistry', 'Amplicon'])
     writer.writerow([''])
     writer.writerow(['[Reads]'])
+    a = runinfo.read_length.split('+')[0]
     if runinfo.read_type == 'PE':
-        a = runinfo.read_length
         writer.writerow([a])
         writer.writerow([a])
     else:
-        a = runinfo.read_length
         writer.writerow([a])
     writer.writerow([''])
     writer.writerow(['[Settings]'])
@@ -605,6 +604,9 @@ def DemultiplexingView(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i2_file = open(filename.replace('.csv', '_I2.csv'), 'w')
+                elif runinfo.experiment_type == 'TA':
+                    i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
+                    i1_file.write(','.join(["Lane", "Sample", "Index"])+'\n')
 
                 with open(filename, 'w') as csvfile:
                     writer = csv.writer(csvfile)
@@ -621,12 +623,11 @@ def DemultiplexingView(request, run_pk):
                     writer.writerow(['Chemistry', 'Amplicon'])
                     writer.writerow([''])
                     writer.writerow(['[Reads]'])
+                    a = runinfo.read_length.split('+')[0]
                     if runinfo.read_type == 'PE':
-                        a = runinfo.read_length
                         writer.writerow([a])
                         writer.writerow([a])
                     else:
-                        a = runinfo.read_length
                         writer.writerow([a])
                     writer.writerow([''])
                     writer.writerow(['[Settings]'])
@@ -650,7 +651,9 @@ def DemultiplexingView(request, run_pk):
                             if runinfo.experiment_type == 'S2':
                                 i1_file.write(i7seq+'\n')
                                 i2_file.write(i5seq+'\n')
-
+                            elif runinfo.experiment_type == 'TA':
+                                i1_file.write(
+                                    ','.join(['*', samples.Library_ID, i7seq])+'\n')
                         else:
                             if not samples.i5index:
                                 if filename == os.path.join(basedirname, 'Data/Fastqs/OnePrimer', 'SampleSheet.csv'):
@@ -685,6 +688,9 @@ def DemultiplexingView(request, run_pk):
         # runBcl2fastq
         if runinfo.experiment_type == 'S2':
             cmd1 = './utility/runDemuxSnATAC.sh ' + runinfo.Flowcell_ID + \
+                ' ' + basedirname + ' ' + request.user.email
+        elif runinfo.experiment_type == 'TA':
+            cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
@@ -723,8 +729,8 @@ def DemultiplexingView2(request, run_pk):
             break
     # print(data)
     if 'is_direxists' in data:
-        #shutil.rmtree(os.path.join(basedirname, 'Data/Fastqs'))
-        #os.mkdir(os.path.join(basedirname, 'Data/Fastqs'), exist_ok=True)
+        # shutil.rmtree(os.path.join(basedirname, 'Data/Fastqs'))
+        # os.mkdir(os.path.join(basedirname, 'Data/Fastqs'), exist_ok=True)
 
         samples_list = runinfo.librariesinrun_set.all()
 
@@ -747,6 +753,9 @@ def DemultiplexingView2(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i2_file = open(filename.replace('.csv', '_I2.csv'), 'w')
+                elif runinfo.experiment_type == 'TA':
+                    i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
+                    i1_file.write(','.join(["Lane", "Sample", "Index"])+'\n')
 
                 with open(filename, 'w') as csvfile:
                     writer = csv.writer(csvfile)
@@ -763,12 +772,11 @@ def DemultiplexingView2(request, run_pk):
                     writer.writerow(['Chemistry', 'Amplicon'])
                     writer.writerow([''])
                     writer.writerow(['[Reads]'])
+                    a = runinfo.read_length.split('+')[0]
                     if runinfo.read_type == 'PE':
-                        a = runinfo.read_length
                         writer.writerow([a])
                         writer.writerow([a])
                     else:
-                        a = runinfo.read_length
                         writer.writerow([a])
                     writer.writerow([''])
                     writer.writerow(['[Settings]'])
@@ -792,6 +800,9 @@ def DemultiplexingView2(request, run_pk):
                             if runinfo.experiment_type == 'S2':
                                 i1_file.write(i7seq+'\n')
                                 i2_file.write(i5seq+'\n')
+                            elif runinfo.experiment_type == 'TA':
+                                i1_file.write(
+                                    ','.join(['*', samples.Library_ID, i7seq]) + '\n')
 
                         else:
                             if not samples.i5index:
@@ -815,6 +826,8 @@ def DemultiplexingView2(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file.close()
                     i2_file.close()
+                elif runinfo.experiment_type == "TA":
+                    i1_file.close()
         except Exception as e:
             data['writesamplesheeterror'] = 'Unexpected writing to SampleSheet.csv Error!'
             print(e)
@@ -828,7 +841,9 @@ def DemultiplexingView2(request, run_pk):
         if runinfo.experiment_type == 'S2':
             cmd1 = './utility/runDemuxSnATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
-
+        elif runinfo.experiment_type == 'TA':
+            cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
+                ' ' + basedirname + ' ' + request.user.email
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
