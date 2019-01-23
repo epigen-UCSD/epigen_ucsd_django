@@ -25,7 +25,7 @@ def libraryparse(libraries):
             endlib = librarytemp[1].strip().split('_')
             if len(startlib) == len(endlib) > 1:  # 'JYH_1-JYH_3'
                 numberrange = [startlib[1], endlib[1]]
-            if len(startlib) == len(endlib) == 1:  # '1-3'
+            elif len(startlib) == len(endlib) == 1:  # '1-3'
                 numberrange = [startlib[0], endlib[0]]
             else:  # 'JYH_1-3'
                 numberrange = [startlib[1], endlib[0]]

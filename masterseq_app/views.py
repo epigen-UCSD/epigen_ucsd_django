@@ -423,7 +423,8 @@ def SampleDataView(request):
         'pk', 'sample_id', 'date', 'sample_type', 'service_requested', 'group__name', 'status')
     for sample in Samples_list:
         try:
-            sample['group__name'] = sample['group__name'].replace('_group','').replace('_',' ')
+            sample['group__name'] = sample['group__name'].replace(
+                '_group', '').replace('_', ' ')
         except:
             pass
     data = list(Samples_list)
@@ -452,7 +453,8 @@ def UserSampleDataView(request):
         'pk', 'sample_id', 'date', 'sample_type', 'service_requested', 'group__name', 'status')
     for sample in Samples_list:
         try:
-            sample['group__name'] = sample['group__name'].replace('_group','').replace('_',' ')
+            sample['group__name'] = sample['group__name'].replace(
+                '_group', '').replace('_', ' ')
         except:
             pass
     data = list(Samples_list)
