@@ -9,39 +9,42 @@
       My Libraries
     </div><!-- /.card-header -->
     <div class="card-body"> 
-     <table class="table table-sm table-striped table-bordered datatablesort1 text-center table-responsive-xl">
-       <thead>
-         <tr>           
-           <th scope="col">Library ID</th>
-           <th scope="col">FlowcellSerialNumber</th>
+      <table class="table table-sm table-striped table-bordered datatablesort1 text-center table-responsive-xl">
+        <thead>
+          <tr>           
+            <th scope="col">Library ID</th>
+            <th scope="col">FlowcellSerialNumber</th>
            
-           <th scope="col">i7index</th>
-           <th scope="col">i7sequence</th>
-           <th scope="col">i5index</th>
-           <th scope="col">i5sequence</th>
-           <th scope="col">#Reads</th>
-         </tr>
-       </thead>
-       <tbody>
-         {% for sample in Samples_list %}
-         <tr>           
-           <td><a href=" "> {{ sample.Library_ID }} </a></td>
+            <th scope="col">i7index</th>
+            <th scope="col">i7sequence</th>
+            <th scope="col">i5index</th>
+            <th scope="col">i5sequence</th>
+            <th scope="col">#Reads</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sample in Samples_list %}
+          <tr>           
+            <td><a href="{% url 'masterseq_app:seq_detail_fromseqid' sample.Library_ID %} "> {{ sample.Library_ID }} </a></td>
           
-           <td><a href=" {% url 'nextseq_app:rundetail' sample.singlerun|get_value:'pk' %} ">{{  sample.singlerun }} </a></td>  
-          
-           <td>{{  sample.i7index|default_if_none:"" }}</td>
-           <td>{{ barcode|key:sample.i7index }}</td>
-           <td>{{  sample.i5index|default_if_none:"" }}</td>
-           <td>{{ barcode|key:sample.i5index }}</td>
-           {% with firstfilter=sample.numberofreads|default_if_none:"" %}
-           <td>{{ firstfilter|intcomma }}</td>
-           {% endwith %}
-         </tr>
-         {% empty %}
-         <li>No Runs yet.</li>
-         {% endfor %}
-       </tbody>
-     </table>
+            <td><a href=" {% url 'nextseq_app:rundetail' sample.singlerun|get_value:'pk' %} ">{{  sample.singlerun }} </a></td>  
+            {% with i7=sample.i7index %}
+            <td>{{  i7|default_if_none:"" }}</td>          
+            <td>{{ i7.indexseq }}</td>
+            {% endwith %}
+            {% with i5=sample.i5index %}
+            <td>{{  i5|default_if_none:"" }}</td>            
+            <td>{{ i5.indexseq }}</td>
+            {% endwith %}
+            {% with firstfilter=sample.numberofreads|default_if_none:"" %}
+            <td>{{ firstfilter|intcomma }}</td>
+            {% endwith %}
+          </tr>
+          {% empty %}
+          <li>No Runs yet.</li>
+          {% endfor %}
+        </tbody>
+      </table>
     </div><!-- /.card-body -->              
   </div><!-- /.card -->      
 </div><!-- /#content --> 

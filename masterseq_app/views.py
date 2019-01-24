@@ -738,6 +738,25 @@ def SeqDetailView(request, pk):
     }
     return render(request, 'masterseq_app/seqdetail.html', context=context)
 
+def SeqDetail2View(request, seqid):
+    seqinfo = get_object_or_404(SeqInfo.objects.select_related('libraryinfo',
+                                                               'machine', 'i7index', 'i5index', 'team_member_initails'), seq_id=seqid)
+    libinfo = seqinfo.libraryinfo
+    summaryfield = ['seq_id', 'libraryinfo', 'default_label', 'team_member_initails',
+                    'date_submitted_for_sequencing', 'machine', 'read_length', 'read_type', 'portion_of_lane',
+                    'i7index', 'i5index', 'total_reads', 'notes']
+    bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
+                    'tss_enrichment', 'frop']
+    seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
+    context = {
+        'libinfo': libinfo,
+        'seqinfo': seqinfo,
+        'summaryfield': summaryfield,
+        'seqbioinfos': seqbioinfos,
+        'bioinfofield': bioinfofield
+
+    }
+    return render(request, 'masterseq_app/seqdetail.html', context=context)
 
 def load_samples(request):
     q = request.GET.get('term', '')

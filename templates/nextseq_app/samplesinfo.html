@@ -26,12 +26,16 @@
         <tbody>
           {% for sample in Samples_list %}
           <tr>            
-            <td><a href="#"> {{ sample.Library_ID }} </a></td>
+            <td><a href="{% url 'masterseq_app:seq_detail_fromseqid' sample.Library_ID %} "> {{ sample.Library_ID }} </a></td>
             <td><a href=" {% url 'nextseq_app:rundetail' sample.singlerun|get_value:'pk' %} ">{{  sample.singlerun }}</a></td>    
-            <td>{{  sample.i7index|default_if_none:"" }}</td>
-            <td>{{ barcode|key:sample.i7index }}</td>
-            <td>{{  sample.i5index|default_if_none:"" }}</td>
-            <td>{{ barcode|key:sample.i5index }}</td>
+            {% with i7=sample.i7index %}
+            <td>{{  i7|default_if_none:"" }}</td>          
+            <td>{{ i7.indexseq }}</td>
+            {% endwith %}
+            {% with i5=sample.i5index %}
+            <td>{{  i5|default_if_none:"" }}</td>            
+            <td>{{ i5.indexseq }}</td>
+            {% endwith %}
             {% with firstfilter=sample.numberofreads|default_if_none:"" %}
             <td>{{ firstfilter|intcomma }}</td>
             {% endwith %}

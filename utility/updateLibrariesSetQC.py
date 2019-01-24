@@ -20,7 +20,7 @@ def main():
     # for example: python updateLibrariesSetQC.py -s '0' -id 'Set_168'
     #python updateLibrariesSetQC.py -url '' -v '' -id 'Set_168'
     statuscode = {'-1': 'ClickToSubmit', '0': 'JobSubmitted',
-                  '1': 'ProcessingLibs', '2': 'RunSetQC', '3': 'Done', '4': 'Warning'}
+                  '1': 'ProcessingLibs', '2': 'Done', '3': 'Error', '4': 'Warning'}
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', choices=['-1', '0', '1', '2', '3', '4'],
                         help='-1: ClickToSubmit 0:JobSubmitted 1:ProcessingLibs 2:RunSetQC 3:Done 4:Warning')
