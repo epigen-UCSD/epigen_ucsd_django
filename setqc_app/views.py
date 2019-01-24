@@ -532,7 +532,6 @@ def RunSetQC(request, setqc_pk):
 
     # run setQC script
     #cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
-    cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id
     print(cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -594,7 +593,7 @@ def RunSetQC2(request, setqc_pk):
         data['writeseterror'] = 'Unexpected writing to Set.txt Error!'
     setinfo.status = 'JobSubmitted'
     setinfo.save()
-    cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id
+    
     # run setQC script
     #cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
     print(cmd1)
