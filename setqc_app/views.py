@@ -513,7 +513,6 @@ def RunSetQC(request, setqc_pk):
                 seqstatus.append('Yes')
 
     if setinfo.experiment_type == 'ChIP-seq':
-
         list2 = list(librariesset.values_list('group_number', flat=True))
         list3 = list(librariesset.values_list('is_input', flat=True))
         writecontent = '\n'.join(['\t'.join(map(str, x)) for x in zip(
@@ -523,8 +522,6 @@ def RunSetQC(request, setqc_pk):
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
             setinfo.set_id + ' ' + request.user.email
     else:
-        # regset = setinfo.libraries_to_include.all()
-        # list1 = [x.seq_id for x in regset]
         writecontent = '\n'.join(['\t'.join(map(str, x))
                                   for x in zip(list1, list4, list5, seqstatus, list_readtype)])
         featureheader = ['Library ID', 'Genome',
@@ -573,6 +570,9 @@ def RunSetQC2(request, setqc_pk):
     list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
         id=x) for x in list(librariesset.values_list('genome', flat=True))]
     list5 = list(librariesset.values_list('label', flat=True))
+    list_readtype = [SeqInfo.objects.values_list(
+        'read_type', flat=True).get(id=x) for x in list1tem]
+
     seqstatus = []
     for item in list1:
         if item not in allfolder:
@@ -587,17 +587,16 @@ def RunSetQC2(request, setqc_pk):
         list2 = list(librariesset.values_list('group_number', flat=True))
         list3 = list(librariesset.values_list('is_input', flat=True))
         writecontent = '\n'.join(['\t'.join(map(str, x)) for x in zip(
-            list1, list2, list3, list4, list5, seqstatus)])
+            list1, list2, list3, list4, list5, seqstatus, list_readtype)])
         featureheader = ['Library ID', 'Group ID',
-                         'Is Input', 'Genome', 'Label', 'Processed Or Not']
+                         'Is Input', 'Genome', 'Label', 'Processed Or Not', 'Read Type']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
             setinfo.set_id + ' ' + request.user.email
     else:
-        # regset = setinfo.libraries_to_include.all()
-        # list1 = [x.seq_id for x in regset]
         writecontent = '\n'.join(['\t'.join(map(str, x))
-                                  for x in zip(list1, list4, list5, seqstatus)])
-        featureheader = ['Library ID', 'Genome', 'Label', 'Processed Or Not']
+                                  for x in zip(list1, list4, list5, seqstatus, list_readtype)])
+        featureheader = ['Library ID', 'Genome',
+                         'Label', 'Processed Or Not', 'Read Type']
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
 
     # write Set_**.txt to setqcoutdir
@@ -657,13 +656,14 @@ def SetQCDetailView(request, setqc_pk):
         list2 = list(librariesset.values_list('group_number', flat=True))
         list3 = list(librariesset.values_list('is_input', flat=True))
         featureinfo = list(zip(list1, list_readtype, list2,
-                               list3, list4, list5, seqstatus))
+                               list3, list4, list5, seqstatus, list_readtype))
         featureheader = ['Library ID', 'Read Type', 'Group ID',
-                         'Is Input',  'Genome', 'Label', 'Processed']
+                         'Is Input',  'Genome', 'Label', 'Processed', 'Read Type']
     else:
-        featureinfo = list(zip(list1, list_readtype, list4, list5, seqstatus))
+        featureinfo = list(zip(list1, list_readtype, list4,
+                               list5, seqstatus, list_readtype))
         featureheader = ['Library ID', 'Read Type',
-                         'Genome', 'Label', 'Processed']
+                         'Genome', 'Label', 'Processed', 'Read Type']
     context = {
         'setinfo': setinfo,
         'summaryfield': summaryfield,
