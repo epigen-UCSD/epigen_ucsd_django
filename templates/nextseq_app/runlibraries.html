@@ -27,7 +27,7 @@
             </thead>                  
           {% for samples in runinfo.librariesinrun_set.all %}
             <tr>                  
-              <td>{{samples.Library_ID}}</td>
+              <td><a href="{% url 'masterseq_app:seq_detail_fromseqid' samples.Library_ID %} "> {{ samples.Library_ID }} </a></td>
               <td>{{samples.i7index|default_if_none:""}}</td>
               <td>{{ barcode|key:samples.i7index }}</td>    
               <td>{{samples.i5index|default_if_none:""}}</td>

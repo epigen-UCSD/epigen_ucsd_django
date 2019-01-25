@@ -593,7 +593,7 @@ def RunSetQC2(request, setqc_pk):
         data['writeseterror'] = 'Unexpected writing to Set.txt Error!'
     setinfo.status = 'JobSubmitted'
     setinfo.save()
-
+    
     # run setQC script
     #cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
     print(cmd1)

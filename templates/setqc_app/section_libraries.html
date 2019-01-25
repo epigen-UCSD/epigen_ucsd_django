@@ -27,7 +27,7 @@
             {% if setinfo.experiment_type == 'ChIP-seq' %}                  
             {% for x in featureinfo %}
             <tr>
-              <td><a href="">{{ x.0 }}</a></td>                 
+              <td><a href="{% url 'masterseq_app:seq_detail_fromseqid' x.0 %}">{{ x.0 }}</a></td>                 
               <td>{{ x.1 }}</td>
               <td>{{ x.2 | default_if_none:"" }}</td>
               <td>{{ x.3 | default_if_none:"" }}</td>
@@ -40,7 +40,7 @@
             {% else %}                 
             {% for x in featureinfo  %}
             <tr>                  
-              <td><a href="">{{ x.0 }}</a></td>                 
+              <td><a href="{% url 'masterseq_app:seq_detail_fromseqid' x.0 %}">{{ x.0 }}</a></td>                 
               <td>{{ x.1 | default_if_none:""}}</td>
               <td>{{ x.2 | default_if_none:"" }}</td>
               <td>{{ x.3 | default_if_none:"" }}</td>

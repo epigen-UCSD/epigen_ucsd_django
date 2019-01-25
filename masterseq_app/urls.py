@@ -31,6 +31,7 @@ urlpatterns = [
     path('sample/<int:pk>/', views.SampleDetailView, name='sample_detail'),
     path('lib/<int:pk>/', views.LibDetailView, name='lib_detail'),
     path('seq/<int:pk>/', views.SeqDetailView, name='seq_detail'),
+    path('seq/<slug:seqid>/', views.SeqDetail2View, name='seq_detail_fromseqid'),
     #path('seqs/adds/confirm', views.SeqsCreateConfirmView, name='seqs_add_confirm'),
     #path('ajaxtest/', TemplateView.as_view(template_name="masterseq_app/ajaxtest.html"), name='ajaxtest'),
 

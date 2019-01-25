@@ -116,29 +116,19 @@ class HomeView(ListView):
 
 
 def AllSamplesView(request):
-    Samples_list = LibrariesInRun.objects.all()
-    barcodes_dic = BarcodeDic()
-    number = LibrariesInRun.objects.count()
-
+    Samples_list = LibrariesInRun.objects.all().select_related('singlerun','i7index','i5index')
     context = {
         'Samples_list': Samples_list,
-        'barcode': barcodes_dic,
-        'number': number
-
     }
     return render(request, 'nextseq_app/samplesinfo.html', context)
 
 
 def UserSamplesView(request):
     userruns = RunInfo.objects.filter(operator=request.user)
-    Samples_list = LibrariesInRun.objects.filter(singlerun__in=userruns)
-    barcodes_dic = BarcodeDic()
-    usersamples = True
+    Samples_list = LibrariesInRun.objects.filter(singlerun__in=userruns).select_related('singlerun','i7index','i5index')
 
     context = {
         'Samples_list': Samples_list,
-        'barcode': barcodes_dic,
-        'usersamples': usersamples
     }
     return render(request, 'nextseq_app/usersamplesinfo.html', context)
 
