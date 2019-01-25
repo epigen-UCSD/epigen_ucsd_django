@@ -656,14 +656,14 @@ def SetQCDetailView(request, setqc_pk):
         list2 = list(librariesset.values_list('group_number', flat=True))
         list3 = list(librariesset.values_list('is_input', flat=True))
         featureinfo = list(zip(list1, list_readtype, list2,
-                               list3, list4, list5, seqstatus, list_readtype))
+                               list3, list4, list5, seqstatus))
         featureheader = ['Library ID', 'Read Type', 'Group ID',
-                         'Is Input',  'Genome', 'Label', 'Processed', 'Read Type']
+                         'Is Input',  'Genome', 'Label', 'Processed']
     else:
         featureinfo = list(zip(list1, list_readtype, list4,
-                               list5, seqstatus, list_readtype))
+                               list5, seqstatus))
         featureheader = ['Library ID', 'Read Type',
-                         'Genome', 'Label', 'Processed', 'Read Type']
+                         'Genome', 'Label', 'Processed']
     context = {
         'setinfo': setinfo,
         'summaryfield': summaryfield,
