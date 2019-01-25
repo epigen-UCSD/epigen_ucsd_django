@@ -21,7 +21,7 @@ if [ $n_groups -eq 1 ]
 then
     # only one group (assume no input)
     RUN_LOG_PIP=${LOG_DIR}$(date +%Y%m%d)"_"${SET_ID}".txt"
-    awk -v FS='\t' '(NR>1&&$6=="No"){print $1,$4}' $STATUS_FILE > $RUN_LOG_PIP
+    awk -v FS='\t' '(NR>1&&$6=="No"){print $1,$4,$7}' $STATUS_FILE > $RUN_LOG_PIP
     awk '(NR>1){print $1}' $STATUS_FILE > $SETQC_FILE
     setqc_type="atac_chip"
 else
@@ -33,7 +33,7 @@ fi
 ## run pipeline and setQC 
 if [ $n_libs -gt 0 ]
 then
-    cmd1="qsub -v samples=${RUN_LOG_PIP},chipseq=true -t 0-$[n_libs-1] -M $USER_EMAIL  \$(which runPipeline_fastq.pbs)"
+    cmd1="qsub -v samples=${RUN_LOG_PIP},chipseq=true -t 0-$[n_libs-1] -M $USER_EMAIL  \$(which runBulkATAC_fastq.pbs)"
     job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
     python updateLibrariesSetQC.py -s '1' -id $SET_ID # process libs
     cmd2="qsub -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,type=$setqc_type  \$(which runSetQC.pbs)"
