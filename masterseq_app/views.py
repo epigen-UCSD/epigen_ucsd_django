@@ -297,6 +297,7 @@ def SeqsCreateView(request):
     seqs_form = SeqsCreationForm(request.POST or None)
     tosave_list = []
     data = {}
+    updatesamprequired = 0
     if seqs_form.is_valid():
         seqsinfo = seqs_form.cleaned_data['seqsinfo']
         for lineitem in seqsinfo.strip().split('\n'):
@@ -305,7 +306,16 @@ def SeqsCreateView(request):
             seqid = fields[8].strip()
             exptype = fields[9].strip()
             data[seqid] = {}
-            libinfo = LibraryInfo.objects.get(library_id=fields[7].strip())
+            libinfo = LibraryInfo.objects.select_related('sampleinfo').get(library_id=fields[7].strip())
+            sampinfo = libinfo.sampleinfo
+            sampindex = sampinfo.sample_index
+            sampid = sampinfo.sample_id
+            sampspecies = fields[3].strip().lower()
+            if not sampinfo.species and sampspecies:
+                updatesampflag = 1
+                updatesamprequired  = 1
+            else:
+                updatesampflag = 0
             if '-' in fields[6].strip():
                 datesub = fields[6].strip()
             else:
@@ -332,6 +342,10 @@ def SeqsCreateView(request):
             machineused = SeqMachineInfo.objects.get(
                 sequencing_core=seqcore, machine_name=seqmachine)
             data[seqid] = {
+                'updatesampflag': updatesampflag,
+                'sample_index':sampindex,
+                'sample_id':sampid,
+                'species':sampspecies,
                 'libraryinfo': fields[7].strip(),
                 'default_label': fields[2].strip(),
                 'team_member_initails': fields[5].strip(),
@@ -360,18 +374,34 @@ def SeqsCreateView(request):
                 date_submitted_for_sequencing=datesub,
             )
             tosave_list.append(tosave_item)
-        if 'Save' in request.POST:
+        if 'Save' in request.POST:           
             SeqInfo.objects.bulk_create(tosave_list)
+            for k,v in data.items():
+                if v['updatesampflag'] == 1:
+                    sampleinfo = SampleInfo.objects.get(sample_index=v['sample_index'])
+                    sampleinfo.species = v['species']
+                    sampleinfo.save()
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
             displayorder = ['libraryinfo', 'default_label', 'date_submitted', 'team_member_initails', 'read_length',
                             'read_type', 'portion_of_lane', 'seqcore', 'machine', 'i7index', 'i5index', 'notes']
-            context = {
-                'seqs_form': seqs_form,
-                'modalshow': 1,
-                'displayorder': displayorder,
-                'data': data,
-            }
+            displayorder2 = ['sample_index','sample_id','species']
+            if updatesamprequired == 1:
+                context = {
+                    'seqs_form': seqs_form,
+                    'modalshowplus': 1,
+                    'displayorder': displayorder,
+                    'displayorder2':displayorder2,
+                    'data': data,
+                }
+
+            else:
+                context = {
+                    'seqs_form': seqs_form,
+                    'modalshow': 1,
+                    'displayorder': displayorder,
+                    'data': data,
+                }
 
             return render(request, 'masterseq_app/seqsadd.html', context)
     context = {
