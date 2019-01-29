@@ -225,7 +225,8 @@ def LibrariesCreateView(request):
             data[libid] = {
                 'pseudoflag': pseudoflag,
                 'sampleinfo': sampindex,
-                'sampid':sampid,
+                'sample_index':sampindex,
+                'sample_id':sampid,
                 'team_member_initails': fields[2].strip(),
                 'experiment_index': fields[12].strip(),
                 'date_started': datestart,
@@ -242,8 +243,8 @@ def LibrariesCreateView(request):
             for k,v in data.items():
                 if v['pseudoflag'] == 1:
                     SampleInfo.objects.create(
-                        sample_id=v['sampid'],
-                        sample_index=v['sampleinfo']
+                        sample_id=v['sample_id'],
+                        sample_index=v['sample_index']
                         )
                 tosave_item = LibraryInfo(
                     library_id=k,
@@ -265,7 +266,7 @@ def LibrariesCreateView(request):
                             'date_completed', 'experiment_type', 'protocal_name', 'reference_to_notebook_and_page_number',
                             'notes']
             if pseudorequired == 1:
-                displayorder2 = ['sampleinfo','sampid']
+                displayorder2 = ['sample_index','sample_id']
                 context = {
                     'library_form': library_form,
                     'modalshowplus': 1,

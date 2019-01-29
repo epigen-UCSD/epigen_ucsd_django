@@ -111,11 +111,13 @@
         </thead>
         <tbody>
           {% for key,value in data.items%}
+          {% if value.updatesampflag %}
           <tr>
             {% for field in displayorder2 %}
             <td>{{ value|key:field }}</td>
             {% endfor %}
           </tr>
+          {% endif %}
           {% endfor %}
         </tbody>
       </table> 
