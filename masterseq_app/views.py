@@ -190,26 +190,42 @@ def LibrariesCreateView(request):
     library_form = LibsCreationForm(request.POST or None)
     tosave_list = []
     data = {}
+    pseudorequired = 0
     if library_form.is_valid():
         libsinfo = library_form.cleaned_data['libsinfo']
         # print(sequencinginfo)
+        sampid = {}
+        samp_indexes = list(SampleInfo.objects.values_list('sample_index', flat=True))
+        existingmaxindex = max([int(x.split('-')[1]) for x in samp_indexes if x.startswith('SAMPNA')])
         for lineitem in libsinfo.strip().split('\n'):
             fields = lineitem.strip('\n').split('\t')
-
-            saminfo = SampleInfo.objects.get(sample_index=fields[0].strip())
             libid = fields[10].strip()
+            sampid = fields[1].strip()
+            if fields[0].strip().lower() in ['na','other','n/a']:
+                pseudorequired = 1
+                pseudoflag = 1
+                sampindex = 'SAMPNA-'+str(existingmaxindex+1)              
+                existingmaxindex += 1
+
+            else:
+                pseudoflag = 0
+                sampindex = fields[0].strip()
+                #saminfo = SampleInfo.objects.get(sample_index=fields[0].strip())
+        
             data[libid] = {}
             datestart = datetransform(fields[3].strip())
             dateend = datetransform(fields[4].strip())
             libexp = fields[5].strip()
-            libprotocal = ProtocalInfo.objects.get(
-                experiment_type=libexp, protocal_name='other (please explain in notes)')
+            #libprotocal = ProtocalInfo.objects.get(
+                #experiment_type=libexp, protocal_name='other (please explain in notes)')
             refnotebook = fields[7].strip()
             libnote = ';'.join(
                 [fields[11].strip(), fields[6].strip()]).strip(';')
-            memebername = User.objects.get(username=fields[2].strip())
+            #memebername = User.objects.get(username=fields[2].strip())
             data[libid] = {
-                'sampleinfo': fields[0].strip(),
+                'pseudoflag': pseudoflag,
+                'sampleinfo': sampindex,
+                'sampid':sampid,
                 'team_member_initails': fields[2].strip(),
                 'experiment_index': fields[12].strip(),
                 'date_started': datestart,
@@ -219,34 +235,56 @@ def LibrariesCreateView(request):
                 'reference_to_notebook_and_page_number': fields[7].strip(),
                 'notes': libnote
             }
-            tosave_item = LibraryInfo(
-                library_id=libid,
-                sampleinfo=saminfo,
-                experiment_index=fields[12].strip(),
-                experiment_type=libexp,
-                protocalinfo=libprotocal,
-                reference_to_notebook_and_page_number=refnotebook,
-                date_started=datestart,
-                date_completed=dateend,
-                team_member_initails=memebername,
-                notes=libnote
-            )
-            tosave_list.append(tosave_item)
+            print(datestart)
+            print(dateend)
+
         if 'Save' in request.POST:
+            for k,v in data.items():
+                if v['pseudoflag'] == 1:
+                    SampleInfo.objects.create(
+                        sample_id=v['sampid'],
+                        sample_index=v['sampleinfo']
+                        )
+                tosave_item = LibraryInfo(
+                    library_id=k,
+                    sampleinfo=SampleInfo.objects.get(sample_index=v['sampleinfo']),
+                    experiment_index=v['experiment_index'],
+                    experiment_type=v['experiment_type'],
+                    protocalinfo=ProtocalInfo.objects.get(experiment_type=v['experiment_type'], protocal_name='other (please explain in notes)'),
+                    reference_to_notebook_and_page_number=v['reference_to_notebook_and_page_number'],
+                    date_started=v['date_started'],
+                    date_completed=v['date_completed'],
+                    team_member_initails=User.objects.get(username=v['team_member_initails']),
+                    notes=v['notes']
+                    )
+                tosave_list.append(tosave_item)                
             LibraryInfo.objects.bulk_create(tosave_list)
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
             displayorder = ['sampleinfo', 'team_member_initails', 'experiment_index', 'date_started',
                             'date_completed', 'experiment_type', 'protocal_name', 'reference_to_notebook_and_page_number',
                             'notes']
-            context = {
-                'library_form': library_form,
-                'modalshow': 1,
-                'displayorder': displayorder,
-                'data': data,
-            }
+            if pseudorequired == 1:
+                displayorder2 = ['sampleinfo','sampid']
+                context = {
+                    'library_form': library_form,
+                    'modalshowplus': 1,
+                    'displayorder': displayorder,
+                    'displayorder2':displayorder2,
+                    'data': data,
+                }
 
-            return render(request, 'masterseq_app/libsadd.html', context)
+                return render(request, 'masterseq_app/libsadd.html', context)
+
+            else:
+                context = {
+                    'library_form': library_form,
+                    'modalshow': 1,
+                    'displayorder': displayorder,
+                    'data': data,
+                }
+
+                return render(request, 'masterseq_app/libsadd.html', context)
     context = {
         'library_form': library_form,
     }

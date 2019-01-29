@@ -243,9 +243,10 @@ class LibsCreationForm(forms.Form):
         for lineitem in data.strip().split('\n'):
             if lineitem != '\r':
                 cleaneddata.append(lineitem)
+                #print(lineitem)
                 fields = lineitem.split('\t')
                 samindex = fields[0].strip()
-                if not SampleInfo.objects.filter(sample_index=samindex).exists():
+                if not SampleInfo.objects.filter(sample_index=samindex).exists() and not samindex.strip().lower() in ['na','other','n/a']:
                     invalidsam.append(samindex)
                     flagsam = 1
                 try:
