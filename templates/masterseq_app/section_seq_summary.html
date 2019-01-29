@@ -22,6 +22,8 @@
                 <td>
                   {% if field == 'libraryinfo' %}
                   <a href="{% url 'masterseq_app:lib_detail' libinfo.pk %}">{{ seqinfo|get_value:field|default_if_none:""}}</a>
+                  {% elif field == 'sampleinfo' %}
+                  <a href="{% url 'masterseq_app:sample_detail' saminfo.pk %}">{{ libinfo.sampleinfo|default_if_none:""}}</a>
                   {% else %}
                   {{ seqinfo|get_value:field|default_if_none:""}}
                   {% endif %}

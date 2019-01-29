@@ -791,7 +791,8 @@ def SeqDetailView(request, pk):
     seqinfo = get_object_or_404(SeqInfo.objects.select_related('libraryinfo',
                                                                'machine', 'i7index', 'i5index', 'team_member_initails'), pk=pk)
     libinfo = seqinfo.libraryinfo
-    summaryfield = ['seq_id', 'libraryinfo', 'default_label', 'team_member_initails',
+    saminfo = libinfo.sampleinfo
+    summaryfield = ['seq_id', 'sampleinfo','libraryinfo', 'default_label', 'team_member_initails',
                     'date_submitted_for_sequencing', 'machine', 'read_length', 'read_type', 'portion_of_lane',
                     'i7index', 'i5index', 'total_reads', 'notes']
     bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
@@ -799,6 +800,7 @@ def SeqDetailView(request, pk):
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
     context = {
         'libinfo': libinfo,
+        'saminfo':saminfo,
         'seqinfo': seqinfo,
         'summaryfield': summaryfield,
         'seqbioinfos': seqbioinfos,
