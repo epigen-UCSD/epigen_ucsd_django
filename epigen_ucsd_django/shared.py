@@ -9,7 +9,7 @@ def is_in_multiple_groups(user,grouplist):
 def datetransform(inputdate):
 	#from 2/6/2018 to 2018-02-06
 	if inputdate == '':
-		return ''
+		return None
 	tm = inputdate.split('/')
 	year = tm[2].strip()
 	month = tm[0].strip().zfill(2)
