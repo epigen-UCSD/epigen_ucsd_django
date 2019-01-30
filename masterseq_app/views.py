@@ -4,7 +4,9 @@ from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm, LibraryCreationForm, SeqCreationForm,\
     SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm
-from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, SeqMachineInfo, SeqBioInfo
+from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
+SeqMachineInfo, SeqBioInfo,choice_for_preparation,choice_for_fixation,\
+choice_for_unit
 from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
@@ -133,11 +135,26 @@ def SamplesCreateView(request):
             fields = lineitem.strip('\n').split('\t')
             samindex = fields[21].strip()
             samnotes = fields[20].strip()
-            samprep = fields[12].split('(')[0].strip()
-            if samprep == 'other':
+            samprep = fields[12].strip()
+            if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:               
+                samnotes = ';'.join([samnotes,'sample preparation:'+samprep]).strip(';')
                 samprep = 'other (please explain in notes)'
-            samtype = fields[11].split('(')[0].strip()
+            samtype = fields[11].split('(')[0].strip().lower()
+            if samtype == 'other':
+                samtype = 'other (please explain in notes)'
             samspecies = fields[10].split('(')[0].lower().strip()
+            if samspecies == 'other':
+                samspecies = 'other (please explain in notes)'
+            unit = fields[15].split('(')[0].strip().lower()
+            if unit == 'other':
+                unit = 'other (please explain in notes)'
+            fixation = fields[13].strip().lower()
+            if fixation == 'yes (1% fa)':
+                fixation = 'Yes (1% FA)'
+            elif fixation == 'no':
+                fixation = 'No'
+            sample_amount = fields[14].strip()
+
             samdescript = fields[9].strip()
             samid = fields[8].strip()
             data[samid] = {}
@@ -149,6 +166,9 @@ def SamplesCreateView(request):
                 'species': samspecies,
                 'sample_type': samtype,
                 'preparation': samprep,
+                'fixation':fixation,
+                'sample_amount':sample_amount,
+                'unit':unit,
                 'description': samdescript,
                 'notes': samnotes
             }
@@ -159,6 +179,9 @@ def SamplesCreateView(request):
                 sample_type=samtype,
                 preparation=samprep,
                 description=samdescript,
+                unit=unit,
+                sample_amount=sample_amount,
+                fixation=fixation,
                 notes=samnotes,
                 team_member=request.user,
                 date=samdate,
@@ -169,7 +192,7 @@ def SamplesCreateView(request):
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
             displayorder = ['sample_index', 'team_member', 'date', 'species', 'sample_type',
-                            'preparation', 'description', 'notes']
+                            'preparation', 'fixation','sample_amount','unit','description', 'notes']
             context = {
                 'sample_form': sample_form,
                 'modalshow': 1,
@@ -813,7 +836,8 @@ def SeqDetail2View(request, seqid):
     seqinfo = get_object_or_404(SeqInfo.objects.select_related('libraryinfo',
                                                                'machine', 'i7index', 'i5index', 'team_member_initails'), seq_id=seqid)
     libinfo = seqinfo.libraryinfo
-    summaryfield = ['seq_id', 'libraryinfo', 'default_label', 'team_member_initails',
+    saminfo = libinfo.sampleinfo
+    summaryfield = ['seq_id','sampleinfo', 'libraryinfo', 'default_label', 'team_member_initails',
                     'date_submitted_for_sequencing', 'machine', 'read_length', 'read_type', 'portion_of_lane',
                     'i7index', 'i5index', 'total_reads', 'notes']
     bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
@@ -821,6 +845,7 @@ def SeqDetail2View(request, seqid):
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
     context = {
         'libinfo': libinfo,
+        'saminfo':saminfo,
         'seqinfo': seqinfo,
         'summaryfield': summaryfield,
         'seqbioinfos': seqbioinfos,

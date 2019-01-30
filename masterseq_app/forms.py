@@ -1,7 +1,8 @@
 from django import forms
 from .models import SampleInfo, LibraryInfo, SeqMachineInfo, SeqInfo,\
     choice_for_read_type, choice_for_species, choice_for_sample_type,\
-    choice_for_preparation, choice_for_experiment_type
+    choice_for_preparation, choice_for_experiment_type,choice_for_unit,\
+    choice_for_fixation
 from django.contrib.auth.models import User
 import datetime
 from nextseq_app.models import Barcode
@@ -165,11 +166,15 @@ class SamplesCreationForm(forms.Form):
 		flagspecies = 0
 		flagtype = 0
 		flagindex = 0
+		flagunit = 0
+		flagfixation = 0
 		#flagprep = 0
 		invaliddate = []
 		invalidspecies = []
 		invalidtype = []
 		invalidindex = []
+		invalidunit = []
+		invalidfixation = []
 		#invalidprep = []
 		for lineitem in data.strip().split('\n'):
 			if lineitem != '\r':
@@ -185,10 +190,20 @@ class SamplesCreationForm(forms.Form):
 				if samspecies not in [x[0].split('(')[0].strip() for x in choice_for_species]:
 					invalidspecies.append(samspecies)
 					flagspecies = 1
-				samtype = fields[11].split('(')[0].strip()
+				samtype = fields[11].split('(')[0].strip().lower()
 				if samtype not in [x[0].split('(')[0].strip() for x in choice_for_sample_type]:
 					invalidtype.append(samtype)
 					flagtype = 1
+				unit = fields[15].split('(')[0].strip().lower()
+				if unit not in [x[0].split('(')[0].strip() for x in choice_for_unit]:
+					invalidunit.append(fields[15])
+					flagunit = 1
+				fixation = fields[13].strip().lower()
+				if fixation not in [x[0].lower() for x in choice_for_fixation]:
+					invalidfixation.append(fields[13])
+					flagfixation = 1
+
+
 				# samprep = fields[12].split('(')[0].strip()
 				# if samprep == 'flash frozen':
 				# 	samprep = 'flash frozen without cryopreservant'
@@ -213,6 +228,16 @@ class SamplesCreationForm(forms.Form):
 			raise forms.ValidationError('Invalid sample type:'+','.join(invalidtype))
 		if flagindex  == 1:
 			raise forms.ValidationError(','.join(invalidindex)+' is already existed in database')
+		if flagunit == 1:
+			raise forms.ValidationError('Invalid unit:'+','.join(invalidunit)+\
+				'.  Should be one of ('+','.join([x[0] for x in\
+				 choice_for_unit])+')')
+		if flagfixation == 1:
+			raise forms.ValidationError('Invalid fixation:'+','.join(invalidfixation)+\
+				'.  Should be one of ('+','.join([x[0] for x in\
+				 choice_for_fixation])+')')
+
+
 		# if flagprep == 1:
 		# 	raise forms.ValidationError('Invalid sample preparation:'+','.join(invalidprep))
 		return '\n'.join(cleaneddata)

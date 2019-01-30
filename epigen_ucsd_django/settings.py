@@ -172,6 +172,7 @@ INTERNAL_EXEMPT_URLS = (
     r'logout/',
     r'__debug__/',
     r'admin/',
+    r'register/',
 
 )
 

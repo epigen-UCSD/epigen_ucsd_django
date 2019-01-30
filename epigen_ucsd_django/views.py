@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from .shared import is_member,is_in_multiple_groups
+from django.contrib.auth.models import User, Group
 
 @method_decorator(never_cache, name='dispatch')
 class UserLoginView(View):
@@ -71,6 +72,8 @@ class UserRegisterView(FormView):
         user = form.save(commit=False)
         user.set_password(form.cleaned_data['password1'])
         user.save()
+        defaultgroup = Group.objects.get(name='wetlab')
+        defaultgroup.user_set.add(user)
         return HttpResponseRedirect(self.success_url)
 
 

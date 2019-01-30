@@ -49,7 +49,7 @@ choice_for_unit = (
 
 )
 choice_for_fixation = (
-    ('Yes', 'Yes'),
+    ('Yes (1% FA)', 'Yes (1% FA)'),
     ('No', 'No'),
     ('other (please explain in notes)', 'other (please explain in notes)')
 )
