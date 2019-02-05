@@ -532,7 +532,7 @@ def RunSetQC(request, setqc_pk):
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
     if os.path.isfile(setStatusFile):
         data['setidexisterror'] = '.'+setinfo.set_id + \
-            '.txt is already existed. Do you want to override it and continue to run the pipeline and SetQC script?'
+            ' \'s report is already existed. Do you want to override it and continue to run the pipeline and SetQC script?'
         print(data['setidexisterror'])
         return JsonResponse(data)
     try:
