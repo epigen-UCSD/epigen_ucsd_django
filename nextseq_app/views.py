@@ -136,7 +136,7 @@ def UserSamplesView(request):
 class RunDetailView2(DetailView):
     model = RunInfo
     template_name = 'nextseq_app/details.html'
-    summaryfield = ['jobstatus', 'date', 'operator', 'read_type', 'total_libraries', 'total_reads',
+    summaryfield = ['jobstatus', 'date', 'operator','experiment_type', 'read_type', 'total_libraries', 'total_reads',
                     'percent_of_reads_demultiplexed', 'read_length', 'nextseqdir']
     # object = FooForm(data=model_to_dict(Foo.objects.get(pk=object_id)))
 
