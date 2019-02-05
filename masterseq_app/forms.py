@@ -423,13 +423,13 @@ class SeqsCreationForm(forms.Form):
                     flagtype = 1
         if flagsam == 1:
             raise forms.ValidationError(
-                'Invalid sample info:'+','.join(invalidsam))+'. If the sample is not stored in TS1,\
-                 please set the first column as na, n/a or other.'
+                'Invalid sample info:'+','.join(invalidsam)+'. If the sample is not stored in TS1,\
+                 please set the first column as na, n/a or other.')
 
         if flaglib == 1:
             raise forms.ValidationError(
-                'Invalid library info:'+','.join(invalidlib))+'. If the library is not stored in TS2\
-                 please set the fifth column as na,n/a or other.'
+                'Invalid library info:'+','.join(invalidlib)+'. If the library is not stored in TS2\
+                 please set the fifth column as na,n/a or other.')
         if flagdate == 1:
             raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
         if flaguser == 1:

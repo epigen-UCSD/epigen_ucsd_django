@@ -229,6 +229,8 @@ def LibrariesCreateView(request):
                 pseudoflag = 1
                 sampindex = 'SAMPNA-'+str(existingmaxindex+1)              
                 existingmaxindex += 1
+                if sampid.strip().lower() in ['','na','other','n/a']:
+                    sampid = sampindex
 
             else:
                 pseudoflag = 0
