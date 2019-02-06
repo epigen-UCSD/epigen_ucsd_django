@@ -1,7 +1,8 @@
 from django import forms
 from .models import SampleInfo, LibraryInfo, SeqMachineInfo, SeqInfo,\
     choice_for_read_type, choice_for_species, choice_for_sample_type,\
-    choice_for_preparation, choice_for_experiment_type
+    choice_for_preparation, choice_for_experiment_type,choice_for_unit,\
+    choice_for_fixation
 from django.contrib.auth.models import User
 import datetime
 from nextseq_app.models import Barcode
@@ -165,11 +166,15 @@ class SamplesCreationForm(forms.Form):
 		flagspecies = 0
 		flagtype = 0
 		flagindex = 0
+		flagunit = 0
+		flagfixation = 0
 		#flagprep = 0
 		invaliddate = []
 		invalidspecies = []
 		invalidtype = []
 		invalidindex = []
+		invalidunit = []
+		invalidfixation = []
 		#invalidprep = []
 		for lineitem in data.strip().split('\n'):
 			if lineitem != '\r':
@@ -185,10 +190,20 @@ class SamplesCreationForm(forms.Form):
 				if samspecies not in [x[0].split('(')[0].strip() for x in choice_for_species]:
 					invalidspecies.append(samspecies)
 					flagspecies = 1
-				samtype = fields[11].split('(')[0].strip()
+				samtype = fields[11].split('(')[0].strip().lower()
 				if samtype not in [x[0].split('(')[0].strip() for x in choice_for_sample_type]:
 					invalidtype.append(samtype)
 					flagtype = 1
+				unit = fields[15].split('(')[0].strip().lower()
+				if unit not in [x[0].split('(')[0].strip() for x in choice_for_unit]:
+					invalidunit.append(fields[15])
+					flagunit = 1
+				fixation = fields[13].strip().lower()
+				if fixation not in [x[0].lower() for x in choice_for_fixation]:
+					invalidfixation.append(fields[13])
+					flagfixation = 1
+
+
 				# samprep = fields[12].split('(')[0].strip()
 				# if samprep == 'flash frozen':
 				# 	samprep = 'flash frozen without cryopreservant'
@@ -213,6 +228,16 @@ class SamplesCreationForm(forms.Form):
 			raise forms.ValidationError('Invalid sample type:'+','.join(invalidtype))
 		if flagindex  == 1:
 			raise forms.ValidationError(','.join(invalidindex)+' is already existed in database')
+		if flagunit == 1:
+			raise forms.ValidationError('Invalid unit:'+','.join(invalidunit)+\
+				'.  Should be one of ('+','.join([x[0] for x in\
+				 choice_for_unit])+')')
+		if flagfixation == 1:
+			raise forms.ValidationError('Invalid fixation:'+','.join(invalidfixation)+\
+				'.  Should be one of ('+','.join([x[0] for x in\
+				 choice_for_fixation])+')')
+
+
 		# if flagprep == 1:
 		# 	raise forms.ValidationError('Invalid sample preparation:'+','.join(invalidprep))
 		return '\n'.join(cleaneddata)
@@ -276,7 +301,8 @@ class LibsCreationForm(forms.Form):
 
         if flagsam == 1:
             raise forms.ValidationError(
-                'Invalid sample info:'+','.join(invalidsam))
+                'Invalid sample info:'+','.join(invalidsam))+'. If the sample is not stored in TS1,\
+                 please set the first column as na. n/a or other.'
         if flagdate == 1:
             raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
         if flagexp == 1:
@@ -305,6 +331,7 @@ class SeqsCreationForm(forms.Form):
     def clean_seqsinfo(self):
         data = self.cleaned_data['seqsinfo']
         cleaneddata = []
+        flagsam = 0
         flaglib = 0
         flagdate = 0
         flaguser = 0
@@ -314,6 +341,8 @@ class SeqsCreationForm(forms.Form):
         flagmachine = 0
         flagtype = 0
         flagpolane = 0
+        flagexp = 0
+        invalidsam = []
         invalidlib = []
         invaliddate = []
         invaliduserlist = []
@@ -324,16 +353,29 @@ class SeqsCreationForm(forms.Form):
         invalidmachine = []
         invalidtype = []
         invalidpolane = []
+        invalidexp = []
 
+ 
         for lineitem in data.strip().split('\n'):
             if lineitem != '\r':
                 cleaneddata.append(lineitem)
                 fields = lineitem.split('\t')
                 libraryid = fields[7].strip()
                 exptype = fields[9].strip()
+                expindex = fields[4].strip()
+                samindex = fields[0].strip()
+                if not SampleInfo.objects.filter(sample_index=samindex).exists() and not samindex.strip().lower() in ['na','other','n/a']:
+                    invalidsam.append(samindex)
+                    flagsam = 1
+
                 if not LibraryInfo.objects.filter(library_id=libraryid).exists():
-                    invalidlib.append(libraryid)
-                    flaglib = 1
+                    if not expindex.strip().lower() in ['','na','other','n/a']:
+                        invalidlib.append(libraryid)
+                        flaglib = 1
+                    else:
+                        if exptype not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
+                            nvalidexp.append(libexp)
+                            flagexp = 1
 
                 if '-' in fields[6].strip():
                     datesub = fields[6].strip()
@@ -379,9 +421,15 @@ class SeqsCreationForm(forms.Form):
                 if seqtype not in [x[0].split('(')[0].strip() for x in choice_for_read_type]:
                     invalidtype.append(seqtype)
                     flagtype = 1
+        if flagsam == 1:
+            raise forms.ValidationError(
+                'Invalid sample info:'+','.join(invalidsam)+'. If the sample is not stored in TS1,\
+                 please set the first column as na, n/a or other.')
+
         if flaglib == 1:
             raise forms.ValidationError(
-                'Invalid library info:'+','.join(invalidlib))
+                'Invalid library info:'+','.join(invalidlib)+'. If the library is not stored in TS2\
+                 please set the fifth column as na,n/a or other.')
         if flagdate == 1:
             raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
         if flaguser == 1:
@@ -409,5 +457,8 @@ class SeqsCreationForm(forms.Form):
         if flagtype == 1:
             raise forms.ValidationError(
                 'Invalid read type:'+','.join(invalidtype))
+        if flagexp == 1:
+            raise forms.ValidationError(
+                'Invalid experiment type:'+','.join(invalidexp))
 
         return '\n'.join(cleaneddata)

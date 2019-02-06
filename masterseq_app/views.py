@@ -4,7 +4,9 @@ from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm, LibraryCreationForm, SeqCreationForm,\
     SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm
-from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, SeqMachineInfo, SeqBioInfo
+from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
+SeqMachineInfo, SeqBioInfo,choice_for_preparation,choice_for_fixation,\
+choice_for_unit
 from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
@@ -133,11 +135,26 @@ def SamplesCreateView(request):
             fields = lineitem.strip('\n').split('\t')
             samindex = fields[21].strip()
             samnotes = fields[20].strip()
-            samprep = fields[12].split('(')[0].strip()
-            if samprep == 'other':
+            samprep = fields[12].strip()
+            if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:               
+                samnotes = ';'.join([samnotes,'sample preparation:'+samprep]).strip(';')
                 samprep = 'other (please explain in notes)'
-            samtype = fields[11].split('(')[0].strip()
+            samtype = fields[11].split('(')[0].strip().lower()
+            if samtype == 'other':
+                samtype = 'other (please explain in notes)'
             samspecies = fields[10].split('(')[0].lower().strip()
+            if samspecies == 'other':
+                samspecies = 'other (please explain in notes)'
+            unit = fields[15].split('(')[0].strip().lower()
+            if unit == 'other':
+                unit = 'other (please explain in notes)'
+            fixation = fields[13].strip().lower()
+            if fixation == 'yes (1% fa)':
+                fixation = 'Yes (1% FA)'
+            elif fixation == 'no':
+                fixation = 'No'
+            sample_amount = fields[14].strip()
+
             samdescript = fields[9].strip()
             samid = fields[8].strip()
             data[samid] = {}
@@ -149,6 +166,9 @@ def SamplesCreateView(request):
                 'species': samspecies,
                 'sample_type': samtype,
                 'preparation': samprep,
+                'fixation':fixation,
+                'sample_amount':sample_amount,
+                'unit':unit,
                 'description': samdescript,
                 'notes': samnotes
             }
@@ -159,6 +179,9 @@ def SamplesCreateView(request):
                 sample_type=samtype,
                 preparation=samprep,
                 description=samdescript,
+                unit=unit,
+                sample_amount=sample_amount,
+                fixation=fixation,
                 notes=samnotes,
                 team_member=request.user,
                 date=samdate,
@@ -169,7 +192,7 @@ def SamplesCreateView(request):
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
             displayorder = ['sample_index', 'team_member', 'date', 'species', 'sample_type',
-                            'preparation', 'description', 'notes']
+                            'preparation', 'fixation','sample_amount','unit','description', 'notes']
             context = {
                 'sample_form': sample_form,
                 'modalshow': 1,
@@ -206,6 +229,8 @@ def LibrariesCreateView(request):
                 pseudoflag = 1
                 sampindex = 'SAMPNA-'+str(existingmaxindex+1)              
                 existingmaxindex += 1
+                if sampid.strip().lower() in ['','na','other','n/a']:
+                    sampid = sampindex
 
             else:
                 pseudoflag = 0
@@ -299,24 +324,56 @@ def SeqsCreateView(request):
     tosave_list = []
     data = {}
     updatesamprequired = 0
+    pseudosamprequired = 0
+    pseudolibrequired = 0
     if seqs_form.is_valid():
         seqsinfo = seqs_form.cleaned_data['seqsinfo']
+        samp_indexes = list(SampleInfo.objects.values_list('sample_index', flat=True))
+        existingmaxsampindex = max([int(x.split('-')[1]) for x in samp_indexes if x.startswith('SAMPNA')])
+        lib_indexes = list(LibraryInfo.objects.values_list('experiment_index', flat=True))
+        existingmaxlibindex = max([int(x.split('-')[1]) for x in lib_indexes if x.startswith('EXPNA')])
+
         for lineitem in seqsinfo.strip().split('\n'):
             lineitem = lineitem+'\t\t\t\t\t\t'
             fields = lineitem.split('\t')
+            updatesampflag = 0
+            pseudolibflag = 0 
+            pseudosamflag = 0
+            samindex = fields[0].strip()
+            sampid = fields[1].strip()
+            sampspecies = fields[3].strip().lower()
             seqid = fields[8].strip()
+            expindex = fields[4].strip()
+            libraryid = fields[7].strip()
             exptype = fields[9].strip()
             data[seqid] = {}
-            libinfo = LibraryInfo.objects.select_related('sampleinfo').get(library_id=fields[7].strip())
-            sampinfo = libinfo.sampleinfo
-            sampindex = sampinfo.sample_index
-            sampid = sampinfo.sample_id
-            sampspecies = fields[3].strip().lower()
-            if not sampinfo.species and sampspecies:
-                updatesampflag = 1
-                updatesamprequired  = 1
+            if not LibraryInfo.objects.filter(library_id=fields[7]).exists() and expindex.strip().lower() in ['','na','other','n/a']:
+                pseudolibrequired = 1
+                pseudolibflag = 1
+                expindex = 'EXPNA-'+str(existingmaxlibindex+1)
+                existingmaxlibindex += 1
+                if not SampleInfo.objects.filter(sample_index=samindex).exists() and samindex.strip().lower() in ['na','other','n/a']:
+                    pseudosamprequired = 1
+                    pseudosamflag = 1
+                    sampindex = 'SAMPNA-'+str(existingmaxsampindex+1)              
+                    existingmaxsampindex += 1 
+                    if sampid.strip().lower() in ['','na','other','n/a']:
+                        sampid = sampindex
+                else:
+                    sampinfo = SampleInfo.objects.get(sample_index=samindex)
+                    if not sampinfo.species and sampspecies:
+                        updatesampflag = 1
+                        updatesamprequired  = 1
             else:
-                updatesampflag = 0
+                libinfo = LibraryInfo.objects.select_related('sampleinfo').get(library_id=fields[7].strip())
+                sampinfo = libinfo.sampleinfo
+                sampindex = sampinfo.sample_index
+                sampid = sampinfo.sample_id
+                
+                if not sampinfo.species and sampspecies:
+                    updatesampflag = 1
+                    updatesamprequired  = 1
+            print(pseudolibrequired)
             if '-' in fields[6].strip():
                 datesub = fields[6].strip()
             else:
@@ -343,64 +400,91 @@ def SeqsCreateView(request):
             machineused = SeqMachineInfo.objects.get(
                 sequencing_core=seqcore, machine_name=seqmachine)
             data[seqid] = {
-                'updatesampflag': updatesampflag,
+                'updatesampflag':updatesampflag,
+                'pseudolibflag':pseudolibflag,
+                'pseudosamflag':pseudosamflag,
                 'sample_index':sampindex,
+                'sampleinfo':sampindex,
                 'sample_id':sampid,
                 'species':sampspecies,
+                'experiment_index':expindex,
+                'experiment_type':exptype,
                 'libraryinfo': fields[7].strip(),
+                'library_id':libraryid,
                 'default_label': fields[2].strip(),
                 'team_member_initails': fields[5].strip(),
                 'read_length': fields[12].strip(),
                 'read_type': fields[13].strip(),
-                'portion_of_lane': fields[14].strip(),
+                'portion_of_lane': polane,
                 'seqcore': fields[10].split('(')[0].strip(),
                 'machine': seqmachine,
                 'i7index': indexname,
                 'i5index': indexname2,
+                'indexname':indexname,
+                'indexname2':indexname2,
                 'date_submitted': datesub,
                 'notes': fields[17].strip(),
             }
-            tosave_item = SeqInfo(
-                seq_id=seqid,
-                libraryinfo=libinfo,
-                team_member_initails=memebername,
-                read_length=fields[12].strip(),
-                read_type=fields[13].strip(),
-                portion_of_lane=polane,
-                notes=fields[17].strip(),
-                machine=machineused,
-                i7index=i7index,
-                i5index=i5index,
-                default_label=fields[2].strip(),
-                date_submitted_for_sequencing=datesub,
-            )
-            tosave_list.append(tosave_item)
         if 'Save' in request.POST:           
-            SeqInfo.objects.bulk_create(tosave_list)
+            
             for k,v in data.items():
+                if v['pseudolibflag'] == 1:
+                    if v['pseudosamflag'] == 1:
+                        SampleInfo.objects.create(
+                            sample_id=v['sample_id'],
+                            sample_index=v['sample_index'],
+                            species=v['species']
+                            )
+
+                    LibraryInfo.objects.create(
+                        library_id=v['library_id'],
+                        experiment_index=v['experiment_index'],
+                        experiment_type=v['experiment_type'],
+                        sampleinfo=SampleInfo.objects.get(sample_index=v['sample_index'])
+                            )
                 if v['updatesampflag'] == 1:
                     sampleinfo = SampleInfo.objects.get(sample_index=v['sample_index'])
                     sampleinfo.species = v['species']
                     sampleinfo.save()
+                if v['indexname'] and v['indexname'] not in ['NA', 'Other (please explain in notes)', 'N/A'] and exptype not in ['scATAC-seq', 'snATAC-seq']:
+                    i7index = Barcode.objects.get(indexid=v['indexname'])
+                else:
+                    i7index = None
+                if v['indexname2'] and v['indexname2'] not in ['NA', 'Other (please explain in notes)', 'N/A'] and exptype not in ['scATAC-seq', 'snATAC-seq']:
+                    i5index = Barcode.objects.get(indexid=v['indexname2'])
+                else:
+                    i5index = None
+                tosave_item = SeqInfo(
+                    seq_id=k,
+                    libraryinfo=LibraryInfo.objects.get(library_id=v['library_id']),
+                    team_member_initails=User.objects.get(username=v['team_member_initails']),
+                    read_length=v['read_length'],
+                    read_type=v['read_type'],
+                    portion_of_lane=v['portion_of_lane'],
+                    notes=v['notes'],
+                    machine=SeqMachineInfo.objects.get(sequencing_core=v['seqcore'], machine_name=v['machine']),
+                    i7index=i7index,
+                    i5index=i5index,
+                    default_label=v['default_label'],
+                    date_submitted_for_sequencing=v['date_submitted'],
+                )
+                tosave_list.append(tosave_item)
+            SeqInfo.objects.bulk_create(tosave_list)
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
             displayorder = ['libraryinfo', 'default_label', 'date_submitted', 'team_member_initails', 'read_length',
                             'read_type', 'portion_of_lane', 'seqcore', 'machine', 'i7index', 'i5index', 'notes']
             displayorder2 = ['sample_index','sample_id','species']
-            if updatesamprequired == 1:
-                context = {
+            displayorder3 = ['library_id','sampleinfo','experiment_index','experiment_type']
+            context = {
+                    'updatesamprequired':updatesamprequired,
+                    'pseudosamprequired':pseudosamprequired,
+                    'pseudolibrequired':pseudolibrequired,
                     'seqs_form': seqs_form,
                     'modalshowplus': 1,
                     'displayorder': displayorder,
                     'displayorder2':displayorder2,
-                    'data': data,
-                }
-
-            else:
-                context = {
-                    'seqs_form': seqs_form,
-                    'modalshow': 1,
-                    'displayorder': displayorder,
+                    'displayorder3':displayorder3,
                     'data': data,
                 }
 
@@ -813,7 +897,8 @@ def SeqDetail2View(request, seqid):
     seqinfo = get_object_or_404(SeqInfo.objects.select_related('libraryinfo',
                                                                'machine', 'i7index', 'i5index', 'team_member_initails'), seq_id=seqid)
     libinfo = seqinfo.libraryinfo
-    summaryfield = ['seq_id', 'libraryinfo', 'default_label', 'team_member_initails',
+    saminfo = libinfo.sampleinfo
+    summaryfield = ['seq_id','sampleinfo', 'libraryinfo', 'default_label', 'team_member_initails',
                     'date_submitted_for_sequencing', 'machine', 'read_length', 'read_type', 'portion_of_lane',
                     'i7index', 'i5index', 'total_reads', 'notes']
     bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
@@ -821,6 +906,7 @@ def SeqDetail2View(request, seqid):
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
     context = {
         'libinfo': libinfo,
+        'saminfo':saminfo,
         'seqinfo': seqinfo,
         'summaryfield': summaryfield,
         'seqbioinfos': seqbioinfos,

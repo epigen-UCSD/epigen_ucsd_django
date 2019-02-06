@@ -99,6 +99,7 @@
 
       </div>
       <div class="modal-body">
+        {% if updatesamprequired %}
         <p>In this request, species will be stored into the following samples:</p>
 
       <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
@@ -121,6 +122,58 @@
           {% endfor %}
         </tbody>
       </table> 
+      {% endif %}
+
+        {% if pseudosamprequired %}
+        <p>In this request, the following new samples will be created:</p>
+
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            {% for field in displayorder2 %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for key,value in data.items%}
+          {% if value.pseudosamflag %}
+          <tr>
+            {% for field in displayorder2 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table> 
+      {% endif %}
+
+        {% if pseudolibrequired %}
+        <p>In this request, the following new libraries will be created:</p>
+
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            {% for field in displayorder3 %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for key,value in data.items%}
+          {% if value.pseudolibflag %}
+          <tr>
+            {% for field in displayorder3 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table> 
+      {% endif %}
+
 
       <p>The following new sequencings will be created:</p>
       <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
