@@ -30,12 +30,16 @@ class RunCreationForm(ModelForm):
     class Meta:
         model = RunInfo
         fields = ['Flowcell_ID', 'date', 'read_type',
-                  'read_length', 'experiment_type']
+                  'read_length', 'experiment_type','machine']
         widgets = {
             'date': forms.DateInput(),
+            'experiment_type':forms.Select(attrs={'id':'nextseq_app_experiment_type'}),
+            'machine': forms.Select(attrs={'id':'nextseq_app_machine'}),
             # 'read_type': forms.TextInput(attrs={'class': 'myfieldclass'}),
         }
-
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['machine'].queryset = SeqMachineInfo.objects.filter(sequencing_core__in=['EPIGEN','IGM'])
 
 class LibrariesInRunForm(ModelForm):
     class Meta:

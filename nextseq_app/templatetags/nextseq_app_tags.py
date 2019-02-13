@@ -48,7 +48,11 @@ def get_class(ob):
 
 @register.filter
 def percentage(value):
+    if value:
         return str(value)+"%"
+    else:
+    	return str(value)
+
 
 @register.filter
 def linktrackingsheet(stringtext):

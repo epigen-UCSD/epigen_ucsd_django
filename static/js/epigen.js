@@ -140,6 +140,20 @@ $(document).ready( function () {
 
     });
 
+    $('select#nextseq_app_machine').on('change', function() {
+        console.log(this.value);
+        if (this.value.startsWith('IGM_')){
+            console.log('ffffff');
+            document.getElementById('id_Flowcell_ID').value = 'TBD_'+Math.floor(Math.random() * 1000);
+
+        }
+        else{
+            document.getElementById('id_Flowcell_ID').value = '';
+        }
+    });
+
+
+
     var samplesurl=$('#collab_samples').attr("data-href");
     $('#collab_samples').DataTable({
     "iDisplayLength": 10,
@@ -557,15 +571,62 @@ $(document).ready( function () {
     $("#id_samplesinfo").attr("wrap", "off");
     $("#id_libsinfo").attr("wrap", "off");
     $("#id_seqsinfo").attr("wrap", "off");
+    $(".downloadajax").on("click",function(e){
+        e.preventDefault();
+        var runinfoid = this.id;
+        
+        var url1=$(this).attr("data-href");
+        $( "#downloadingform").attr( "runid", runinfoid);
+        $( "#downloadingform" ).attr( "data-href", url1);
+
+    });
+    $("#submitForm").on("click",function(e){
+        $("#downloadingform").submit();
+
+
+    });
+     $("#downloadingform").on("submit",function(e){
+        var runinfoid = $(this).attr("runid");
+        var runinfoiddate = 'date-'+$(this).attr("runid")
+        var runinfoidflow = 'flowcell-'+$(this).attr("runid")
+        var postdata=$(this).serializeArray();
+        var url1=$(this).attr("data-href");
+        console.log(url1);
+        $.ajax({
+            url:url1,
+            cache:false,
+            type:"POST",
+            data:postdata,
+            success:function (data){
+              if (data.parseerror){
+                alert(data.parseerror)
+                return
+              }
+              if (data.flowduperror){
+                alert(data.flowduperror)
+                return
+              }
+              $("#"+runinfoiddate).text(data.updatedate);
+              $("#"+runinfoidflow).html(data.flowid);
+              $("#downloadModal").modal("hide");
+              $("#"+runinfoid).replaceWith('<span class="badge badge-success badge-status-blue">JobSubmitted</span>')
+
+            }
+        });
+        e.preventDefault();
+
+     });
+
+
     $(".dmpajax").on("click",function(e){
 	e.preventDefault();
 
-	var runinfoid = this.id;
+	
+    var runinfoid = this.id;
 	var runinfoiddate = 'date-'+this.id
 	var that = this;
 	var url1=$(this).attr("data-href");
 	var url2=url1.replace("demultiplexing","demultiplexing2")
-	alert('start')
 	
 	$.ajax({
 	    url:url1,

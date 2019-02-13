@@ -29,22 +29,27 @@
         <tbody>
           {% for Run in RunInfo_list %}
           <tr>                
-          <td><a href="{% url 'nextseq_app:rundetail' Run.pk %}"> {{ Run.Flowcell_ID }} </a></td>
+            <td><a id="flowcell-{{Run.Flowcell_ID}}" href="{% url 'nextseq_app:rundetail' Run.pk %}"> {{ Run.Flowcell_ID }} </a></td>
             <td>{{ Run.operator }}</td>
             <td id="date-{{Run.Flowcell_ID}}">{{ Run.date|date:"Y-m-d" }}</td>
             <td>{{ Run.read_type }}</td>
             <td>{{ Run.read_length }}</td>
-            <td>{{ Run.total_libraries }}</td>
-            <td>{{ Run.total_reads | intcomma }}</td>
+            <td>{{ Run.total_libraries | default_if_none:""}}</td>
+            <td>{{ Run.total_reads | default_if_none:"" | intcomma}}</td>
 		<td>  <div class="progress">
-		    <div class="progress-bar" role="progressbar" aria-valuenow={{Run.percent_of_reads_demultiplexed}} aria-valuemin="0" aria-valuemax="100" style="width:{{ Run.percent_of_reads_demultiplexed|percentage}}">
-            {{ Run.percent_of_reads_demultiplexed|percentage }}
+		    <div class="progress-bar" role="progressbar" aria-valuenow={{Run.percent_of_reads_demultiplexed}} aria-valuemin="0" aria-valuemax="100" style="width:{{ Run.percent_of_reads_demultiplexed| default_if_none:""| percentage}}">
+            {{ Run.percent_of_reads_demultiplexed| default_if_none:""|percentage }}
 	  </div></td>
             <td>{{ Run.updated_at|date:"m/d/Y H:i" }}</td>
             {% if Run.jobstatus == 'Done'%}
             <td><span class="badge badge-success badge-status-green">Done</span></td>
             {% elif Run.jobstatus == 'ClickToSubmit' %}
-            <td><a class="btn btn-danger btn-sm btn-status-orange dmpajax" href="" data-href="{% url 'nextseq_app:demultiplexing' Run.id %}" id={{Run.Flowcell_ID}}>ClickToSubmit</a></td>
+              {% if Run.machine == 'IGM_HiSeq4000' %}
+              <td><a class="btn btn-danger btn-sm btn-status-orange downloadajax" href="" data-toggle="modal" data-target="#downloadModal" data-href="{% url 'nextseq_app:downloadingfromigm' Run.id %}"
+                id={{Run.Flowcell_ID}}>ClickToDownload</a></td>
+              {% else %}
+              <td><a class="btn btn-danger btn-sm btn-status-orange dmpajax" href="" data-href="{% url 'nextseq_app:demultiplexing' Run.id %}" id={{Run.Flowcell_ID}}>ClickToSubmit</a></td>
+              {% endif %}
             {% elif Run.jobstatus == 'JobSubmitted'%}
             <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
             {% elif Run.jobstatus == 'JobStarted'%}
@@ -66,5 +71,26 @@
       </table>
     </div><!-- /.card-body -->              
   </div><!-- /.card -->
-</div><!-- /#content -->      
+</div><!-- /#content --> 
+
+<!-- Modal -->
+<div class="modal fade" id="downloadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Please supply the ftp address:</h5>
+
+      </div>
+      <div class="modal-body">
+      <form id="downloadingform" action="" method="post">{% csrf_token %}  
+        <input type="text" name="downloadaddress" size="100">
+      </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn confirm-btn-orange" id="submitForm">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>   
 {% endblock %}
