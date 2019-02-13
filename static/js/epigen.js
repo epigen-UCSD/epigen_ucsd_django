@@ -746,7 +746,7 @@ $(document).ready( function () {
         that = $(this)
         var url1=$(this).attr("data-href");
         var url2=url1.replace("runsetqc","runsetqc2")
-        var errorname = ['notfinishederror','libdirnotexisterror','writeseterror']
+        var errorname = ['notfinishederror','libdirnotexisterror','writeseterror','fastqerror']
         $.ajax({
         url:url1,
         cache:false,

@@ -179,3 +179,4 @@ INTERNAL_EXEMPT_URLS = (
 NEXTSEQAPP_DMPDIR = config['database']['NEXTSEQAPP_DMPDIR']
 LIBQC_DIR = config['database']['LIBQC_DIR']
 SETQC_DIR = config['database']['SETQC_DIR']
+FASTQ_DIR = config['database']['FASTQ_DIR']
