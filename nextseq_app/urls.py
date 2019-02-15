@@ -8,7 +8,8 @@ urlpatterns = [
     path('', views.IndexView, name='index'),
     path('myruns/', views.IndexView, name='userruns'),
     path('mysamples/', views.UserSamplesView, name='usersamples'),
-    path('allruns/', views.HomeView.as_view(), name='allruns'),
+    #path('allruns/', views.HomeView.as_view(), name='allruns'),
+    path('allruns/', views.AllRunsView, name='allruns'),
     path('allsamples/', views.AllSamplesView, name='allsamples'),
     #path('register/', views.UserRegisterView.as_view(), name='register'),
     #path('login/', views.UserLoginView.as_view(), name='login'),
@@ -28,5 +29,6 @@ urlpatterns = [
          views.DemultiplexingView, name='demultiplexing'),
     path('<int:run_pk>/demultiplexing2/',
          views.DemultiplexingView2, name='demultiplexing2'),
-
+    path('<int:run_pk>/downloadingfromigm/',
+         views.DownloadingfromIGM, name='downloadingfromigm'),
 ]

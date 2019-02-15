@@ -485,6 +485,7 @@ def GetNotesView(request, setqc_pk):
 @transaction.atomic
 def RunSetQC(request, setqc_pk):
     libdir = settings.LIBQC_DIR
+    fastqdir = settings.FASTQ_DIR
     setqcoutdir = settings.SETQC_DIR
     data = {}
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
@@ -503,6 +504,7 @@ def RunSetQC(request, setqc_pk):
         'read_type', flat=True).get(id=x) for x in list1tem]
 
     seqstatus = []
+    i = 0 
     for item in list1:
         if item not in allfolder:
             seqstatus.append('No')
@@ -511,6 +513,30 @@ def RunSetQC(request, setqc_pk):
                 seqstatus.append('No')
             else:
                 seqstatus.append('Yes')
+        if list_readtype[i] == 'PE':
+            r1 = item+'_R1.fastq.gz'
+            r2 = item+'_R2.fastq.gz'
+            try:
+                if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
+                    data['fastqerror']='There is at least one library withou fastq file ready. Please go to the setQC detail page.'
+                    return JsonResponse(data)
+            except Exception as e:
+                data['fastqerror']='There is at least one library withou fastq file ready. Please go to the setQC detail page.'
+                fastqstatus.append('No')
+                print(e)
+                return JsonResponse(data)
+        elif list_readtype[i] == 'SE':
+            r1 = item+'.fastq.gz'           
+            try:
+                if not os.path.isfile(os.path.join(fastqdir, r1)):
+                    data['fastqerror']='There is at least one library withou fastq file ready. Please go to the setQC detail page.'
+                    return JsonResponse(data)
+            except Exception as e:
+                data['fastqerror']='There is at least one library withou fastq file ready. Please go to the setQC detail page.'
+                fastqstatus.append('No')
+                print(e)
+                return JsonResponse(data)
+        i += 1
 
     if setinfo.experiment_type == 'ChIP-seq':
         list2 = list(librariesset.values_list('group_number', flat=True))
@@ -622,6 +648,7 @@ def RunSetQC2(request, setqc_pk):
 def SetQCDetailView(request, setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     libdir = settings.LIBQC_DIR
+    fastqdir = settings.FASTQ_DIR
     allfolder = [fname for fname in os.listdir(
         libdir) if os.path.isdir(os.path.join(libdir, fname))]
     summaryfield = ['status', 'set_id', 'set_name', 'date_requested',
@@ -635,6 +662,7 @@ def SetQCDetailView(request, setqc_pk):
     list_readtype = [SeqInfo.objects.values_list(
         'read_type', flat=True).get(id=x) for x in list1tem]
     seqstatus = []
+    fastqstatus = []
     list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
         id=x) for x in list(librariesset.values_list('genome', flat=True))]
     list5 = list(librariesset.values_list('label', flat=True))
@@ -643,6 +671,7 @@ def SetQCDetailView(request, setqc_pk):
             setinfo.collaborator.last_name+'('+setinfo.group.name+')'
     else:
         collab = ''
+    i = 0
     for item in list1:
         if item not in allfolder:
             seqstatus.append('No')
@@ -651,19 +680,42 @@ def SetQCDetailView(request, setqc_pk):
                 seqstatus.append('No')
             else:
                 seqstatus.append('Yes')
+        if list_readtype[i] == 'PE':
+            r1 = item+'_R1.fastq.gz'
+            r2 = item+'_R2.fastq.gz'
+            try:
+                if os.path.isfile(os.path.join(fastqdir, r1)) and os.path.isfile(os.path.join(fastqdir, r2)):
+                    fastqstatus.append('Yes')
+                else:
+                    fastqstatus.append('No')
+            except Exception as e:
+                fastqstatus.append('No')
+                print(e)
+        elif list_readtype[i] == 'SE':
+            r1 = item+'.fastq.gz'           
+            try:
+                if os.path.isfile(os.path.join(fastqdir, r1)):
+                    fastqstatus.append('Yes')
+                else:
+                    fastqstatus.append('No')
+            except Exception as e:
+                fastqstatus.append('No')
+                print(e)
+        i += 1
+
 
     if setinfo.experiment_type == 'ChIP-seq':
         list2 = list(librariesset.values_list('group_number', flat=True))
         list3 = list(librariesset.values_list('is_input', flat=True))
         featureinfo = list(zip(list1, list_readtype, list2,
-                               list3, list4, list5, seqstatus))
+                               list3, list4, list5, fastqstatus,seqstatus))
         featureheader = ['Library ID', 'Read Type', 'Group ID',
-                         'Is Input',  'Genome', 'Label', 'Processed']
+                         'Is Input',  'Genome', 'Label', 'FastQExisted','Processed']
     else:
         featureinfo = list(zip(list1, list_readtype, list4,
-                               list5, seqstatus))
+                               list5, fastqstatus, seqstatus))
         featureheader = ['Library ID', 'Read Type',
-                         'Genome', 'Label', 'Processed']
+                         'Genome', 'Label', 'FastQExisted','Processed']
     context = {
         'setinfo': setinfo,
         'summaryfield': summaryfield,
