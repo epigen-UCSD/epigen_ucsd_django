@@ -78,12 +78,14 @@
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Please supply the ftp address:</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Please supply the info from igm's email:</h5>
 
       </div>
       <div class="modal-body">
       <form id="downloadingform" action="" method="post">{% csrf_token %}  
-        <input type="text" name="downloadaddress" size="100">
+        <input type="text" name="downloadaddress" size="100" placeholder="Ftp address">
+        <input type="text" name="username" size="100" placeholder="Username">
+        <input type="password" name="pass" size="100" placeholder="Password">	
       </form>
       </div>
       <div class="modal-footer">

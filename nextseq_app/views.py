@@ -86,7 +86,8 @@ def IndexValidation(i7list, i5list):
 
 def IndexView(request):
 
-    RunInfo_list = RunInfo.objects.filter(operator=request.user).select_related('operator')
+    RunInfo_list = RunInfo.objects.filter(
+        operator=request.user).select_related('operator')
     return render(request, 'nextseq_app/userrunsinfo.html', {'RunInfo_list': RunInfo_list})
 
 
@@ -99,8 +100,6 @@ def AllRunsView(request):
         return render(request, 'nextseq_app/runsinfo.html', {'RunInfo_list': RunInfo_list})
     else:
         return render(request, 'nextseq_app/runsinfo_bio.html', {'RunInfo_list': RunInfo_list})
-
-
 
 
 class HomeView(ListView):
@@ -129,7 +128,8 @@ class HomeView(ListView):
 
 
 def AllSamplesView(request):
-    Samples_list = LibrariesInRun.objects.all().select_related('singlerun','i7index','i5index')
+    Samples_list = LibrariesInRun.objects.all().select_related(
+        'singlerun', 'i7index', 'i5index')
     context = {
         'Samples_list': Samples_list,
     }
@@ -138,7 +138,8 @@ def AllSamplesView(request):
 
 def UserSamplesView(request):
     userruns = RunInfo.objects.filter(operator=request.user)
-    Samples_list = LibrariesInRun.objects.filter(singlerun__in=userruns).select_related('singlerun','i7index','i5index')
+    Samples_list = LibrariesInRun.objects.filter(
+        singlerun__in=userruns).select_related('singlerun', 'i7index', 'i5index')
 
     context = {
         'Samples_list': Samples_list,
@@ -149,7 +150,7 @@ def UserSamplesView(request):
 class RunDetailView2(DetailView):
     model = RunInfo
     template_name = 'nextseq_app/details.html'
-    summaryfield = ['jobstatus', 'date', 'operator','machine','experiment_type', 'read_type', 'total_libraries', 'total_reads',
+    summaryfield = ['jobstatus', 'date', 'operator', 'machine', 'experiment_type', 'read_type', 'total_libraries', 'total_reads',
                     'percent_of_reads_demultiplexed', 'read_length', 'nextseqdir']
     # object = FooForm(data=model_to_dict(Foo.objects.get(pk=object_id)))
 
@@ -866,10 +867,14 @@ def DemultiplexingView2(request, run_pk):
     else:
         return JsonResponse(data)
 
+
 @transaction.atomic
 def DownloadingfromIGM(request, run_pk):
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
-    ftpaddr = request.POST.get("downloadaddress")
+    ftp_addr = request.POST.get("downloadaddress")
+    ftp_user = request.POST.get("username")
+    ftp_password = request.POST.get("pass")
+
     data = {}
     try:
         fullname = ftpaddr.strip("/").split("/")[-1]
@@ -878,23 +883,27 @@ def DownloadingfromIGM(request, run_pk):
             data['parseerror'] = 'Date parse error!'
             return JsonResponse(data)
 
-        rundatefinal = '20'+'-'.join([rundate[i:i+2] for i in range(0, len(rundate.split('_')[0]), 2)])
+        rundatefinal = '20' + \
+            '-'.join([rundate[i:i+2]
+                      for i in range(0, len(rundate.split('_')[0]), 2)])
         flowname = fullname.split('_')[3][1:]
     except Exception as e:
         data['parseerror'] = 'Date and Flowcell_ID parse error!'
         print(e)
         return JsonResponse(data)
     if RunInfo.objects.exclude(pk=run_pk).filter(Flowcell_ID=flowname).exists():
-        data['flowduperror'] = 'Flowcell_ID with name: '+flowname+'is already existed.'
-        return JsonResponse(data)       
+        data['flowduperror'] = 'Flowcell_ID with name: ' + \
+            flowname+'is already existed.'
+        return JsonResponse(data)
     RunInfo.objects.filter(pk=run_pk).update(date=rundatefinal)
     RunInfo.objects.filter(pk=run_pk).update(Flowcell_ID=flowname)
     RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSubmitted')
 
     data['updatedate'] = rundatefinal
     data['flowid'] = flowname
-    cmd = './utility/download.sh ' + runinfo.Flowcell_ID + ' ' + ftpaddr
-    #print(cmd)
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    cmd = './utility/download.sh ' + runinfo.Flowcell_ID + \
+        ' ' + ftp_addr + ' '+ftp_user+' '+ftp_password
+    # print(cmd)
+    p = subprocess.Popen(
+        cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return JsonResponse(data)
-
