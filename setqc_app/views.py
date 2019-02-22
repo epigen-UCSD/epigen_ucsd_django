@@ -513,29 +513,36 @@ def RunSetQC(request, setqc_pk):
                 seqstatus.append('No')
             else:
                 seqstatus.append('Yes')
-        if list_readtype[i] == 'PE':
-            r1 = item+'_R1.fastq.gz'
-            r2 = item+'_R2.fastq.gz'
-            try:
-                if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
-                    data['fastqerror'] = 'There is at least one library with no fastq file. Please go to the setQC detail page.'
+        reps = ['1']
+        reps = reps + item.split('_')[2:]
+        mainname = '_'.join(item.split('_')[0:2])
+        for j in set(reps):
+            if j == '1':
+                repname = mainname
+            else:
+                repname = '_'.join([mainname,j])
+            if list_readtype[i] == 'PE':           
+                r1 = repname+'_R1.fastq.gz'
+                r2 = repname+'_R2.fastq.gz'
+                try:
+                    if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
+                        data['fastqerror'] = 'There is at least one library without fastq file. Please go to the setQC detail page.'
+                        return JsonResponse(data)
+                except Exception as e:
+                    data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
+                    print(e)
                     return JsonResponse(data)
-            except Exception as e:
-                data['fastqerror'] = 'There is at least one library with no fastq file ready. Please go to the setQC detail page.'
-                fastqstatus.append('No')
-                print(e)
-                return JsonResponse(data)
-        elif list_readtype[i] == 'SE':
-            r1 = item+'.fastq.gz'
-            try:
-                if not os.path.isfile(os.path.join(fastqdir, r1)):
-                    data['fastqerror'] = 'There is at least one library withou fastq file ready. Please go to the setQC detail page.'
+            elif list_readtype[i] == 'SE':
+                r1 = repname+'.fastq.gz'
+                r1op = repname+'_R1.fastq.gz'
+                try:
+                    if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r2)) :
+                        data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
+                        return JsonResponse(data)
+                except Exception as e:
+                    data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
+                    print(e)
                     return JsonResponse(data)
-            except Exception as e:
-                data['fastqerror'] = 'There is at least one library withou fastq file ready. Please go to the setQC detail page.'
-                fastqstatus.append('No')
-                print(e)
-                return JsonResponse(data)
         i += 1
 
     if setinfo.experiment_type == 'ChIP-seq':
