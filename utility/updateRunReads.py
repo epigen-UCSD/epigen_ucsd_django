@@ -39,7 +39,7 @@ def main(flowcell):
     # if you have dir to save, python updateRunStatus.py -s '0' -d '/Users/180705_AH5GLYBGX5431' -f 'H5GLYBGX5fff'
     obj = RunInfo.objects.get(Flowcell_ID=flowcell)
     this_dir = obj.nextseqdir
-    fastq_dir = os.path.join(this_dir, "Data/Fastqs")
+    fastq_dir = this_dir  # os.path.join(this_dir, "Data/Fastqs")
     libs = obj.librariesinrun_set.all()
     obj.total_libraries = len(libs)
     total_lib_reads = sum([i['numberofreads'] for i in libs.values()])

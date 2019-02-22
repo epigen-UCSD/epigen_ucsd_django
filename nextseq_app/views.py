@@ -877,8 +877,10 @@ def DownloadingfromIGM(request, run_pk):
 
     data = {}
     try:
-        fullname = ftpaddr.strip("/").split("/")[-1]
-        rundate = fullname.split('_')[0]
+        fullname = ftp_addr.strip("/").split("/")
+        fastq_dir = os.path.join(
+            '/projects/ps-epigen/seqdata', fullname[-2], fullname[-1])
+        rundate = fullname[-1].split('_')[0]
         if len(rundate) != 6 or not rundate.isdigit():
             data['parseerror'] = 'Date parse error!'
             return JsonResponse(data)
@@ -886,7 +888,7 @@ def DownloadingfromIGM(request, run_pk):
         rundatefinal = '20' + \
             '-'.join([rundate[i:i+2]
                       for i in range(0, len(rundate.split('_')[0]), 2)])
-        flowname = fullname.split('_')[3][1:]
+        flowname = fullname[-1].split('_')[3][1:]
     except Exception as e:
         data['parseerror'] = 'Date and Flowcell_ID parse error!'
         print(e)
@@ -898,12 +900,13 @@ def DownloadingfromIGM(request, run_pk):
     RunInfo.objects.filter(pk=run_pk).update(date=rundatefinal)
     RunInfo.objects.filter(pk=run_pk).update(Flowcell_ID=flowname)
     RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSubmitted')
+    RunInfo.objects.filter(pk=run_pk).update(nextseqdir=fastq_dir)
 
     data['updatedate'] = rundatefinal
     data['flowid'] = flowname
-    cmd = './utility/download.sh ' + runinfo.Flowcell_ID + \
-        ' ' + ftp_addr + ' '+ftp_user+' '+ftp_password
-    # print(cmd)
-    p = subprocess.Popen(
-        cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    cmd = "./utility/download_igm.sh {0} {1} {2} {3} {4}".format(
+        ftp_addr, ftp_user, ftp_password, flowname, request.user.email)
+    print(cmd)
+    p = subprocess.Popen(cmd,
+                         shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return JsonResponse(data)
