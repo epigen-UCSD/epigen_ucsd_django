@@ -518,10 +518,10 @@ def RunSetQC(request, setqc_pk):
             r2 = item+'_R2.fastq.gz'
             try:
                 if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
-                    data['fastqerror'] = 'There is at least one library withou fastq file ready. Please go to the setQC detail page.'
+                    data['fastqerror'] = 'There is at least one library with no fastq file. Please go to the setQC detail page.'
                     return JsonResponse(data)
             except Exception as e:
-                data['fastqerror'] = 'There is at least one library withou fastq file ready. Please go to the setQC detail page.'
+                data['fastqerror'] = 'There is at least one library with no fastq file ready. Please go to the setQC detail page.'
                 fastqstatus.append('No')
                 print(e)
                 return JsonResponse(data)
