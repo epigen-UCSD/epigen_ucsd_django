@@ -24,9 +24,10 @@ def has_groups(user, group_name_list):
 @register.filter
 def humantitle(oldtitle):
 	titlechange = {
-		'jobstatus': 'Demultiplexing Status',
+		'jobstatus': 'Status',
 		'set_id': 'Set ID',
 		'set_name':'Title',
+		'nextseqdir':'Location',
 
 	}
 	if oldtitle in titlechange.keys():

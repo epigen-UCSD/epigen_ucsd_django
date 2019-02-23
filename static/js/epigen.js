@@ -203,7 +203,7 @@ $(document).ready( function () {
     ],
     "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
     "iDisplayLength": 20,
-    "order": [[ 1, "desc" ],[ 2, "desc" ]],
+    "order": [[ 2, "desc" ],[ 3, "desc" ]],
     "processing": true,
     "ajax": {
          url: metasampsurl,
@@ -211,10 +211,10 @@ $(document).ready( function () {
         },
     "columns": [
             { "data": "sample_id"},
+            { "data": "description"},
             { "data": "date"},
             { "data": "group__name"},
-            { "data": "sample_type"},
-            { "data": "service_requested"},
+            { "data": "sample_type"},          
             { "data": "status"},
         ],
     "deferRender": true,
@@ -244,7 +244,7 @@ $(document).ready( function () {
     ],
     "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
     "iDisplayLength": 20,
-    "order": [[ 1, "desc" ],[ 2, "desc" ]],
+    "order": [[ 2, "desc" ],[ 3, "desc" ]],
     "processing": true,
     "ajax": {
          url: metasampsurl,
@@ -252,10 +252,10 @@ $(document).ready( function () {
         },
     "columns": [
             { "data": "sample_id"},
+            { "data": "description"},
             { "data": "date"},
             { "data": "group__name"},
-            { "data": "sample_type"},
-            { "data": "service_requested"},
+            { "data": "sample_type"},            
             { "data": "status"},
             { "data": null, defaultContent: ""},
         ],

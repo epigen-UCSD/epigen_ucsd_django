@@ -573,7 +573,7 @@ def SeqsCreateView(request):
 
 def SampleDataView(request):
     Samples_list = SampleInfo.objects.all().select_related('group').values(
-        'pk', 'sample_id', 'date', 'sample_type', 'service_requested', 'group__name', 'status')
+        'pk', 'sample_id', 'description','date', 'sample_type', 'group__name', 'status')
     for sample in Samples_list:
         try:
             sample['group__name'] = sample['group__name'].replace(
@@ -603,7 +603,7 @@ def SeqDataView(request):
 
 def UserSampleDataView(request):
     Samples_list = SampleInfo.objects.filter(team_member=request.user).values(
-        'pk', 'sample_id', 'date', 'sample_type', 'service_requested', 'group__name', 'status')
+        'pk', 'sample_id', 'description','date', 'sample_type', 'group__name', 'status')
     for sample in Samples_list:
         try:
             sample['group__name'] = sample['group__name'].replace(

@@ -23,7 +23,11 @@
                 {% if runinfo.jobstatus == 'Done'%}
                 <td><span class="badge badge-success badge-status-green">Done</span></td>
                 {% elif runinfo.jobstatus == 'ClickToSubmit' %}
-		<td><span class="badge badge-success badge-status-orange">ToSubmit</span></td>
+                  {% if runinfo.machine == 'IGM_HiSeq4000' %}
+		                <td><span class="badge badge-success badge-status-orange">ToTransfer</span></td>
+                  {% else %}
+                    <td><span class="badge badge-success badge-status-orange">ToDemultiplex</span></td>
+                  {% endif %}
                 {% elif runinfo.jobstatus == 'JobSubmitted'%}
                 <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
                 {% elif runinfo.jobstatus == 'JobStarted'%}

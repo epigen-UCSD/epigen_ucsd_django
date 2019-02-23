@@ -21,7 +21,7 @@
             <th scope="col">Total libraries</th>
             <th scope="col">Total reads</th>
             <th scope="col">%demultiplexed</th>	    	    
-            <th scope="col">Demultiplexing</th>
+            <th scope="col">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -42,9 +42,9 @@
             <td><span class="badge badge-success badge-status-green">Done</span></td>
             {% elif Run.jobstatus == 'ClickToSubmit' %}
               {% if Run.machine == 'IGM_HiSeq4000' %}
-              <td><span class="badge badge-success badge-status-orange">ToDownload</span></td>
+              <td><span class="badge badge-success badge-status-orange">ToTransfer</span></td>
               {% else %}
-              <td><span class="badge badge-success badge-status-orange">ToSubmit</span></td>
+              <td><span class="badge badge-success badge-status-orange">ToDemultiplex</span></td>
                {% endif %}
  
             {% elif Run.jobstatus == 'JobSubmitted'%}

@@ -11,17 +11,26 @@
   margin-top: 60px;
 }
 .modal-header {
-  padding:10px;
-  font-size: 14px;
+  padding:30px;
+  font-size: 16px;
 }
 .modal-body {
 
      overflow-x: auto;
-     font-size: 12px;
+     font-size: 14px;
 }
 .modal-footer {
   padding:10px;
   font-size: 14px;
+}
+
+.modalinput {
+  background-color:#f8f9fa;
+  border-radius: 10px;
+  border-style: groove;
+  border-color:#f4f5f7; 
+  border-width: 0.5px;
+  padding:10px;
 }
 .hiddenbtn {
     color:white;
@@ -124,14 +133,14 @@ div.detailnotes {
   font-size: 12px;
   border-color: #FF6A39;
   line-height: 0.6;
-  width:105px;
+  width:115px;
 }
 .badge-status-red {
   background-color: red;
   font-size: 12px;
   border-color: red;
   line-height: 0.8;
-  width:105px;
+  width:115px;
   font-weight: normal;
 }
 .badge-status-orange {
@@ -139,7 +148,7 @@ div.detailnotes {
   font-size: 12px;
   border-color: #FF6A39;
   line-height: 0.8;
-  width:105px;
+  width:115px;
   font-weight: normal;
 }
 .badge-status-green {
@@ -147,7 +156,7 @@ div.detailnotes {
   font-size: 12px;
   border-color: #26D07C;
   line-height: 0.8;
-  width:105px;
+  width:115px;
   font-weight: normal;
 }
 .badge-status-yellow {
@@ -155,7 +164,7 @@ div.detailnotes {
   font-size: 12px;
   border-color: #F6BE00;
   line-height: 0.8;
-  width:105px;
+  width:115px;
   font-weight: normal;
 }
 .badge-status-lightblue {
@@ -163,7 +172,7 @@ div.detailnotes {
   font-size: 12px;
   border-color: #00B5E2;
   line-height: 0.8;
-  width:105px;
+  width:115px;
   font-weight: normal;
 }
 .badge-status-blue {
@@ -171,7 +180,7 @@ div.detailnotes {
   font-size: 12px;
   border-color: #182B49;
   line-height: 0.8;
-  width:105px;
+  width:115px;
   font-weight: normal;
 }
 .cardnosidebar {

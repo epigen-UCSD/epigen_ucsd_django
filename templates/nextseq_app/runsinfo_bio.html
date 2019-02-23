@@ -22,7 +22,7 @@
             <th scope="col">Total reads</th>
             <th scope="col">%demultiplexed</th>	    	    
             <th scope="col">Last Modified</th>
-            <th scope="col">Demultiplexing</th>
+            <th scope="col">Status</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -46,9 +46,9 @@
             {% elif Run.jobstatus == 'ClickToSubmit' %}
               {% if Run.machine == 'IGM_HiSeq4000' %}
               <td><a class="btn btn-danger btn-sm btn-status-orange downloadajax" href="" data-toggle="modal" data-target="#downloadModal" data-href="{% url 'nextseq_app:downloadingfromigm' Run.id %}"
-                id={{Run.Flowcell_ID}}>ClickToDownload</a></td>
+                id={{Run.Flowcell_ID}}>ClickToTransfer</a></td>
               {% else %}
-              <td><a class="btn btn-danger btn-sm btn-status-orange dmpajax" href="" data-href="{% url 'nextseq_app:demultiplexing' Run.id %}" id={{Run.Flowcell_ID}}>ClickToSubmit</a></td>
+              <td><a class="btn btn-danger btn-sm btn-status-orange dmpajax" href="" data-href="{% url 'nextseq_app:demultiplexing' Run.id %}" id={{Run.Flowcell_ID}}>ClickToDemultiplex</a></td>
                {% endif %}
             {% elif Run.jobstatus == 'JobSubmitted'%}
             <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
@@ -79,12 +79,14 @@
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Please supply the ftp address:</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Please supply the info from igm's email:</h5>
 
       </div>
       <div class="modal-body">
       <form id="downloadingform" action="" method="post">{% csrf_token %}  
-        <input type="text" name="downloadaddress" size="100">
+        <input class="modalinput" type="text" name="downloadaddress" size="100" placeholder="Ftp address"><br><br>
+        <input class="modalinput" type="text" name="username" size="100" placeholder="Username"><br><br>
+        <input class="modalinput" type="password" name="pass" size="100" placeholder="Password"><br><br>
       </form>
       </div>
       <div class="modal-footer">
@@ -93,6 +95,6 @@
       </div>
     </div>
   </div>
-</div>   
+</div>  
 {% endblock %}
 
