@@ -33,10 +33,20 @@
               <td>{{ x.3 | default_if_none:"" }}</td>
               <td>{{ x.4 | default_if_none:"" }}</td>
               <td>{{ x.5 | default_if_none:"" }}</td>
+              {% if x.6 == 'Yes' %}
+              <td><span class="badge badge-success badge-status-green">{{ x.6 }}</span></td>
+              {% else %}
               <td>{{ x.6 | default_if_none:"" }}</td>
-              <td>{{ x.7 | default_if_none:"" }}</td>       
+              {% endif %}
+              {% if x.7 == 'Yes' %}
+              <td><span class="badge badge-success badge-status-green">{{ x.7 }}</span></td>
+              {% else %}
+              <td>{{ x.7 | default_if_none:"" }}</td>
+              {% endif %}     
+            }
             </tr>
             {% endfor %} 
+
 
             {% else %}                 
             {% for x in featureinfo  %}
@@ -45,8 +55,16 @@
               <td>{{ x.1 | default_if_none:""}}</td>
               <td>{{ x.2 | default_if_none:"" }}</td>
               <td>{{ x.3 | default_if_none:"" }}</td>
+              {% if x.4 == 'Yes' %}
+              <td><span class="badge badge-success badge-status-green">{{ x.4 }}</span></td>
+              {% else %}
               <td>{{ x.4 | default_if_none:"" }}</td>
-              <td>{{ x.5 | default_if_none:"" }}</td> 	      
+              {% endif %}
+              {% if x.5 == 'Yes' %}
+              <td><span class="badge badge-success badge-status-green">{{ x.5 }}</span></td>
+              {% else %}
+              <td>{{ x.5 | default_if_none:"" }}</td>
+              {% endif %}      
             </tr>
             {% endfor %} 
 
