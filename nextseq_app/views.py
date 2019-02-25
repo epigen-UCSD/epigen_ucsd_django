@@ -221,7 +221,7 @@ def RunCreateView6(request):
 
         samplestocreat = form.cleaned_data['samplestocreat']
         tosave_list = []
-        samplestocreat += '   \nLibrary_ID'
+        samplestocreat += '   \nSequencing_ID'  # mannually create a newline
         i7index_list = []
         i5index_list = []
         libraryid_list = []
@@ -229,7 +229,7 @@ def RunCreateView6(request):
             samples_info = re.split(r'[\s]', samples)
 
             # handle snATAC_v2, i7 in range(1-4), i5 in range(1-8)
-            if runinfo.experiment_type == "S2" and samples != '\r' and samples_info[0] != 'Library_ID':
+            if runinfo.experiment_type == "S2" and samples != '\r' and samples_info[0] != 'Sequencing_ID':
                 try:
                     if samples_info[1] and samples_info[2]:
                         i7 = libraryparse(samples_info[1])
@@ -276,7 +276,7 @@ def RunCreateView6(request):
                 tosave_list.append(tosave_sample)
 
             # hand bulk barcodes
-            if runinfo.experiment_type in ["BK", "TA"] and samples != '\r' and samples_info[0] != 'Library_ID':
+            if runinfo.experiment_type in ["BK", "TA"] and samples != '\r' and samples_info[0] != 'Sequencing_ID':
                 try:
                     if samples_info[1] and samples_info[2]:
                         tosave_sample = LibrariesInRun(
