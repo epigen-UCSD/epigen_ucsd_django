@@ -33,16 +33,16 @@
               <td>{{ x.3 | default_if_none:"" }}</td>
               <td>{{ x.4 | default_if_none:"" }}</td>
               <td>{{ x.5 | default_if_none:"" }}</td>
-              {% if x.6 == 'Yes' %}
-              <td><span class="badge badge-success badge-status-green">{{ x.6 }}</span></td>
+              {% if x.6 == 'No' %}
+              <td><span style="color:red;">{{ x.6 }}</span></td>
               {% else %}
-              <td>{{ x.6 | default_if_none:"" }}</td>
+              <td><span style="color:#3CB371;">{{ x.6 | default_if_none:"" }}</span></td>
               {% endif %}
-              {% if x.7 == 'Yes' %}
-              <td><span class="badge badge-success badge-status-green">{{ x.7 }}</span></td>
+              {% if x.7 == 'No' %}
+              <td><span style="color:red;">{{ x.7 }}</span></td>
               {% else %}
-              <td>{{ x.7 | default_if_none:"" }}</td>
-              {% endif %}     
+              <td><span style="color:#3CB371;">{{ x.7 | default_if_none:"" }}</span></td>
+              {% endif %}      
             }
             </tr>
             {% endfor %} 
@@ -55,16 +55,16 @@
               <td>{{ x.1 | default_if_none:""}}</td>
               <td>{{ x.2 | default_if_none:"" }}</td>
               <td>{{ x.3 | default_if_none:"" }}</td>
-              {% if x.4 == 'Yes' %}
-              <td><span class="badge badge-success badge-status-green">{{ x.4 }}</span></td>
+              {% if x.4 == 'No' %}
+              <td><span style="color:red;">{{ x.4 }}</span></td>
               {% else %}
-              <td>{{ x.4 | default_if_none:"" }}</td>
+              <td><span style="color:#3CB371;">{{ x.4 | default_if_none:"" }}</span></td>
               {% endif %}
-              {% if x.5 == 'Yes' %}
-              <td><span class="badge badge-success badge-status-green">{{ x.5 }}</span></td>
+              {% if x.4 == 'No' %}
+              <td><span style="color:red;">{{ x.4 }}</span></td>
               {% else %}
-              <td>{{ x.5 | default_if_none:"" }}</td>
-              {% endif %}      
+              <td><span style="color:#3CB371;">{{ x.4 | default_if_none:"" }}</span></td>
+              {% endif %}     
             </tr>
             {% endfor %} 
 
