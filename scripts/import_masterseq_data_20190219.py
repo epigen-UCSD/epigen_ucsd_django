@@ -111,7 +111,7 @@ def main():
 				storage_tm = fields[26].strip()
 
 				if sampletype_tm == 'pca cell line':
-					note_tm = ';'.join([notes_tm,sampletype_tm]).strip(';')
+					notes_tm = ';'.join([notes_tm,sampletype_tm]).strip(';')
 					sampletype_tm = 'other (please explain in notes)'
 				elif sampletype_tm.startswith('other'):
 					sampletype_tm = 'other (please explain in notes)'
@@ -120,17 +120,19 @@ def main():
 					team_member_tm = User.objects.get(username = fields[25].strip())				
 				else:
 					team_member_tm = None
+					if fields[25].strip()!='':
+						notes_tm = ';'.join([notes_tm,'team_member_initails:'+fields[25].strip()]).strip(';')
 
 				if species_tm.startswith('other'):
 					species_tm = 'other (please explain in notes)'
 
 				if preparation_tm in ['facs sorted cells','douncing homogenization']:
-					note_tm = ';'.join([notes_tm,preparation_tm]).strip(';')
+					notes_tm = ';'.join([notes_tm,preparation_tm]).strip(';')
 					preparation_tm = 'other (please explain in notes)'
 				elif preparation_tm.startswith('other'):
 					preparation_tm = 'other (please explain in notes)'
 
-				if fixation_tm.startswith('other'):
+				if fixation_tm.lower().startswith('other'):
 					fixation_tm = 'other (please explain in notes)'
 
 				if unit_tm.startswith('other'):
@@ -153,7 +155,7 @@ def main():
 				obj.preparation = preparation_tm
 				obj.description = fields[9].strip()
 				obj.fixation = fixation_tm
-				obj.notes = note_tm
+				obj.notes = notes_tm
 				obj.sample_amount = fields[14].strip()
 				obj.unit = unit_tm
 				obj.service_requested = service_requested_tm
@@ -184,7 +186,7 @@ def main():
 				storage_tm = fields[26].strip()
 
 				if sampletype_tm == 'pca cell line':
-					note_tm = ';'.join([notes_tm,sampletype_tm]).strip(';')
+					notes_tm = ';'.join([notes_tm,sampletype_tm]).strip(';')
 					sampletype_tm = 'other (please explain in notes)'
 				elif sampletype_tm.startswith('other'):
 					sampletype_tm = 'other (please explain in notes)'
@@ -193,12 +195,14 @@ def main():
 					team_member_tm = User.objects.get(username = fields[25].strip())				
 				else:
 					team_member_tm = None
+					if fields[25].strip()!='':
+						notes_tm = ';'.join([notes_tm,'team_member_initails:'+fields[25].strip()]).strip(';')
 
 				if species_tm.startswith('other'):
 					species_tm = 'other (please explain in notes)'
 
 				if preparation_tm in ['facs sorted cells','douncing homogenization']:
-					note_tm = ';'.join([notes_tm,preparation_tm]).strip(';')
+					notes_tm = ';'.join([notes_tm,preparation_tm]).strip(';')
 					preparation_tm = 'other (please explain in notes)'
 				elif preparation_tm.startswith('other'):
 					preparation_tm = 'other (please explain in notes)'
@@ -226,7 +230,7 @@ def main():
 				obj.preparation = preparation_tm
 				obj.description = fields[9].strip()
 				obj.fixation = fixation_tm
-				obj.notes = note_tm
+				obj.notes = notes_tm
 				obj.sample_amount = fields[14].strip()
 				obj.unit = unit_tm
 				obj.service_requested = service_requested_tm
@@ -239,105 +243,145 @@ def main():
 	print('total sampleinfo in tracking sheet 1 is : '+str(SampleInfo.objects.count()))
 
 
+
+# import Libinfo
+	print("importing LibraryInfo ........... ")
+	libidall = []
+	libindexlist = []
+	i = 0
+	k = 1
 	with open('scripts/TS2_Active.tsv','r') as f:
 		next(f)
 		next(f)
 		next(f)	
 		for line in f:
 			fields = line.split('\t')
-			if fields[10].strip():
+			if not fields[10].strip() in ['','NA']:
 				libid = '_'.join(fields[10].strip().split('-'))
+				print(line)
+			else:
+				libid = 'NA_'+str(k)
+				k = k+1
+			if libid in libidall:
+				print('library id duplicate:'+libid)
+			libidall.append(libid)
+			libindexlist.append(fields[12].strip())
+			libnote_tm = fields[11].strip()
+			libnote_tm = ';'.join([libnote_tm,'Protocol used(recorded in Tracking Sheet 2):'+fields[6].strip()]).strip(';')
+			libexp_tm = fields[5].strip()
+			libreferencetonotebook_tm = fields[7].strip()
+			if libexp_tm in ['Hi-C Arima Kit','Hi-C Epigen']:
+				libnote_tm = ';'.join([libnote_tm,libexp_tm]).strip(';')
+				libexp_tm = 'Hi-C'
+			if libexp_tm.lower().startswith('other'):
+				libexp_tm = 'other (please explain in notes)'
+			libreferencetonotebook = fields[7].strip()
+			libdate_started[fields[12].strip()] = datetransform(fields[3].strip())
+			libdate_completed[fields[12].strip()] = datetransform(fields[4].strip())
+			if User.objects.filter(username = fields[2].strip()).exists():
+				lib_member_tm = User.objects.get(username = fields[2].strip())
+			else:
+				lib_member_tm = None
+				if fields[2].strip()!='':					
+					libnote_tm = ';'.join([libnote_tm,'team_member_initails:'+fields[2].strip()]).strip(';')
+			if not fields[0].strip().lower() in ['','na','other','n/a']:
+				sampinfo = SampleInfo.objects.get(sample_index = fields[0].strip())
+			else:
+				sampindextm = 'SAMPNA-'+str(i)
+				i = i+1
+				if fields[1].strip():
+					sampidtm = fields[1].strip()
+				else:
+					sampidtm = sampindextm
+				sampinfo = SampleInfo.objects.create(sample_id=sampidtm, sample_index=sampindextm)
+			
+			obj,created = LibraryInfo.objects.get_or_create(
+				library_id = libid,
+			)
+			obj.experiment_index = fields[12].strip()
+			obj.experiment_type = libexp_tm
+			if libexp_tm!='':
+				obj.protocalinfo = ProtocalInfo.objects.get(experiment_type = libexp_tm,protocal_name = 'other (please explain in notes)',)
+			else:
+				obj.protocalinfo = ProtocalInfo.objects.get(experiment_type = 'other (please explain in notes)',protocal_name = 'other (please explain in notes)',)
+			obj.reference_to_notebook_and_page_number = libreferencetonotebook
+			obj.date_started = datetransform(fields[3].strip())
+			obj.date_completed = datetransform(fields[4].strip())
+			obj.team_member_initails = lib_member_tm
+			obj.notes = libnote_tm
+
+
+	with open('scripts/TS2_Archived.tsv','r') as f:
+		next(f)
+		next(f)
+		next(f)
+		for line in f:
+			fields = line.split('\t')
+			if not fields[12].strip() in libindexlist:
+				if not fields[10].strip() in ['','NA']:
+					libid = '_'.join(fields[10].strip().split('-'))
+					print(line)
+				else:
+					libid = 'NA_'+str(k)
+					k = k+1
+				if libid in libidall:
+					print('library id duplicate:'+libid)
+				libidall.append(libid)
 				libindexlist.append(fields[12].strip())
 				libnote_tm = fields[11].strip()
+				libnote_tm = ';'.join([libnote_tm,'Protocol used(recorded in Tracking Sheet 2):'+fields[6].strip()]).strip(';')
+				if libid.startswith('XH_71['):
+					libnote_tm = ';'.join([libnote_tm,'From sample '+fields[1].strip()]).strip(';')
 				libexp_tm = fields[5].strip()
+				libreferencetonotebook_tm = fields[7].strip()
 				if libexp_tm in ['Hi-C Arima Kit','Hi-C Epigen']:
 					libnote_tm = ';'.join([libnote_tm,libexp_tm]).strip(';')
 					libexp_tm = 'Hi-C'
 				if libexp_tm.lower().startswith('other'):
 					libexp_tm = 'other (please explain in notes)'
-
 				libreferencetonotebook = fields[7].strip()
 				libdate_started[fields[12].strip()] = datetransform(fields[3].strip())
 				libdate_completed[fields[12].strip()] = datetransform(fields[4].strip())
+				if User.objects.filter(username = fields[2].strip()).exists():
+					lib_member_tm = User.objects.get(username = fields[2].strip())
+				else:
+					lib_member_tm = None
+					if fields[2].strip()!='':					
+						libnote_tm = ';'.join([libnote_tm,'team_member_initails:'+fields[2].strip()]).strip(';')
+				if not fields[0].strip().lower() in ['','na','other','n/a']:
+					sampinfo = SampleInfo.objects.get(sample_index = fields[0].strip())
+				else:
+					sampindextm = 'SAMPNA-'+str(i)
+					i = i+1
+					if fields[1].strip():
+						sampidtm = fields[1].strip()
+					else:
+						sampidtm = sampindextm
+					sampinfo = SampleInfo.objects.create(sample_id=sampidtm, sample_index=sampindextm)
+				
 				obj,created = LibraryInfo.objects.get_or_create(
 					library_id = libid,
 				)
-
-
-	with open('scripts/TS2_Archived.tsv','r') as f:
-		next(f)
-		next(f)
-		next(f)
-		for line in f:
-			fields = line.split('\t')
-			if fields[10].strip() and not fields[12].strip() in libindexlist:
-				libindexlist.append(fields[12].strip())
-				libnote_tm[fields[12].strip()] = ';'.join([fields[11].strip(),fields[1].strip()]).strip(';')
-				libmemberini[fields[12].strip()] = fields[2].strip()
-				libexperimenttype[fields[12].strip()] = fields[5].strip()
-				libreferencetonotebook[fields[12].strip()] = fields[7].strip()
-				libdate_started[fields[12].strip()] = datetransform(fields[3].strip())
-				libdate_completed[fields[12].strip()] = datetransform(fields[4].strip())
-				
+				obj.experiment_index = fields[12].strip()
+				obj.experiment_type = libexp_tm
+				if libexp_tm!='':
+					obj.protocalinfo = ProtocalInfo.objects.get(experiment_type = libexp_tm,protocal_name = 'other (please explain in notes)',)
+				else:
+					obj.protocalinfo = ProtocalInfo.objects.get(experiment_type = 'other (please explain in notes)',protocal_name = 'other (please explain in notes)',)
+				obj.reference_to_notebook_and_page_number = libreferencetonotebook
+				obj.date_started = datetransform(fields[3].strip())
+				obj.date_completed = datetransform(fields[4].strip())
+				obj.team_member_initails = lib_member_tm
+				obj.notes = libnote_tm
 
 
 
-# prepare for importing LibraryInfo
-	libindexlist = []
-	libnote_tm = {}
-	libmemberini = {}
-	libexperimenttype = {}
-	libreferencetonotebook = {}
-	libdate_started = {}
-	libdate_completed = {}
-	i = 1
-
-	with open('scripts/TS2_Active.tsv','r') as f:
-		next(f)
-		next(f)
-		next(f)	
-		for line in f:
-			fields = line.split('\t')
-			if fields[10].strip():
-				libindexlist.append(fields[12].strip())
-				libnote_tm[fields[12].strip()] = ';'.join([fields[11].strip(),'Sample name: ',fields[1].strip()]).strip(';')
-				libmemberini[fields[12].strip()] = fields[2].strip()
-				libexperimenttype[fields[12].strip()] = fields[5].strip()
-				libreferencetonotebook[fields[12].strip()] = fields[7].strip()
-				libdate_started[fields[12].strip()] = datetransform(fields[3].strip())
-				libdate_completed[fields[12].strip()] = datetransform(fields[4].strip())
-				obj,created = SampleInfo.objects.get_or_create(
-					sample_index = fields[21].strip(),
-				)
-
-
-	with open('scripts/TS2_Archived.tsv','r') as f:
-		next(f)
-		next(f)
-		next(f)
-		for line in f:
-			fields = line.split('\t')
-			if fields[10].strip() and not fields[12].strip() in libindexlist:
-				libindexlist.append(fields[12].strip())
-				libnote_tm[fields[12].strip()] = ';'.join([fields[11].strip(),fields[1].strip()]).strip(';')
-				libmemberini[fields[12].strip()] = fields[2].strip()
-				libexperimenttype[fields[12].strip()] = fields[5].strip()
-				libreferencetonotebook[fields[12].strip()] = fields[7].strip()
-				libdate_started[fields[12].strip()] = datetransform(fields[3].strip())
-				libdate_completed[fields[12].strip()] = datetransform(fields[4].strip())
-				
-
-	#print(date_started)
-	# for item in libdate_started:
-	# 	print(libdate_started[item])
-	# 	if isinstance(libdate_started[item],datetime.date):
-	# 		print(item+': '+libdate_started[item])
-
-# import LibraryInfo and SeqInfo
-	print("importing LibraryInfo and SeqInfo ........... ")
+# importing SeqInfo
+	print("importing SeqInfo ........... ")
 	i = 1
 	j = 1
-	mseqtsfile = ['scripts/MSeqTS.tsv','scripts/MSeqTS_Active.tsv']
+	mseqtsfile = ['scripts/TS3_Active.tsv','scripts/TS3_Archived.tsv']
+	sequecingidall = []
 	#mseqtsfile = ['scripts/MSeqTS_merged.tsv']
 	#mseqtsfile = ['scripts/MSeqTS.tsv']
 	for files in mseqtsfile:
@@ -348,8 +392,8 @@ def main():
 			next(f)
 			for line in f:
 				fields = line.split('\t')
-				if fields[0].strip():
-					sequecingid = fields[8].strip()
+				if fields[8].strip():
+					sequencingid = fields[8].strip()
 					libraryid = fields[7].strip()
 					# not importing singlecell data:
 					if not fields[9].startswith('s'):

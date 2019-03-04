@@ -854,7 +854,6 @@ Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JY
 Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_698	Biomek_96_1st	EXP-1173
 Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_699	Biomek_96_1st	EXP-1174
 Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_700	Biomek_96_1st	EXP-1175
-												EXP-1176
 SAMP-775	D110--CBL-MIX-6	XH	2018/09/20	2018/09/21	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_72		EXP-1177
 SAMP-778	D110--RML-BPS-3	XH	2018/09/20	2018/09/21	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_72		EXP-1178
 Other	Brain3	JYH	9/20/2018	9/20/2018	ATAC-seq	ATAC-seq_tissues	nb1_p	Yes	Yes	JYH_701	Ground_6months in -80	EXP-1179
@@ -1221,3 +1220,57 @@ SAMP-1009	5xAD-STZ hippocampus	JIB	2/1/19	2/4/19	scRNA-seq	10X Genomics V3		Yes	
 SAMP-1010	WT-STZ hippocampus	JIB	2/1/19	2/4/19	scRNA-seq	10X Genomics V3		Yes	Yes	JB_42		EXP-1540
 SAMP-1011	5xAD-PBS hippocampus	JIB	2/1/19	2/4/19	scRNA-seq	10X Genomics V3		Yes	Yes	JB_43		EXP-1541
 SAMP-1012	WT-PBS hippocampus	JIB	2/1/19	2/4/19	scRNA-seq	10X Genomics V3		Yes	Yes	JB_44		EXP-1542
+SAMP-1013	D270271	JYH	2/11/2019	2/12/2019	scATAC-seq	10x scATAC		Yes	Yes	JYH_793	PBMC_3	EXP-1543
+SAMP-1014	D270271	JYH	2/11/2019	2/12/2019	scATAC-seq	10x scATAC		Yes	Yes	JYH_794	PBMC_4	EXP-1544
+SAMP-1015	D182364	JYH	2/11/2019	2/12/2019	scATAC-seq	10x scATAC		Yes	Yes	JYH_795	PBMC_5	EXP-1545
+SAMP-1016	D273097	JYH	2/11/2019	2/12/2019	scATAC-seq	10x scATAC		Yes	Yes	JYH_796	PBMC_6	EXP-1546
+SAMP-1027	B0004	JYH	1/30/2019	1/30/2019	scATAC-seq	sc_ATAC for tissue		Yes	Yes	JYH_797	psycontrol_Pfizer_T2D in one run	EXP-1547
+SAMP-940	2016-891-Ctrl	JYH	1/30/2019	1/30/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	JYH_798	psycontrol_Pfizer_T2D in one run	EXP-1548
+SAMP-965	Spleen_Pfizer	JYH	1/30/2019	1/30/2019	scATAC-seq	sc_ATAC for tissue		Yes	Yes	JYH_799	psycontrol_Pfizer_T2D in one run	EXP-1549
+SAMP-1023	BG Classical Monocytes	JIB	2/21/2018	2/22/2018	scRNA-seq	10X Genomics V3						EXP-1550
+SAMP-1023	EHB Classical Monocytes	JIB	2/21/2018	2/22/2018	scRNA-seq	10X Genomics V3						EXP-1551
+SAMP-966	Spleenocytes 5 e^6	JIB	2/11/2019	2/15/2019	scATAC-seq	10X ATAC		Yes	Yes	JB_45	Pfizer scATAC Test- 10X Genomics	EXP-1552
+NA	GM19240_AbV_H3K4me3_1.1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_299	Antibody Validation for CVDC, JHMI	EXP-1553
+NA	GM19240_AbV_H3K4me3_2.1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_300	Antibody Validation for CVDC, JHMI	EXP-1554
+NA	GM19240_AbV_H3K4me3_3.1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_301	Antibody Validation for CVDC, JHMI	EXP-1555
+NA	GM19240_AbV_H3K4me3_5.1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_302	Antibody Validation for CVDC, JHMI	EXP-1556
+NA	GM19240_AbV_H3K4me3_6.1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_303	Antibody Validation for CVDC, JHMI	EXP-1557
+NA	GM19240_AbV_H3K36me2_1.1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_304	Antibody Validation for CVDC, JHMI	EXP-1558
+NA	GM19240_AbV_H3K36me2_2.1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_305	Antibody Validation for CVDC, JHMI	EXP-1559
+NA	GM19240_AbV_H3K9me3_1.1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_306	Antibody Validation for CVDC, JHMI	EXP-1560
+NA	GM19240_AbV_H3K9me3_2.1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_307	Antibody Validation for CVDC, JHMI	EXP-1561
+NA	GM19240_AbV_H3K9me3_3.1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_308	Antibody Validation for CVDC, JHMI	EXP-1562
+NA	GM19240_AbV_H3K27me3_1.1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_309	Antibody Validation for CVDC, JHMI	EXP-1563
+NA	GM19240_AbV_H3K27me3_3.1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_310	Antibody Validation for CVDC, JHMI	EXP-1564
+NA	GM19240_AbV_Input	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_311	Antibody Validation for CVDC, JHMI	EXP-1565
+SAMP-1050	Q0101_iRPE	JYH	2/13/2018	2/13/2018	ATAC-seq	ATAC-seq for cells	Nb1_p_	Yes	Yes	JYH_800	NPB	EXP-1566
+SAMP-1051	SC4204_iRPE	JYH	2/13/2018	2/13/2018	ATAC-seq	ATAC-seq for cells	Nb1_p_	Yes	Yes	JYH_801	NPB	EXP-1567
+SAMP-989	H69_Test Sample 1	JYH	2/13/2018	2/13/2018	ATAC-seq	ATAC-seq for cells	Nb1_p_	Yes	Yes	JYH_802	NPB	EXP-1568
+SAMP-989	H69_Test Sample 1	JYH	2/13/2018	2/13/2018	ATAC-seq	ATAC-seq for cells	Nb1_p_	Yes	Yes	JYH_803	OMNI	EXP-1569
+SAMP-996	CD3+T cells_Test Sample 1	JYH	2/13/2018	2/13/2018	ATAC-seq	ATAC-seq for cells	Nb1_p_	Yes	Yes	JYH_804	NPB	EXP-1570
+SAMP-996	CD3+T cells_Test Sample 1	JYH	2/13/2018	2/13/2018	ATAC-seq	ATAC-seq for cells	Nb1_p_	Yes	Yes	JYH_805	OMNI	EXP-1571
+SAMP-998	C4.2	JYH	2/13/2018	2/13/2018	ATAC-seq	ATAC-seq for cells	Nb1_p_	Yes	Yes	JYH_806	NPB	EXP-1572
+SAMP-998	C4.2	JYH	2/13/2018	2/13/2018	ATAC-seq	ATAC-seq for cells	Nb1_p_	Yes	Yes	JYH_807	OMNI	EXP-1573
+SAMP-1052	P8 WT	JYH	1/28/2019	1/28/2019	ATAC-seq	ATAC-seq for cells	Nb1_p_	Yes	Yes	JYH_808		EXP-1574
+SAMP-1027	B0004	MM	2/21/2019	2/21/2019	ATAC-seq	ATAC-seq for cells	Nb1_p106-111	Yes	Yes	MM_1	1B: 1X Omni 10 min lysis, non 10X primers	EXP-1575
+SAMP-1027	B0004	MM	2/21/2019	2/21/2019	ATAC-seq	ATAC-seq for cells	Nb1_p106-111	Yes	Yes	MM_2	2B: 1X Omni 1 min lysis, non 10X primers	EXP-1576
+SAMP-1027	B0004	MM	2/21/2019	2/21/2019	ATAC-seq	ATAC-seq for cells	Nb1_p106-111	Yes	Yes	MM_3	3B: 0.1X Omni 10 min lysis, non 10X primers	EXP-1577
+SAMP-1027	B0004	MM	2/21/2019	2/21/2019	ATAC-seq	ATAC-seq for cells	Nb1_p106-111	Yes	Yes	MM_4	4B: 0.1X Omni 1 min lysis, non 10X primers	EXP-1578
+SAMP-1027	B0004	MM	2/21/2019	2/21/2019	ATAC-seq	ATAC-seq for cells, 10Xesque	Nb1_p106-111	Yes	Yes	MM_5	1: 1X Omni 10 min lysis, 10X primers	EXP-1579
+SAMP-1027	B0004	MM	2/21/2019	2/21/2019	ATAC-seq	ATAC-seq for cells, 10Xesque	Nb1_p106-111	Yes	Yes	MM_6	2: 1X Omni 1 min lysis, 10X primers	EXP-1580
+SAMP-1027	B0004	MM	2/21/2019	2/21/2019	ATAC-seq	ATAC-seq for cells, 10Xesque	Nb1_p106-111	Yes	Yes	MM_7	3: 0.1X Omni 10 min lysis, 10X primers	EXP-1581
+SAMP-1027	B0004	MM	2/21/2019	2/21/2019	ATAC-seq	ATAC-seq for cells, 10Xesque	Nb1_p106-111	Yes	Yes	MM_8	4: 0.1X Omni 1 min lysis, 10X primers	EXP-1582
+SAMP-1053	CEMBA190212_9H	XH	2/12/2019	2/15/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_129		EXP-1583
+SAMP-1054	CEMBA190212_9J	XH	2/12/2019	2/15/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_130		EXP-1584
+SAMP-1055	CEMBA190214_11E	XH	2/14/2019	2/15/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_131		EXP-1585
+SAMP-1056	CEMBA190214_11F	XH	2/14/2019	2/15/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_132		EXP-1586
+SAMP-1057	CEMBA190219_9H	XH	2/19/2019	2/21/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_133		EXP-1587
+SAMP-1058	CEMBA190219_9J	XH	2/19/2019	2/21/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_134		EXP-1588
+SAMP-1059	EF02D_MO_R1	XH	2/17/2019	2/21/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_135		EXP-1589
+SAMP-1060	EF00D_EB_R2	XH	2/18/2019	2/21/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_136		EXP-1590
+SAMP-1061	EF03D_EB_R2	XH	2/18/2019	2/21/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_137		EXP-1591
+SAMP-1062	EF05D_EB_R2	XH	2/20/2019	2/21/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_138		EXP-1592
+SAMP-1063	EF05D_MO_R1	XH	2/20/2019	2/21/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_139		EXP-1593
+SAMP-1064	EF07D_EB_R2	XH	2/22/2019	2/25/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_140		EXP-1594
+SAMP-1065	EF07D_MO_R1	XH	2/22/2019	2/25/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_141		EXP-1595
+SAMP-1066	EF080D_MO_R1	XH	2/22/2019	2/25/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_142		EXP-1596
