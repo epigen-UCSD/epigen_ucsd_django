@@ -26,7 +26,11 @@ then
     setqc_type="atac_chip"
 else
     # more than one groups (assume with input)
-    setqc_type="chip"    
+    RUN_LOG_PIP=${LOG_DIR}$(date +%Y%m%d)"_"${SET_ID}".txt"
+    awk -v FS='\t' '(NR>1&&$6=="No"){print $1,$4,$7}' $STATUS_FILE > $RUN_LOG_PIP
+    awk '(NR>1){print $1}' $STATUS_FILE > $SETQC_FILE
+    setqc_type="chip"
+    
 fi
 
 

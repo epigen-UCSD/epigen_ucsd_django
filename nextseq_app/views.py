@@ -581,6 +581,7 @@ def DemultiplexingView(request, run_pk):
             print(e)
             return JsonResponse(data)
 
+        # decide if mixed two primers with one primer
         samples_list = runinfo.librariesinrun_set.all()
         i7len = len(
             [x for x in samples_list.values_list('i7index', flat=True) if x])

@@ -7,6 +7,7 @@ choice_for_machine = (
     ('IGM_HiSeq4000', 'IGM_HiSeq4000'),
 )
 
+
 class Barcode(models.Model):
     indexid = models.CharField(max_length=200, unique=True)
     indexseq = models.CharField(max_length=200)
@@ -40,11 +41,12 @@ class RunInfo(models.Model):
     total_libraries = models.IntegerField(blank=True, null=True)
     percent_of_reads_demultiplexed = models.IntegerField(blank=True, null=True)
     read_length = models.CharField(
-        max_length=50, help_text='e.g. if R1=R2=75, enter 75, if R1=50,R2=75, enter 50+75')
+        max_length=50, help_text='Bulk: one number(eg. 75); Single-cell: R1+I1+I2+R2 (eg:50+8+16+50)')
     updated_at = models.DateTimeField(auto_now=True)
     nextseqdir = models.CharField(max_length=200, blank=True, null=True)
     #machine = models.ForeignKey('masterseq_app.SeqMachineInfo', on_delete=models.CASCADE, null=True)
-    machine = models.CharField(max_length=50, choices=choice_for_machine,default='EPIGEN_NextSeq550',null=True)
+    machine = models.CharField(
+        max_length=50, choices=choice_for_machine, default='EPIGEN_NextSeq550', null=True)
     jobstatus = models.CharField(
         max_length=200, blank=True, null=True, default='ClickToSubmit')
 
