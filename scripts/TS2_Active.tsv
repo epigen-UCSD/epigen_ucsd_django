@@ -123,10 +123,10 @@ SAMP-380	DMS114_Input	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High
 SAMP-384	H209_H3K27me3	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_80_2	Pfizer Chip round 5	EXP-441
 SAMP-384	H209_H3K4me3	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_81_2	Pfizer Chip round 6	EXP-442
 SAMP-384	H209_Input	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_82_2	Pfizer Chip round 7	EXP-443
-SAMP-388 / SAMP-389	C4_2_H3K27me3	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_83_2	Pfizer Chip round 8	EXP-444
-SAMP-388 / SAMP-389	C4_2_H3K4me3_1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_84_2	Pfizer Chip round 9	EXP-445
-SAMP-388 / SAMP-389	C4_2_H3K4me3_2	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_84_3	Pfizer Chip round 10	EXP-446
-SAMP-388 / SAMP-389	C4_2_Input	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_85_2	Pfizer Chip round 11	EXP-447
+SAMP-388 / SAMP-389	C4_2_H3K27me3	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_108	Pfizer Chip round 8	EXP-444
+SAMP-388 / SAMP-389	C4_2_H3K4me3_1	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_109	Pfizer Chip round 9	EXP-445
+SAMP-388 / SAMP-389	C4_2_H3K4me3_2	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_110	Pfizer Chip round 10	EXP-446
+SAMP-388 / SAMP-389	C4_2_Input	AVD	2/13/2018	2/22/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_pg	Yes	Yes	AVD_111	Pfizer Chip round 11	EXP-447
 SAMP-475	CW60278-none	JYH	2/23/2018	2/26/2018	ATAC-seq	ATAC-seq_cells	nb1_p173	Yes	Yes	JYH_288	Gleeson	EXP-448
 SAMP-476	CW60278-1hr	JYH	2/23/2018	2/26/2018	ATAC-seq	ATAC-seq_cells	nb1_p173	Yes	Yes	JYH_289	Gleeson	EXP-449
 SAMP-477	CW60278-6hr	JYH	2/23/2018	2/26/2018	ATAC-seq	ATAC-seq_cells	nb1_p173	Yes	Yes	JYH_290	Gleeson	EXP-450
@@ -181,12 +181,12 @@ SAMP-126	GM_SNAP10	JYH	3/2/2018	3/2/2018	ATAC-seq	ATAC-seq_cells	nb1_p178	Yes	Ye
 SAMP-126	GM_SNAP10	JYH	3/2/2018	3/2/2018	ATAC-seq	ATAC-seq_cells	nb1_p178	Yes	Yes	JYH_310	Biomek_9th_7	EXP-499
 SAMP-126	GM_SNAP10	JYH	3/2/2018	3/2/2018	ATAC-seq	ATAC-seq_cells	nb1_p178	Yes	Yes	JYH_311	Biomek_9th_8	EXP-500
 SAMP-546	Human from Salk (Dounce)	XW	03/15/2018	03/22/2018	scATAC-seq	scATAC-seq for tissue	nb1_p59-p64	yes	Yes	XW_75		EXP-502
-Other 	Grind Meth. H1	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_22		EXP-503
-Other 	Grind Meth. H2	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_23		EXP-504
-Other 	Grind Meth. C1	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_24		EXP-505
-Other 	Grind Meth. C2	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_25		EXP-506
-Other 	Grind Meth. M1	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_26		EXP-507
-Other 	Grind Meth. M2	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_27		EXP-508
+Other 	Grind Meth. H1	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_22		EXP-503
+Other 	Grind Meth. H2	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_23		EXP-504
+Other 	Grind Meth. C1	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_24		EXP-505
+Other 	Grind Meth. C2	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_25		EXP-506
+Other 	Grind Meth. M1	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_26		EXP-507
+Other 	Grind Meth. M2	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_27		EXP-508
 NA	Chi_D0_Input Optimization_DF5	AVD	3/1/2018	3/15/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_113	Chi ChIP Input Testing	EXP-509
 NA	Chi_D0_Input Optimization_DF10	AVD	3/1/2018	3/15/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_114	Chi ChIP Input Testing	EXP-510
 NA	Chi_D0_Input Optimization_DF15	AVD	3/1/2018	3/15/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_115	Chi ChIP Input Testing	EXP-511
@@ -212,15 +212,15 @@ NA	Chi_D3_Input Optimization_DF15	AVD	3/6/2018	03/22/2018	ChIP-seq	Covaris Chrom
 NA	Chi_D3_Input Optimization_DF20	AVD	3/6/2018	03/22/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_133	Chi ChIP Input Testing	EXP-531
 NA	Chi_D3_Input Optimization_DF25	AVD	3/6/2018	03/22/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_134	Chi ChIP Input Testing	EXP-532
 SAMP-562	CEMBA180326_3E	XW	3/26/2018	3/28/2018	scATAC-seq	scATAC-seq for tissue	nb1_p78,81	Yes	Yes	XW_80		EXP-533
-SAMP-48	AN15506	JYH	2/15/2018	2/15/2018	scATAC-seq	scATAC-seq for tissue	nb1_p171	Yes	Yes	XW71	Hippocampus	EXP-534
-Other 	K_562_1	RM	3/6/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p65-68	yes	yes	RM_28	Hi-C protocol K_562	EXP-535
-Other	Active Motif 12878_1	RM	3/19/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RM_29	Hi-C protocol Active Motif sample 10 million GM12878 (5 million per sample)	EXP-536
-Other	Active Motif 12878_2	RM	3/20/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RM_30	Hi-c protocol Active Motif sample 10 million GM12878 (5 million per sample)	EXP-537
-Other	Epigen 12878_1	RM	3/21/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RM_31	Hi-C protocol Epigen GM 12878 5 million	EXP-538
-Other	Epigen 12878_2	RM	3/22/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RM_32	Hi-C protocol Epigen GM 12878 5 million	EXP-539
+SAMP-48	AN15506	JYH	2/15/2018	2/15/2018	scATAC-seq	scATAC-seq for tissue	nb1_p171	Yes	Yes	XW_71	Hippocampus	EXP-534
+Other 	K_562_1	RM	3/6/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p65-68	yes	yes	RMM_28	Hi-C protocol K_562	EXP-535
+Other	Active Motif 12878_1	RM	3/19/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RMM_29	Hi-C protocol Active Motif sample 10 million GM12878 (5 million per sample)	EXP-536
+Other	Active Motif 12878_2	RM	3/20/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RMM_30	Hi-c protocol Active Motif sample 10 million GM12878 (5 million per sample)	EXP-537
+Other	Epigen 12878_1	RM	3/21/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RMM_31	Hi-C protocol Epigen GM 12878 5 million	EXP-538
+Other	Epigen 12878_2	RM	3/22/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RMM_32	Hi-C protocol Epigen GM 12878 5 million	EXP-539
 SAMP-595	CEMBA180402_4F	XW	4/2/2018	4/6/2018	scATAC-seq	scATAC-seq for tissue	nb1_p82,85	yes	yes	XH_19		EXP-540
-SAMP-396	GM12878-Arima-1	RM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RM_33		EXP-541
-NA	GM12878 Epigen	RM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RM_34		EXP-542
+SAMP-396	GM12878-Arima-1	RM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RMM_33		EXP-541
+NA	GM12878 Epigen	RM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RMM_34		EXP-542
 Other	Brain3	JYH	3/9/2018	3/9/2018	ATAC-seq	ATAC-seq_tissues	nb1_179	Yes	Yes	JYH_387	Immediate	EXP-543
 Other	Brain4	JYH	3/9/2018	3/9/2018	ATAC-seq	ATAC-seq_tissues	nb1_179	Yes	Yes	JYH_388	Immediate	EXP-544
 Other	Heart3	JYH	3/9/2018	3/9/2018	ATAC-seq	ATAC-seq_tissues	nb1_179	Yes	Yes	JYH_389	Immediate	EXP-545
@@ -642,10 +642,10 @@ NA	GM12878_AbV2_Qiagen	AVD	7/6/2018	7/13/2018	ChIP-seq	Active Motif ChIP-IT High
 NA	GM12878_AbV2_Qiagen	AVD	7/6/2018	7/13/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Qiagen Library Prep	Nb1_p_	Yes	Yes	AVD_266	Qiagen Library Prep Kit Test + Antibody Validation	EXP-961
 NA	GM12878_AbV2_Qiagen	AVD	7/6/2018	7/13/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Qiagen Library Prep	Nb1_p_	Yes	Yes	AVD_267	Qiagen Library Prep Kit Test + Antibody Validation	EXP-962
 NA	GM12878_AbV2_Qiagen	AVD	7/6/2018	7/13/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Qiagen Library Prep	Nb1_p_	Yes	Yes	AVD_268	Qiagen Library Prep Kit Test + Antibody Validation	EXP-963
-SAMP-661	E18_fMaSC_1	XH	7/13/2018	7/14/2018	scATAC-seq	sc_ATAC_seq for cell	NB1_p99-100	yes	Yes	XH_44	4 samples combined into one sample	EXP-964
-SAMP-662	E18_fMaSC_2	XH	7/13/2018	7/14/2018	scATAC-seq	sc_ATAC_seq for cell	NB1_p99-100	yes	Yes	XH_44	4 samples combined into one sample	EXP-965
-SAMP-665	E18_fMaSC_5	XH	7/13/2018	7/14/2018	scATAC-seq	sc_ATAC_seq for cell	NB1_p99-100	yes	Yes	XH_44	4 samples combined into one sample	EXP-966
-SAMP-666	E18_fMaSC_7	XH	7/13/2018	7/14/2018	scATAC-seq	sc_ATAC_seq for cell	NB1_p99-100	yes	Yes	XH_44	4 samples combined into one sample	EXP-967
+SAMP-661	E18_fMaSC_1	XH	7/13/2018	7/14/2018	scATAC-seq	sc_ATAC_seq for cell	NB1_p99-100	yes	Yes	XH_44[1]	4 samples combined into one sample	EXP-964
+SAMP-662	E18_fMaSC_2	XH	7/13/2018	7/14/2018	scATAC-seq	sc_ATAC_seq for cell	NB1_p99-100	yes	Yes	XH_44[2]	4 samples combined into one sample	EXP-965
+SAMP-665	E18_fMaSC_5	XH	7/13/2018	7/14/2018	scATAC-seq	sc_ATAC_seq for cell	NB1_p99-100	yes	Yes	XH_44[3]	4 samples combined into one sample	EXP-966
+SAMP-666	E18_fMaSC_7	XH	7/13/2018	7/14/2018	scATAC-seq	sc_ATAC_seq for cell	NB1_p99-100	yes	Yes	XH_44[4]	4 samples combined into one sample	EXP-967
 NA	Emily(+) Control/Illumina	XH			ATAC-seq			yes	Yes	XH_45		EXP-968
 NA	Emily 1:2 Dilution	XH			ATAC-seq			yes	Yes	XH_46		EXP-969
 NA	Emily 1:5 Dilution	XH			ATAC-seq			yes	Yes	XH_47		EXP-970
@@ -712,25 +712,25 @@ other	HEK293	JYH	8/1/18	8/1/18	ATAC-seq	ATAC-Seq_Cells	nb1_p	Yes	Yes	JYH_582	ATC
 other	HEK293	JYH	8/1/18	8/1/18	ATAC-seq	ATAC-Seq_Cells	nb1_p	Yes	Yes	JYH_583	Termomixer(shaking)_3	EXP-1031
 other	HEK293	JYH	8/1/18	8/1/18	ATAC-seq	ATAC-Seq_Cells	nb1_p	Yes	Yes	JYH_584	ATC_4	EXP-1032
 other	HEK293	JYH	8/1/18	8/1/18	ATAC-seq	ATAC-Seq_Cells	nb1_p	Yes	Yes	JYH_585	Termomixer(shaking)_4	EXP-1033
-SAMP-709	CEMBA180807_5A	XH	8/7/18	scATAC-seq	scATAC-seq	nb2_p		Yes	Yes	XH_68		EXP-1034
+SAMP-709	CEMBA180807_5A	XH	8/7/18		scATAC-seq	scATAC-seq	nb2_p	Yes	Yes	XH_68		EXP-1034
 Other	GM19240 (RSV2)	RM	6/20/18	6/27/18	4C	Epigen 4C	nb1_p118-120	Yes	Yes	RMM_85	One sample two different PCR Primers	EXP-1035
 Other	GM19240 (CH12FireV2)	RM	6/20/18	6/27/18	4C	Epigen 4C	nb1_p118-121	Yes	Yes	RMM_86	One sample two different PCR Primers	EXP-1036
 SAMP-710	BG625	JIB	8/10/2018	8/13/2018	scRNA-seq	10X Genomics	Exp6	Yes	Yes	JB_1	none	EXP-1037
 SAMP-711	JM628	JIB	8/10/2018	8/13/2018	scRNA-seq	10X Genomics	Exp6	Yes	Yes	JB_2	none	EXP-1038
-SAMP-712	WT E8.5	XH	8/15/2018	scATAC-seq	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_69		EXP-1039
-SAMP-713	Aging mouse dorsal hippocampus 3 month	XH	8/14/2018	scATAC-seq	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_70		EXP-1040
-SAMP-714	Aging mouse dorsal hippocampus 10 month	XH	8/14/2018	scATAC-seq	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_70		EXP-1041
-SAMP-715	Aging mouse dorsal hippocampus 18 month	XH	8/14/2018	scATAC-seq	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_70		EXP-1042
-SAMP-780	1 mo. CTC Brain organoid	JIB	2018/8/22	scRNA-seq	scRNA-seq	10X Genomics	Exp10	Yes	Yes	JB_5		EXP-1043
-SAMP-781	3 mo. CTC Brain organoid (FACS unsorted)	JIB	2018/8/22	scRNA-seq	scRNA-seq	10X Genomics	Exp10	Yes	Yes	JB_6		EXP-1044
-SAMP-781	3 mo. CTC Brain organoid (FACS sorted)	JIB	2018/8/22	scRNA-seq	scRNA-seq	10X Genomics	Exp10	Yes	Yes	JB_7		EXP-1045
-SAMP-782	16p_Yc4_3m	JIB	2018/8/22	scRNA-seq	scRNA-seq	10X Genomics	Exp10	Yes	Yes	JB_8		EXP-1046
-SAMP-783	16p_Cc4_3m	JIB	2018/8/22	scRNA-seq	scRNA-seq	10X Genomics	Exp10	Yes	Yes	JB_9		EXP-1047
-SAMP-784	16p_61c3_3m	JIB	2018/8/22	scRNA-seq	scRNA-seq	10X Genomics	Exp10	Yes	Yes	JB_10		EXP-1048
-SAMP-780	1 mo. CTC Brain organoid	XH	2018/8/22	2018/8/23	scRNA-seq	sc_ATAC for cells		Yes	Yes	XH_71		EXP-1049
-SAMP-781	3 mo. CTC Brain organoid (FACS unsorted)	XH	2018/8/22	2018/8/23	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_71		EXP-1050
-SAMP-781	3 mo. CTC Brain organoid (FACS sorted)	XH	2018/8/22	2018/8/23	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_71		EXP-1051
-SAMP-780	1 mo. CTC Brain organoid (FACS unsorted)	XH	2018/8/22	2018/8/23	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_71		EXP-1052
+SAMP-712	WT E8.5	XH	8/15/2018		scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_69		EXP-1039
+SAMP-713	Aging mouse dorsal hippocampus 3 month	XH	8/14/2018		scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_70[1]		EXP-1040
+SAMP-714	Aging mouse dorsal hippocampus 10 month	XH	8/14/2018		scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_70[2]		EXP-1041
+SAMP-715	Aging mouse dorsal hippocampus 18 month	XH	8/14/2018		scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_70[3]		EXP-1042
+SAMP-780	1 mo. CTC Brain organoid	JIB	8/22/2018		scRNA-seq	10X Genomics	Exp10	Yes	Yes	JB_5		EXP-1043
+SAMP-781	3 mo. CTC Brain organoid (FACS unsorted)	JIB	8/22/2018		scRNA-seq	10X Genomics	Exp10	Yes	Yes	JB_6		EXP-1044
+SAMP-781	3 mo. CTC Brain organoid (FACS sorted)	JIB	8/22/2018		scRNA-seq	10X Genomics	Exp10	Yes	Yes	JB_7		EXP-1045
+SAMP-782	16p_Yc4_3m	JIB	8/22/2018		scRNA-seq	10X Genomics	Exp10	Yes	Yes	JB_8		EXP-1046
+SAMP-783	16p_Cc4_3m	JIB	8/22/2018		scRNA-seq	10X Genomics	Exp10	Yes	Yes	JB_9		EXP-1047
+SAMP-784	16p_61c3_3m	JIB	8/22/2018		scRNA-seq	10X Genomics	Exp10	Yes	Yes	JB_10		EXP-1048
+SAMP-780	1 mo. CTC Brain organoid	XH	8/22/2018	8/23/2018	scRNA-seq	sc_ATAC for cells		Yes	Yes	XH_71[1]		EXP-1049
+SAMP-781	3 mo. CTC Brain organoid (FACS unsorted)	XH	8/22/2018	8/23/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_71[2]		EXP-1050
+SAMP-781	3 mo. CTC Brain organoid (FACS sorted)	XH	8/22/2018	8/23/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_71[3]		EXP-1051
+SAMP-780	1 mo. CTC Brain organoid (FACS unsorted)	XH	8/22/2018	8/23/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_71[4]		EXP-1052
 SAMP-750	Laura_osTIR	JYH			ATAC-seq	ATAC for cells		Yes	Yes	JYH_586	R1_NPB	EXP-1053
 SAMP-751	Laura_RAD21	JYH			ATAC-seq	ATAC for cells		Yes	Yes	JYH_587	R1_NPB	EXP-1054
 SAMP-752	Laura_HDAC	JYH			ATAC-seq	ATAC for cells		Yes	Yes	JYH_588	R1_NPB	EXP-1055
@@ -750,112 +750,112 @@ SAMP-794	RG06	JYH			ATAC-seq	ATAC for cells		Yes	Yes	JYH_601		EXP-1068
 SAMP-795	RG07	JYH			ATAC-seq	ATAC for cells		Yes	Yes	JYH_602		EXP-1069
 SAMP-796	RG08	JYH			ATAC-seq	ATAC for cells		Yes	Yes	JYH_603		EXP-1070
 SAMP-808	RIN cell	JYH			ATAC-seq	ATAC for cells		Yes	Yes	JYH_604		EXP-1071
-Other	GM19240 (O/N)	RM	2018/08/08	2018/09/09	CUT&RUN	Henikoff CnR	nb1_p122-126	Yes	Yes	RMM_87		EXP-1072
-Other	GM19240 (O/N)	RM	2018/08/08	2018/09/09	CUT&RUN	Henikoff CnR	nb1_p122-126	Yes	Yes	RMM_88		EXP-1073
-Other	GM19240 (O/N)	RM	2018/08/13	2018/09/14	CUT&RUN	Henikoff CnR	nb1_p127-129	Yes				EXP-1074
-Other	GM19240 (O/N)	RM	2018/08/13	2018/09/14	CUT&RUN	Henikoff CnR	nb1_p127-129	Yes				EXP-1075
-Other	GM19240 (4hr)	RM	2018/08/15	2018/09/16	CUT&RUN	Henikoff CnR	nb1_p130-133	Yes	Yes	RMM_89		EXP-1076
-Other	GM19240 (4hr)	RM	2018/08/15	2018/09/16	CUT&RUN	Henikoff CnR	nb1_p130-133	Yes	Yes	RMM_90		EXP-1077
-Other	GM19240 (15min)	RM	2018/08/21	2018/08/22	CUT&RUN	Henikoff CnR	nb1_p134-136	Yes				EXP-1078
-Other	GM19240 (15min)	RM	2018/08/21	2018/08/22	CUT&RUN	Henikoff CnR	nb1_p134-136	Yes				EXP-1079
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_605	Biomek_96_1st	EXP-1080
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_606	Biomek_96_1st	EXP-1081
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_607	Biomek_96_1st	EXP-1082
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_608	Biomek_96_1st	EXP-1083
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_609	Biomek_96_1st	EXP-1084
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_610	Biomek_96_1st	EXP-1085
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_611	Biomek_96_1st	EXP-1086
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_612	Biomek_96_1st	EXP-1087
-Other	Mouse Brain	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_613	Biomek_96_1st	EXP-1088
-Other	Mouse Brain	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_614	Biomek_96_1st	EXP-1089
-Other	Mouse Brain	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_615	Biomek_96_1st	EXP-1090
-Other	Mouse Brain	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_616	Biomek_96_1st	EXP-1091
-SAMP-47	AN09232	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_617	Biomek_96_1st	EXP-1092
-SAMP-47	AN09232	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_618	Biomek_96_1st	EXP-1093
-SAMP-47	AN09232	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_619	Biomek_96_1st	EXP-1094
-SAMP-47	AN09232	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_620	Biomek_96_1st	EXP-1095
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_621	Biomek_96_1st	EXP-1096
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_622	Biomek_96_1st	EXP-1097
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_623	Biomek_96_1st	EXP-1098
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_624	Biomek_96_1st	EXP-1099
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_625	Biomek_96_1st	EXP-1100
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_626	Biomek_96_1st	EXP-1101
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_627	Biomek_96_1st	EXP-1102
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_628	Biomek_96_1st	EXP-1103
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_629	Biomek_96_1st	EXP-1104
-SAMP-702	AG05271	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_630	Biomek_96_1st	EXP-1105
-SAMP-699	AG11557	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_631	Biomek_96_1st	EXP-1106
-SAMP-703	AG11157A	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_632	Biomek_96_1st	EXP-1107
-SAMP-698	AG04054	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_633	Biomek_96_1st	EXP-1108
-SAMP-700	AG13442	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_634	Biomek_96_1st	EXP-1109
-SAMP-704	AG13349	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_635	Biomek_96_1st	EXP-1110
-SAMP-701	AG07801	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_636	Biomek_96_1st	EXP-1111
-Other	Mouse Lung	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_637	Biomek_96_1st	EXP-1112
-Other	Mouse Lung	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_638	Biomek_96_1st	EXP-1113
-Other	Mouse Lung	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_639	Biomek_96_1st	EXP-1114
-Other	Mouse Lung	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_640	Biomek_96_1st	EXP-1115
-Other	Mouse Lung	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_641	Biomek_96_1st	EXP-1116
-Other	Mouse Lung	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_642	Biomek_96_1st	EXP-1117
-Other	Mouse Lung	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_643	Biomek_96_1st	EXP-1118
-Other	Mouse Lung	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_644	Biomek_96_1st	EXP-1119
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_645	Biomek_96_1st	EXP-1120
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_646	Biomek_96_1st	EXP-1121
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_647	Biomek_96_1st	EXP-1122
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_648	Biomek_96_1st	EXP-1123
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_649	Biomek_96_1st	EXP-1124
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_650	Biomek_96_1st	EXP-1125
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_651	Biomek_96_1st	EXP-1126
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_652	Biomek_96_1st	EXP-1127
-Other	GM12878	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_653	Biomek_96_1st	EXP-1128
-Other	GM12878	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_654	Biomek_96_1st	EXP-1129
-Other	GM12878	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_655	Biomek_96_1st	EXP-1130
-Other	GM12878	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_656	Biomek_96_1st	EXP-1131
-Other	GM12878	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_657	Biomek_96_1st	EXP-1132
-Other	GM12878	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_658	Biomek_96_1st	EXP-1133
-Other	GM12878	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_659	Biomek_96_1st	EXP-1134
-Other	GM12878	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_660	Biomek_96_1st	EXP-1135
-Other	HEK293	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_661	Biomek_96_1st	EXP-1136
-Other	HEK293	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_662	Biomek_96_1st	EXP-1137
-Other	HEK293	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_663	Biomek_96_1st	EXP-1138
-Other	HEK293	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_664	Biomek_96_1st	EXP-1139
-Other	HEK293	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_665	Biomek_96_1st	EXP-1140
-Other	HEK293	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_666	Biomek_96_1st	EXP-1141
-Other	HEK293	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_667	Biomek_96_1st	EXP-1142
-Other	HEK293	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_668	Biomek_96_1st	EXP-1143
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_669	Biomek_96_1st	EXP-1144
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_670	Biomek_96_1st	EXP-1145
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_671	Biomek_96_1st	EXP-1146
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_672	Biomek_96_1st	EXP-1147
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_673	Biomek_96_1st	EXP-1148
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_674	Biomek_96_1st	EXP-1149
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_675	Biomek_96_1st	EXP-1150
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_676	Biomek_96_1st	EXP-1151
-Other	3T3	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_677	Biomek_96_1st	EXP-1152
-Other	3T3	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_678	Biomek_96_1st	EXP-1153
-Other	3T3	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_679	Biomek_96_1st	EXP-1154
-Other	3T3	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_680	Biomek_96_1st	EXP-1155
-Other	3T3	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_681	Biomek_96_1st	EXP-1156
-Other	3T3	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_682	Biomek_96_1st	EXP-1157
-Other	3T3	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_683	Biomek_96_1st	EXP-1158
-Other	3T3	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_684	Biomek_96_1st	EXP-1159
-SAMP-47	AN09232	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_685	Biomek_96_1st	EXP-1160
-SAMP-47	AN09232	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_686	Biomek_96_1st	EXP-1161
-SAMP-47	AN09232	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_687	Biomek_96_1st	EXP-1162
-SAMP-47	AN09232	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_688	Biomek_96_1st	EXP-1163
-Other	Mouse Brain	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_689	Biomek_96_1st	EXP-1164
-Other	Mouse Brain	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_690	Biomek_96_1st	EXP-1165
-Other	Mouse Brain	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_691	Biomek_96_1st	EXP-1166
-Other	Mouse Brain	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_692	Biomek_96_1st	EXP-1167
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_693	Biomek_96_1st	EXP-1168
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_694	Biomek_96_1st	EXP-1169
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_695	Biomek_96_1st	EXP-1170
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_696	Biomek_96_1st	EXP-1171
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_697	Biomek_96_1st	EXP-1172
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_698	Biomek_96_1st	EXP-1173
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_699	Biomek_96_1st	EXP-1174
-Other	GM19240	JYH	2018/09/14	2018/09/14	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_700	Biomek_96_1st	EXP-1175
-SAMP-775	D110--CBL-MIX-6	XH	2018/09/20	2018/09/21	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_72		EXP-1177
-SAMP-778	D110--RML-BPS-3	XH	2018/09/20	2018/09/21	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_72		EXP-1178
+Other	GM19240 (O/N)	RM	08/08/2018	09/09/2018	CUT&RUN	Henikoff CnR	nb1_p122-126	Yes	Yes	RMM_87		EXP-1072
+Other	GM19240 (O/N)	RM	08/08/2018	09/09/2018	CUT&RUN	Henikoff CnR	nb1_p122-126	Yes	Yes	RMM_88		EXP-1073
+Other	GM19240 (O/N)	RM	08/13/2018	09/14/2018	CUT&RUN	Henikoff CnR	nb1_p127-129	Yes				EXP-1074
+Other	GM19240 (O/N)	RM	08/13/2018	09/14/2018	CUT&RUN	Henikoff CnR	nb1_p127-129	Yes				EXP-1075
+Other	GM19240 (4hr)	RM	08/15/2018	09/16/2018	CUT&RUN	Henikoff CnR	nb1_p130-133	Yes	Yes	RMM_89		EXP-1076
+Other	GM19240 (4hr)	RM	08/15/2018	09/16/2018	CUT&RUN	Henikoff CnR	nb1_p130-133	Yes	Yes	RMM_90		EXP-1077
+Other	GM19240 (15min)	RM	08/21/2018	08/22/2018	CUT&RUN	Henikoff CnR	nb1_p134-136	Yes				EXP-1078
+Other	GM19240 (15min)	RM	08/21/2018	08/22/2018	CUT&RUN	Henikoff CnR	nb1_p134-136	Yes				EXP-1079
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_605	Biomek_96_1st	EXP-1080
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_606	Biomek_96_1st	EXP-1081
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_607	Biomek_96_1st	EXP-1082
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_608	Biomek_96_1st	EXP-1083
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_609	Biomek_96_1st	EXP-1084
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_610	Biomek_96_1st	EXP-1085
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_611	Biomek_96_1st	EXP-1086
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_612	Biomek_96_1st	EXP-1087
+Other	Mouse Brain	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_613	Biomek_96_1st	EXP-1088
+Other	Mouse Brain	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_614	Biomek_96_1st	EXP-1089
+Other	Mouse Brain	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_615	Biomek_96_1st	EXP-1090
+Other	Mouse Brain	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_616	Biomek_96_1st	EXP-1091
+SAMP-47	AN09232	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_617	Biomek_96_1st	EXP-1092
+SAMP-47	AN09232	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_618	Biomek_96_1st	EXP-1093
+SAMP-47	AN09232	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_619	Biomek_96_1st	EXP-1094
+SAMP-47	AN09232	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_620	Biomek_96_1st	EXP-1095
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_621	Biomek_96_1st	EXP-1096
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_622	Biomek_96_1st	EXP-1097
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_623	Biomek_96_1st	EXP-1098
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_624	Biomek_96_1st	EXP-1099
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_625	Biomek_96_1st	EXP-1100
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_626	Biomek_96_1st	EXP-1101
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_627	Biomek_96_1st	EXP-1102
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_628	Biomek_96_1st	EXP-1103
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_629	Biomek_96_1st	EXP-1104
+SAMP-702	AG05271	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_630	Biomek_96_1st	EXP-1105
+SAMP-699	AG11557	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_631	Biomek_96_1st	EXP-1106
+SAMP-703	AG11157A	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_632	Biomek_96_1st	EXP-1107
+SAMP-698	AG04054	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_633	Biomek_96_1st	EXP-1108
+SAMP-700	AG13442	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_634	Biomek_96_1st	EXP-1109
+SAMP-704	AG13349	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_635	Biomek_96_1st	EXP-1110
+SAMP-701	AG07801	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_636	Biomek_96_1st	EXP-1111
+Other	Mouse Lung	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_637	Biomek_96_1st	EXP-1112
+Other	Mouse Lung	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_638	Biomek_96_1st	EXP-1113
+Other	Mouse Lung	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_639	Biomek_96_1st	EXP-1114
+Other	Mouse Lung	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_640	Biomek_96_1st	EXP-1115
+Other	Mouse Lung	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_641	Biomek_96_1st	EXP-1116
+Other	Mouse Lung	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_642	Biomek_96_1st	EXP-1117
+Other	Mouse Lung	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_643	Biomek_96_1st	EXP-1118
+Other	Mouse Lung	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_644	Biomek_96_1st	EXP-1119
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_645	Biomek_96_1st	EXP-1120
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_646	Biomek_96_1st	EXP-1121
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_647	Biomek_96_1st	EXP-1122
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_648	Biomek_96_1st	EXP-1123
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_649	Biomek_96_1st	EXP-1124
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_650	Biomek_96_1st	EXP-1125
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_651	Biomek_96_1st	EXP-1126
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_652	Biomek_96_1st	EXP-1127
+Other	GM12878	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_653	Biomek_96_1st	EXP-1128
+Other	GM12878	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_654	Biomek_96_1st	EXP-1129
+Other	GM12878	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_655	Biomek_96_1st	EXP-1130
+Other	GM12878	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_656	Biomek_96_1st	EXP-1131
+Other	GM12878	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_657	Biomek_96_1st	EXP-1132
+Other	GM12878	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_658	Biomek_96_1st	EXP-1133
+Other	GM12878	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_659	Biomek_96_1st	EXP-1134
+Other	GM12878	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_660	Biomek_96_1st	EXP-1135
+Other	HEK293	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_661	Biomek_96_1st	EXP-1136
+Other	HEK293	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_662	Biomek_96_1st	EXP-1137
+Other	HEK293	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_663	Biomek_96_1st	EXP-1138
+Other	HEK293	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_664	Biomek_96_1st	EXP-1139
+Other	HEK293	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_665	Biomek_96_1st	EXP-1140
+Other	HEK293	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_666	Biomek_96_1st	EXP-1141
+Other	HEK293	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_667	Biomek_96_1st	EXP-1142
+Other	HEK293	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_668	Biomek_96_1st	EXP-1143
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_669	Biomek_96_1st	EXP-1144
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_670	Biomek_96_1st	EXP-1145
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_671	Biomek_96_1st	EXP-1146
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_672	Biomek_96_1st	EXP-1147
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_673	Biomek_96_1st	EXP-1148
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_674	Biomek_96_1st	EXP-1149
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_675	Biomek_96_1st	EXP-1150
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_676	Biomek_96_1st	EXP-1151
+Other	3T3	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_677	Biomek_96_1st	EXP-1152
+Other	3T3	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_678	Biomek_96_1st	EXP-1153
+Other	3T3	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_679	Biomek_96_1st	EXP-1154
+Other	3T3	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_680	Biomek_96_1st	EXP-1155
+Other	3T3	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_681	Biomek_96_1st	EXP-1156
+Other	3T3	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_682	Biomek_96_1st	EXP-1157
+Other	3T3	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_683	Biomek_96_1st	EXP-1158
+Other	3T3	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_684	Biomek_96_1st	EXP-1159
+SAMP-47	AN09232	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_685	Biomek_96_1st	EXP-1160
+SAMP-47	AN09232	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_686	Biomek_96_1st	EXP-1161
+SAMP-47	AN09232	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_687	Biomek_96_1st	EXP-1162
+SAMP-47	AN09232	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_688	Biomek_96_1st	EXP-1163
+Other	Mouse Brain	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_689	Biomek_96_1st	EXP-1164
+Other	Mouse Brain	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_690	Biomek_96_1st	EXP-1165
+Other	Mouse Brain	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_691	Biomek_96_1st	EXP-1166
+Other	Mouse Brain	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_692	Biomek_96_1st	EXP-1167
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_693	Biomek_96_1st	EXP-1168
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_694	Biomek_96_1st	EXP-1169
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_695	Biomek_96_1st	EXP-1170
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_696	Biomek_96_1st	EXP-1171
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_697	Biomek_96_1st	EXP-1172
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_698	Biomek_96_1st	EXP-1173
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_699	Biomek_96_1st	EXP-1174
+Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_700	Biomek_96_1st	EXP-1175
+SAMP-775	D110--CBL-MIX-6	XH	09/20/2018	09/21/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_72[1]		EXP-1177
+SAMP-778	D110--RML-BPS-3	XH	09/20/2018	09/21/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_72[2]		EXP-1178
 Other	Brain3	JYH	9/20/2018	9/20/2018	ATAC-seq	ATAC-seq_tissues	nb1_p	Yes	Yes	JYH_701	Ground_6months in -80	EXP-1179
 Other	Brain4	JYH	9/20/2018	9/20/2018	ATAC-seq	ATAC-seq_tissues	nb1_p	Yes	Yes	JYH_702	Ground_6months in -80	EXP-1180
 Other	Heart3	JYH	9/20/2018	9/20/2018	ATAC-seq	ATAC-seq_tissues	nb1_p	Yes	Yes	JYH_703	Ground_6months in -80	EXP-1181
@@ -876,7 +876,7 @@ SAMP-775	D110--CBL-MIX-6	JIB	9/20/2018	9/24/2018	scRNA-seq	10X		Yes	Yes	JB_18		E
 SAMP-778	D110--RML-BPS-3	JIB	9/20/2018	9/24/2018	scRNA-seq	10X_nuclei		Yes	Yes	JB_19		EXP-1196
 Other	GM19240 (A) SNP1	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_91		EXP-1197
 Other	GM19240 (A) SNP2	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_92		EXP-1198
-Other	GM19240 (A) NR2F2 RM	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_99	Sequenced on 24Oct18	EXP-1199
+Other	GM19240 (A) NR2F2 RM	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_99[2]	Sequenced on 24Oct18	EXP-1199
 Other	GM19240 (A) NR2F2 DG	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_93		EXP-1200
 Other	GM19240 (B) SNP1	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_94		EXP-1201
 Other	GM19240 (B) SNP2	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_95		EXP-1202
@@ -891,7 +891,9 @@ SAMP-822	CEMBA180904_5J	XH	9/4/2018	9/5/2018	scATAC-seq	sc_ATAC for cells		Yes	Y
 SAMP-823	CEMBA180910_5J	XH	9/10/2018	9/11/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_76		EXP-1211
 SAMP-824	CEMBA181001_5C	XH	10/1/2018	10/3/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_77		EXP-1212
 SAMP-825	CEMBA181002_5C	XH	10/2/2018	10/3/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_78		EXP-1213
-SAMP-815	GBM_A50_Myeloid	JIB	9/27/2018	9/29/2018	scRNA-seq	10X		Yes	Yes	JB_20-JB_22		EXP-1214
+SAMP-815	GBM_A50_Myeloid	JIB	9/27/2018	9/29/2018	scRNA-seq	10X		Yes	Yes	JB_20		EXP-1214
+SAMP-815	GBM_A50_Myeloid	JIB	9/27/2018	9/29/2018	scRNA-seq	10X		Yes	Yes	JB_21		EXP-1214
+SAMP-815	GBM_A50_Myeloid	JIB	9/27/2018	9/29/2018	scRNA-seq	10X		Yes	Yes	JB_22		EXP-1214
 SAMP-778	D110--RML-BPS-3	JIB	10/03/2018	10/05/2018	scRNA-seq	10X		Yes	Yes	JB_23		EXP-1215
 SAMP-826	Cul3 WT	JIB	10/4/2018	10/5/2018	scRNA-seq	10X		Yes	Yes	JB_24		EXP-1216
 SAMP-827	Cul3 MUTANT	JIB	10/4/2018	10/5/2018	scRNA-seq	10X		Yes	Yes	JB_25		EXP-1217
@@ -916,29 +918,29 @@ Other	(E) Chromatin provided by Active Motif for ChIP app on Biomek	RM	10/18/201
 Other	(F) Chromatin provided by Active Motif for ChIP app on Biomek	RM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_113		EXP-1236
 Other	(G) Chromatin provided by Active Motif for ChIP app on Biomek	RM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_114		EXP-1237
 Other	(H) Chromatin provided by Active Motif for ChIP app on Biomek	RM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_115		EXP-1238
-SAMP-817	JC007	XH	10/11/2018	10/12/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_86	Nothing in the sample	EXP-1239
-SAMP-818	JC008	XH	10/11/2018	10/12/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_86		EXP-1240
-SAMP-819	JC009	XH	10/11/2018	10/12/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_86		EXP-1241
+SAMP-817	JC007	XH	10/11/2018	10/12/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_86[1]	Nothing in the sample	EXP-1239
+SAMP-818	JC008	XH	10/11/2018	10/12/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_86[2]		EXP-1240
+SAMP-819	JC009	XH	10/11/2018	10/12/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_86[3]		EXP-1241
 SAMP-853	single-cell CTC WT83_6M	JIB	10/17/2018	10/20/2018	scRNA-seq	10X		Yes	Yes	JB_26		EXP-1242
 SAMP-854	single-cell CTC WT83_10M	JIB	10/17/2018	10/20/2018	scRNA-seq	10X		Yes	Yes	JB_27		EXP-1243
-SAMP-853	single-cell CTC WT83_6M	XH	10/17/2018	10/20/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_87		EXP-1244
-SAMP-854	single-cell CTC WT83_10M	XH	10/17/2018	10/20/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_87		EXP-1245
-SAMP-863	Aging mouse heart 3 month	XH	10/24/2018	10/25/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_88		EXP-1246
-SAMP-864	Aging mouse heart  10 month	XH	10/24/2018	10/25/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_88		EXP-1247
-SAMP-865	Aging mouse heart  18 month	XH	10/24/2018	10/25/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_88		EXP-1248
-SAMP-866	23715#1 E9.5 tailbuds mutant	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1249
-SAMP-867	23715#4 E9.5 tailbuds mutant	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1250
-SAMP-868	23715#5 E9.5 tailbuds mutant	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1251
-SAMP-869	23715#8 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1252
-SAMP-870	23715#10 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1253
-SAMP-871	23587#2 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1254
-SAMP-872	23587#9 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1255
-SAMP-873	23587#12 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1256
-SAMP-874	23587#13 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1257
-SAMP-875	23587#15 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1258
-SAMP-876	23587#1 E9.5 tailbuds mutant	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1259
-SAMP-877	23587#3 E9.5 tailbuds mutant	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1260
-SAMP-878	23587#10 E9.5 tailbuds mutant	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89		EXP-1261
+SAMP-853	single-cell CTC WT83_6M	XH	10/17/2018	10/20/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_87[1]		EXP-1244
+SAMP-854	single-cell CTC WT83_10M	XH	10/17/2018	10/20/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_87[2]		EXP-1245
+SAMP-863	Aging mouse heart 3 month	XH	10/24/2018	10/25/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_88[1]		EXP-1246
+SAMP-864	Aging mouse heart  10 month	XH	10/24/2018	10/25/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_88[2]		EXP-1247
+SAMP-865	Aging mouse heart  18 month	XH	10/24/2018	10/25/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_88[3]		EXP-1248
+SAMP-866	23715#1 E9.5 tailbuds mutant	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[1]		EXP-1249
+SAMP-867	23715#4 E9.5 tailbuds mutant	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[2]		EXP-1250
+SAMP-868	23715#5 E9.5 tailbuds mutant	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[3]		EXP-1251
+SAMP-869	23715#8 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[4]		EXP-1252
+SAMP-870	23715#10 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[5]		EXP-1253
+SAMP-871	23587#2 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[6]		EXP-1254
+SAMP-872	23587#9 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[7]		EXP-1255
+SAMP-873	23587#12 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[8]		EXP-1256
+SAMP-874	23587#13 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[9]		EXP-1257
+SAMP-875	23587#15 E9.5 tailbuds WT	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[10]		EXP-1258
+SAMP-876	23587#1 E9.5 tailbuds mutant	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[11]		EXP-1259
+SAMP-877	23587#3 E9.5 tailbuds mutant	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[12]		EXP-1260
+SAMP-878	23587#10 E9.5 tailbuds mutant	XH	10/30/2018	11/1/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_89[13]		EXP-1261
 SAMP-734	NJ_01	JYH	10/23/2018	10/23/2018	ATAC-seq	ATAC-seq_cells	nb1_p	Yes	Yes	JYH_715	Biomek	EXP-1262
 SAMP-735	NJ_02	JYH	10/23/2018	10/23/2018	ATAC-seq	ATAC-seq_cells	nb1_p	Yes	Yes	JYH_716	Biomek	EXP-1263
 SAMP-736	NJ_03	JYH	10/23/2018	10/23/2018	ATAC-seq	ATAC-seq_cells	nb1_p	Yes	Yes	JYH_717	Biomek	EXP-1264
@@ -972,7 +974,7 @@ SAMP-892	spleen1_2	JYH	10/30/2018	10/30/2018	ATAC-seq	ATAC-seq_cells	nb1_p	Yes	Y
 SAMP-895	WT	JYH	10/30/2018	10/30/2018	ATAC-seq	ATAC-seq_cells	nb1_p	Yes	Yes	JYH_745		EXP-1292
 SAMP-896	CKO	JYH	10/30/2018	10/30/2018	ATAC-seq	ATAC-seq_cells	nb1_p	Yes	Yes	JYH_746		EXP-1293
 SAMP-855	16P-WT	JIB	11/1/2018	11/6/2018	scRNA-seq	10X 3' Chromium	worksheet	Yes	Yes	JB_28		EXP-1294
-SAMP-856	16P-Del	JIB	11/1/2018	11/6	scRNA-seq	10X 3' Chromium	worksheet	Yes	Yes	JB_29		EXP-1295
+SAMP-856	16P-Del	JIB	11/1/2018	11/6/2018	scRNA-seq	10X 3' Chromium	worksheet	Yes	Yes	JB_29		EXP-1295
 SAMP-640	Glioblastoma IDH1 WT_A39	JIB	11/4/2018	11/6/2018	scRNA-seq	10X 3' Chromium	worksheet	Yes	Yes	JB_30		EXP-1296
 SAMP-86	GBM_Pat9_T1	JIB	11/4/2018	11/6/2018	scRNA-seq	10X 3' Chromium	worksheet	Yes	Yes	JB_31		EXP-1297
 SAMP-113	GBM_Pat11	JIB	11/4/2018	11/6/2018	scRNA-seq	10X 3' Chromium	worksheet	Yes	Yes	JB_32		EXP-1298
@@ -1001,10 +1003,10 @@ SAMP-248	D07_Rep1_Epi	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT Hig
 SAMP-250	D09_Rep1_Epi	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_137	H3K27me3 Thermo	EXP-1321
 SAMP-252	D15_Rep1_Epi	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_138	H3K27me3 Thermo	EXP-1322
 SAMP-254	D20_Rep1_Epi	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_139	H3K27me3 Thermo	EXP-1323
-SAMP-640	GBM_A39	XH	11/5/2018	11/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_90		EXP-1324
-SAMP-86	GBM9.2	XH	11/5/2018	11/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_90		EXP-1325
-SAMP-113	GBM11	XH	11/5/2018	11/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_90		EXP-1326
-SAMP-115	GBM12.2	XH	11/5/2018	11/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_90		EXP-1327
+SAMP-640	GBM_A39	XH	11/5/2018	11/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_90[1]		EXP-1324
+SAMP-86	GBM9.2	XH	11/5/2018	11/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_90[2]		EXP-1325
+SAMP-113	GBM11	XH	11/5/2018	11/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_90[3]		EXP-1326
+SAMP-115	GBM12.2	XH	11/5/2018	11/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_90[4]		EXP-1327
 SAMP-797	RG09	JYH	11/14/2018	11/14/2018	ATAC-seq	ATAC-seq_cells	nb1_p	Yes	Yes	JYH_747	Sanders	EXP-1328
 SAMP-798	RG10	JYH	11/14/2018	11/14/2018	ATAC-seq	ATAC-seq_cells	nb1_p	Yes	Yes	JYH_748	Sanders	EXP-1329
 SAMP-799	RG11	JYH	11/14/2018	11/14/2018	ATAC-seq	ATAC-seq_cells	nb1_p	Yes	Yes	JYH_749	Sanders	EXP-1330
@@ -1039,16 +1041,16 @@ SAMP-926	EF07D_EB_R1	XH	11/2/2018	11/3/2018	scATAC-seq	sc_ATAC for cells		Yes	Ye
 SAMP-927	EF15D_EB_R1	XH	11/10/2018	11/11/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_95		EXP-1359
 SAMP-928	EF25D_EB_R1	XH	11/20/2018	11/21/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_96		EXP-1360
 SAMP-929	EF40D_EB_R1	XH	12/5/2018	12/6/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_97		EXP-1361
-SAMP-933	Aging mouse front cortex 3 month_Re	XH	11/28/2018	11/30/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_98		EXP-1362
-SAMP-934	Aging mouse front cortex 10 month_Re	XH	12/28/2018	11/30/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_98		EXP-1363
-SAMP-935	Aging mouse front cortex 18 month_Re	XH	12/28/2018	11/30/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_98		EXP-1364
-SAMP-904	CE1	XH	11/19/2018	11/20/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_99		EXP-1365
-SAMP-905	CE2	XH	11/19/2018	11/20/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_99		EXP-1366
-SAMP-906	CE3	XH	11/19/2018	11/20/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_99		EXP-1367
-SAMP-907	CE4	XH	11/19/2018	11/20/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_99		EXP-1368
-SAMP-908	CE5	XH	11/27/2018	11/30/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_100		EXP-1369
-SAMP-909	CE6	XH	11/27/2018	11/30/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_100		EXP-1370
-SAMP-910	CE7	XH	11/27/2018	11/30/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_100		EXP-1371
+SAMP-933	Aging mouse front cortex 3 month_Re	XH	11/28/2018	11/30/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_98[1]		EXP-1362
+SAMP-934	Aging mouse front cortex 10 month_Re	XH	12/28/2018	11/30/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_98[2]		EXP-1363
+SAMP-935	Aging mouse front cortex 18 month_Re	XH	12/28/2018	11/30/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_98[3]		EXP-1364
+SAMP-904	CE1	XH	11/19/2018	11/20/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_99[1]		EXP-1365
+SAMP-905	CE2	XH	11/19/2018	11/20/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_99[2]		EXP-1366
+SAMP-906	CE3	XH	11/19/2018	11/20/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_99[3]		EXP-1367
+SAMP-907	CE4	XH	11/19/2018	11/20/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_99[4]		EXP-1368
+SAMP-908	CE5	XH	11/27/2018	11/30/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_100[1]		EXP-1369
+SAMP-909	CE6	XH	11/27/2018	11/30/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_100[2]		EXP-1370
+SAMP-910	CE7	XH	11/27/2018	11/30/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_100[3]		EXP-1371
 SAMP-897	CE1	JIB	11/19/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1372
 SAMP-898	CE2	JIB	11/19/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1373
 SAMP-899	CE3	JIB	11/19/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1374
@@ -1061,14 +1063,14 @@ SAMP-912	CE9	JIB	11/20/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Li
 SAMP-913	CE10	JIB	11/20/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1381
 SAMP-914	CE11	JIB	11/20/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1382
 SAMP-915	CE12	JIB	11/27/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1383
-SAMP-936	Aging mouse dorsal hippocampus 3 month_Re	XH	12/6/2018	12/7/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_101		EXP-1384
-SAMP-937	Aging mouse dorsal hippocampus 10 month_Re	XH	12/6/2018	12/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_101		EXP-1385
-SAMP-938	Aging mouse dorsal hippocampus 18 month_Re	XH	12/6/2018	12/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_101		EXP-1386
-SAMP-943	B6_p0_male_Run2	XH	12/4/2018	12/5/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_102		EXP-1387
-SAMP-944	B6_p0_female_Run2	XH	12/4/2018	12/5/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_102		EXP-1388
-SAMP-945	Aging mouse heart 3 month_Re	XH	12/12/2018	12/14/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_103		EXP-1389
-SAMP-946	Aging mouse heart 10 month_Re	XH	12/12/2018	12/14/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_103		EXP-1390
-SAMP-947	Aging mouse heart 18 month_Re	XH	12/12/2018	12/14/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_103		EXP-1391
+SAMP-936	Aging mouse dorsal hippocampus 3 month_Re	XH	12/6/2018	12/7/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_101[1]		EXP-1384
+SAMP-937	Aging mouse dorsal hippocampus 10 month_Re	XH	12/6/2018	12/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_101[2]		EXP-1385
+SAMP-938	Aging mouse dorsal hippocampus 18 month_Re	XH	12/6/2018	12/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_101[3]		EXP-1386
+SAMP-943	B6_p0_male_Run2	XH	12/4/2018	12/5/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_102[1]		EXP-1387
+SAMP-944	B6_p0_female_Run2	XH	12/4/2018	12/5/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_102[2]		EXP-1388
+SAMP-945	Aging mouse heart 3 month_Re	XH	12/12/2018	12/14/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_103[1]		EXP-1389
+SAMP-946	Aging mouse heart 10 month_Re	XH	12/12/2018	12/14/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_103[2]		EXP-1390
+SAMP-947	Aging mouse heart 18 month_Re	XH	12/12/2018	12/14/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_103[3]		EXP-1391
 SAMP-894	spleen2_2	JYH	12/06/2018	12/06/2018	scATAC-seq	sc_ATAC for single cell suspension		Yes	Yes	JYH_777	Pfizer	EXP-1392
 SAMP-948	6282_nPOD_1	JYH	11/15/2018	11/15/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	JYH_774		EXP-1393
 SAMP-688	A0016	JYH	12/14/2018	12/14/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	JYH_775		EXP-1394
@@ -1098,8 +1100,8 @@ SAMP-834	Veh1	JYH	10/16/2018	10/16/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	JY
 SAMP-835	OP1	JYH	10/16/2018	10/16/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	JYH_782		EXP-1418
 SAMP-836	Veh1SnapF	JYH	11/01/2018	11/01/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	JYH_783		EXP-1419
 SAMP-779	D032-RML-BPS-2	XH	12/19/2018	12/20/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_104		EXP-1420
-SAMP-952	CTC WT83c6	XH	12/13/2018	12/14/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_105		EXP-1421
-SAMP-953	CTC WT83c6	XH	12/13/2018	12/14/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_105		EXP-1422
+SAMP-952	CTC WT83c6	XH	12/13/2018	12/14/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_105[1]		EXP-1421
+SAMP-953	CTC WT83c6	XH	12/13/2018	12/14/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_105[2]		EXP-1422
 SAMP-955	Veh 900K	JYH	1/10/2018	1/13/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	JYH_784		EXP-1423
 SAMP-957	O+P 900K	JYH	1/10/2018	1/13/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	JYH_785		EXP-1424
 SAMP-948	6282_nPOD_1	JYH	1/11/2018	1/13/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	JYH_786		EXP-1425
@@ -1274,3 +1276,7 @@ SAMP-1063	EF05D_MO_R1	XH	2/20/2019	2/21/2019	scATAC-seq	sc_ATAC for cells		Yes	Y
 SAMP-1064	EF07D_EB_R2	XH	2/22/2019	2/25/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_140		EXP-1594
 SAMP-1065	EF07D_MO_R1	XH	2/22/2019	2/25/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_141		EXP-1595
 SAMP-1066	EF080D_MO_R1	XH	2/22/2019	2/25/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_142		EXP-1596
+SAMP-1027	B0004	JYH	2/21/2019	2/22/2019	scATAC-seq	ATAC-seq for cells, 10X		Yes	Yes	JYH_809	1x omni, 10 min	EXP-1597
+SAMP-1027	B0004	JYH	2/21/2019	2/22/2019	scATAC-seq	ATAC-seq for cells, 10X		Yes	Yes	JYH_810	1x omni, 1min	EXP-1598
+SAMP-1027	B0004	JYH	2/21/2019	2/22/2019	scATAC-seq	ATAC-seq for cells, 10X		Yes	Yes	JYH_811	0.1x omni, 10 min	EXP-1599
+SAMP-1027	B0004	JYH	2/21/2019	2/22/2019	scATAC-seq	ATAC-seq for cells, 10X		Yes	Yes	JYH_812	0.1x omni, 1 min	EXP-1600

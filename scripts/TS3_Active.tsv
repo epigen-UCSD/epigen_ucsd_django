@@ -183,14 +183,14 @@ N/A	N/A (special case; not on our MSTS)	Cortex1_H3K26me3	mouse	N/A	DUG	N/A	SRC15
 N/A	N/A (special case; not on our MSTS)	Cortex1_H3K36me3	mouse	N/A	DUG	N/A	SRC1590	SRC1590	Other (please explain in notes)	LICR	Hi-seq4000	50	SE	N/A	(truseq)	A18	/home/sochee/fastq/SRC1590_R1.fastq.bz2	SEQ-478			mm10	40,665,137	31,259,486	0.769	0.000287	1.33	0.0178		
 N/A	N/A (special case; not on our MSTS)	Cortex1_H3K36me3	mouse	N/A	DUG	N/A	SRC1591	SRC1591	Other (please explain in notes)	LICR	Hi-seq4000	50	SE	N/A	(truseq)	A19	/home/sochee/fastq/SRC1591_R1.fastq.bz2	SEQ-479			mm10	44,939,167	28,133,903	0.626	0.000468	1.393	0.0191		
 N/A	N/A (special case; not on our MSTS)	Cortex1_input	mouse	N/A	DUG	N/A	SRC1592	SRC1592	Other (please explain in notes)	LICR	Hi-seq4000	50	SE	N/A	(truseq)	A08	/home/sochee/fastq/SRC1592_R1.fastq.bz2	SEQ-480			mm10	21,811,600	13,338,383	0.612	0.00532	6.324	0.0542		
-SAMP-379	DMS114_H3K27me3	DMS114_H3K27me3	human	EXP-378	AVD	2/8/2018	AVD_77	AVD_77	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	A5	0.167	(TruSeq)	Pfizer ChIP-seq	SEQ-491			hg38	84,786,936	42,353,228	0.5	0.000305	1.842	0.0393		
-SAMP-379	DMS114_H3K4me3	DMS114_H3K4me3	human	EXP-379	AVD	2/8/2018	AVD_78	AVD_78	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	A6	0.094	(TruSeq)	Pfizer ChIP-seq	SEQ-492			hg38	135,040,454	114,927,940	0.851	4.86E-05	16.85	0.795		
-SAMP-379	DMS114_Input	DMS114_Input	human	EXP-380	AVD	2/8/2018	AVD_79	AVD_79	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	A14	0.104	(TruSeq)	Pfizer ChIP-seq	SEQ-493			hg38	90,547,680	72,741,760	0.803	0.00284	1.305	0.0178		
-SAMP-383	H209_H3K27me3	H209_H3K27me3	human	EXP-381	AVD	2/8/2018	AVD_80	AVD_80	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	A7	0.167	(TruSeq)	Pfizer ChIP-seq	SEQ-494			hg38	171,285,570	80,937,744	0.473	0.000299	1.775	0.035		
-SAMP-383	H209_H3K4me3	H209_H3K4me3	human	EXP-382	AVD	2/8/2018	AVD_81	AVD_81	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	A12	0.094	(TruSeq)	Pfizer ChIP-seq	SEQ-495			hg38	139,768,590	115,234,946	0.824	4.08E-05	21.11	0.804		
-SAMP-383	H209_Input	H209_Input	human	EXP-383	AVD	2/8/2018	AVD_82	AVD_82	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	A15	0.104	(TruSeq)	Pfizer ChIP-seq	SEQ-496			hg38	61,705,314	48,658,546	0.789	0.0152	1.412	0.0213		
-SAMP-387	C4_2_H3K27me3	C4_2_H3K27me3	human	EXP-384	AVD	2/8/2018	AVD_83	AVD_83	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	A2	0.167	(TruSeq)	Pfizer ChIP-seq	SEQ-497			hg38	13,971,756	10,371,284	0.742	0.000122	2.483	0.0405		
-SAMP-387	C4_2_Input	C4_2_Input	human	EXP-386	AVD	2/8/2018	AVD_85	AVD_85	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	A13	0.104	(TruSeq)	Pfizer ChIP-seq	SEQ-498			hg38	45,314,346	35,783,558	0.79	0.00863	1.623	0.0229		
+SAMP-379	DMS114_H3K27me3	DMS114_H3K27me3	human	EXP-378	AVD	2/8/2018	AVD_77	AVD_77	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.167	A5	(TruSeq)	Pfizer ChIP-seq	SEQ-491			hg38	84,786,936	42,353,228	0.5	0.000305	1.842	0.0393		
+SAMP-379	DMS114_H3K4me3	DMS114_H3K4me3	human	EXP-379	AVD	2/8/2018	AVD_78	AVD_78	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.094	A6	(TruSeq)	Pfizer ChIP-seq	SEQ-492			hg38	135,040,454	114,927,940	0.851	4.86E-05	16.85	0.795		
+SAMP-379	DMS114_Input	DMS114_Input	human	EXP-380	AVD	2/8/2018	AVD_79	AVD_79	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.104	A14	(TruSeq)	Pfizer ChIP-seq	SEQ-493			hg38	90,547,680	72,741,760	0.803	0.00284	1.305	0.0178		
+SAMP-383	H209_H3K27me3	H209_H3K27me3	human	EXP-381	AVD	2/8/2018	AVD_80	AVD_80	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.167	A7	(TruSeq)	Pfizer ChIP-seq	SEQ-494			hg38	171,285,570	80,937,744	0.473	0.000299	1.775	0.035		
+SAMP-383	H209_H3K4me3	H209_H3K4me3	human	EXP-382	AVD	2/8/2018	AVD_81	AVD_81	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.094	A12	(TruSeq)	Pfizer ChIP-seq	SEQ-495			hg38	139,768,590	115,234,946	0.824	4.08E-05	21.11	0.804		
+SAMP-383	H209_Input	H209_Input	human	EXP-383	AVD	2/8/2018	AVD_82	AVD_82	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.104	A15	(TruSeq)	Pfizer ChIP-seq	SEQ-496			hg38	61,705,314	48,658,546	0.789	0.0152	1.412	0.0213		
+SAMP-387	C4_2_H3K27me3	C4_2_H3K27me3	human	EXP-384	AVD	2/8/2018	AVD_83	AVD_83	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.167	A2	(TruSeq)	Pfizer ChIP-seq	SEQ-497			hg38	13,971,756	10,371,284	0.742	0.000122	2.483	0.0405		
+SAMP-387	C4_2_Input	C4_2_Input	human	EXP-386	AVD	2/8/2018	AVD_85	AVD_85	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.104	A13	(TruSeq)	Pfizer ChIP-seq	SEQ-498			hg38	45,314,346	35,783,558	0.79	0.00863	1.623	0.0229		
 SAMP-446	CZ05	FF_HA 5_ input	human	EXP-390	JYH	2/6/2018	JYH_257	JYH_257	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	N704	S505	islet buffer test	SEQ-499			hg38	22,366,722	15,498,624	0.693	0.17	20.22	0.244		
 SAMP-447	CZ05	FF_HA1_ HA tag	human	EXP-391	JYH	2/6/2018	JYH_258	JYH_258	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	N701	S510	islet buffer test	SEQ-500			hg38	21,062,672	12,271,224	0.583	0.288	21.5	0.262		
 SAMP-448	CZ05	FF_HA2_ HA tag	human	EXP-392	JYH	2/6/2018	JYH_259	JYH_259	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	N702	S506	islet buffer test	SEQ-501			hg38	19,565,850	6,341,966	0.324	0.549	16.73	0.144		
@@ -269,10 +269,10 @@ SAMP-440	Day3_-Gx	Day3_-Gx	human	EXP-412	JYH	2/13/2018	JYH_284	JYH_284	ATAC-seq	
 SAMP-126	GM_SNAP10	ATAC Control	human	EXP-413	JYH	2/13/2018	JYH_285	JYH_285	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.00	N704	S508		SEQ-557			hg38	3,857,330	1,927,658	0.5	0.338	31.36	0.228		
 SAMP-126	GM_SNAP10	Biomek_6th_1	human	EXP-414	JYH	2/13/2018	JYH_286	JYH_286	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.04	N711	S510		SEQ-558			hg38	14,909,838	8,071,480	0.541	0.299	29.82	0.197		
 SAMP-126	GM_SNAP10	Biomek_6th_2	human	EXP-415	JYH	2/13/2018	JYH_287	JYH_287	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.04	N712	S511		SEQ-559			hg38	14,044,070	7,330,280	0.522	0.315	30.74	0.202		
-SAMP-379	DMS114_H3K27me3	DMS114_H3K27me3	human	EXP-378	AVD	2/13/2018	AVD_77	AVD_77_2	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	A5	0.167	(TruSeq)	Pfizer ChIP-seq run for more reads	SEQ-562			NA	NA	NA	NA	NA	NA	NA		
-SAMP-387	C4_2_H3K27me3	C4_2_H3K27me3	human	EXP-384	AVD	2/13/2018	AVD_83	AVD_83_2	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	A2	0.167	(TruSeq)	Pfizer ChIP-seq run for more reads	SEQ-563			NA	NA	NA	NA	NA	NA	NA		
-SAMP-379	DMS114_H3K27me3	DMS114_H3K27me3	human	EXP-378	AVD	2/13/2018	AVD_77	AVD_77_1_2	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	A5	0.167	(TruSeq)	Pfizer ChIP-seq run for more reads	SEQ-564			hg38	108,397,560	48,523,678	0.448	0.000305	1.839	0.0391		
-SAMP-387	C4_2_H3K27me3	C4_2_H3K27me3	human	EXP-384	AVD	2/13/2018	AVD_83	AVD_83_1_2	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	A2	0.167	(TruSeq)	Pfizer ChIP-seq run for more reads	SEQ-565			hg38	22,724,808	16,867,480	0.742	0.000123	2.443	0.0402		
+SAMP-379	DMS114_H3K27me3	DMS114_H3K27me3	human	EXP-378	AVD	2/13/2018	AVD_77	AVD_77_2	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.167	A5	(TruSeq)	Pfizer ChIP-seq run for more reads	SEQ-562			NA	NA	NA	NA	NA	NA	NA		
+SAMP-387	C4_2_H3K27me3	C4_2_H3K27me3	human	EXP-384	AVD	2/13/2018	AVD_83	AVD_83_2	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.167	A2	(TruSeq)	Pfizer ChIP-seq run for more reads	SEQ-563			NA	NA	NA	NA	NA	NA	NA		
+SAMP-379	DMS114_H3K27me3	DMS114_H3K27me3	human	EXP-378	AVD	2/13/2018	AVD_77	AVD_77_1_2	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.167	A5	(TruSeq)	Pfizer ChIP-seq run for more reads	SEQ-564			hg38	108,397,560	48,523,678	0.448	0.000305	1.839	0.0391		
+SAMP-387	C4_2_H3K27me3	C4_2_H3K27me3	human	EXP-384	AVD	2/13/2018	AVD_83	AVD_83_1_2	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.167	A2	(TruSeq)	Pfizer ChIP-seq run for more reads	SEQ-565			hg38	22,724,808	16,867,480	0.742	0.000123	2.443	0.0402		
 SAMP-226	D00_Rep1	D00_Rep1	human	EXP-118	JYH	1/12/2018	JYH_127	JYH_127_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.06	N701	S502	Neil Chi Rep1	SEQ-566			hg38	57,477,328	20,280,572	0.353	0.511	29.18	0.33		
 SAMP-228	D03_Rep1	D03_Rep1	human	EXP-119	JYH	1/12/2018	JYH_128	JYH_128_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.06	N702	S503	Neil Chi Rep1	SEQ-567			hg38	108,471,760	28,644,828	0.264	0.426	25.33	0.247		
 SAMP-230	D05_Rep1_VE	D05_Rep1_VE	human	EXP-120	JYH	1/12/2018	JYH_129	JYH_129_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.06	N703	S505	Neil Chi Rep1	SEQ-568			hg38	63,105,490	30,868,270	0.489	0.354	34.38	0.361		
@@ -681,20 +681,20 @@ SAMP-557	Cal27 (head and neck cell line)	Cal27_r1	Human	EXP-739	RM	4/26/2018	RMM
 SAMP-558	USMCC17B (head and neck cell line)	USMCC17B_r1	Human	EXP-740	RM	4/26/2018	RMM_71	RMM_71	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	510	706	Bench Method ATAC-Seq w/ second size selection.	SEQ-1024			hg38	5,595,980	2,950,382	0.527	0.349	32.1	0.334		
 SAMP-559	Detroit562 (head and neck cell line)	Detroit562_r1	Human	EXP-741	RM	4/26/2018	RMM_72	RMM_72	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	511	711	Bench Method ATAC-Seq w/ second size selection.	SEQ-1025			hg38	7,295,040	4,181,536	0.573	0.303	38.41	0.37		
 SAMP-126	GM_SNAP10	Nuclei con_r1	Human	EXP-742	RM	4/26/2018	RMM_73	RMM_73	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	502	705	Bench Method ATAC-Seq w/ second size selection.	SEQ-1026			NA	NA	NA	NA	NA	NA	NA		
-SAMP-525	CEMBA180308_3B	Mini_Brain_Atlas_3B_Rep1	Mouse	EXP-490	XW	5/2/2018	nb1_p72	XH_16	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1029			NA	NA	NA	NA	NA	NA	NA		
-SAMP-526	CEMBA180312_3B	Mini_Brain_Atlas_3B_Rep2	Mouse	EXP-491	XW	5/2/2018	nb1_p72,74,75	XH_17	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1030			NA	NA	NA	NA	NA	NA	NA		
-SAMP-594	CEMBA180329_4F	Mini_Brain_Atlas_4F_Rep1	Mouse	EXP-743	XH	5/2/2018	nb1_p58	XH_18	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1031			NA	NA	NA	NA	NA	NA	NA		
-SAMP-595	CEMBA180402_4F	Mini_Brain_Atlas_4F_Rep2	Mouse	EXP-540	XW	5/2/2018	nb1_p82,85	XH_19	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1032			NA	NA	NA	NA	NA	NA	NA		
-SAMP-598	CEMBA180409_2C	Mini_Brain_Atlas_2C_Rep1	Mouse	EXP615	XW	5/2/2018	nb1_p85,87	XH_20	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1033			NA	NA	NA	NA	NA	NA	NA		
-SAMP-599	CEMBA180410_2C	Mini_Brain_Atlas_2C_Rep1	Mouse	EXP616	XH	5/2/2018	nb1_p60	XH_21	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1034			NA	NA	NA	NA	NA	NA	NA		
-SAMP-600	CEMBA180412_3D	Mini_Brain_Atlas_3D_Rep1	Mouse	EXP617	XW	5/2/2018		XH_22	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1035			NA	NA	NA	NA	NA	NA	NA		
-SAMP-601	CEMBA180416_3D	Mini_Brain_Atlas_3D_Rep2	Mouse	EXP618	XH	5/2/2018	NB1_p61	XH_23	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1036			NA	NA	NA	NA	NA	NA	NA		
-SAMP-602	CEMBA180417_4C	Mini_Brain_Atlas_4C_Rep1	Mouse	EXP619	XW	5/2/2018		XH_24	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1037			NA	NA	NA	NA	NA	NA	NA		
-SAMP-603	CEMBA180419_4C	Mini_Brain_Atlas_4C_Rep2	Mouse	EXP620	XH	5/2/2018	NB1_p64	XH_25	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1038			NA	NA	NA	NA	NA	NA	NA		
-SAMP-610	CEMBA180423_7B	Mini_Brain_Atlas_7B_Rep1	Mouse	EXP-650	XH	5/2/2018	nb_1 p65	XH_26	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1039			NA	NA	NA	NA	NA	NA	NA		
-SAMP-611	CEMBA180424_7B	Mini_Brain_Atlas_7B_Rep2	Mouse	EXP-651	XH	5/2/2018	nb_1 p65	XH_27	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1040			NA	NA	NA	NA	NA	NA	NA		
-SAMP-612	CEMBA180426_8B	Mini_Brain_Atlas_8B_Rep1	Mouse	EXP-652	XH	5/2/2018	nb_1 p66	XH_28	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1041			NA	NA	NA	NA	NA	NA	NA		
-SAMP-613	CEMBA180430_8B	Mini_Brain_Atlas_8B_Rep2	Mouse	EXP-653	XH	5/2/2018	nb_1 p66	XH_29	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1042			NA	NA	NA	NA	NA	NA	NA		
+SAMP-525	CEMBA180308_3B	Mini_Brain_Atlas_3B_Rep1	Mouse	EXP-490	XW	5/2/2018	XH_16	XH_16	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1029			NA	NA	NA	NA	NA	NA	NA		
+SAMP-526	CEMBA180312_3B	Mini_Brain_Atlas_3B_Rep2	Mouse	EXP-491	XW	5/2/2018	XH_17	XH_17	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1030			NA	NA	NA	NA	NA	NA	NA		
+SAMP-594	CEMBA180329_4F	Mini_Brain_Atlas_4F_Rep1	Mouse	EXP-743	XH	5/2/2018	XH_18	XH_18	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1031			NA	NA	NA	NA	NA	NA	NA		
+SAMP-595	CEMBA180402_4F	Mini_Brain_Atlas_4F_Rep2	Mouse	EXP-540	XW	5/2/2018	XH_19	XH_19	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1032			NA	NA	NA	NA	NA	NA	NA		
+SAMP-598	CEMBA180409_2C	Mini_Brain_Atlas_2C_Rep1	Mouse	EXP-615	XW	5/2/2018	XH_20	XH_20	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1033			NA	NA	NA	NA	NA	NA	NA		
+SAMP-599	CEMBA180410_2C	Mini_Brain_Atlas_2C_Rep1	Mouse	EXP-616	XH	5/2/2018	XH_21	XH_21	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1034			NA	NA	NA	NA	NA	NA	NA		
+SAMP-600	CEMBA180412_3D	Mini_Brain_Atlas_3D_Rep1	Mouse	EXP-617	XW	5/2/2018	XH_22	XH_22	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1035			NA	NA	NA	NA	NA	NA	NA		
+SAMP-601	CEMBA180416_3D	Mini_Brain_Atlas_3D_Rep2	Mouse	EXP-618	XH	5/2/2018	XH_23	XH_23	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1036			NA	NA	NA	NA	NA	NA	NA		
+SAMP-602	CEMBA180417_4C	Mini_Brain_Atlas_4C_Rep1	Mouse	EXP-619	XW	5/2/2018	XH_24	XH_24	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1037			NA	NA	NA	NA	NA	NA	NA		
+SAMP-603	CEMBA180419_4C	Mini_Brain_Atlas_4C_Rep2	Mouse	EXP-620	XH	5/2/2018	XH_25	XH_25	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1038			NA	NA	NA	NA	NA	NA	NA		
+SAMP-610	CEMBA180423_7B	Mini_Brain_Atlas_7B_Rep1	Mouse	EXP-650	XH	5/2/2018	XH_26	XH_26	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1039			NA	NA	NA	NA	NA	NA	NA		
+SAMP-611	CEMBA180424_7B	Mini_Brain_Atlas_7B_Rep2	Mouse	EXP-651	XH	5/2/2018	XH_27	XH_27	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1040			NA	NA	NA	NA	NA	NA	NA		
+SAMP-612	CEMBA180426_8B	Mini_Brain_Atlas_8B_Rep1	Mouse	EXP-652	XH	5/2/2018	XH_28	XH_28	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1041			NA	NA	NA	NA	NA	NA	NA		
+SAMP-613	CEMBA180430_8B	Mini_Brain_Atlas_8B_Rep2	Mouse	EXP-653	XH	5/2/2018	XH_29	XH_29	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1042			NA	NA	NA	NA	NA	NA	NA		
 Other	Gli2-118-2_10.5 head	Gli2-118-2_10.5 head	Mouse	EXP-621	RM	5/3/2018	RM_35	RM_35_2	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.16	502	703	Previously sequenced w/ mid-output. Deeper sequencing requested by KP @Jax lab.	SEQ-1043			mm10	235,939,216	183,243,790	0.777	0.0301	15.56	0		
 Other	Gli2-118-7 10.5head	Gli2-118-7 10.5head	Mouse	EXP-634	RM	5/3/2018	RM_48	RM_48_2	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.16	502	701	Previously sequenced w/ mid-output. Deeper sequencing requested by KP @Jax lab.	SEQ-1044			mm10	157,091,424	127,047,532	0.809	0.0181	15.13	0.16		
 Other	Gli2-118-4 10.5head	Gli2-118-4 10.5head	Mouse	EXP-636	RM	5/3/2018	RM_50	RM_50_2	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.16	505	706	Previously sequenced w/ mid-output. Deeper sequencing requested by KP @Jax lab.	SEQ-1045			mm10	183,160,568	145,152,680	0.792	0.0277	15.4	0.169		
@@ -745,8 +745,8 @@ SAMP-486	2703 3-3 - 6hr	2703 3-3 - 6hr	human	EXP-459	JYH	4/9/2018	JYH_299	JYH_29
 SAMP-487	2703 3-4 - none	2703 3-4 - none	human	EXP-460	JYH	4/9/2018	JYH_300	JYH_300_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.28	703	507	Gleeson	SEQ-1090			hg38	110,929,858	57,619,354	0.519	0.322	31.25	0.259		
 SAMP-488	2703 3-4 - 1hr	2703 3-4 - 1hr	human	EXP-461	JYH	4/9/2018	JYH_301	JYH_301_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.28	704	508	Gleeson	SEQ-1091			hg38	96,024,662	53,947,084	0.562	0.278	29.6	0.247		
 SAMP-489	2703 3-4 - 6hr	2703 3-4 - 6hr	human	EXP-462	JYH	4/9/2018	JYH_302	JYH_302_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.28	705	510	Gleeson	SEQ-1092			hg38	94,273,422	52,533,262	0.557	0.285	20.83	0.19		
-	CZ10	CZ10 Frozen	human		JYH			JYH_468	JYH_468									SEQ-1093			NA	NA	NA	NA	NA	NA	NA		
-	CZ11	CZ11 Fresh	human		JYH			JYH_469	JYH_469									SEQ-1094			NA	NA	NA	NA	NA	NA	NA		
+	CZ10	CZ10 Frozen	human		JYH		JYH_468	JYH_468									SEQ-1093			NA	NA	NA	NA	NA	NA	NA		
+	CZ11	CZ11 Fresh	human		JYH		JYH_469	JYH_469									SEQ-1094			NA	NA	NA	NA	NA	NA	NA		
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	heart_B1_input_SRC1690	mouse	NA	DUG	5/11/2018	SRC1690	SRC1690	ChIP-seq	LICR	HiSeq4000	50	SE	NA	NA	A01	ENCODE_ChIP_seq	SEQ-1095			mm10	63,887,882	43,925,001	0.688	0.00369	1.35	0.0184		
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	lung_B1_input_SRC1691	mouse	NA	DUG	5/11/2018	SRC1691	SRC1691	ChIP-seq	LICR	HiSeq4000	50	SE	NA	NA	A02	ENCODE_ChIP_seq	SEQ-1096			mm10	60,292,672	42,727,152	0.709	0.000628	1.418	0.0194		
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	liver_B1_input_SRC1692	mouse	NA	DUG	5/11/2018	SRC1692	SRC1692	ChIP-seq	LICR	HiSeq4000	50	SE	NA	NA	A03	ENCODE_ChIP_seq	SEQ-1097			mm10	48,603,490	33,710,443	0.694	0.000736	1.303	0.0154		
@@ -771,9 +771,9 @@ N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	cortex1_
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	olfactoryBulb_B1_H3K4me2_SRC1711	mouse	NA	DUG	5/11/2018	SRC1711	SRC1711	ChIP-seq	LICR	HiSeq4000	50	SE	NA	NA	A06	ENCODE_ChIP_seq	SEQ-1116			mm10	68,820,185	49,453,078	0.719	0.000252	5.631	0.312		
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	thymus_B1_H3K4me2_SRC1712	mouse	NA	DUG	5/11/2018	SRC1712	SRC1712	ChIP-seq	LICR	HiSeq4000	50	SE	NA	NA	A07	ENCODE_ChIP_seq	SEQ-1117			mm10	26,324,751	20,082,862	0.763	3.36E-05	5.835	0.213		
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	boneMarrow_B1_H3K4me2_SRC1713	mouse	NA	DUG	5/11/2018	SRC1713	SRC1713	ChIP-seq	LICR	HiSeq4000	50	SE	NA	NA	A08	ENCODE_ChIP_seq	SEQ-1118			mm10	45,963,304	34,092,559	0.742	4.35E-05	6.917	0.393		
-SAMP-623	16p_11c6_3m	11C6	Human	EXP-753	XH	5/15/2018	XH_30	XH_30_1	sc_RNA seq 	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	10%	G10			SEQ-1119			NA	NA	NA	NA	NA	NA	NA		
-SAMP-624	16p_Bc10_3m	BC10	Human	EXP-754	XH	5/15/2018	XH_31	XH_31_1	sc_RNA seq 	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	10%	G11			SEQ-1120			NA	NA	NA	NA	NA	NA	NA		
-SAMP-625	K562	K562	Human	EXP-755	XH	5/15/2018	XH_32	XH_32_1	sc_RNA seq 	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	80%	G9			SEQ-1121			NA	NA	NA	NA	NA	NA	NA		
+SAMP-623	16p_11c6_3m	11C6	Human	EXP-753	XH	5/15/2018	XH_30	XH_30_1	scRNA-seq 	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	10%	G10			SEQ-1119			NA	NA	NA	NA	NA	NA	NA		
+SAMP-624	16p_Bc10_3m	BC10	Human	EXP-754	XH	5/15/2018	XH_31	XH_31_1	scRNA-seq 	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	10%	G11			SEQ-1120			NA	NA	NA	NA	NA	NA	NA		
+SAMP-625	K562	K562	Human	EXP-755	XH	5/15/2018	XH_32	XH_32_1	scRNA-seq 	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	80%	G9			SEQ-1121			NA	NA	NA	NA	NA	NA	NA		
 Other	Gli2-118-2_10.5 head	Gli2-118-2_10.5 head	Mouse	EXP-621	RM	5/3/2018	RM_35	RM_35_1_2	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.16	502	703	Kevin Peterson ATAC	SEQ-1122			mm10	251,587,030	194,721,672	0.774	0.0302	15.53	0		
 Other	Gli2-118-7 10.5head	Gli2-118-7 10.5head	Mouse	EXP-634	RM	5/3/2018	RM_48	RM_48_1_2	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.16	502	701	Kevin Peterson ATAC	SEQ-1123			mm10	172,505,540	139,111,520	0.806	0.0182	15.1	0.159		
 Other	Gli2-118-4 10.5head	Gli2-118-4 10.5head	Mouse	EXP-636	RM	5/3/2018	RM_50	RM_50_1_2	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.16	505	706	Kevin Peterson ATAC	SEQ-1124			mm10	201,214,036	158,800,748	0.789	0.0278	15.34	0.169		
@@ -801,11 +801,11 @@ SAMP-606	UC12-1108-4	UC12-1108-4_SNAP	Human	EXP-764	JYH	5/18/2018	JYH_464	JYH_46
 SAMP-607	373835	373835_Slow	Human	EXP-765	JYH	5/18/2018	JYH_465	JYH_465	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.04	503	701		SEQ-1146			hg38	17,694,230	114,858	0.00649	0.0501	23.82	0.267		
 SAMP-608	379492	379492_Slow	Human	EXP-766	JYH	5/18/2018	JYH_466	JYH_466	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.04	505	702		SEQ-1147			hg38	10,485,808	85,882	0.00819	0.0376	42.25	0.534		
 SAMP-609	UC12-1108-4	UC12-1108-4_Slow	Human	EXP-767	JYH	5/18/2018	JYH_467	JYH_467	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.04	506	703		SEQ-1148			hg38	22,763,978	7,946,360	0.349	0.491	9.272	0.0722		
-SAMP-616	CT5080	CT5080	Human	EXP-770	XH	6/15/2018	XH_33	XH_33	sc_ATAC seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1149			NA	NA	NA	NA	NA	NA	NA		
-N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Islet_1	Human	NA	DUG	NA	Islet_1	Islet_1	sc_ATAC seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_1.R1.demux.fastq.gz,https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_1.R2.demux.fastq.gz	SEQ-1150			NA	NA	NA	NA	NA	NA	NA		
-N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	HPC_1	Human	NA	DUG	NA	HPC_1	HPC_1	sc_ATAC seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_1.R1.demux.fastq.gz,https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_1.R2.demux.fastq.gz	SEQ-1151			NA	NA	NA	NA	NA	NA	NA		
-N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	HPC_2	Human	NA	DUG	NA	HPC_2	HPC_2	sc_ATAC seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_2.R1.demux.fastq.gz,https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_2.R2.demux.fastq.gz	SEQ-1152			NA	NA	NA	NA	NA	NA	NA		
-N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	HPC_3	Human	NA	DUG	NA	HPC_3	HPC_3	sc_ATAC seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_3.R1.demux.fastq.gz,https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_3.R2.demux.fastq.gz	SEQ-1153			NA	NA	NA	NA	NA	NA	NA		
+SAMP-616	CT5080	CT5080	Human	EXP-770	XH	6/15/2018	XH_33	XH_33	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1149			NA	NA	NA	NA	NA	NA	NA		
+N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Islet_1	Human	NA	DUG	NA	Islet_1	Islet_1	scATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_1.R1.demux.fastq.gz,https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_1.R2.demux.fastq.gz	SEQ-1150			NA	NA	NA	NA	NA	NA	NA		
+N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	HPC_1	Human	NA	DUG	NA	HPC_1	HPC_1	scATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_1.R1.demux.fastq.gz,https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_1.R2.demux.fastq.gz	SEQ-1151			NA	NA	NA	NA	NA	NA	NA		
+N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	HPC_2	Human	NA	DUG	NA	HPC_2	HPC_2	scATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_2.R1.demux.fastq.gz,https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_2.R2.demux.fastq.gz	SEQ-1152			NA	NA	NA	NA	NA	NA	NA		
+N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	HPC_3	Human	NA	DUG	NA	HPC_3	HPC_3	scATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_3.R1.demux.fastq.gz,https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_3.R2.demux.fastq.gz	SEQ-1153			NA	NA	NA	NA	NA	NA	NA		
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Mg A/G H3K4me3; liver 1; bead​​ test	Mouse	NA	DUG	NA	SRC1723	SRC1723	ChIP-seq	LICR	HiSeq4000	50	SE	NA	NA	NA	fastqs @ : /mnt/promoter4/Bin_Raw_Sequence_Data/2018/2018_05_30_DIP_A/SR_05302018_DIPA	SEQ-1159			NA	NA	NA	NA	NA	NA	NA		
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Pierce A/G H3K4me3; liver 1; bead test	Mouse	NA	DUG	NA	SRC1724	SRC1724	ChIP-seq	LICR	HiSeq4000	50	SE	NA	NA	NA	fastqs @ : /mnt/promoter4/Bin_Raw_Sequence_Data/2018/2018_05_30_DIP_A/SR_05302018_DIPA	SEQ-1160			NA	NA	NA	NA	NA	NA	NA		
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	IgG H3K4me3; liver 1; bead test	Mouse	NA	DUG	NA	SRC1725	SRC1725	ChIP-seq	LICR	HiSeq4000	50	SE	NA	NA	NA	fastqs @ : /mnt/promoter4/Bin_Raw_Sequence_Data/2018/2018_05_30_DIP_A/SR_05302018_DIPA	SEQ-1161			NA	NA	NA	NA	NA	NA	NA		
@@ -842,14 +842,14 @@ N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	H3K27ac;
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	input; cortex 2; tissue condition test	Mouse	NA	DUG	NA	SRC1756	SRC1756	ChIP-seq	LICR	HiSeq4000	50	SE	NA	NA	NA	fastqs @ : /mnt/promoter4/Bin_Raw_Sequence_Data/2018/2018_05_30_DIP_A/SR_05302018_DIPA	SEQ-1192			NA	NA	NA	NA	NA	NA	NA		
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	input; heart 1; gentleMACs	Mouse	NA	DUG	NA	SRC1757	SRC1757	ChIP-seq	LICR	HiSeq4000	50	SE	NA	NA	NA	fastqs @ : /mnt/promoter4/Bin_Raw_Sequence_Data/2018/2018_05_30_DIP_A/SR_05302018_DIPA	SEQ-1193			NA	NA	NA	NA	NA	NA	NA		
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	input; small intestine 1	Mouse	NA	DUG	NA	SRC1758	SRC1758	ChIP-seq	LICR	HiSeq4000	50	SE	NA	NA	NA	fastqs @ : /mnt/promoter4/Bin_Raw_Sequence_Data/2018/2018_05_30_DIP_A/SR_05302018_DIPA	SEQ-1194			NA	NA	NA	NA	NA	NA	NA		
-SAMP-586	H7-SNAPDMSO-1	H7-SNAPDMSO-1	Human	EXP-744	RM	5/17/2018	RMM_74_2	RMM_74_2	ATAC-seq	IGM	HiSeq4000	50	PE	NA	702	506		SEQ-1195			NA	NA	NA	NA	NA	NA	NA		
-SAMP-587	H7-SNAPDMSO-2	H7-SNAPDMSO-2	Human	EXP-745	RM	5/17/2018	RMM_75_2	RMM_75_2	ATAC-seq	IGM	HiSeq4000	50	PE	NA	711	507		SEQ-1196			NA	NA	NA	NA	NA	NA	NA		
-SAMP-590	H7-SNAP3177-1	H7-SNAP3177-1	Human	EXP-748	RM	5/17/2018	RMM_78_2	RMM_78_2	ATAC-seq	IGM	HiSeq4000	50	PE	NA	711	506		SEQ-1197			NA	NA	NA	NA	NA	NA	NA		
-SAMP-591	H7-SNAP3177-2	H7-SNAP3177-2	Human	EXP-749	RM	5/17/2018	RMM_79_2	RMM_79_2	ATAC-seq	IGM	HiSeq4000	50	PE	NA	703	507		SEQ-1198			NA	NA	NA	NA	NA	NA	NA		
-SAMP-592	H7-SNAP2523-1	H7-SNAP2523-1	Human	EXP-750	RM	5/17/2018	RMM_80_2	RMM_80_2	ATAC-seq	IGM	HiSeq4000	50	PE	NA	701	511		SEQ-1199			NA	NA	NA	NA	NA	NA	NA		
-SAMP-593	H7-SNAP2523-1	H7-SNAP2523-1	Human	EXP-751	RM	5/17/2018	RMM_81_2	RMM_81_2	ATAC-seq	IGM	HiSeq4000	50	PE	NA	702	508		SEQ-1200			NA	NA	NA	NA	NA	NA	NA		
-N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Islet_1_frozen	Human	NA	DUG	NA	Islet_1_frozen	Islet_1_frozen	sc_ATAC seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_1_frozen.R1.demux.fastq.gz,https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_1_frozen.R2.demux.fastq.gz	SEQ-1201			NA	NA	NA	NA	NA	NA	NA		
-N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Islet_2_fresh	Human	NA	DUG	NA	Islet_2_fresh	Islet_2_fresh	sc_ATAC seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_2_fresh.R1.demux.fastq.gz,https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_2_fresh.R2.demux.fastq.gz	SEQ-1202			NA	NA	NA	NA	NA	NA	NA		
+SAMP-586	H7-SNAPDMSO-1	H7-SNAPDMSO-1	Human	EXP-744	RM	5/17/2018	RMM_74	RMM_74_2	ATAC-seq	IGM	HiSeq4000	50	PE	NA	702	506		SEQ-1195			NA	NA	NA	NA	NA	NA	NA		
+SAMP-587	H7-SNAPDMSO-2	H7-SNAPDMSO-2	Human	EXP-745	RM	5/17/2018	RMM_75	RMM_75_2	ATAC-seq	IGM	HiSeq4000	50	PE	NA	711	507		SEQ-1196			NA	NA	NA	NA	NA	NA	NA		
+SAMP-590	H7-SNAP3177-1	H7-SNAP3177-1	Human	EXP-748	RM	5/17/2018	RMM_78	RMM_78_2	ATAC-seq	IGM	HiSeq4000	50	PE	NA	711	506		SEQ-1197			NA	NA	NA	NA	NA	NA	NA		
+SAMP-591	H7-SNAP3177-2	H7-SNAP3177-2	Human	EXP-749	RM	5/17/2018	RMM_79	RMM_79_2	ATAC-seq	IGM	HiSeq4000	50	PE	NA	703	507		SEQ-1198			NA	NA	NA	NA	NA	NA	NA		
+SAMP-592	H7-SNAP2523-1	H7-SNAP2523-1	Human	EXP-750	RM	5/17/2018	RMM_80	RMM_80_2	ATAC-seq	IGM	HiSeq4000	50	PE	NA	701	511		SEQ-1199			NA	NA	NA	NA	NA	NA	NA		
+SAMP-593	H7-SNAP2523-1	H7-SNAP2523-1	Human	EXP-751	RM	5/17/2018	RMM_81	RMM_81_2	ATAC-seq	IGM	HiSeq4000	50	PE	NA	702	508		SEQ-1200			NA	NA	NA	NA	NA	NA	NA		
+N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Islet_1_frozen	Human	NA	DUG	NA	Islet_1_frozen	Islet_1_frozen	scATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_1_frozen.R1.demux.fastq.gz,https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_1_frozen.R2.demux.fastq.gz	SEQ-1201			NA	NA	NA	NA	NA	NA	NA		
+N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Islet_2_fresh	Human	NA	DUG	NA	Islet_2_fresh	Islet_2_fresh	scATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_2_fresh.R1.demux.fastq.gz,https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_2_fresh.R2.demux.fastq.gz	SEQ-1202			NA	NA	NA	NA	NA	NA	NA		
 SAMP-617	PTEN/P53 S3	PTEN/P53_H3K4me3	Mouse	EXP-771	AVD	2018-06-04	AVD_157	AVD_157	ChIP-seq	EPIGEN	NextSeq550 Mid	150	PE	0.06	NA	A01	Pfizer ChIP (round 1, missing 2 cell lines)	SEQ-1203			NA	NA	NA	NA	NA	NA	NA		
 SAMP-618	TRAMP C3	TRAMP C3_H3K4me3	Mouse	EXP-772	AVD	2018-06-04	AVD_158	AVD_158	ChIP-seq	EPIGEN	NextSeq550 Mid	150	PE	0.06	NA	A03	Pfizer ChIP (round 1, missing 2 cell lines)	SEQ-1204			NA	NA	NA	NA	NA	NA	NA		
 SAMP-619	MC38	MC38_H3K4me3	Mouse	EXP-773	AVD	2018-06-04	AVD_159	AVD_159	ChIP-seq	EPIGEN	NextSeq550 Mid	150	PE	0.06	NA	A08	Pfizer ChIP (round 1, missing 2 cell lines)	SEQ-1205			NA	NA	NA	NA	NA	NA	NA		
@@ -866,8 +866,8 @@ SAMP-596	KP	KP_H3K36me3 - JHMI ChIP	Human	EXP-783	AVD	2018-06-04	AVD_169	AVD_169
 SAMP-596	KP	KP_Input - JHMI ChIP	Human	EXP-784	AVD	2018-06-04	AVD_170	AVD_170	ChIP-seq	EPIGEN	NextSeq550 Mid	150	PE	0.06	NA	A23	JHMI ChIP round 2	SEQ-1216			NA	NA	NA	NA	NA	NA	NA		
 SAMP-597	con0066	Con0066_H3K36me3 - JHMI ChIP	Human	EXP-785	AVD	2018-06-04	AVD_171	AVD_171	ChIP-seq	EPIGEN	NextSeq550 Mid	150	PE	0.06	NA	A25	JHMI ChIP round 3	SEQ-1217			NA	NA	NA	NA	NA	NA	NA		
 SAMP-597	con0066	Con0066_Input - JHMI ChIP	Human	EXP-786	AVD	2018-06-04	AVD_172	AVD_172	ChIP-seq	EPIGEN	NextSeq550 Mid	150	PE	0.06	NA	A27	JHMI ChIP round 4	SEQ-1218			NA	NA	NA	NA	NA	NA	NA		
-SAMP-628	Nx_8wk_M	Nx_8wk_M	Mouse	EXP-787	XH	2018-06-08	XH_34	XH_34	scRNA seq	IGM	HiSeq4000	26+8+0+98	PE	1/6	H3			SEQ-1219			NA	NA	NA	NA	NA	NA	NA		
-SAMP-629	Hprx_8wk_M	Hprx_8wk_M	Mouse	EXP-788	XH	2018-06-08	XH_35	XH_35	scRNA seq	IGM	HiSeq4000	26+8+0+98	PE	1/6	H4			SEQ-1220			NA	NA	NA	NA	NA	NA	NA		
+SAMP-628	Nx_8wk_M	Nx_8wk_M	Mouse	EXP-787	XH	2018-06-08	XH_34	XH_34	scRNA-seq	IGM	HiSeq4000	26+8+0+98	PE	1/6	H3			SEQ-1219			NA	NA	NA	NA	NA	NA	NA		
+SAMP-629	Hprx_8wk_M	Hprx_8wk_M	Mouse	EXP-788	XH	2018-06-08	XH_35	XH_35	scRNA-seq	IGM	HiSeq4000	26+8+0+98	PE	1/6	H4			SEQ-1220			NA	NA	NA	NA	NA	NA	NA		
 SAMP-226	D00_Rep1	CVDC_D0_r1_H3K4me1	Human	EXP-789	AVD	2018-06-06	AVD_173	AVD_173	ChIP-seq	EPIGEN	NextSeq550 High	75	SE	0.07	NA	A01	CVDC ChIP round 1	SEQ-1221			NA	NA	NA	NA	NA	NA	NA		
 SAMP-228	D03_Rep1	CVDC_D3_r1_H3K4me1	Human	EXP-790	AVD	2018-06-06	AVD_174	AVD_174	ChIP-seq	EPIGEN	NextSeq550 High	75	SE	0.07	NA	A03	CVDC ChIP round 2	SEQ-1222			NA	NA	NA	NA	NA	NA	NA		
 SAMP-238	D05_Rep1_CM	CVDC_CM_D5_r1_H3K4me1	Human	EXP-791	AVD	2018-06-06	AVD_175	AVD_175	ChIP-seq	EPIGEN	NextSeq550 High	75	SE	0.07	NA	A08	CVDC ChIP round 3	SEQ-1223			NA	NA	NA	NA	NA	NA	NA		
@@ -891,12 +891,12 @@ N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	SH-A1-6-
 N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	SH-A1-6-2	Human	NA	DUG	NA	SH-A1-6-2	SH-A1-6-2	ATAC-seq	IGM	HiSeq4000	100	PE	NA	NA	NA	fastqs @ /oasis/tscc/scratch/dgorkin/temp	SEQ-1241			NA	NA	NA	NA	NA	NA	NA		
 SAMP-210	388 sh-alkbh1 #6 - KD cells	388 sh-alkbh1_6 - KD cells	human	EXP-182	AVD	11/17/2017	AVD_37	AVD_37	ATAC-seq	IGM	HiSeq4000	Other (please explain in notes)	PE	0.03	N702	S507	50 if available, 100 otherwise; Rich lab ATAC	SEQ-189			hg19	64,101,056	30,086,636	0.469	0.383	40.32	0.428		
 SAMP-127	GM19240_Slow5pDMSO_3	ATAC control	human	EXP-183	AVD	11/17/2017	AVD_38	AVD_38	ATAC-seq	IGM	HiSeq4000	Other (please explain in notes)	PE	0.01	N704	S508	50 if available, 100 otherwise; Rich lab ATAC ctrl	SEQ-190			hg19	12,657,306	6,741,252	0.533	0.293	36.86	0.344		
-SAMP-586	H7-SNAPDMSO-1	H7-SNAPDMSO-1	Human	EXP-744	RM	5/17/2018	RMM_74_1_2	RMM_74_1_2	ATAC-seq	IGM	HiSeq4001	50	PE	0.16	702	506		SEQ-1242			NA	NA	NA	NA	NA	NA	NA		
-SAMP-587	H7-SNAPDMSO-2	H7-SNAPDMSO-2	Human	EXP-745	RM	5/17/2018	RMM_75_1_2	RMM_75_1_2	ATAC-seq	IGM	HiSeq4002	50	PE	0.16	711	507		SEQ-1243			NA	NA	NA	NA	NA	NA	NA		
-SAMP-590	H7-SNAP3177-1	H7-SNAP3177-1	Human	EXP-748	RM	5/17/2018	RMM_78_1_2	RMM_78_1_2	ATAC-seq	IGM	HiSeq4003	50	PE	0.16	711	506		SEQ-1244			NA	NA	NA	NA	NA	NA	NA		
-SAMP-591	H7-SNAP3177-2	H7-SNAP3177-2	Human	EXP-749	RM	5/17/2018	RMM_79_1_2	RMM_79_1_2	ATAC-seq	IGM	HiSeq4004	50	PE	0.16	703	507		SEQ-1245			NA	NA	NA	NA	NA	NA	NA		
-SAMP-592	H7-SNAP2523-1	H7-SNAP2523-1	Human	EXP-750	RM	5/17/2018	RMM_80_1_2	RMM_80_1_2	ATAC-seq	IGM	HiSeq4005	50	PE	0.16	701	511		SEQ-1246			NA	NA	NA	NA	NA	NA	NA		
-SAMP-593	H7-SNAP2523-1	H7-SNAP2523-1	Human	EXP-751	RM	5/17/2018	RMM_81_1_2	RMM_81_1_2	ATAC-seq	IGM	HiSeq4006	50	PE	0.16	702	508		SEQ-1247			NA	NA	NA	NA	NA	NA	NA		
+SAMP-586	H7-SNAPDMSO-1	H7-SNAPDMSO-1	Human	EXP-744	RM	5/17/2018	RMM_74	RMM_74_1_2	ATAC-seq	IGM	HiSeq4001	50	PE	0.16	702	506		SEQ-1242			NA	NA	NA	NA	NA	NA	NA		
+SAMP-587	H7-SNAPDMSO-2	H7-SNAPDMSO-2	Human	EXP-745	RM	5/17/2018	RMM_75	RMM_75_1_2	ATAC-seq	IGM	HiSeq4002	50	PE	0.16	711	507		SEQ-1243			NA	NA	NA	NA	NA	NA	NA		
+SAMP-590	H7-SNAP3177-1	H7-SNAP3177-1	Human	EXP-748	RM	5/17/2018	RMM_78	RMM_78_1_2	ATAC-seq	IGM	HiSeq4003	50	PE	0.16	711	506		SEQ-1244			NA	NA	NA	NA	NA	NA	NA		
+SAMP-591	H7-SNAP3177-2	H7-SNAP3177-2	Human	EXP-749	RM	5/17/2018	RMM_79	RMM_79_1_2	ATAC-seq	IGM	HiSeq4004	50	PE	0.16	703	507		SEQ-1245			NA	NA	NA	NA	NA	NA	NA		
+SAMP-592	H7-SNAP2523-1	H7-SNAP2523-1	Human	EXP-750	RM	5/17/2018	RMM_80	RMM_80_1_2	ATAC-seq	IGM	HiSeq4005	50	PE	0.16	701	511		SEQ-1246			NA	NA	NA	NA	NA	NA	NA		
+SAMP-593	H7-SNAP2523-1	H7-SNAP2523-1	Human	EXP-751	RM	5/17/2018	RMM_81	RMM_81_1_2	ATAC-seq	IGM	HiSeq4006	50	PE	0.16	702	508		SEQ-1247			NA	NA	NA	NA	NA	NA	NA		
 SAMP-622	ID8_Luc	ID8_Luc_H3K4me3	Mouse	EXP-804	AVD	2018-06-12	AVD_188	AVD_188	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE		NA	A1	Pfizer ChIP - Remaining 2 cell lines (failed round 1)	SEQ-1248			NA	NA	NA	NA	NA	NA	NA		
 SAMP-622	ID8_Luc	ID8_Luc_H3K27me3	Mouse	EXP-805	AVD	2018-06-12	AVD_189	AVD_189	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE		NA	A3	Pfizer ChIP - Remaining 2 cell lines (failed round 1)	SEQ-1249			NA	NA	NA	NA	NA	NA	NA		
 SAMP-620	RENCA	RENCA_H3K4me3	Mouse	EXP-806	AVD	2018-06-12	AVD_190	AVD_190	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE		NA	A8	Pfizer ChIP - Remaining 2 cell lines (failed round 1)	SEQ-1250			NA	NA	NA	NA	NA	NA	NA		
@@ -926,8 +926,8 @@ SAMP-617	PTEN/P53 S3	PTEN/P53 S3_Input_2	Mouse	EXP-821	AVD	2018-06-15	AVD_205	AV
 SAMP-618	TRAMP C3	TRAMP C3_Input_2	Mouse	EXP-822	AVD	2018-06-15	AVD_206	AVD_206	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.10	NA	A23	Pfizer ChIP - Repeats post contamination	SEQ-1274			NA	NA	NA	NA	NA	NA	NA		
 SAMP-619	MC38	MC38_Input_2	Mouse	EXP-823	AVD	2018-06-15	AVD_207	AVD_207	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.10	NA	A25	Pfizer ChIP - Repeats post contamination	SEQ-1275			NA	NA	NA	NA	NA	NA	NA		
 SAMP-621	B16-OVA	B16-OVA_Input_2	Mouse	EXP-824	AVD	2018-06-15	AVD_208	AVD_208	ChIP-seq	EPIGEN	NextSeq550 High	75	PE	0.10	NA	A27	Pfizer ChIP - Repeats post contamination	SEQ-1276			NA	NA	NA	NA	NA	NA	NA		
-Other	Epigen GM19240	Epigen GM19240 V1 (RS)	Human	EXP-848	RM	2018-06-15	RMM_83	RMM_83	Fast 4C	EPIGEN	NextSeq550 High	75	PE	0.02	NA	A06		SEQ-1277			NA	NA	NA	NA	NA	NA	NA		
-Other	Epigen GM19240	Epigen GM19240 V1 (Ch12)	Human	EXP-848	RM	2018-06-15	RMM_84	RMM_84	Fast 4C	EPIGEN	NextSeq550 High	75	PE	0.02	NA	A05		SEQ-1278			NA	NA	NA	NA	NA	NA	NA		
+Other	Epigen GM19240	Epigen GM19240 V1 (RS)	Human	EXP-848	RM	2018-06-15	RMM_83 & RMM_84	RMM_83	Fast 4C	EPIGEN	NextSeq550 High	75	PE	0.02	NA	A06		SEQ-1277			NA	NA	NA	NA	NA	NA	NA		
+Other	Epigen GM19240	Epigen GM19240 V1 (Ch12)	Human	EXP-848	RM	2018-06-15	RMM_83 & RMM_84	RMM_84	Fast 4C	EPIGEN	NextSeq550 High	75	PE	0.02	NA	A05		SEQ-1278			NA	NA	NA	NA	NA	NA	NA		
 SAMP-126	GM_SNAP10	ATAC control	Human	EXP-825	JYH	5/18/2018	JYH_470	JYH_470	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	704	507	Tempus control	SEQ-1279			NA	NA	NA	NA	NA	NA	NA		
 NA	H9_d00_rep1	H9_d00_rep1	Human	NA	Other (please explain in notes)	NA	H9_d00_rep1	H9_d00_rep1	ATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	Morgridge_LiFang's 2nd data	SEQ-1280			NA	NA	NA	NA	NA	NA	NA		
 NA	H9_d00_rep2	H9_d00_rep2	Human	NA	Other (please explain in notes)	NA	H9_d00_rep2	H9_d00_rep2	ATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	Morgridge_LiFang's 2nd data	SEQ-1281			NA	NA	NA	NA	NA	NA	NA		
@@ -1052,7 +1052,7 @@ Other	HepG2	HepG2_1.25%	Human	EXP-889	JYH	2018-06-25	JYH_513	JYH_513	ATAC-seq	EP
 Other	HepG2	HepG2_1%	Human	EXP-890	JYH	2018-06-25	JYH_514	JYH_514	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	732	533	Biomek_20th SDS test	SEQ-1400			NA	NA	NA	NA	NA	NA	NA		
 Other	HepG2	HepG2_0.75%	Human	EXP-891	JYH	2018-06-25	JYH_515	JYH_515	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	732	534	Biomek_20th SDS test	SEQ-1401			NA	NA	NA	NA	NA	NA	NA		
 Other	HepG2	HepG2_0.5%	Human	EXP-892	JYH	2018-06-25	JYH_516	JYH_516	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	732	535	Biomek_20th SDS test	SEQ-1402			NA	NA	NA	NA	NA	NA	NA		
-SAMP-547	UMB 40 Human	Human grind new Tn5 method	Human	EXP-894	XH	2016-07-09	XH_36	XH_36_1	sc_ATAC_seq	EPIGEN	NextSeq550 Mid	Other (please explain in notes)	PE	1.00			50+10+12+50	SEQ-1403			NA	NA	NA	NA	NA	NA	NA		
+SAMP-547	UMB 40 Human	Human grind new Tn5 method	Human	EXP-894	XH	2016-07-09	XH_36	XH_36_1	scATAC-seq	EPIGEN	NextSeq550 Mid	Other (please explain in notes)	PE	1.00			50+10+12+50	SEQ-1403			NA	NA	NA	NA	NA	NA	NA		
 SAMP-227	D00_Rep2	CVDC_D0_r2_H3K4me1	Human	EXP-921	AVD	2018-08-20	AVD_226	AVD_226	ChIP-seq	EPIGEN	NextSeq550 High			0.06	A01	NA	CVDC K4me1 rep2	SEQ-1404			NA	NA	NA	NA	NA	NA	NA		
 SAMP-229	D03_Rep2	CVDC_D3_r2_H3K4me1	Human	EXP-922	AVD	2018-08-20	AVD_227	AVD_227	ChIP-seq	EPIGEN	NextSeq550 High			0.06	A02	NA	CVDC K4me1 rep3	SEQ-1405			NA	NA	NA	NA	NA	NA	NA		
 SAMP-239	D05_Rep2_CM	CVDC_CM_D5_r2_H3K4me1	Human	EXP-923	AVD	2018-08-20	AVD_228	AVD_228	ChIP-seq	EPIGEN	NextSeq550 High			0.06	A03	NA	CVDC K4me1 rep4	SEQ-1406			NA	NA	NA	NA	NA	NA	NA		
@@ -1092,8 +1092,8 @@ NA	ENCODE Cortex r2	Cortex_r2_H3K4me1	Mouse	EXP-956	AVD		AVD_261	AVD_261	ChIP-se
 NA	ENCODE Olfactory Bulb r2	Olfactory Bulb_r2_H3K4me1	Mouse	EXP-957	AVD		AVD_262	AVD_262	ChIP-seq	EPIGEN	NextSeq550 High						ENCODE K4me22	SEQ-1440			NA	NA	NA	NA	NA	NA	NA		
 NA	ENCODE Thymus r2	Thymus_r2_H3K4me1	Mouse	EXP-958	AVD		AVD_263	AVD_263	ChIP-seq	EPIGEN	NextSeq550 High						ENCODE K4me23	SEQ-1441			NA	NA	NA	NA	NA	NA	NA		
 NA	ENCODE Bone Marrow r2	Bone Marrow_r2_H3K4me1	Mouse	EXP-959	AVD		AVD_264	AVD_264	ChIP-seq	EPIGEN	NextSeq550 High						ENCODE K4me24	SEQ-1442			NA	NA	NA	NA	NA	NA	NA		
-SAMP-687	Control_Brain_Myeloid	GBM_Control	human	EXP-895	XH	7/13/18	XH_37	XH_37	sc_RNA seq	IGM	HiSeq4000	26+8+0+98	PE	1/6	H5			SEQ-1443			NA	NA	NA	NA	NA	NA	NA		
-SAMP-687	Control_Brain_Myeloid	GBM_Control	human	EXP-896	XH	7/13/18	XH_38	XH_38	sc_RNA seq	IGM	HiSeq4000	26+8+0+98	PE	1/6	H6			SEQ-1444			NA	NA	NA	NA	NA	NA	NA		
+SAMP-687	Control_Brain_Myeloid	GBM_Control	human	EXP-895	XH	7/13/18	XH_37	XH_37	scRNA-seq	IGM	HiSeq4000	26+8+0+98	PE	1/6	H5			SEQ-1443			NA	NA	NA	NA	NA	NA	NA		
+SAMP-687	Control_Brain_Myeloid	GBM_Control	human	EXP-896	XH	7/13/18	XH_38	XH_38	scRNA-seq	IGM	HiSeq4000	26+8+0+98	PE	1/6	H6			SEQ-1444			NA	NA	NA	NA	NA	NA	NA		
 SAMP-679	Laura_osTIR	Laura_osTIR	human	EXP-897	JYH	2018-07-13	JYH_517	JYH_517	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	701	502		SEQ-1445			NA	NA	NA	NA	NA	NA	NA		
 SAMP-680	Laura_RAD21	Laura_RAD21	human	EXP-898	JYH	2018-07-13	JYH_518	JYH_518	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	702	503		SEQ-1446			NA	NA	NA	NA	NA	NA	NA		
 SAMP-681	Laura_HDAC	Laura_HDAC	human	EXP-899	JYH	2018-07-13	JYH_519	JYH_519	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	703	505		SEQ-1447			NA	NA	NA	NA	NA	NA	NA		
@@ -1122,18 +1122,18 @@ NA	GM12878_AbV2_Qiagen	GM12878_CST_H3K4me3_Qiagen	human	EXP-960	AVD	2018-07-13	A
 NA	GM12878_AbV2_Qiagen	GM12878_RM_H3K36me3_Qiagen	human	EXP-961	AVD	2018-07-13	AVD_266	AVD_266	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.05	NA	Bc11	Qiagen Library Prep Kit Test	SEQ-1470			NA	NA	NA	NA	NA	NA	NA		
 NA	GM12878_AbV2_Qiagen	GM12878_AM_H3K36me3_Qiagen	human	EXP-962	AVD	2018-07-13	AVD_267	AVD_267	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.05	NA	Bc12	Qiagen Library Prep Kit Test	SEQ-1471			NA	NA	NA	NA	NA	NA	NA		
 NA	GM12878_AbV2_Qiagen	GM12878_Input_Qiagen	human	EXP-963	AVD	2018-07-13	AVD_268	AVD_268	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	<0.05	NA	Bc1	Qiagen Library Prep Kit Test	SEQ-1472			NA	NA	NA	NA	NA	NA	NA		
-SAMP-671	CEMBA180514_5B	05/16/18 5B_1	Mouse	EXP-843	XH	2018-07-16	XH_39	XH_39	sc_ATAC	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1473			NA	NA	NA	NA	NA	NA	NA		
-SAMP-672	CEMBA180529_5B	05/31/18 5B_2	Mouse	EXP-844	XH	2018-07-16	XH_40	XH_40	sc_ATAC	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1474			NA	NA	NA	NA	NA	NA	NA		
-SAMP-673	CEMBA180612_5D	06/14/18 5D_1	Mouse	EXP-845	XH	2018-07-16	XH_41	XH_41	sc_ATAC	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1475			NA	NA	NA	NA	NA	NA	NA		
-SAMP-674	CEMBA180618_5D	06/20/18 5D_2	Mouse	EXP-846	XH	2018-07-16	XH_42	XH_42	sc_ATAC	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1476			NA	NA	NA	NA	NA	NA	NA		
-SAMP-675	CEMBA180619_4G	06/20/18 4G_1	Mouse	EXP-847	XH	2018-07-16	XH_43	XH_43	sc_ATAC	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1477			NA	NA	NA	NA	NA	NA	NA		
-SAMP-661	E18_fMaSC_1	Jay sample	Mouse	EXP-964	XH	2018-07-16	XH_44	XH_44	sc_ATAC	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1478			NA	NA	NA	NA	NA	NA	NA		
-SAMP-662	E18_fMaSC_2	Jay sample	Mouse	EXP-965	XH	2018-07-16	XH_44	XH_44	sc_ATAC	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1479			NA	NA	NA	NA	NA	NA	NA		
-SAMP-665	E18_fMaSC_5	Jay sample	Mouse	EXP-966	XH	2018-07-16	XH_44	XH_44	sc_ATAC	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1480			NA	NA	NA	NA	NA	NA	NA		
-SAMP-666	E18_fMaSC_7	Jay sample	Mouse	EXP-967	XH	2018-07-16	XH_44	XH_44	sc_ATAC	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1481			NA	NA	NA	NA	NA	NA	NA		
-	Individual islet_1	Individual islet_1	human	EXP-844	JYH	2018-07-16	JYH_541	JYH_541	sc_ATAC	LICR	HiSeq2500	50+43+37+50	PE	0.50				SEQ-1482			NA	NA	NA	NA	NA	NA	NA		
-	Individual islet_2 (T2D)	Individual islet_2 (T2D)	human	EXP-845	JYH	2018-07-16	JYH_542	JYH_542	sc_ATAC	LICR	HiSeq2500	50+43+37+50	PE	0.50				SEQ-1483			NA	NA	NA	NA	NA	NA	NA		
-SAMP-547	UMB 40 Human	Human grind new Tn5 method	Human	EXP-894	XH	2018-07-16	XH_36	XH_36_2	sc_ATAC_seq	EPIGEN	NextSeq550 Mid	Other (please explain in notes)	PE	1.00			50+10+12+50	SEQ-1484			NA	NA	NA	NA	NA	NA	NA		
+SAMP-671	CEMBA180514_5B	05/16/18 5B_1	Mouse	EXP-843	XH	2018-07-16	XH_39	XH_39	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1473			NA	NA	NA	NA	NA	NA	NA		
+SAMP-672	CEMBA180529_5B	05/31/18 5B_2	Mouse	EXP-844	XH	2018-07-16	XH_40	XH_40	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1474			NA	NA	NA	NA	NA	NA	NA		
+SAMP-673	CEMBA180612_5D	06/14/18 5D_1	Mouse	EXP-845	XH	2018-07-16	XH_41	XH_41	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1475			NA	NA	NA	NA	NA	NA	NA		
+SAMP-674	CEMBA180618_5D	06/20/18 5D_2	Mouse	EXP-846	XH	2018-07-16	XH_42	XH_42	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1476			NA	NA	NA	NA	NA	NA	NA		
+SAMP-675	CEMBA180619_4G	06/20/18 4G_1	Mouse	EXP-847	XH	2018-07-16	XH_43	XH_43	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1477			NA	NA	NA	NA	NA	NA	NA		
+SAMP-661	E18_fMaSC_1	Jay sample	Mouse	EXP-964	XH	2018-07-16	XH_44[1]	XH_44[1]	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1478			NA	NA	NA	NA	NA	NA	NA		
+SAMP-662	E18_fMaSC_2	Jay sample	Mouse	EXP-965	XH	2018-07-16	XH_44[2]	XH_44[2]	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1479			NA	NA	NA	NA	NA	NA	NA		
+SAMP-665	E18_fMaSC_5	Jay sample	Mouse	EXP-966	XH	2018-07-16	XH_44[3]	XH_44[3]	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1480			NA	NA	NA	NA	NA	NA	NA		
+SAMP-666	E18_fMaSC_7	Jay sample	Mouse	EXP-967	XH	2018-07-16	XH_44[4]	XH_44[4]	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	1.00				SEQ-1481			NA	NA	NA	NA	NA	NA	NA		
+	Individual islet_1	Individual islet_1	human	EXP-844	JYH	2018-07-16	JYH_541	JYH_541	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	0.50				SEQ-1482			NA	NA	NA	NA	NA	NA	NA		
+	Individual islet_2 (T2D)	Individual islet_2 (T2D)	human	EXP-845	JYH	2018-07-16	JYH_542	JYH_542	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE	0.50				SEQ-1483			NA	NA	NA	NA	NA	NA	NA		
+SAMP-547	UMB 40 Human	Human grind new Tn5 method	Human	EXP-894	XH	2018-07-16	XH_36	XH_36_2	scATAC-seq	EPIGEN	NextSeq550 Mid	Other (please explain in notes)	PE	1.00			50+10+12+50	SEQ-1484			NA	NA	NA	NA	NA	NA	NA		
 SAMP-618	TRAMP C3	TRAMP C3_H3K4me3	Mouse	EXP-772	AVD	2018-07-18	AVD_158	AVD_158_3	ChIP-seq	EPIGEN	NextSeq550 High	75	PE		NA	A03	Re-Full seq	SEQ-1485			NA	NA	NA	NA	NA	NA	NA		
 SAMP-618	TRAMP C3	TRAMP C3_Input	Mouse	EXP-780	AVD	2018-07-18	AVD_166	AVD_166_3	ChIP-seq	EPIGEN	NextSeq550 High	75	PE		NA	A19	Re-Full seq	SEQ-1486			NA	NA	NA	NA	NA	NA	NA		
 SAMP-619	MC38	MC38_Input	Mouse	EXP-781	AVD	2018-07-18	AVD_167	AVD_167_3	ChIP-seq	EPIGEN	NextSeq550 High	75	PE		NA	A20	Re-Full seq	SEQ-1487			NA	NA	NA	NA	NA	NA	NA		
@@ -1146,8 +1146,8 @@ SAMP-619	MC38	MC38_Input	Mouse	EXP-781	AVD	2018-07-18	AVD_167	AVD_167_1_2_3	ChIP
 SAMP-621	B16-OVA	B16-OVA_H3K4me3	Mouse	EXP-774	AVD	2018-07-18	AVD_160	AVD_160_1_2_3	ChIP-seq	EPIGEN	NextSeq550 High	75	PE		NA	A09	Re-Full seq	SEQ-1494			NA	NA	NA	NA	NA	NA	NA		
 SAMP-621	B16-OVA	B16-OVA_Input	Mouse	EXP-782	AVD	2018-07-18	AVD_168	AVD_168_1_2_3	ChIP-seq	EPIGEN	NextSeq550 High	75	PE		NA	A21	Re-Full seq	SEQ-1495			NA	NA	NA	NA	NA	NA	NA		
 SAMP-620	RENCA	RENCA_H3K4me3	Mouse	EXP-806	AVD	2018-07-18	AVD_190	AVD_190_1_2_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE		NA	A08	Re-Full seq	SEQ-1496			NA	NA	NA	NA	NA	NA	NA		
-N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	HPC_2-2	Human	NA	DUG	NA	HPC_2	HPC_2-2	sc_ATAC seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_2-2.R1.demux.fastq.gz, https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_2-2.R2.demux.fastq.gz	SEQ-1152			NA	NA	NA	NA	NA	NA	NA		
-N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	HPC_4	Human	NA	DUG	NA	HPC_4	HPC_4	sc_ATAC seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_4.R1.demux.fastq.gz, https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_4.R2.demux.fastq.gz	SEQ-1152			NA	NA	NA	NA	NA	NA	NA		
+N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	HPC_2-2	Human	NA	DUG	NA	HPC_2	HPC_2-2	scATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_2-2.R1.demux.fastq.gz, https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_2-2.R2.demux.fastq.gz	SEQ-1152			NA	NA	NA	NA	NA	NA	NA		
+N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	HPC_4	Human	NA	DUG	NA	HPC_4	HPC_4	scATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_4.R1.demux.fastq.gz, https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/hippocampus_snATAC/HPC_4.R2.demux.fastq.gz	SEQ-1152			NA	NA	NA	NA	NA	NA	NA		
 NA	Emily(+) Control/Illumina	Emily(+) Control/Illumina	Human	EXP-968	XH	2018-07-19	XH_45	XH_45	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	N703	S502		SEQ-1499			NA	NA	NA	NA	NA	NA	NA		
 NA	Emily 1:2 Dilution	Emily 1:2 Dilution	Human	EXP-969	XH	2018-07-19	XH_46	XH_46	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	N704 	S507 		SEQ-1500			NA	NA	NA	NA	NA	NA	NA		
 NA	Emily 1:5 Dilution	Emily 1:5 Dilution	Human	EXP-970	XH	2018-07-19	XH_47	XH_47	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	N702 	S506 		SEQ-1501			NA	NA	NA	NA	NA	NA	NA		
@@ -1165,16 +1165,16 @@ SAMP-634	human lung	human lung	Human	EXP-981	XH	2018-07-19	XH_58	XH_58	ATAC-seq	
 SAMP-634	human liver	human liver	Human	EXP-982	XH	2018-07-19	XH_59	XH_59	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	N710	S503		SEQ-1513			NA	NA	NA	NA	NA	NA	NA		
 NA	Kevin OMNI	Kevin OMNI	Mouse	EXP-983	XH	2018-07-19	XH_60	XH_60	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	N711	S505		SEQ-1514			NA	NA	NA	NA	NA	NA	NA		
 NA	Kevin NPB	Kevin NPB	Mouse	EXP-984	XH	2018-07-19	XH_61	XH_61	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	N712	S505		SEQ-1515			NA	NA	NA	NA	NA	NA	NA		
-SAMP-669	D07_Rep1_CM	CVDC_CM_D7_r1_H3K4me1	Human	EXP-792	AVD	2018-07-19	AVD_	AVD_176_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A9	Re Full Seq	SEQ-1516			NA	NA	NA	NA	NA	NA	NA		
-SAMP-669	D09_Rep1_CM	CVDC_CM_D9_r1_H3K4me1	Human	EXP-793	AVD	2018-07-19	AVD_	AVD_177_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A10	Re Full Seq	SEQ-1517			NA	NA	NA	NA	NA	NA	NA		
-SAMP-244	D15_Rep1_CM	CVDC_CM_D15_r1_H3K4me1	Human	EXP-794	AVD	2018-07-19	AVD_	AVD_178_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A11	Re Full Seq	SEQ-1518			NA	NA	NA	NA	NA	NA	NA		
-SAMP-250	D09_Rep1_Epi	CVDC_Epi_D9_r1_H3K4me1	Human	EXP-797	AVD	2018-07-19	AVD_	AVD_181_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A19	Re Full Seq	SEQ-1519			NA	NA	NA	NA	NA	NA	NA		
-SAMP-254	D20_Rep1_Epi	CVDC_Epi_D20_r1_H3K4me1	Human	EXP-799	AVD	2018-07-19	AVD_	AVD_183_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A21	Re Full Seq	SEQ-1520			NA	NA	NA	NA	NA	NA	NA		
-SAMP-240	D07_Rep1_CM	CVDC_CM_D7_r1_H3K4me1	Human	EXP-792	AVD	2018-07-19	AVD_	AVD_176_1_2_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A9	Re Full Seq	SEQ-1521			NA	NA	NA	NA	NA	NA	NA		
-SAMP-242	D09_Rep1_CM	CVDC_CM_D9_r1_H3K4me1	Human	EXP-793	AVD	2018-07-19	AVD_	AVD_177_1_2_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A10	Re Full Seq	SEQ-1522			NA	NA	NA	NA	NA	NA	NA		
-SAMP-244	D15_Rep1_CM	CVDC_CM_D15_r1_H3K4me1	Human	EXP-794	AVD	2018-07-19	AVD_	AVD_178_1_2_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A11	Re Full Seq	SEQ-1523			NA	NA	NA	NA	NA	NA	NA		
-SAMP-250	D09_Rep1_Epi	CVDC_Epi_D9_r1_H3K4me1	Human	EXP-797	AVD	2018-07-19	AVD_	AVD_181_1_2_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A19	Re Full Seq	SEQ-1524			NA	NA	NA	NA	NA	NA	NA		
-SAMP-254	D20_Rep1_Epi	CVDC_Epi_D20_r1_H3K4me1	Human	EXP-799	AVD	2018-07-19	AVD_	AVD_183_1_2_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A21	Re Full Seq	SEQ-1525			NA	NA	NA	NA	NA	NA	NA		
+SAMP-669	D07_Rep1_CM	CVDC_CM_D7_r1_H3K4me1	Human	EXP-792	AVD	2018-07-19	AVD_176	AVD_176_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A9	Re Full Seq	SEQ-1516			NA	NA	NA	NA	NA	NA	NA		
+SAMP-669	D09_Rep1_CM	CVDC_CM_D9_r1_H3K4me1	Human	EXP-793	AVD	2018-07-19	AVD_177	AVD_177_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A10	Re Full Seq	SEQ-1517			NA	NA	NA	NA	NA	NA	NA		
+SAMP-244	D15_Rep1_CM	CVDC_CM_D15_r1_H3K4me1	Human	EXP-794	AVD	2018-07-19	AVD_178	AVD_178_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A11	Re Full Seq	SEQ-1518			NA	NA	NA	NA	NA	NA	NA		
+SAMP-250	D09_Rep1_Epi	CVDC_Epi_D9_r1_H3K4me1	Human	EXP-797	AVD	2018-07-19	AVD_181	AVD_181_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A19	Re Full Seq	SEQ-1519			NA	NA	NA	NA	NA	NA	NA		
+SAMP-254	D20_Rep1_Epi	CVDC_Epi_D20_r1_H3K4me1	Human	EXP-799	AVD	2018-07-19	AVD_183	AVD_183_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A21	Re Full Seq	SEQ-1520			NA	NA	NA	NA	NA	NA	NA		
+SAMP-240	D07_Rep1_CM	CVDC_CM_D7_r1_H3K4me1	Human	EXP-792	AVD	2018-07-19	AVD_176	AVD_176_1_2_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A9	Re Full Seq	SEQ-1521			NA	NA	NA	NA	NA	NA	NA		
+SAMP-242	D09_Rep1_CM	CVDC_CM_D9_r1_H3K4me1	Human	EXP-793	AVD	2018-07-19	AVD_177	AVD_177_1_2_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A10	Re Full Seq	SEQ-1522			NA	NA	NA	NA	NA	NA	NA		
+SAMP-244	D15_Rep1_CM	CVDC_CM_D15_r1_H3K4me1	Human	EXP-794	AVD	2018-07-19	AVD_178	AVD_178_1_2_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A11	Re Full Seq	SEQ-1523			NA	NA	NA	NA	NA	NA	NA		
+SAMP-250	D09_Rep1_Epi	CVDC_Epi_D9_r1_H3K4me1	Human	EXP-797	AVD	2018-07-19	AVD_181	AVD_181_1_2_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A19	Re Full Seq	SEQ-1524			NA	NA	NA	NA	NA	NA	NA		
+SAMP-254	D20_Rep1_Epi	CVDC_Epi_D20_r1_H3K4me1	Human	EXP-799	AVD	2018-07-19	AVD_183	AVD_183_1_2_3	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.06	NA	A21	Re Full Seq	SEQ-1525			NA	NA	NA	NA	NA	NA	NA		
 SAMP-645	PC9	PC9	human	EXP-904	JYH	2018-07-13	JYH_524	JYH_524_2	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	710	511		SEQ-1526			NA	NA	NA	NA	NA	NA	NA		
 SAMP-21	2051 3-2 No KCl	2051 3-2 No KCl	human	EXP-16	JYH	08/15/2017	JYH_58	JYH_58	ATAC-seq	LICR	HiSeq4000	50	PE	0.08	N701	S510	ctrl neurons- no tx	SEQ-1567		ZC	hg38	52,124,734	28,588,802	0.548	0.21	43.98	0.355		
 SAMP-22	2051 3-2 1hr	2051 3-2 1hr	human	EXP-17	JYH	08/15/2017	JYH_59	JYH_59_1_2	ATAC-seq	LICR	HiSeq4000	50	PE	0.08	N702	S510	ctrl neurons- 1hr tx	SEQ-1568		ZC	hg38	42,367,240	23,669,452	0.559	0.21	47.3	0.392		
@@ -1189,7 +1189,7 @@ SAMP-30	2703 3-4 No KCl	2703 3-4 No KCl	human	EXP-25	JYH	08/15/2017	JYH_67	JYH_6
 SAMP-31	2703 3-4 1 hr	2703 3-4 1 hr	human	EXP-26	JYH	08/15/2017	JYH_68	JYH_68_1_2	ATAC-seq	LICR	HiSeq4000	50	PE	0.08	N701	S502	affected 2 neurons- 1 hr tx	SEQ-1577		ZC	hg38	35,239,852	20,572,962	0.584	0.149	29.87	0.244		
 SAMP-32	2703 3-4 6 hr	2703 3-4 6 hr	human	EXP-27	JYH	08/15/2017	JYH_69	JYH_69_1_2	ATAC-seq	LICR	HiSeq4000	50	PE	0.08	N702	S502	affected 2 neurons -6hr tx	SEQ-1578		ZC	hg38	25,234,920	14,763,306	0.585	0.154	27.09	0.221		
 other	HG00514_2_TB_gly	ATAC control	human	EXP-28	JYH	08/15/2017	JYH_70	JYH_70	ATAC-seq	LICR	HiSeq4000	50	PE	0.08	N703	S502	Flash freeze nuclei of control cell line with TB and 25%glycerol	SEQ-1579		ZC	hg38	39,079,360	14,407,368	0.369	0.408	37.57	0.293		
-N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Islet_3_fresh	Human	NA	DUG	NA	Islet_3_fresh	Islet_3_fresh	sc_ATAC seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_3_fresh.R1.demux.fastq.gz, https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_3_fresh.R2.demux.fastq.gz	SEQ-1580			NA	NA	NA	NA	NA	NA	NA		
+N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Islet_3_fresh	Human	NA	DUG	NA	Islet_3_fresh	Islet_3_fresh	scATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_3_fresh.R1.demux.fastq.gz, https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_3_fresh.R2.demux.fastq.gz	SEQ-1580			NA	NA	NA	NA	NA	NA	NA		
 NA	0h_rep_3	0h_rep_3	mouse	NA	ZC	NA	MIR_1	MIR_1	ATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	TAAGGCGA	Morgridge_Morten's 1st data	SEQ-1280			NA	NA	NA	NA	NA	NA	NA		
 NA	0.5h_rep_3	0.5h_rep_3	mouse	NA	ZC	NA	MIR_2	MIR_2	ATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	CGTACTAG	Morgridge_Morten's 1st data	SEQ-1281			NA	NA	NA	NA	NA	NA	NA		
 NA	1h_rep_3	1h_rep_3	mouse	NA	ZC	NA	MIR_3	MIR_3	ATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	AGGCAGAA	Morgridge_Morten's 1st data	SEQ-1282			NA	NA	NA	NA	NA	NA	NA		
@@ -1206,12 +1206,12 @@ NA	20h_rep_3	20h_rep_3	mouse	NA	ZC	NA	MIR_13	MIR_13	ATAC-seq	Other (please expla
 NA	22h_rep_3	22h_rep_3	mouse	NA	ZC	NA	MIR_14	MIR_14	ATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	ACCACTGT	Morgridge_Morten's 1st data	SEQ-1293			NA	NA	NA	NA	NA	NA	NA		
 NA	24h_rep_3	24h_rep_3	mouse	NA	ZC	NA	MIR_15	MIR_15	ATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	TGGATCTG	Morgridge_Morten's 1st data	SEQ-1294			NA	NA	NA	NA	NA	NA	NA		
 NA	36h_rep_3	36h_rep_3	mouse	NA	ZC	NA	MIR_16	MIR_16	ATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	CCGTTTGT	Morgridge_Morten's 1st data	SEQ-1295			NA	NA	NA	NA	NA	NA	NA		
-SAMP-694	CEMBA180723_4G	CEMBA 4G_2	mouse	EXP-985	scATAC-seq	08/01/2018	XH_62	yes	Yes	XH_62	HiSeq2500		PE	NA	NA			SEQ-1645			NA	NA	NA	NA	NA	NA	NA		
-SAMP-695	CEMBA180724_4H	CEMBA 4H_1	mouse	EXP-986	scATAC-seq	08/01/2018	XH_63	yes	Yes	XH_63	HiSeq2500		PE	NA	NA			SEQ-1646			NA	NA	NA	NA	NA	NA	NA		
-SAMP-696	CEMBA180730_4H	CEMBA 4H_2	mouse	EXP-987	scATAC-seq		XH_64	yes	Yes	XH_64	HiSeq2500		PE	NA	NA			SEQ-1647			NA	NA	NA	NA	NA	NA	NA		
-SAMP-697	CEMBA180731_5A	CEMBA 5A_1	mouse	EXP-988	scATAC-seq		XH_65	yes	Yes	XH_65	HiSeq2500		PE	NA	NA			SEQ-1648			NA	NA	NA	NA	NA	NA	NA		
-SAMP-669	Epi001-King-WTD2MI	Kevin Day2	mouse	EXP-989	scATAC-seq	08/01/2018	XH_66	yes	Yes	XH_66	HiSeq2500		PE	NA	NA			SEQ-1649			NA	NA	NA	NA	NA	NA	NA		
-SAMP-670	Epi001-King-WTD4MI	Kevin Day4	mouse	EXP-990	scATAC-seq	08/01/2018	XH_67	yes	Yes	XH_67	HiSeq2500		PE	NA	NA			SEQ-1650			NA	NA	NA	NA	NA	NA	NA		
+SAMP-694	CEMBA180723_4G	CEMBA 4G_2	mouse	EXP-985	XH	08/01/2018	XH_62	XH_62	scATAC-seq		HiSeq2500	50+43+37+50	PE	NA	NA			SEQ-1645			NA	NA	NA	NA	NA	NA	NA		
+SAMP-695	CEMBA180724_4H	CEMBA 4H_1	mouse	EXP-986	XH	08/01/2018	XH_63	XH_63	scATAC-seq		HiSeq2500	50+43+37+50	PE	NA	NA			SEQ-1646			NA	NA	NA	NA	NA	NA	NA		
+SAMP-696	CEMBA180730_4H	CEMBA 4H_2	mouse	EXP-987	XH	08/01/2018	XH_64	XH_64	scATAC-seq		HiSeq2500	50+43+37+50	PE	NA	NA			SEQ-1647			NA	NA	NA	NA	NA	NA	NA		
+SAMP-697	CEMBA180731_5A	CEMBA 5A_1	mouse	EXP-988	XH	08/01/2018	XH_65	XH_65	scATAC-seq		HiSeq2500	50+43+37+50	PE	NA	NA			SEQ-1648			NA	NA	NA	NA	NA	NA	NA		
+SAMP-669	Epi001-King-WTD2MI	Kevin Day2	mouse	EXP-989	XH	08/01/2018	XH_66	XH_66	scATAC-seq		HiSeq2500	50+43+37+50	PE	NA	NA			SEQ-1649			NA	NA	NA	NA	NA	NA	NA		
+SAMP-670	Epi001-King-WTD4MI	Kevin Day4	mouse	EXP-990	XH	08/01/2018	XH_67	XH_67	scATAC-seq		HiSeq2500	50+43+37+50	PE	NA	NA			SEQ-1650			NA	NA	NA	NA	NA	NA	NA		
 SAMP-556	HN12 (head and neck cell line)	HN12_Biomek_r2	Human	EXP-691	JYH	8/2/2018	JYH_415	JYH_415_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	744	529		SEQ-1651			NA	NA	NA	NA	NA	NA	NA		
 SAMP-557	Cal27 (head and neck cell line)	Cal27_Biomek_r2	Human	EXP-692	JYH	8/2/2018	JYH_416	JYH_416_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	744	530		SEQ-1652			NA	NA	NA	NA	NA	NA	NA		
 SAMP-558	USMCC17B (head and neck cell line)	USMCC17B_Biomek_r2	Human	EXP-693	JYH	8/2/2018	JYH_417	JYH_417_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	744	531		SEQ-1653			NA	NA	NA	NA	NA	NA	NA		
@@ -1266,8 +1266,8 @@ other	HEK293	HEK293_TM_4	human	EXP-946	JYH	2018-08-03	JYH_585	JYH_585	ATAC-seq	E
 SAMP-709	CEMBA180807_5A	CEMBA 5A_2	mouse	EXP-1034	scATAC-seq	2018-08-10	XH_68	XH_68	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE		13-24	1-12		SEQ-1702			NA	NA	NA	NA	NA	NA	NA		
 Other	GM19240 (RSV2)	RS6962075	human	EXP-1035	RM	2018-08-03	RMM_85	RMM_85	4C	EPIGEN	NextSeq550 Mid	75	PE	0.03	702	508	4C V2 Primers	SEQ-1703			NA	NA	NA	NA	NA	NA	NA		
 Other	GM19240 (CH12FireV2)	RS2292239	human	EXP-1036	RM	2018-08-16	RMM_86	RMM_86	4C	EPIGEN	NextSeq550 Mid	75	PE	0.03	701	502	4C V2 Primers	SEQ-1704			NA	NA	NA	NA	NA	NA	NA		
-SAMP-710	BG625	PBMC_BG625	human	EXP-1037	JIB	2018-8-13	JB_1	JB_1	scRNA-Seq	IGM	HiSeq4000			0.33	SI-GA-H10	Barcode		SEQ-1705			NA	NA	NA	NA	NA	NA	NA		
-SAMP-711	JM628	PBMC_JM628	human	EXP-1038	JIB	2018-8-13	JB_2	JB_2	scRNA-Seq	IGM	HiSeq4000			0.33	SI-GA-H11	Barcode		SEQ-1706			NA	NA	NA	NA	NA	NA	NA		
+SAMP-710	BG625	PBMC_BG625	human	EXP-1037	JIB	2018-8-13	JB_1	JB_1	scRNA-seq	IGM	HiSeq4000			0.33	SI-GA-H10	Barcode		SEQ-1705			NA	NA	NA	NA	NA	NA	NA		
+SAMP-711	JM628	PBMC_JM628	human	EXP-1038	JIB	2018-8-13	JB_2	JB_2	scRNA-seq	IGM	HiSeq4000			0.33	SI-GA-H11	Barcode		SEQ-1706			NA	NA	NA	NA	NA	NA	NA		
 NA	GM12878_AbV Acyl Stat	H3K27Ac_Diag-Lot11_AcylStat_GM12878	Human	EXP-1479	AVD	2018-08-16	AVD_269	AVD_269	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.05	A018	NA	Epicypher Acyl Stat Beta Testing	SEQ-1707			NA	NA	NA	NA	NA	NA	NA		
 NA	GM12878_AbV Acyl Stat	H3K27Ac_Diag-Lot12_AcylStat_GM12878	Human	EXP-1480	AVD	2018-08-16	AVD_270	AVD_270	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.05	A019	NA	Epicypher Acyl Stat Beta Testing	SEQ-1708			NA	NA	NA	NA	NA	NA	NA		
 NA	GM12878_AbV Acyl Stat	H3K27Ac_AM-rAb-91194_AcylStat_GM12878	Human	EXP-1481	AVD	2018-08-16	AVD_271	AVD_271	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.05	A020	NA	Epicypher Acyl Stat Beta Testing	SEQ-1709			NA	NA	NA	NA	NA	NA	NA		
@@ -1299,9 +1299,9 @@ SAMP-642	Control 20%	Control 20%_Input	Human	EXP-1506	AVD	2018-08-21	AVD_296	AVD
 SAMP-643	Patient 1%	Patient 1%_Input	Human	EXP-1507	AVD	2018-08-21	AVD_297	AVD_297	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE		A09	NA	Nara ChIP run 2	SEQ-1735			NA	NA	NA	NA	NA	NA	NA		
 SAMP-644	Control 1%	Control 1%_Input	Human	EXP-1508	AVD	2018-08-21	AVD_298	AVD_298	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE		A10	NA	Nara ChIP run 2	SEQ-1736			NA	NA	NA	NA	NA	NA	NA		
 SAMP-712	WT E8.5	Embryo	mouse	EXP-1039	XH	2018-08-21	XH_69	XH_69	scATAC-seq	EPIGEN	NextSeq550 High	50+10+12+50	PE					SEQ-1737			NA	NA	NA	NA	NA	NA	NA		
-SAMP-713	Aging mouse dorsal hippocampus 3 month	Hippocampus	mouse	EXP-1040	XH	2018-08-21	XH_70	XH_70	scATAC-seq	EPIGEN	NextSeq550 High	50+10+12+50	PE					SEQ-1738			NA	NA	NA	NA	NA	NA	NA		
-SAMP-714	Aging mouse dorsal hippocampus 10 month	Hippocampus	mouse	EXP-1041	XH	2018-08-21	XH_70	XH_70	scATAC-seq	EPIGEN	NextSeq550 High	50+10+12+50	PE					SEQ-1739			NA	NA	NA	NA	NA	NA	NA		
-SAMP-715	Aging mouse dorsal hippocampus 18 month	Hippocampus	mouse	EXP-1042	XH	2018-08-21	XH_70	XH_70	scATAC-seq	EPIGEN	NextSeq550 High	50+10+12+50	PE					SEQ-1740			NA	NA	NA	NA	NA	NA	NA		
+SAMP-713	Aging mouse dorsal hippocampus 3 month	Hippocampus	mouse	EXP-1040	XH	2018-08-21	XH_70[1]	XH_70[1]	scATAC-seq	EPIGEN	NextSeq550 High	50+10+12+50	PE					SEQ-1738			NA	NA	NA	NA	NA	NA	NA		
+SAMP-714	Aging mouse dorsal hippocampus 10 month	Hippocampus	mouse	EXP-1041	XH	2018-08-21	XH_70[2]	XH_70[2]	scATAC-seq	EPIGEN	NextSeq550 High	50+10+12+50	PE					SEQ-1739			NA	NA	NA	NA	NA	NA	NA		
+SAMP-715	Aging mouse dorsal hippocampus 18 month	Hippocampus	mouse	EXP-1042	XH	2018-08-21	XH_70[3]	XH_70[3]	scATAC-seq	EPIGEN	NextSeq550 High	50+10+12+50	PE					SEQ-1740			NA	NA	NA	NA	NA	NA	NA		
 SAMP-580	18-5732	18_5732_Ground	Human	EXP-699	JYH	8/24/2018	JYH_423	JYH_423_3	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	704	508	Grinding	SEQ-1741			NA	NA	NA	NA	NA	NA	NA		
 SAMP-583	18-7774	18_7774_Ground	Human	EXP-700	JYH	8/24/2018	JYH_424	JYH_424_3	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	705	510	Grinding	SEQ-1742			NA	NA	NA	NA	NA	NA	NA		
 SAMP-577	18-9293	18_9293_Ground	Human	EXP-701	JYH	8/24/2018	JYH_425	JYH_425_3	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	706	511	Grinding	SEQ-1743			NA	NA	NA	NA	NA	NA	NA		
@@ -1310,8 +1310,8 @@ SAMP-578	18-5570	18-5570	Human	EXP-711	JYH	8/24/2018	JYH_435	JYH_435_3	ATAC-seq	
 SAMP-579	18-8400	18-8400	Human	EXP-713	JYH	8/24/2018	JYH_437	JYH_437_3	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	704	510	Bladder	SEQ-1746			NA	NA	NA	NA	NA	NA	NA		
 SAMP-585	18-4447	18-4447	Human	EXP-715	JYH	8/24/2018	JYH_439	JYH_439_3	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	706	502	Bladder	SEQ-1747			NA	NA	NA	NA	NA	NA	NA		
 SAMP-582	18-2611	18-2611	Human	EXP-716	JYH	8/24/2018	JYH_440	JYH_440_3	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	707	503	Bladder	SEQ-1748			NA	NA	NA	NA	NA	NA	NA		
-N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Islet_4_iiscatac	Human	NA	DUG	NA	Islet_4_fresh	Islet_4_fresh	sc_ATAC seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_4_fresh.R1.demux.fastq.gz, https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_4_fresh.R2.demux.fastq.gz	SEQ-1201			NA	NA	NA	NA	NA	NA	NA		
-N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Islet_5_iiscatac	Human	NA	DUG	NA	Islet_5_fresh	Islet_5_fresh	sc_ATAC seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_5_fresh.R1.demux.fastq.gz, https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_5_fresh.R2.demux.fastq.gz	SEQ-1202			NA	NA	NA	NA	NA	NA	NA		
+N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Islet_4_iiscatac	Human	NA	DUG	NA	Islet_4_fresh	Islet_4_fresh	scATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_4_fresh.R1.demux.fastq.gz, https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_4_fresh.R2.demux.fastq.gz	SEQ-1201			NA	NA	NA	NA	NA	NA	NA		
+N/A (special case; not on our MSTS)	N/A (special case; not on our MSTS)	Islet_5_iiscatac	Human	NA	DUG	NA	Islet_5_fresh	Islet_5_fresh	scATAC-seq	Other (please explain in notes)	Other (please explain in notes)	Other (please explain in notes)	PE	NA	NA	NA	fastqs: https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_5_fresh.R1.demux.fastq.gz, https://s3-us-west-2.amazonaws.com/gaulton-lab-ucsc/islet_snATAC/Islet_5_fresh.R2.demux.fastq.gz	SEQ-1202			NA	NA	NA	NA	NA	NA	NA		
 SAMP-651	3	Syk fl 1 IL4	Mouse	EXP-903	JYH	2018-08-02	JYH_523	JYH_523_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	707	510	Miss	SEQ-1763			NA	NA	NA	NA	NA	NA	NA		
 SAMP-649	1	Syk fl 1 NS	Mouse	EXP-901	JYH	2018-09-04	JYH_521	JYH_521_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	705.00	507	Durden	SEQ-1764			NA	NA	NA	NA	NA	NA	NA		
 SAMP-650	2	Syk fl 1 LPS	Mouse	EXP-902	JYH	2018-09-04	JYH_522	JYH_522_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	706.00	508	Durden	SEQ-1765			NA	NA	NA	NA	NA	NA	NA		
@@ -1325,12 +1325,12 @@ SAMP-657	9	Syk cre 1 IL4	Mouse	EXP-913	JYH	2018-09-04	JYH_548	JYH_548_2	ATAC-seq
 SAMP-658	10	Syk cre 2 NS	Mouse	EXP-914	JYH	2018-09-04	JYH_549	JYH_549_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	707	510	Durden	SEQ-1773			NA	NA	NA	NA	NA	NA	NA		
 SAMP-659	11	Syk cre 2 LPS	Mouse	EXP-915	JYH	2018-09-04	JYH_550	JYH_550_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	710	511	Durden	SEQ-1774			NA	NA	NA	NA	NA	NA	NA		
 SAMP-660	12	Syk cre 2 IL4	Mouse	EXP-916	JYH	2018-09-04	JYH_551	JYH_551_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	711	502	Durden	SEQ-1775			NA	NA	NA	NA	NA	NA	NA		
-SAMP-780	1 mo. CTC Brain organoid	JB_5	Human	EXP-917	JIB	2018-8-27	JB_5	JB_5	scRNA-Seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.17	SI-GA-A1			SEQ-1776			NA	NA	NA	NA	NA	NA	NA		
-SAMP-781	3 mo. CTC Brain organoid (FACS unsorted)	JB_6	Human	EXP-918	JIB	2018-8-27	JB_6	JB_6	scRNA-Seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.17	SI-GA-A2			SEQ-1777			NA	NA	NA	NA	NA	NA	NA		
-SAMP-781	3 mo. CTC Brain organoid (FACS sorted)	JB_7	Human	EXP-919	JIB	2018-8-27	JB_7	JB_7	scRNA-Seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.17	SI-GA-A3			SEQ-1778			NA	NA	NA	NA	NA	NA	NA		
-SAMP-782	16p_Yc4_3m	JB_8	Human	EXP-920	JIB	2018-8-27	JB_8	JB_8	scRNA-Seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.17	SI-GA-A4			SEQ-1779			NA	NA	NA	NA	NA	NA	NA		
-SAMP-783	16p_Cc4_3m	JB_9	Human	EXP-921	JIB	2018-8-27	JB_9	JB_9	scRNA-Seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.17	SI-GA-A5			SEQ-1780			NA	NA	NA	NA	NA	NA	NA		
-SAMP-784	16p_61c3_3m	JB_10	Human	EXP-922	JIB	2018-8-27	JB_10	JB_10	scRNA-Seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.17	SI-GA-A6			SEQ-1781			NA	NA	NA	NA	NA	NA	NA		
+SAMP-780	1 mo. CTC Brain organoid	JB_5	Human	EXP-917	JIB	2018-8-27	JB_5	JB_5	scRNA-seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.17	SI-GA-A1			SEQ-1776			NA	NA	NA	NA	NA	NA	NA		
+SAMP-781	3 mo. CTC Brain organoid (FACS unsorted)	JB_6	Human	EXP-918	JIB	2018-8-27	JB_6	JB_6	scRNA-seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.17	SI-GA-A2			SEQ-1777			NA	NA	NA	NA	NA	NA	NA		
+SAMP-781	3 mo. CTC Brain organoid (FACS sorted)	JB_7	Human	EXP-919	JIB	2018-8-27	JB_7	JB_7	scRNA-seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.17	SI-GA-A3			SEQ-1778			NA	NA	NA	NA	NA	NA	NA		
+SAMP-782	16p_Yc4_3m	JB_8	Human	EXP-920	JIB	2018-8-27	JB_8	JB_8	scRNA-seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.17	SI-GA-A4			SEQ-1779			NA	NA	NA	NA	NA	NA	NA		
+SAMP-783	16p_Cc4_3m	JB_9	Human	EXP-921	JIB	2018-8-27	JB_9	JB_9	scRNA-seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.17	SI-GA-A5			SEQ-1780			NA	NA	NA	NA	NA	NA	NA		
+SAMP-784	16p_61c3_3m	JB_10	Human	EXP-922	JIB	2018-8-27	JB_10	JB_10	scRNA-seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.17	SI-GA-A6			SEQ-1781			NA	NA	NA	NA	NA	NA	NA		
 SAMP-556	HN12 rep1	HN12 rep1 ATAC-seq	Human	EXP-738	RM	8/2/2018	RMM_69	RMM_69_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	710	505		SEQ-1654			NA	NA	NA	NA	NA	NA	NA		
 SAMP-556	HN12 rep2	HN12 rep2 ATAC-seq	Human	EXP-691	JYH	8/2/2018	JYH_415	JYH_415_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	744	529		SEQ-1651			NA	NA	NA	NA	NA	NA	NA		
 SAMP-557	Ca27 rep1	Ca27 rep1 ATAC-seq	Human	EXP-739	RM	8/2/2018	RMM_70	RMM_70_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	707	503		SEQ-1655			NA	NA	NA	NA	NA	NA	NA		
@@ -1341,10 +1341,10 @@ SAMP-559	Detroit562 rep1	Detroit562 rep1 ATAC-seq	Human	EXP-741	RM	8/2/2018	RMM_
 SAMP-646	SF767 rep1	SF767 rep1 ATAC-seq	human	EXP-905	JYH	8/2/2018	JYH_525	JYH_525_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	711	502		SEQ-1660			NA	NA	NA	NA	NA	NA	NA		
 SAMP-648	SF767 rep2	SF767 rep2 ATAC-seq	human	EXP-907	JYH	8/2/2018	JYH_527	JYH_527_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	701	505		SEQ-1662			NA	NA	NA	NA	NA	NA	NA		
 SAMP-647	PC9 rep2	PC9 rep2 ATAC-seq	human	EXP-906	JYH	8/2/2018	JYH_526	JYH_526_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	712	503		SEQ-1661			NA	NA	NA	NA	NA	NA	NA		
-SAMP-780	1 mo. CTC Brain organoid	1 mo. CTC Brain organoid	Human	EXP-1049	XH	2018-9-7	XH_71	XH_71	sc_ATAC seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	1.00				SEQ-1795			NA	NA	NA	NA	NA	NA	NA		
-SAMP-781	3 mo. CTC Brain organoid (FACS unsorted)	3 mo. CTC Brain organoid (FACS unsorted)	human	EXP-1050	XH	2018-9-7	XH_71	XH_71	sc_ATAC seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	1.00				SEQ-1796			NA	NA	NA	NA	NA	NA	NA		
-SAMP-781	3 mo. CTC Brain organoid (FACS sorted)	3 mo. CTC Brain organoid (FACS sorted)	human	EXP-1051	XH	2018-9-7	XH_71	XH_71	sc_ATAC seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	1.00				SEQ-1797			NA	NA	NA	NA	NA	NA	NA		
-SAMP-780	1 mo. CTC Brain organoid (FACS unsorted)	1 mo. CTC Brain organoid (FACS unsorted)	human	EXP-1052	XH	2018-9-7	XH_71	XH_71	sc_ATAC seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	1.00				SEQ-1798			NA	NA	NA	NA	NA	NA	NA		
+SAMP-780	1 mo. CTC Brain organoid	1 mo. CTC Brain organoid	Human	EXP-1049	XH	2018-9-7	XH_71[1]	XH_71[1]	scATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	1.00				SEQ-1795			NA	NA	NA	NA	NA	NA	NA		
+SAMP-781	3 mo. CTC Brain organoid (FACS unsorted)	3 mo. CTC Brain organoid (FACS unsorted)	human	EXP-1050	XH	2018-9-7	XH_71[2]	XH_71[2]	scATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	1.00				SEQ-1796			NA	NA	NA	NA	NA	NA	NA		
+SAMP-781	3 mo. CTC Brain organoid (FACS sorted)	3 mo. CTC Brain organoid (FACS sorted)	human	EXP-1051	XH	2018-9-7	XH_71[3]	XH_71[3]	scATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	1.00				SEQ-1797			NA	NA	NA	NA	NA	NA	NA		
+SAMP-780	1 mo. CTC Brain organoid (FACS unsorted)	1 mo. CTC Brain organoid (FACS unsorted)	human	EXP-1052	XH	2018-9-7	XH_71[4]	XH_71[4]	scATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	1.00				SEQ-1798			NA	NA	NA	NA	NA	NA	NA		
 SAMP-750	Laura_osTIR	Laura_osTIR_NPB	human	EXP-1053	JYH	2018-09-17	JYH_586	JYH_586	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	N702	S502		SEQ-1799			NA	NA	NA	NA	NA	NA	NA		
 SAMP-751	Laura_RAD21	Laura_RAD21_NPB	human	EXP-1054	JYH	2018-09-17	JYH_587	JYH_587	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	N703	S503		SEQ-1800			NA	NA	NA	NA	NA	NA	NA		
 SAMP-752	Laura_HDAC	Laura_HDAC_NPB	human	EXP-1055	JYH	2018-09-17	JYH_588	JYH_588	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	N704	S505		SEQ-1801			NA	NA	NA	NA	NA	NA	NA		
@@ -1364,14 +1364,14 @@ SAMP-794	RG06	RG06	human	EXP-1068	JYH	2018-09-17	JYH_601	JYH_601	ATAC-seq	EPIGEN
 SAMP-795	RG07	RG07	human	EXP-1069	JYH	2018-09-17	JYH_602	JYH_602	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	N707	S510		SEQ-1815			NA	NA	NA	NA	NA	NA	NA		
 SAMP-796	RG08	RG08	human	EXP-1070	JYH	2018-09-17	JYH_603	JYH_603	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	N710	S511		SEQ-1816			NA	NA	NA	NA	NA	NA	NA		
 SAMP-808	RIN cell	RIN cell	rat	EXP-1071	JYH	2018-09-17	JYH_604	JYH_604	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.03	N712	S511		SEQ-1817			NA	NA	NA	NA	NA	NA	NA		
-SAMP-780	1 mo. CTC Brain organoid	JB_12	human	EXP-917	JIB	2018-9-17	JB_12	JB_12	scRNA-Seq	IGM	HiSeq4000	26+8+0+98	PE	1.00	SI-GA-A1			SEQ-1818			NA	NA	NA	NA	NA	NA	NA		
-SAMP-781	3 mo. CTC Brain organoid (FACS sorted)	JB_13	human	EXP-919	JIB	2018-9-17	JB_13	JB_13	scRNA-Seq	IGM	HiSeq4000	26+8+0+98	PE	1.00	SI-GA-A3			SEQ-1819			NA	NA	NA	NA	NA	NA	NA		
-Other	GM19240 (O/N)	GM19240 (O/N)	human	EXP-1072	RM	2018-09-17	RMM_87	RMM_87	Cut & Run	EPIGEN	NextSeq550 Mid	75	PE	0.06	A001			SEQ-1820			NA	NA	NA	NA	NA	NA	NA		
-Other	GM19240 (O/N)	GM19240 (O/N)	human	EXP-1073	RM	2018-09-17	RMM_88	RMM_88	Cut & Run	EPIGEN	NextSeq550 Mid	75	PE	0.06	A002			SEQ-1821			NA	NA	NA	NA	NA	NA	NA		
+SAMP-780	1 mo. CTC Brain organoid	JB_12	human	EXP-917	JIB	2018-9-17	JB_6	JB_12	scRNA-seq	IGM	HiSeq4000	26+8+0+98	PE	1.00	SI-GA-A1			SEQ-1818			NA	NA	NA	NA	NA	NA	NA		
+SAMP-781	3 mo. CTC Brain organoid (FACS sorted)	JB_13	human	EXP-919	JIB	2018-9-17	JB_7	JB_13	scRNA-seq	IGM	HiSeq4000	26+8+0+98	PE	1.00	SI-GA-A3			SEQ-1819			NA	NA	NA	NA	NA	NA	NA		
+Other	GM19240 (O/N)	GM19240 (O/N)	human	EXP-1072	RM	2018-09-17	RMM_87	RMM_87	CUT&RUN	EPIGEN	NextSeq550 Mid	75	PE	0.06	A001			SEQ-1820			NA	NA	NA	NA	NA	NA	NA		
+Other	GM19240 (O/N)	GM19240 (O/N)	human	EXP-1073	RM	2018-09-17	RMM_88	RMM_88	CUT&RUN	EPIGEN	NextSeq550 Mid	75	PE	0.06	A002			SEQ-1821			NA	NA	NA	NA	NA	NA	NA		
 Other	GM19240 (O/N)	GM19240 (O/N)	human	EXP-1074	RM													SEQ-1822			NA	NA	NA	NA	NA	NA	NA		
 Other	GM19240 (O/N)	GM19240 (O/N)	human	EXP-1075	RM													SEQ-1823			NA	NA	NA	NA	NA	NA	NA		
-Other	GM19240 (4hr)	GM19240 (4hr)	human	EXP-1076	RM	2018-09-17	RMM_89	RMM_89	Cut & Run	EPIGEN	NextSeq550 Mid	75	PE	0.06	A005			SEQ-1824			NA	NA	NA	NA	NA	NA	NA		
-Other	GM19240 (4hr)	GM19240 (4hr)	human	EXP-1077	RM	2018-09-17	RMM_90	RMM_90	Cut & Run	EPIGEN	NextSeq550 Mid	75	PE	0.06	A006			SEQ-1825			NA	NA	NA	NA	NA	NA	NA		
+Other	GM19240 (4hr)	GM19240 (4hr)	human	EXP-1076	RM	2018-09-17	RMM_89	RMM_89	CUT&RUN	EPIGEN	NextSeq550 Mid	75	PE	0.06	A005			SEQ-1824			NA	NA	NA	NA	NA	NA	NA		
+Other	GM19240 (4hr)	GM19240 (4hr)	human	EXP-1077	RM	2018-09-17	RMM_90	RMM_90	CUT&RUN	EPIGEN	NextSeq550 Mid	75	PE	0.06	A006			SEQ-1825			NA	NA	NA	NA	NA	NA	NA		
 Other	GM19240 (15min)	GM19240 (15min)	human	EXP-1078	RM													SEQ-1826			NA	NA	NA	NA	NA	NA	NA		
 Other	GM19240 (15min)	GM19240 (15min)	human	EXP-1079	RM													SEQ-1827			NA	NA	NA	NA	NA	NA	NA		
 Other	GM19240	GM19240_1	human	EXP-1080	JYH	2018-09-25	JYH_605	JYH_605	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.01	X731	X520	Biomek_96_1st	SEQ-1828			hg38	9,879,612	6,216,918	0.629	0.182	33.15	0.319		
@@ -1482,8 +1482,8 @@ SAMP-657	9	Syk cre 1 IL4	Mouse	EXP-913	JYH	2018-09-04	JYH_548	JYH_548_1_2	ATAC-s
 SAMP-658	10	Syk cre 2 NS	Mouse	EXP-914	JYH	2018-09-04	JYH_549	JYH_549_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	707	510	Durden	SEQ-1933			NA	NA	NA	NA	NA	NA	NA		
 SAMP-659	11	Syk cre 2 LPS	Mouse	EXP-915	JYH	2018-09-04	JYH_550	JYH_550_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	710	511	Durden	SEQ-1934			NA	NA	NA	NA	NA	NA	NA		
 SAMP-660	12	Syk cre 2 IL4	Mouse	EXP-916	JYH	2018-09-04	JYH_551	JYH_551_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	711	502	Durden	SEQ-1935			NA	NA	NA	NA	NA	NA	NA		
-SAMP-775	D110--CBL-MIX-6	lung cell XS group	human	EXP-1177	XH	2018-09-26	XH_72	XH_72	scATAT-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1936			NA	NA	NA	NA	NA	NA	NA		
-SAMP-778	D110--RML-BPS-3	lung tissue XS group	human	EXP-1178	XH	2018-09-26	XH_72	XH_72	scATAT-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1937			NA	NA	NA	NA	NA	NA	NA		
+SAMP-775	D110--CBL-MIX-6	lung cell XS group	human	EXP-1177	XH	2018-09-26	XH_72[1]	XH_72[1]	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1936			NA	NA	NA	NA	NA	NA	NA		
+SAMP-778	D110--RML-BPS-3	lung tissue XS group	human	EXP-1178	XH	2018-09-26	XH_72[2]	XH_72[2]	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1937			NA	NA	NA	NA	NA	NA	NA		
 Other	Brain3	Brain3_6month_ground	Mouse	EXP-1179	JYH	2018-09-27	JYH_701	JYH_701	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.02	704	502		SEQ-1938											
 Other	Heart3	Heart3_6month_ground	Mouse	EXP-1180	JYH	2018-09-27	JYH_702	JYH_702	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.02	705	503		SEQ-1939											
 Other	Lung3	Lung3_6month_ground	Mouse	EXP-1181	JYH	2018-09-27	JYH_703	JYH_703	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.02	706	505		SEQ-1940											
@@ -1498,9 +1498,9 @@ SAMP-785	566327	566327	Mouse	EXP-1189	JYH	2018-09-27	JYH_711	JYH_711	ATAC-seq	EP
 SAMP-788	2901L	2901L_cortex2_NPB	Mouse	EXP-1190	JYH	2018-09-27	JYH_712	JYH_712	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.02	710	506		SEQ-1949											
 SAMP-788	2901L	2901L_cortex2_omni	Mouse	EXP-1191	JYH	2018-09-27	JYH_713	JYH_713	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.02	711	507		SEQ-1950											
 SAMP-788	2901L	2901L_cortex2_telese	Mouse	EXP-1192	JYH	2018-09-27	JYH_714	JYH_714	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.02	712	508		SEQ-1951											
-SAMP-716	NA0007888232	Califano Salivary Gland 88232	human	EXP-1193	JIB	2018-9-28	JB_17	JB_17	scRNASeq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.13	SI-GA-A8			SEQ-1952											
-SAMP-775	D110--CBL-MIX-6	Sun lab lung cells 3 mo.	human	EXP-1195	JIB	2018-9-28	JB_18	JB_18	scRNASeq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.61	SI-GA-A10			SEQ-1953											
-SAMP-778	D110--RML-BPS-3	Sun lab lung tissue 3 mo.	human	EXP-1196	JIB	2018-9-28	JB_19	JB_19	scRNASeq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.24	SI-GA-A11			SEQ-1954											
+SAMP-716	NA0007888232	Califano Salivary Gland 88232	human	EXP-1193	JIB	2018-9-28	JB_17	JB_17	scRNA-seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.13	SI-GA-A8			SEQ-1952											
+SAMP-775	D110--CBL-MIX-6	Sun lab lung cells 3 mo.	human	EXP-1195	JIB	2018-9-28	JB_18	JB_18	scRNA-seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.61	SI-GA-A10			SEQ-1953											
+SAMP-778	D110--RML-BPS-3	Sun lab lung tissue 3 mo.	human	EXP-1196	JIB	2018-9-28	JB_19	JB_19	scRNA-seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.24	SI-GA-A11			SEQ-1954											
 Other	GM19240 (A) SNP1	GM19240 (A) SNP1	human	EXP-1197	RM	2018-09-27	RMM_91	RMM_91	Fast 4C	EPIGEN	NextSeq550 Mid	75	PE	0.03	712	507		SEQ-1955											
 Other	GM19240 (A) SNP2	GM19240 (A) SNP2	human	EXP-1198	RM	2018-09-27	RMM_92	RMM_92	Fast 4C	EPIGEN	NextSeq550 Mid	75	PE	0.03	701	507		SEQ-1956											
 Other	GM19240 (A) NR2F2 RM	GM19240 (A) NR2F2 RM	human	EXP-1199	RM	2018-09-27			Fast 4C	EPIGEN	NextSeq550 Mid	75	PE	0.03				SEQ-1957											
@@ -1518,13 +1518,13 @@ SAMP-815	GBM_A50_Myeloid	GBM SED-3	human	EXP-1214	JIB	2018-10-08	JB_22	JB_22	10X
 SAMP-778	D110--RML-BPS-3	Sun Lab Tissue Nuclei	human	EXP-1215	JIB	2018-10-08	JB_23	JB_23	10X	IGM	HiSeq4000	26+8+0+98	PE	0.300		SI-GA-B3	Rerun	SEQ-1969											
 SAMP-826	Cul3 WT	Jorge Brain Organoid Cul3 Wt	human	EXP-1216	JIB	2018-10-08	JB_24	JB_24	10X	IGM	HiSeq4000	26+8+0+98	PE	0.080		SI-GA-B4		SEQ-1970											
 SAMP-827	Cul3 MUTANT	Jorge Brain ORganoid Cul3 Mut	human	EXP-1217	JIB	2018-10-08	JB_25	JB_25	10X	IGM	HiSeq4000	26+8+0+98	PE	0.080		SI-GA-B5		SEQ-1971											
-SAMP-820	CEMBA180813_5E	CEMBA 5E_1	mouse	EXP-1208	XH	2018-10-05	XH_73	XH_73	scATAT-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1972											
-SAMP-821	CEMBA180820_5E	CEMBA 5E_2	mouse	EXP-1209	XH	2018-10-05	XH_74	XH_74	scATAT-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1973											
-SAMP-822	CEMBA180904_5J	CEMBA 5J_1	mouse	EXP-1210	XH	2018-10-05	XH_75	XH_75	scATAT-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1974											
-SAMP-823	CEMBA180910_5J	CEMBA 5J_2	mouse	EXP-1211	XH	2018-10-05	XH_76	XH_76	scATAT-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1975											
-SAMP-824	CEMBA181001_5C	CEMBA 5C_1	mouse	EXP-1212	XH	2018-10-05	XH_77	XH_77	scATAT-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1976											
-SAMP-825	CEMBA181002_5C	CEMBA 5C_2	mouse	EXP-1213	XH	2018-10-05	XH_78	XH_78	scATAT-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1977											
-Other	mouse forebrain and human hippocampus	collision test		EXP-1220	XH	2018-10-09	XH_81	XH_81	scATAT-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	1.00	1-384	1-768		SEQ-1978											
+SAMP-820	CEMBA180813_5E	CEMBA 5E_1	mouse	EXP-1208	XH	2018-10-05	XH_73	XH_73	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1972											
+SAMP-821	CEMBA180820_5E	CEMBA 5E_2	mouse	EXP-1209	XH	2018-10-05	XH_74	XH_74	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1973											
+SAMP-822	CEMBA180904_5J	CEMBA 5J_1	mouse	EXP-1210	XH	2018-10-05	XH_75	XH_75	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1974											
+SAMP-823	CEMBA180910_5J	CEMBA 5J_2	mouse	EXP-1211	XH	2018-10-05	XH_76	XH_76	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1975											
+SAMP-824	CEMBA181001_5C	CEMBA 5C_1	mouse	EXP-1212	XH	2018-10-05	XH_77	XH_77	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1976											
+SAMP-825	CEMBA181002_5C	CEMBA 5C_2	mouse	EXP-1213	XH	2018-10-05	XH_78	XH_78	scATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1977											
+Other	mouse forebrain and human hippocampus	collision test		EXP-1220	XH	2018-10-09	XH_81	XH_81	scATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	1.00	1-384	1-768		SEQ-1978											
 SAMP-834	Veh1	evans_veh_1	mouse	EXP-1417	JYH	2018-10-16	JYH_781	JYH_781	snATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.50	1	1-8	evans_veh_1 / evans_veh_1 : HCKMFAFXY	SEQ-1979											
 SAMP-835	OP1	evans_op1_1	mouse	EXP-1418	JYH	2018-10-16	JYH_782	JYH_782	snATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.50	3	1-8	evans_op1_1 / evans_op1_1 : HCKMFAFXY	SEQ-1980											
 SAMP-836	Veh1SnapF	evans_veh_2	mouse	EXP-1419	JYH	2018-11-06	JYH_783	JYH_783	snATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	1.00		1-8	evans_veh_2 / evans_veh_1_2 : HF7NFAFXY	SEQ-1979											
@@ -1532,8 +1532,6 @@ SAMP-828	CEMBA181008_5G	CEMBA 5G_1	mouse	EXP-1218	XH	2018-10-23	XH_79	XH_79	snAT
 SAMP-829	CEMBA181009_5G	CEMBA 5G_2	mouse	EXP-1219	XH	2018-10-23	XH_80	XH_80	snATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1982											
 SAMP-830	CEMBA181015_5H	CEMBA 5H_1	mouse	EXP-1221	XH	2018-11-27	XH_82	XH_82	snATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1983											
 SAMP-831	CEMBA181016_5H	CEMBA 5H_2	mouse	EXP-1222	XH	2018-11-27	XH_83	XH_83	snATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1984											
-SAMP-832	CEMBA181022_6B	CEMBA 6B_1	mouse	EXP-1223	XH		XH_84	XH_84	snATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1985											
-SAMP-833	CEMBA181023_6B	CEMBA 6B_2	mouse	EXP-1224	XH		XH_85	XH_85	snATAC-seq	LICR	HiSeq2500	50+43+37+50	PE					SEQ-1986											
 Other	GM19240 X-linked (ChIP_1) H3K4me3 1.1	GM19240_H3K4me3 1.1	Human	EXP-1225	RM	2018-10-24	RMM_102	RMM_102	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.60	A011	N/A		SEQ-1987											
 Other	GM19240 X-linked (ChIP_1) H3K27me3 1.1	GM19240_H3K27me3 1.1	Human	EXP-1226	RM	2018-10-24	RMM_103	RMM_103	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.60	A012	N/A		SEQ-1988											
 Other	GM19240 X-linked (ChIP_1) H3K27me3 2.1	GM19240_H3K27me3 2.1	Human	EXP-1227	RM	2018-10-24	RMM_104	RMM_104	ChIP-seq	EPIGEN	NextSeq550 Mid	75	PE	0.60	A013	N/A		SEQ-1989											
@@ -1548,13 +1546,13 @@ Other	(E) Chromatin provided by Active Motif for ChIP app on Biomek	(E) mLiver H
 Other	(F) Chromatin provided by Active Motif for ChIP app on Biomek	(F) mLiver H3K27ac (5µg)	mouse	EXP-1236	RM	2018-10-24	RMM_113	RMM_113	ChIP-seq (Biomek)	EPIGEN	NextSeq550 Mid	75	PE	0.60	A023	N/A		SEQ-1998											
 Other	(G) Chromatin provided by Active Motif for ChIP app on Biomek	(G) mLiver CTCF (1µg)	mouse	EXP-1237	RM	2018-10-24	RMM_114	RMM_114	ChIP-seq (Biomek)	EPIGEN	NextSeq550 Mid	75	PE	0.60	A025	N/A		SEQ-1999											
 Other	(H) Chromatin provided by Active Motif for ChIP app on Biomek	(H) mLiver CTCF (5µg)	mouse	EXP-1238	RM	2018-10-24	RMM_115	RMM_115	ChIP-seq (Biomek)	EPIGEN	NextSeq550 Mid	75	PE	0.60	A027	N/A		SEQ-2000											
-SAMP-817	JC007	T cell Day6_34	mouse	EXP-1239	XH	2018-10-25	XH_86	XH_86	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE	0.50				SEQ-2001											
-SAMP-818	JC008	T cell Day6_34	mouse	EXP-1240	XH	2018-10-25	XH_86	XH_86	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE	0.50				SEQ-2002											
-SAMP-819	JC009	T cell Day6_34	mouse	EXP-1241	XH	2018-10-25	XH_86	XH_86	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE	0.50				SEQ-2003											
-SAMP-853	single-cell CTC WT83	6 mo	Human	EXP-1242	JIB	2018-10-25	JB_26	JB_26	scRNASeq	IGM	HiSeq4000	26+8+0+98	PE	0.16	SI-GA-B6			SEQ-2004											
-SAMP-854	single-cell CTC WT83	10 mo	Human	EXP-1243	JIB	2018-10-25	JB_27	JB_27	scRNASeq	IGM	HiSeq4000	26+8+0+98	PE	0.16	SI-GA-B7			SEQ-2005											
-SAMP-853	single-cell CTC WT83	Brain_6_10 mo	Human	EXP-1244	XH	2018-10-25	XH_87	XH_87	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE	0.50				SEQ-2006											
-SAMP-854	single-cell CTC WT83	Brain_6_10 mo	Human	EXP-1245	XH	2018-10-25	XH_87	XH_87	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE	0.50				SEQ-2007											
+SAMP-817	JC007	T cell Day6_34	mouse	EXP-1239	XH	2018-10-25	XH_86[1]	XH_86[1]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE	0.50				SEQ-2001											
+SAMP-818	JC008	T cell Day6_34	mouse	EXP-1240	XH	2018-10-25	XH_86[2]	XH_86[2]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE	0.50				SEQ-2002											
+SAMP-819	JC009	T cell Day6_34	mouse	EXP-1241	XH	2018-10-25	XH_86[3]	XH_86[3]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE	0.50				SEQ-2003											
+SAMP-853	single-cell CTC WT83	6 mo	Human	EXP-1242	JIB	2018-10-25	JB_26	JB_26	scRNA-seq	IGM	HiSeq4000	26+8+0+98	PE	0.16	SI-GA-B6			SEQ-2004											
+SAMP-854	single-cell CTC WT83	10 mo	Human	EXP-1243	JIB	2018-10-25	JB_27	JB_27	scRNA-seq	IGM	HiSeq4000	26+8+0+98	PE	0.16	SI-GA-B7			SEQ-2005											
+SAMP-853	single-cell CTC WT83	Brain_6_10 mo	Human	EXP-1244	XH	2018-10-25	XH_87[1]	XH_87[1]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE	0.50				SEQ-2006											
+SAMP-854	single-cell CTC WT83	Brain_6_10 mo	Human	EXP-1245	XH	2018-10-25	XH_87[2]	XH_87[2]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE	0.50				SEQ-2007											
 SAMP-642	Control 20%	input_con_norm	Human		DUG	2018-10-04	AVD_296	AVD_296_2	ChIP-seq	Other (please explain in notes)	Other (please explain in notes)	50	SE	NA	A008	N/A	Seqeunced at external facility. Fastq locations at: https://goo.gl/PdPm5z	SEQ-2008											
 SAMP-641	Patient 20%	input_pat_norm	Human		DUG	2018-10-04	AVD_295	AVD_295_2	ChIP-seq	Other (please explain in notes)	Other (please explain in notes)	50	SE	NA	A007	N/A	Seqeunced at external facility. Fastq locations at: https://goo.gl/PdPm5z	SEQ-2009											
 SAMP-644	Control 1%	input_con_hyp	Human		DUG	2018-10-04	AVD_298	AVD_298_2	ChIP-seq	Other (please explain in notes)	Other (please explain in notes)	50	SE	NA	A010	N/A	Seqeunced at external facility. Fastq locations at: https://goo.gl/PdPm5z	SEQ-2010											
@@ -1568,19 +1566,19 @@ SAMP-643	Patient 1%	K36me3_pat_hyp	Human		DUG	2018-10-04	AVD_291	AVD_291_2	ChIP-
 SAMP-863	Aging mouse heart 3 month	AM heart 3_10_18	mouse	EXP-1246	XH													SEQ-2018											
 SAMP-864	Aging mouse heart  10 month	AM heart 3_10_18	mouse	EXP-1247	XH													SEQ-2019											
 SAMP-865	Aging mouse heart  18 month	AM heart 3_10_18	mouse	EXP-1248	XH													SEQ-2020											
-SAMP-866	23715#1 E9.5 tailbuds mutant	E9.5 tailbuds	mouse	EXP-1249	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE	0.50				SEQ-2021											
-SAMP-867	23715#4 E9.5 tailbuds mutant	E9.5 tailbuds	mouse	EXP-1250	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+51	PE	0.50				SEQ-2022											
-SAMP-868	23715#5 E9.5 tailbuds mutant	E9.5 tailbuds	mouse	EXP-1251	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+52	PE	0.50				SEQ-2023											
-SAMP-869	23715#8 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1252	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+53	PE	0.50				SEQ-2024											
-SAMP-870	23715#10 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1253	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+54	PE	0.50				SEQ-2025											
-SAMP-871	23587#2 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1254	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+55	PE	0.50				SEQ-2026											
-SAMP-872	23587#9 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1255	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+56	PE	0.50				SEQ-2027											
-SAMP-873	23587#12 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1256	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+57	PE	0.50				SEQ-2028											
-SAMP-874	23587#13 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1257	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+58	PE	0.50				SEQ-2029											
-SAMP-875	23587#15 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1258	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+59	PE	0.50				SEQ-2030											
-SAMP-876	23587#1 E9.5 tailbuds mutant	E9.5 tailbuds	mouse	EXP-1259	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+60	PE	0.50				SEQ-2031											
-SAMP-877	23587#3 E9.5 tailbuds mutant	E9.5 tailbuds	mouse	EXP-1260	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+61	PE	0.50				SEQ-2032											
-SAMP-878	23587#10 E9.5 tailbuds mutant	E9.5 tailbuds	mouse	EXP-1261	XH	2018-11-05	XH_89	XH_89	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+62	PE	0.50				SEQ-2033											
+SAMP-866	23715#1 E9.5 tailbuds mutant	E9.5 tailbuds	mouse	EXP-1249	XH	2018-11-05	XH_89[1]	XH_89[1]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE	0.50				SEQ-2021											
+SAMP-867	23715#4 E9.5 tailbuds mutant	E9.5 tailbuds	mouse	EXP-1250	XH	2018-11-05	XH_89[2]	XH_89[2]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+51	PE	0.50				SEQ-2022											
+SAMP-868	23715#5 E9.5 tailbuds mutant	E9.5 tailbuds	mouse	EXP-1251	XH	2018-11-05	XH_89[3]	XH_89[3]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+52	PE	0.50				SEQ-2023											
+SAMP-869	23715#8 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1252	XH	2018-11-05	XH_89[4]	XH_89[4]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+53	PE	0.50				SEQ-2024											
+SAMP-870	23715#10 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1253	XH	2018-11-05	XH_89[5]	XH_89[5]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+54	PE	0.50				SEQ-2025											
+SAMP-871	23587#2 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1254	XH	2018-11-05	XH_89[6]	XH_89[6]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+55	PE	0.50				SEQ-2026											
+SAMP-872	23587#9 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1255	XH	2018-11-05	XH_89[7]	XH_89[7]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+56	PE	0.50				SEQ-2027											
+SAMP-873	23587#12 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1256	XH	2018-11-05	XH_89[8]	XH_89[8]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+57	PE	0.50				SEQ-2028											
+SAMP-874	23587#13 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1257	XH	2018-11-05	XH_89[9]	XH_89[9]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+58	PE	0.50				SEQ-2029											
+SAMP-875	23587#15 E9.5 tailbuds WT	E9.5 tailbuds	mouse	EXP-1258	XH	2018-11-05	XH_89[10]	XH_89[10]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+59	PE	0.50				SEQ-2030											
+SAMP-876	23587#1 E9.5 tailbuds mutant	E9.5 tailbuds	mouse	EXP-1259	XH	2018-11-05	XH_89[11]	XH_89[11]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+60	PE	0.50				SEQ-2031											
+SAMP-877	23587#3 E9.5 tailbuds mutant	E9.5 tailbuds	mouse	EXP-1260	XH	2018-11-05	XH_89[12]	XH_89[12]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+61	PE	0.50				SEQ-2032											
+SAMP-878	23587#10 E9.5 tailbuds mutant	E9.5 tailbuds	mouse	EXP-1261	XH	2018-11-05	XH_89[13]	XH_89[13]	snATAC-seq	EPIGEN	NextSeq550 High	50+43+37+62	PE	0.50				SEQ-2033											
 SAMP-642	Control 20%	input_con_norm	Human		DUG	2018-10-04	AVD_296	AVD_296_1_2	ChIP-seq	Other (please explain in notes)	Other (please explain in notes)	50	SE	NA	A008	N/A	Seqeunced at external facility. Fastq locations at: https://goo.gl/PdPm5z	SEQ-2008											
 SAMP-641	Patient 20%	input_pat_norm	Human		DUG	2018-10-04	AVD_295	AVD_295_1_2	ChIP-seq	Other (please explain in notes)	Other (please explain in notes)	50	SE	NA	A007	N/A	Seqeunced at external facility. Fastq locations at: https://goo.gl/PdPm5z	SEQ-2009											
 SAMP-644	Control 1%	input_con_hyp	Human		DUG	2018-10-04	AVD_298	AVD_298_1_2	ChIP-seq	Other (please explain in notes)	Other (please explain in notes)	50	SE	NA	A010	N/A	Seqeunced at external facility. Fastq locations at: https://goo.gl/PdPm5z	SEQ-2010											
@@ -1623,14 +1621,14 @@ SAMP-891	spleen1_1	spleen1_1	mouse	EXP-1290	JYH	2018-11-08	JYH_743	JYH_743	ATAC-
 SAMP-892	spleen1_2	spleen1_2_singlecell	mouse	EXP-1291	JYH	2018-11-08	JYH_744	JYH_744	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.03	N705	S508		SEQ-2073											
 SAMP-895	WT	WT mouse P8 heart	mouse	EXP-1292	JYH	2018-11-08	JYH_745	JYH_745	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.03	N706	S510		SEQ-2074											
 SAMP-896	CKO	Hey2-CKO P8 heart	mouse	EXP-1293	JYH	2018-11-08	JYH_746	JYH_746	ATAC-seq	EPIGEN	NextSeq550 High	75	PE	0.03	N707	S511		SEQ-2075											
-SAMP-853	single-cell CTC WT83_6M	Organoid 6 mo.	human	EXP-1242	JIB	2018-11-7	JB_26	JB_26-1	scRNASeq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B6			SEQ-2076											
-SAMP-854	single-cell CTC WT83_10M	Organoid 10 mo.	human	EXP-1243	JIB	2018-11-7	JB_27	JB_27-1	scRNASeq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B7			SEQ-2077											
-SAMP-855	16P-WT	Megha Cortex WT	mouse	EXP-1294	JIB	2018-11-7	JB_28	JB_28	scRNASeq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B8			SEQ-2078											
-SAMP-856	16P-Del	Megha Cortex del16	mouse	EXP-1295	JIB	2018-11-7	JB_29	JB_29	scRNASeq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B9			SEQ-2079											
-SAMP-640	Glioblastoma IDH1 WT_A39	GBM A39	human	EXP-1296	JIB	2018-11-7	JB_30	JB_30	scRNASeq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B10			SEQ-2080											
-SAMP-86	GBM_Pat9_T1	GBM A9	human	EXP-1297	JIB	2018-11-7	JB_31	JB_31	scRNASeq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B11			SEQ-2081											
-SAMP-113	GBM_Pat11	GBM A11	human	EXP-1298	JIB	2018-11-7	JB_32	JB_32	scRNASeq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B12			SEQ-2082											
-SAMP-115	GBM_Pat12_T	GBM A12	human	EXP-1299	JIB	2018-11-7	JB_33	JB_33	scRNASeq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-C1			SEQ-2083											
+SAMP-853	single-cell CTC WT83_6M	Organoid 6 mo.	human	EXP-1242	JIB	2018-11-7	JB_26	JB_26-1	scRNA-seq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B6			SEQ-2076											
+SAMP-854	single-cell CTC WT83_10M	Organoid 10 mo.	human	EXP-1243	JIB	2018-11-7	JB_27	JB_27-1	scRNA-seq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B7			SEQ-2077											
+SAMP-855	16P-WT	Megha Cortex WT	mouse	EXP-1294	JIB	2018-11-7	JB_28	JB_28	scRNA-seq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B8			SEQ-2078											
+SAMP-856	16P-Del	Megha Cortex del16	mouse	EXP-1295	JIB	2018-11-7	JB_29	JB_29	scRNA-seq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B9			SEQ-2079											
+SAMP-640	Glioblastoma IDH1 WT_A39	GBM A39	human	EXP-1296	JIB	2018-11-7	JB_30	JB_30	scRNA-seq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B10			SEQ-2080											
+SAMP-86	GBM_Pat9_T1	GBM A9	human	EXP-1297	JIB	2018-11-7	JB_31	JB_31	scRNA-seq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B11			SEQ-2081											
+SAMP-113	GBM_Pat11	GBM A11	human	EXP-1298	JIB	2018-11-7	JB_32	JB_32	scRNA-seq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-B12			SEQ-2082											
+SAMP-115	GBM_Pat12_T	GBM A12	human	EXP-1299	JIB	2018-11-7	JB_33	JB_33	scRNA-seq	EPIGEN	NextSeq550 High	26+8+0+98	PE	0.12	SI-GA-C1			SEQ-2083											
 SAMP-917	231 Normoxic 1/232Normoxic 2	Bethyl	human	EXP-1300	RM	2018-11-21	RMM_116	RMM_116	ChIP-Seq	EPIGEN	NextSeq550 Mid	75	PE	0.60	A001			SEQ-2084											
 SAMP-917	231 Normoxic 1/232Normoxic 2	AM Nanog	human	EXP-1301	RM	2018-11-21	RMM_117	RMM_117	ChIP-Seq	EPIGEN	NextSeq550 Mid	75	PE	0.60	A002			SEQ-2085											
 SAMP-917	231 Normoxic 1/232Normoxic 2	AM HIF-1a	human	EXP-1302	RM	2018-11-21	RMM_118	RMM_118	ChIP-Seq	EPIGEN	NextSeq550 Mid	75	PE	0.60	A003			SEQ-2086											
@@ -1657,10 +1655,10 @@ SAMP-252	D15_Rep1_Epi	D15_Rep1_Epi	human	EXP-1322	RM	2018-11-21	RMM_138	RMM_138	
 SAMP-254	D20_Rep1_Epi	D20_Rep1_Epi	human	EXP-1323	RM	2018-11-21	RMM_139	RMM_139	ChIP-Seq	EPIGEN	NextSeq550 Mid	75	PE	1.00	A027		H3K27me3	SEQ-2107											
 SAMP-645	PC9	PC9 rep1 ATAC-seq	human	EXP-904	JYH	2018-10-24	JYH_524	JYH_524_4	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.33	710	511	Full sequenced	SEQ-2108											
 SAMP-645	PC9	PC9 rep1 ATAC-seq	human	EXP-904	JYH	2018-10-24	JYH_524	JYH_524_2_4	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.33	710	511	Full sequenced	SEQ-2109											
-SAMP-640	GBM_A39	GBM_A39_9_11_12	human	EXP-1324	XH	2018-11-16	XH_90	XH_90	snATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	0.50				SEQ-2110											
-SAMP-86	GBM9.2	GBM_A39_9_11_12	human	EXP-1325	XH	2018-11-16	XH_90	XH_90	snATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	0.50				SEQ-2111											
-SAMP-113	GBM11	GBM_A39_9_11_12	human	EXP-1326	XH	2018-11-16	XH_90	XH_90	snATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	0.50				SEQ-2112											
-SAMP-115	GBM12.2	GBM_A39_9_11_12	human	EXP-1327	XH	2018-11-16	XH_90	XH_90	snATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	0.50				SEQ-2113											
+SAMP-640	GBM_A39	GBM_A39_9_11_12	human	EXP-1324	XH	2018-11-16	XH_90[1]	XH_90[1]	snATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	0.50				SEQ-2110											
+SAMP-86	GBM9.2	GBM_A39_9_11_12	human	EXP-1325	XH	2018-11-16	XH_90[2]	XH_90[2]	snATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	0.50				SEQ-2111											
+SAMP-113	GBM11	GBM_A39_9_11_12	human	EXP-1326	XH	2018-11-16	XH_90[3]	XH_90[3]	snATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	0.50				SEQ-2112											
+SAMP-115	GBM12.2	GBM_A39_9_11_12	human	EXP-1327	XH	2018-11-16	XH_90[4]	XH_90[4]	snATAC-seq	EPIGEN	NextSeq550 Mid	50+43+37+50	PE	0.50				SEQ-2113											
 SAMP-797	RG09	RG09	human	EXP-1328	JYH	2018-11-27	JYH_747	JYH_747	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.04	N701	S502	Sanders	SEQ-2114											
 SAMP-798	RG10	RG10	human	EXP-1329	JYH	2018-11-27	JYH_748	JYH_748	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.04	N702	S503	Sanders	SEQ-2115											
 SAMP-799	RG11	RG11	human	EXP-1330	JYH	2018-11-27	JYH_749	JYH_749	ATAC-seq	EPIGEN	NextSeq550 Mid	75	PE	0.04	N703	S505	Sanders	SEQ-2116											
@@ -1733,11 +1731,11 @@ SAMP-925	EF05D_EB_R1	Elie D5	human	EXP-1357	XH	2018-12-06	XH_93	XH_93	scATAC-seq
 SAMP-926	EF07D_EB_R1	Elie D7	human	EXP-1358	XH	2018-12-06	XH_94	XH_94	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE					SEQ-2183											
 SAMP-927	EF15D_EB_R1	Elie D15	human	EXP-1359	XH	2018-12-06	XH_95	XH_95	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE					SEQ-2184											
 SAMP-928	EF25D_EB_R1	Elie D25	human	EXP-1360	XH	2018-12-06	XH_96	XH_96	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+50	PE					SEQ-2185											
-SAMP-936	Aging mouse dorsal hippocampus 3 month_Re	MA hippocampus 3_10_18	mouse	EXP-1384	XH	2018-12-10	XH_101	XH_101	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+51	PE					SEQ-2186											
-SAMP-937	Aging mouse dorsal hippocampus 10 month_Re	MA hippocampus 3_10_18	mouse	EXP-1385	XH	2018-12-10	XH_101	XH_101	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+52	PE					SEQ-2187											
-SAMP-938	Aging mouse dorsal hippocampus 18 month_Re	MA hippocampus 3_10_18	mouse	EXP-1386	XH	2018-12-10	XH_101	XH_101	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+53	PE					SEQ-2188											
-SAMP-943	B6_p0_male_Run2	UCS kidney	mouse	EXP-1387	XH	2018-12-11	XH_102	XH_102	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+54	PE					SEQ-2189											
-SAMP-944	B6_p0_female_Run2	UCS kidney	mouse	EXP-1388	XH	2018-12-11	XH_102	XH_102	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+55	PE					SEQ-2190											
+SAMP-936	Aging mouse dorsal hippocampus 3 month_Re	MA hippocampus 3_10_18	mouse	EXP-1384	XH	2018-12-10	XH_101[1]	XH_101[1]	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+51	PE					SEQ-2186											
+SAMP-937	Aging mouse dorsal hippocampus 10 month_Re	MA hippocampus 3_10_18	mouse	EXP-1385	XH	2018-12-10	XH_101[2]	XH_101[2]	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+52	PE					SEQ-2187											
+SAMP-938	Aging mouse dorsal hippocampus 18 month_Re	MA hippocampus 3_10_18	mouse	EXP-1386	XH	2018-12-10	XH_101[3]	XH_101[3]	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+53	PE					SEQ-2188											
+SAMP-943	B6_p0_male_Run2	UCS kidney	mouse	EXP-1387	XH	2018-12-11	XH_102[1]	XH_102[1]	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+54	PE					SEQ-2189											
+SAMP-944	B6_p0_female_Run2	UCS kidney	mouse	EXP-1388	XH	2018-12-11	XH_102[2]	XH_102[2]	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+55	PE					SEQ-2190											
 SAMP-226	D00_Rep1	D00_Rep1 H3K27me3	human	EXP-1309	RM	2018-12-17	RMM_125	RMM_125_2	ChIP-Seq	EPIGEN	NextSeq550 High	75	SE	0.16	A010			SEQ-2191											
 SAMP-230	D05_Rep1_VE	D05_Rep1_VE H3K27me3	human	EXP-1310	RM	2018-12-17	RMM_127	RMM_127_2	ChIP-Seq	EPIGEN	NextSeq550 High	75	SE	0.16	A012			SEQ-2192											
 SAMP-232	D07_Rep1_VE	D07_Rep1_VE H3K27me3	human	EXP-1311	RM	2018-12-17	RMM_128	RMM_128_2	ChIP-Seq	EPIGEN	NextSeq550 High	75	SE	0.16	A013			SEQ-2193											
@@ -1750,9 +1748,9 @@ SAMP-244	D15_Rep1_CM	D15_Rep1_CM H3K27me3	human	EXP-1317	RM	2018-12-17	RMM_134	R
 SAMP-246	D05_Rep1_Epi	D05_Rep1_Epi H3K27me3	human	EXP-1318	RM	2018-12-17	RMM_135	RMM_135_2	ChIP-Seq	EPIGEN	NextSeq550 High	75	SE	0.16	A021			SEQ-2200											
 SAMP-248	D07_Rep1_Epi	D07_Rep1_Epi H3K27me3	human	EXP-1319	RM	2018-12-17	RMM_136	RMM_136_2	ChIP-Seq	EPIGEN	NextSeq550 High	75	SE	0.16	A022			SEQ-2201											
 SAMP-252	D15_Rep1_Epi	D15_Rep1_Epi H3K27me3	human	EXP-1320	RM	2018-12-17	RMM_138	RMM_138_2	ChIP-Seq	EPIGEN	NextSeq550 High	75	SE	0.16	A025			SEQ-2202											
-SAMP-945	Aging mouse heart 3 month_Re	Mouse aging hear 3_10_18	mouse	EXP-1389	XH	2018-12-19	XH_103	XH_103	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+53	PE					SEQ-2203											
-SAMP-946	Aging mouse heart 10 month_Re	Mouse aging hear 3_10_18	mouse	EXP-1390	XH	2018-12-19	XH_103	XH_103	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+54	PE					SEQ-2204											
-SAMP-947	Aging mouse heart 18 month_Re	Mouse aging hear 3_10_18	mouse	EXP-1391	XH	2018-12-19	XH_103	XH_103	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+55	PE					SEQ-2205											
+SAMP-945	Aging mouse heart 3 month_Re	Mouse aging hear 3_10_18	mouse	EXP-1389	XH	2018-12-19	XH_103[1]	XH_103[1]	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+53	PE					SEQ-2203											
+SAMP-946	Aging mouse heart 10 month_Re	Mouse aging hear 3_10_18	mouse	EXP-1390	XH	2018-12-19	XH_103[2]	XH_103[2]	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+54	PE					SEQ-2204											
+SAMP-947	Aging mouse heart 18 month_Re	Mouse aging hear 3_10_18	mouse	EXP-1391	XH	2018-12-19	XH_103[3]	XH_103[3]	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+55	PE					SEQ-2205											
 SAMP-894	spleen2_2	spleen2_2_scATAC	mouse	EXP-1392	JYH	2018-12-14	JYH_777	JYH_777	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+55	PE	0.33	4	1-8	Mixed with biobank	SEQ-2206											
 SAMP-688	A0016	A0016	human	EXP-1394	JYH	2018-12-14	JYH_775	JYH_775_2	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+55	PE	0.33	2	1-8		SEQ-2207											
 SAMP-691	A0018	A0018	human	EXP-1395	JYH	2018-12-14	JYH_776	JYH_776_2	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+55	PE	0.33	3	1-8		SEQ-2208											
@@ -1793,8 +1791,8 @@ SAMP-889	IRF4 KO 1 + Dox	IRF4 KO 1 + Dox	mouse	EXP-1353	JYH	2018-12-27	JYH_772	J
 SAMP-890	IRF4 KO 2 + Dox	IRF4 KO 2 + Dox	mouse	EXP-1354	JYH	2018-12-27	JYH_773	JYH_773_1_2	ATAC-seq	IGM	HiSeq4000	100	PE	0.17	N703	S506	Combined	SEQ-2243											
 SAMP-688	A0016	A0016_T2D	human	EXP-1394	JYH	2018-12-14	JYH_775	JYH_775_1_2	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+55	PE	0.33	2	1-8	Combined	SEQ-2244											
 SAMP-691	A0018	A0018_Control	human	EXP-1395	JYH	2018-12-14	JYH_776	JYH_776_1_2	scATAC-seq	EPIGEN	NextSeq550 High	50+43+37+55	PE	0.33	3	1-8	Combined	SEQ-2245											
-SAMP-952	CTC WT83c6 8 mo	JB_38	human	EXP-1396	JIB	2018-12-18	JB_38	JB_38	scRNASeq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.50	SI-GA-D6			SEQ-2246											
-SAMP-953	CTC WT83c6 10 mo	JB_39	human	EXP-1397	JIB	2018-12-18	JB_39	JB_39	scRNASeq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.50	SI-GA-D7			SEQ-2247											
+SAMP-952	CTC WT83c6 8 mo	JB_38	human	EXP-1396	JIB	2018-12-18	JB_38	JB_38	scRNA-seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.50	SI-GA-D6			SEQ-2246											
+SAMP-953	CTC WT83c6 10 mo	JB_39	human	EXP-1397	JIB	2018-12-18	JB_39	JB_39	scRNA-seq	EPIGEN	NextSeq550 Mid	26+8+0+98	PE	0.50	SI-GA-D7			SEQ-2247											
 SAMP-226	D00_Rep2	D00_Rep2	human	EXP-1398	RM	2019-01-04	RMM_140	RMM_140	ChIP-Seq	EPIGEN	NextSeq550 Mid	75	PE	0.11	A001		H3K27me3	SEQ-2248											
 SAMP-228	D03_Rep2 (D3_Rep4)	D03_Rep2 (D3_Rep4)	human	EXP-1399	RM	2019-01-04	RMM_141	RMM_141	ChIP-Seq	EPIGEN	NextSeq550 Mid	75	PE	0.11	A002		H3K27me3	SEQ-2249											
 SAMP-230	D05_Rep2_VE (D5_V5R2)	D05_Rep2_VE (D5_V5R2)	human	EXP-1400	RM	2019-01-04	RMM_142	RMM_142	ChIP-Seq	EPIGEN	NextSeq550 Mid	75	PE	0.11	A007		H3K27me3	SEQ-2250											
@@ -1815,8 +1813,8 @@ SAMP-954	D205220	PBMC_1_10x	human	EXP-1414	JYH	2019-01-05	JYH_778	JYH_778	10x sc
 SAMP-956	Veh 400K	Evans_Veh_10x	mouse	EXP-1415	JYH	2019-01-05	JYH_779	JYH_779	10x scATAC-seq	EPIGEN	NextSeq550 Mid	50+8+16+50	PE	0.33	D1		HFYN5AFXY	SEQ-2265											
 SAMP-958	O+P 400K	Evans_Treated_10x	mouse	EXP-1416	JYH	2019-01-05	JYH_780	JYH_780	10x scATAC-seq	EPIGEN	NextSeq550 Mid	50+8+16+50	PE	0.33	E1		HFYN5AFXY	SEQ-2266											
 SAMP-779	D032-RML-BPS-2	lung tissue 3 year	human	EXP-1420	XH	2019-01-09	XH_104	XH_104	scATAC-seq	EPIGEN	NextSeq550 Mid	50+10+12+50	PE	0.33				SEQ-2267											
-SAMP-952	CTC WT83c6	Brain organoid 8_10M	human	EXP-1421	XH	2019-01-09	XH_105	XH_105	scATAC-seq	EPIGEN	NextSeq550 Mid	50+10+12+50	PE	0.33				SEQ-2268											
-SAMP-953	CTC WT83c6	Brain organoid 8_10M	human	EXP-1422	XH	2019-01-09	XH_105	XH_105	scATAC-seq	EPIGEN	NextSeq550 Mid	50+10+12+50	PE	0.33				SEQ-2269											
+SAMP-952	CTC WT83c6	Brain organoid 8_10M	human	EXP-1421	XH	2019-01-09	XH_105[1]	XH_105[1]	scATAC-seq	EPIGEN	NextSeq550 Mid	50+10+12+50	PE	0.33				SEQ-2268											
+SAMP-953	CTC WT83c6	Brain organoid 8_10M	human	EXP-1422	XH	2019-01-09	XH_105[2]	XH_105[2]	scATAC-seq	EPIGEN	NextSeq550 Mid	50+10+12+50	PE	0.33				SEQ-2269											
 SAMP-955	Veh 900K	Evans_Veh_snATAC	mouse	EXP-1423	JYH	2019-01-13	JYH_784	JYH_784	scATAC-seq	EPIGEN	NextSeq550 High	50+10+12+50	PE	0.25	1	1-8	HGL3CBGX9	SEQ-2270											
 SAMP-957	O+P 900K	Evans_Treated_snATAC	mouse	EXP-1424	JYH	2019-01-13	JYH_785	JYH_785	scATAC-seq	EPIGEN	NextSeq550 High	50+10+12+50	PE	0.25	2	1-8	HGL3CBGX9	SEQ-2271											
 SAMP-948	6282_nPOD_1	6282_nPOD_1_wholetissue	human	EXP-1425	JYH	2019-01-13	JYH_786	JYH_786	scATAC-seq	EPIGEN	NextSeq550 High	50+10+12+50	PE	0.25	3	1-8	HGL3CBGX9	SEQ-2272											
@@ -2098,13 +2096,9 @@ SAMP-1066	EF080D_MO_R1	Elie MOR1 D80	Human	EXP-1596	XH	2019-02-27	XH_142	XH_142	
 SAMP-832	CEMBA181022_6B	CEMBA 6B_1	mouse	EXP-1223	XH	2019-02-27	XH_84	XH_84	scATAC-seq	LICR	HiSeq4000	50+10+12+50	PE					SEQ-2389											
 SAMP-833	CEMBA181023_6B	CEMBA 6B_2	mouse	EXP-1224	XH	2019-02-27	XH_85	XH_85	scATAC-seq	LICR	HiSeq4000	50+10+12+50	PE					SEQ-2390											
 SAMP-1008	PBMC-1093_2	PBMC 10X scATAC	Human	EXP-1517	XH	2019-02-28	XH_124	XH_124_2	scATAC-seq	EPIGEN	NextSeq550 Mid	Other (please explain in notes)	PE	0.66	SI-NA-E2			SEQ-2391											
-							JYH_809	JYH_809										SEQ-2392											
-							JYH_810	JYH_810										SEQ-2393											
-							JYH_811	JYH_811										SEQ-2394											
-							JYH_812	JYH_812										SEQ-2395											
-																		SEQ-2396											
-																		SEQ-2397											
-																		SEQ-2398											
-																		SEQ-2399											
-																		SEQ-2400											
-																		SEQ-2401											
+SAMP-1027	B0004	B0004_1xomni_10min	Human	EXP-1597	JYH	2019-02-28	JYH_809	JYH_809	scATAC-seq	EPIGEN	NextSeq550 Mid	Other (please explain in notes)	PE	0.03	SI-NA-A3			SEQ-2392											
+SAMP-1027	B0004	B0004_1xomni_1min	Human	EXP-1598	JYH	2019-02-28	JYH_810	JYH_810	scATAC-seq	EPIGEN	NextSeq550 Mid	Other (please explain in notes)	PE	0.03	SI-NA-B3			SEQ-2393											
+SAMP-1027	B0004	B0004_0.1xomni_10min	Human	EXP-1599	JYH	2019-02-28	JYH_811	JYH_811	scATAC-seq	EPIGEN	NextSeq550 Mid	Other (please explain in notes)	PE	0.03	SI-NA-C3			SEQ-2394											
+SAMP-1027	B0004	B0004_0.1xomni_1min	Human	EXP-1600	JYH	2019-02-28	JYH_812	JYH_812	scATAC-seq	EPIGEN	NextSeq550 Mid	Other (please explain in notes)	PE	0.03	SI-NA-D3			SEQ-2395											
+SAMP-966	Spleenocytes 5 e^6	JB_45	mouse	EXP-1552	JYH	2019-02-28	JB_45	JB_45_2	10x scATAC-seq	EPIGEN	NextSeq550 Mid	50+8+16+50	PE	0.20	SI-NA-F2		resequence	SEQ-2396											
+SAMP-966	Spleenocytes 5 e^6	JB_45	mouse	EXP-1552	JYH	2019-02-28	JB_45	JB_45_1_2	10x scATAC-seq	EPIGEN	NextSeq550 Mid	50+8+16+50	PE	0.20	SI-NA-F2		resequence	SEQ-2396											

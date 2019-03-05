@@ -93,7 +93,7 @@ SAMP-34	Pal14-072817	JYH	9/6/2017	9/6/2017	ATAC-seq	ATAC-seq for cells	nb1_p103	
 SAMP-35	5-8_072817	JYH	9/6/2017	9/6/2017	ATAC-seq	ATAC-seq for cells	nb1_p103	Yes	Yes	JYH_119	Tn5 1.0 ul	EXP-90
 other	HG00514_2_TB_gly	JYH	9/6/2017	9/6/2017	ATAC-seq	ATAC-seq for cells	nb1_p103	Yes	No	NA	50k, tn5 1 ul	EXP-91
 other	HG00514_2_TB_gly	JYH	9/6/2017	9/6/2017	ATAC-seq	ATAC-seq for cells	nb1_p103	Yes	No	NA	20k, tn5 0.5 ul	EXP-92
-SAMP-124	R235	JYH	9/10/2017	9/10/2017	scATAC-seq	scATAC-seq for tissue	nb1_p105	Yes	Yes	XW2	Flash Frozen nuclei, 3M	EXP-93
+SAMP-124	R235	JYH	9/10/2017	9/10/2017	scATAC-seq	scATAC-seq for tissue	nb1_p105	Yes	Yes	XW2[2]	Flash Frozen nuclei, 3M	EXP-93
 SAMP-17	2015-965A1	JYH	9/13/2017	9/13/2017	scRNA-seq	scRNA-seq for tissue	nb1_p108	Yes	Yes	JYH_172	Old califano	EXP-94
 SAMP-18	2015-1103A1	JYH	9/13/2017	9/13/2017	scRNA-seq	scRNA-seq for tissue	nb1_p108	Yes	Yes	JYH_173	Old califano	EXP-95
 SAMP-19	2016-1320A1	JYH	9/13/2017	9/13/2017	scRNA-seq	scRNA-seq for tissue	nb1_p108	Yes	Yes	JYH_174	Old califano	EXP-96
@@ -103,7 +103,7 @@ SAMP-104	GBM10.16	JYH	10/11/2017	10/11/2017	scATAC-seq	scATAC-seq for tissue	nb1
 SAMP-196	MCCT-051.3	JYH	10/09/2017	10/09/2017	ATAC-seq	ATAC-seq for tissue	nb1_p112	Yes	Yes	JYH_120	Cohen	EXP-100
 SAMP-206	Hr heart	JYH	10/09/2017	10/09/2017	ATAC-seq	ATAC-seq for tissue	nb1_p112	Yes	Yes	JYH_159	Neil Chi	EXP-101
 SAMP-207	WT heart	JYH	10/09/2017	10/09/2017	ATAC-seq	ATAC-seq for tissue	nb1_p112	Yes	Yes	JYH_160	Neil Chi	EXP-102
-other	HG00514_2_TB_gly	JYH	10/09/2017	10/09/2017	ATAC-seq	ATAC-seq for tissue	nb1_p112	Yes	Yes	JYH_164	NA	EXP-103
+other	HG00514_2_TB_gly	JYH	10/09/2017	10/09/2017	ATAC-seq	ATAC-seq for tissue	nb1_p112	Yes	Yes	JYH_164[2]	NA	EXP-103
 SAMP-200	H7-DMSO-1SNAP	JYH	10/13/2017	10/13/2017	ATAC-seq	ATAC-seq for cells	nb1_p115	Yes	Yes	JYH_121	Huh7 parental	EXP-104
 SAMP-201	H7-DMSO-2SNAP	JYH	10/13/2017	10/13/2017	ATAC-seq	ATAC-seq for cells	nb1_p115	Yes	Yes	JYH_122	Huh7 parental	EXP-105
 SAMP-202	H7-2523R-1SNAP	JYH	10/13/2017	10/13/2017	ATAC-seq	ATAC-seq for cells	nb1_p115	Yes	Yes	JYH_123	Huh7 2523R	EXP-106
@@ -112,12 +112,6 @@ SAMP-211	HCT-1299	JYH	10/13/2017	10/13/2017	ATAC-seq	ATAC-seq for cells	nb1_p115
 other	D0_rep2_CVDC2	JYH	10/13/2017	10/13/2017	ATAC-seq	ATAC-seq for cells	nb1_p115	Yes	No	NA	test	EXP-109
 other	D15_rep1_CVDC2	JYH	10/13/2017	10/13/2017	ATAC-seq	ATAC-seq for cells	nb1_p115	Yes	No	NA	test	EXP-110
 other	HG00514_2_TB_gly	JYH	10/13/2017	10/13/2017	ATAC-seq	ATAC-seq for cells	nb1_p115	Yes	Yes	JYH_126	NA	EXP-111
-SAMP-212	MCCT-40.17	JYH	10/16/2017	10/17/2017	scRNA-seq	scRNA-seq for tissue	nb1_p117	Yes	Yes	JYH_167	New Califano	EXP-112
-SAMP-213	MCCT-40.20	JYH	10/16/2017	10/17/2017	scRNA-seq	scRNA-seq for tissue	nb1_p117	Yes	Yes	JYH_168	New Califano	EXP-113
-SAMP-104	GBM10.16	JYH	10/16/2017	10/17/2017	scRNA-seq	scRNA-seq for tissue	nb1_p117	Yes	Yes	XW12	GBM	EXP-114
-SAMP-92	GBM10.4	JYH	10/16/2017	10/17/2017	scRNA-seq	scRNA-seq for tissue	nb1_p117	Yes	Yes	XW13	GBM	EXP-115
-SAMP-214	MCCT-40.18	JYH	10/16/2017	10/17/2017	scRNA-seq	scRNA-seq for tissue	nb1_p117	Yes	Yes	JYH_169	New Califano	EXP-116
-SAMP-215	MCCT-40.19	JYH	10/16/2017	10/17/2017	scRNA-seq	scRNA-seq for tissue	nb1_p117	Yes	Yes	JYH_170	New Califano	EXP-117
 SAMP-226	D00_Rep1	JYH	10/19/2017	10/19/2017	ATAC-seq	ATAC-seq for cells	nb1_p119	Yes	Yes	JYH_127	Neil Chi Rep1	EXP-118
 SAMP-228	D03_Rep1	JYH	10/19/2017	10/19/2017	ATAC-seq	ATAC-seq for cells	nb1_p119	Yes	Yes	JYH_128	Neil Chi Rep1	EXP-119
 SAMP-230	D05_Rep1_VE	JYH	10/19/2017	10/19/2017	ATAC-seq	ATAC-seq for cells	nb1_p119	Yes	Yes	JYH_129	Neil Chi Rep1	EXP-120
@@ -196,7 +190,7 @@ SAMP-224	CHE6-1_IL1b_101217	AVD	11/13/2017	11/14/2017	ATAC-seq	ATAC-seq_cells	nb
 SAMP-225	PET3-2__IL1b_101217	AVD	11/13/2017	11/14/2017	ATAC-seq	ATAC-seq_cells	nb1_p53-57	Yes	Yes	AVD_51	Gage lab ATAC10	EXP-193
 SAMP-128	GM19240_Slow5% DMSO	AVD	11/13/2017	11/14/2017	ATAC-seq	ATAC-seq_cells	nb1_p53-57	Yes	Yes	AVD_52	Gage lab ATACctrl	EXP-194
 SAMP-76	GBM5.3	XW	8/7/2017	8/8/2017	scATAC-seq	scATAC-seq for tissue	nb1_p11	Yes				EXP-195
-SAMP-75	GBM5.2	XW	8/31/2017	9/11/2017	scATAC-seq	scATAC-seq for tissue	nb1_p14-15	Yes	Yes	XW4		EXP-196
+SAMP-75	GBM5.2	XW	8/31/2017	9/11/2017	scATAC-seq	scATAC-seq for tissue	nb1_p14-15	Yes	Yes	XW_4		EXP-196
 SAMP-69	GBM4.1	XW	9/15/2017	9/18/2017	scRNA-seq	scRNA-seq for tissue	nb1_p16	Yes	Yes	XW8		EXP-197
 SAMP-70	GBM4.2	XW	9/15/2017	9/18/2017	scRNA-seq	scRNA-seq for tissue	nb1_p16	No	Other (please explain in notes)	NA	clumps, very few nuclei, therfore no library	EXP-198
 SAMP-71	GBM4.3	XW	9/1/2017	9/7/2017	scRNA-seq	scRNA-seq for tissue	nb1_p14-15	Yes	Yes	XW9		EXP-199
@@ -223,14 +217,14 @@ SAMP-344 & 345	A_#001 & B_#001_1	XW	11/8/2017	11/13/2017	scRNA-seq	scRNA-seq for
 SAMP-344 & 345	A_#001 & B_#001_2	XW	11/8/2017	11/13/2017	scRNA-seq	scRNA-seq for tissue	nb1_p26-27	Yes	Yes	XW24		EXP-220
 SAMP-352 & 353	A_#002 & B_#002_1	XW	11/8/2017	11/13/2017	scRNA-seq	scRNA-seq for tissue	nb1_p26-27	Yes	Yes	XW25		EXP-221
 SAMP-352 & 353	A_#002 & B_#002_2	XW	11/8/2017	11/13/2017	scRNA-seq	scRNA-seq for tissue	nb1_p26-27	Yes	Yes	XW26		EXP-222
-SAMP-90	GBM10.2	XW	7/29/2017	8/1/2017	scATAC-seq	scATAC-seq for tissue	nb1_p9-10	Yes	Yes	JYH87		EXP-223
-SAMP-102	GBM10.14	XW	7/31/2017	8/1/2017	scATAC-seq	scATAC-seq for tissue	nb1_p9-10	Yes	Yes	JYH88		EXP-224
+SAMP-90	GBM10.2	XW	7/29/2017	8/1/2017	scATAC-seq	scATAC-seq for tissue	nb1_p9-10	Yes	Yes	JYH_87		EXP-223
+SAMP-102	GBM10.14	XW	7/31/2017	8/1/2017	scATAC-seq	scATAC-seq for tissue	nb1_p9-10	Yes	Yes	JYH_88		EXP-224
 SAMP-194	MCCT-051.1	XW	11/6/2017	11/7/2017	ATAC-seq	ATAC-seq_tissues	nb1_p25	Yes	Yes	XW27		EXP-225
 SAMP-195	MCCT-051.2	XW	11/6/2017	11/7/2017	ATAC-seq	ATAC-seq_tissues	nb1_p25	Yes	Yes	XW28		EXP-226
 SAMP-197	MCCT-051.4	XW	11/6/2017	11/7/2017	ATAC-seq	ATAC-seq_tissues	nb1_p25	Yes	Yes	XW29		EXP-227
-SAMP-344	A_#001 & B_#001	XW	11/8/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p26-27	Yes	Yes	XW30		EXP-228
-SAMP-345	A_#002 & B_#002	XW	11/8/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p26-27	Yes	Yes	XW31		EXP-229
-SAMP-391	Mouse Cortex MniBrain Test	XW	11/14/2017	11/14/2017	ATAC-seq	ATAC-seq_tissues	nb1_p27-28	Yes	Yes	XW32		EXP-230
+SAMP-344	A_#001 & B_#001	XW	11/8/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p26-27	Yes	Yes	XW_30		EXP-228
+SAMP-345	A_#002 & B_#002	XW	11/8/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p26-27	Yes	Yes	XW_31		EXP-229
+SAMP-391	Mouse Cortex MniBrain Test	XW	11/14/2017	11/14/2017	ATAC-seq	ATAC-seq_tissues	nb1_p27-28	Yes	Yes	XW_32		EXP-230
 SAMP-125	R237	JYH	11/22/2017	11/22/2017	scATAC-seq	scATAC-seq for tissue	nb1_p135	Yes	Yes	JYH_165	Flash Frozen 3M	EXP-231
 SAMP-45	AN02646	JYH	11/17/2017	11/17/2017	scATAC-seq	scATAC-seq for tissue	nb1_p134	Yes	Yes	JYH_166	hippo	EXP-232
 SAMP-212	MCCT-40.17	JYH	10/16/2017	10/16/2017	scRNA-seq	scRNA-seq for tissue	nb1_p117	Yes	Yes	JYH_167	New Califano	EXP-233
@@ -543,12 +537,6 @@ Other	Epigen 12878_2	RM	3/22/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	y
 SAMP-595	CEMBA180402_4F	XW	4/2/2018	4/6/2018	scATAC-seq	scATAC-seq for tissue	nb1_p82,85	yes	yes			EXP-540
 SAMP-396	GM12878-Arima-1	RM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RM_33		EXP-541
 NA	GM12878 Epigen	RM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RM_34		EXP-542
-Other	Brain3	JYH	3/9/2018	3/9/2018	ATAC-seq	ATAC-seq_tissues	nb1_179	Yes	Yes	JYH_375	Immediate	EXP-543
-Other	Brain4	JYH	3/9/2018	3/9/2018	ATAC-seq	ATAC-seq_tissues	nb1_179	Yes	Yes	JYH_376	Immediate	EXP-544
-Other	Heart3	JYH	3/9/2018	3/9/2018	ATAC-seq	ATAC-seq_tissues	nb1_179	Yes	Yes	JYH_377	Immediate	EXP-545
-Other	Heart4	JYH	3/9/2018	3/9/2018	ATAC-seq	ATAC-seq_tissues	nb1_179	Yes	Yes	JYH_378	Immediate	EXP-546
-Other	Lung3	JYH	3/9/2018	3/9/2018	ATAC-seq	ATAC-seq_tissues	nb1_179	Yes	Yes	JYH_379	Immediate	EXP-547
-Other	Lung4	JYH	3/9/2018	3/9/2018	ATAC-seq	ATAC-seq_tissues	nb1_179	Yes	Yes	JYH_380	Immediate	EXP-548
 Other	Brain3	JYH	3/29/2018	3/29/2018	ATAC-seq	ATAC-seq_tissues	nb1_185	Yes	Yes	JYH_381	3week_ground	EXP-549
 Other	Brain4	JYH	3/29/2018	3/29/2018	ATAC-seq	ATAC-seq_tissues	nb1_185	Yes	Yes	JYH_382	3week_ground	EXP-550
 Other	Heart3	JYH	3/29/2018	3/29/2018	ATAC-seq	ATAC-seq_tissues	nb1_185	Yes	Yes	JYH_383	3week_ground	EXP-551
