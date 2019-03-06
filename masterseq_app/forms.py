@@ -14,7 +14,7 @@ class SampleCreationForm(forms.ModelForm):
 	class Meta:
 		model = SampleInfo
 		fields = ['sample_id','date','species','sample_type','preparation',\
-		'fixation','sample_amount','unit','service_requested',\
+		'fixation','sample_amount','unit','storage','service_requested',\
 		'seq_depth_to_target','seq_length_requested','seq_type_requested','description','notes','status']
 		widgets ={
 			'date': forms.DateInput(),
@@ -168,6 +168,7 @@ class SamplesCreationForm(forms.Form):
 		flagindex = 0
 		flagunit = 0
 		flagfixation = 0
+		flaguser = 0
 		#flagprep = 0
 		invaliddate = []
 		invalidspecies = []
@@ -175,6 +176,7 @@ class SamplesCreationForm(forms.Form):
 		invalidindex = []
 		invalidunit = []
 		invalidfixation = []
+		invaliduserlist = []
 		#invalidprep = []
 		for lineitem in data.strip().split('\n'):
 			if lineitem != '\r':
@@ -202,6 +204,15 @@ class SamplesCreationForm(forms.Form):
 				if fixation not in [x[0].lower() for x in choice_for_fixation]:
 					invalidfixation.append(fields[13])
 					flagfixation = 1
+				try:
+					membername = fields[25].strip()
+				except:
+					membername = ''
+				if membername and not User.objects.filter(username=membername).exists():
+					invaliduserlist.append(membername)
+					flaguser = 1
+				
+
 
 
 				# samprep = fields[12].split('(')[0].strip()
@@ -236,7 +247,9 @@ class SamplesCreationForm(forms.Form):
 			raise forms.ValidationError('Invalid fixation:'+','.join(invalidfixation)+\
 				'.  Should be one of ('+','.join([x[0] for x in\
 				 choice_for_fixation])+')')
-
+		if flaguser == 1:
+			raise forms.ValidationError(
+				'Invalid Member Name:'+','.join(invaliduserlist))
 
 		# if flagprep == 1:
 		# 	raise forms.ValidationError('Invalid sample preparation:'+','.join(invalidprep))

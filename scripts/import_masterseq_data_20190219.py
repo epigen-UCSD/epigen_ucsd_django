@@ -439,10 +439,16 @@ def main():
 								sample = SampleInfo.objects.get(sample_index = fields[0].strip())
 							else:
 								sampleindex = 'SAMPNA-'+str(i)
+								if fields[1].strip():
+									sampid_tm = fields[1].strip()
+								else:
+									sampid_tm = sampleindex
+								
 								sample,created = SampleInfo.objects.get_or_create(sample_index = sampleindex,)				
-								sample.sample_id = fields[1].strip()		
+								sample.sample_id = 	sampid_tm	
 								sample.species = fields[3].strip().lower()
 								sample.team_member = teammemberinitails
+								sample.save()
 								i += 1
 							library,created = LibraryInfo.objects.get_or_create(experiment_index = experimentindex)									
 							library.sampleinfo = sample
