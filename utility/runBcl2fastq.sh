@@ -10,7 +10,7 @@ done
 
 
 ## cmd1: qsub bcl2fastq job
-cmd1="qsub -M $useremail -v flowcell_id=$flowcell,run_dir=$rundir \$(which runBcl2fastq.pbs)"
+cmd1="qsub -k oe -M $useremail -v flowcell_id=$flowcell,run_dir=$rundir \$(which runBcl2fastq.pbs)"
 ssh zhc268@tscc-login.sdsc.edu $cmd1
 
 
