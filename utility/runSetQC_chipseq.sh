@@ -34,7 +34,7 @@ else
 	nrow=$(wc -l $RUN_LOG_PIP)
 	#cmd1="qsub -v samples=${RUN_LOG_PIP},chipseq=true -t 0-$[nrow-1] -M $USER_EMAIL -q home-epigen -l walltime=16:00:00  \$(which runBulkCHIP_fastq.pbs)"
     done
-    awk '(NR>1){print $1}' $STATUS_FILE > $SETQC_FILE
+    awk '(NR>1){print $1,$2,$3}' $STATUS_FILE > $SETQC_FILE
 fi
 
 
