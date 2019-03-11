@@ -6,7 +6,7 @@ from .forms import SampleCreationForm, LibraryCreationForm, SeqCreationForm,\
     SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm
 from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
 SeqMachineInfo, SeqBioInfo,choice_for_preparation,choice_for_fixation,\
-choice_for_unit
+choice_for_unit,choice_for_sample_type
 from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
@@ -137,9 +137,7 @@ def SamplesCreateView(request):
             try:
                 samnotes = ';'.join([fields[20].strip(),fields[28].strip()]).strip(';')
             except:
-                samnotes = fields[20].strip()
-            samprep = fields[12].strip()
-            
+                samnotes = fields[20].strip()           
             try:
                 membername = fields[25].strip()
                 if membername == '':
@@ -150,26 +148,21 @@ def SamplesCreateView(request):
                 storage_tm = fields[26].strip()
             except:
                 storage_tm = ''
-            print('hahha:'+membername)
             service_requested_tm = fields[16].strip()
             seq_depth_to_target_tm = fields[17].strip()
             seq_length_requested_tm = fields[18].strip()
             seq_type_requested_tm = fields[19].strip()
+            samprep = fields[12].strip().replace('crypreserant','cryopreservant')
             if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:
                 if samprep.lower().startswith('other'):
                     samprep = 'other (please explain in notes)'
                 else:
-                    samnotes = ';'.join([samnotes,'sample preparation:'+samprep]).strip(';')
+                    if samprep:
+                        samnotes = ';'.join([samnotes,'sample preparation:'+samprep]).strip(';')
                     samprep = 'other (please explain in notes)'
             samtype = fields[11].split('(')[0].strip().lower()
-            if samtype == 'other':
-                samtype = 'other (please explain in notes)'
             samspecies = fields[10].split('(')[0].lower().strip()
-            if samspecies == 'other':
-                samspecies = 'other (please explain in notes)'
             unit = fields[15].split('(')[0].strip().lower()
-            if unit == 'other':
-                unit = 'other (please explain in notes)'
             fixation = fields[13].strip().lower()
             if fixation == 'yes (1% fa)':
                 fixation = 'Yes (1% FA)'
@@ -178,16 +171,16 @@ def SamplesCreateView(request):
             if service_requested_tm.lower().startswith('other'):
                 service_requested_tm = 'other (please explain in notes)'
             sample_amount = fields[14].strip()
-
             samdescript = fields[9].strip()
             samid = fields[8].strip()
-            data[samid] = {}
             samdate = datetransform(fields[0].strip())
-
+            date_received = datetransform(fields[23].strip())
+            data[samid] = {}
             data[samid] = {
                 'sample_index': samindex,
                 'team_member': membername,
                 'date': samdate,
+                'date_received':date_received,
                 'species': samspecies,
                 'sample_type': samtype,
                 'preparation': samprep,
@@ -215,6 +208,7 @@ def SamplesCreateView(request):
                 notes=samnotes,
                 team_member=User.objects.get(username=membername),
                 date=samdate,
+                date_received=date_received,
                 storage=storage_tm,
                 service_requested=service_requested_tm,
                 seq_depth_to_target=seq_depth_to_target_tm,
@@ -226,9 +220,9 @@ def SamplesCreateView(request):
             SampleInfo.objects.bulk_create(tosave_list)
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
-            displayorder = ['sample_index', 'team_member', 'date', 'species', 'sample_type',
+            displayorder = ['sample_index','description', 'team_member', 'date','date_received','species', 'sample_type',
                             'preparation', 'fixation','sample_amount','unit',
-                            'description', 'notes','storage','service_requested','seq_depth_to_target',
+                             'notes','storage','service_requested','seq_depth_to_target',
                             'seq_length_requested','seq_type_requested']
             context = {
                 'sample_form': sample_form,
@@ -282,7 +276,7 @@ def LibrariesCreateView(request):
                 #experiment_type=libexp, protocal_name='other (please explain in notes)')
             refnotebook = fields[7].strip()
             libnote = ';'.join(
-                [fields[11].strip(), fields[6].strip()]).strip(';')
+                [fields[11].strip(),'Protocol used(recorded in Tracking Sheet 2):', fields[6].strip()]).strip(';')
             #memebername = User.objects.get(username=fields[2].strip())
             data[libid] = {
                 'pseudoflag': pseudoflag,
@@ -298,8 +292,6 @@ def LibrariesCreateView(request):
                 'reference_to_notebook_and_page_number': fields[7].strip(),
                 'notes': libnote
             }
-            print(datestart)
-            print(dateend)
 
         if 'Save' in request.POST:
             for k,v in data.items():
@@ -329,7 +321,7 @@ def LibrariesCreateView(request):
                             'date_completed', 'experiment_type', 'protocal_name', 'reference_to_notebook_and_page_number',
                             'notes']
             if pseudorequired == 1:
-                displayorder2 = ['sample_index','sample_id']
+                displayorder2 = ['sample_index','sample_id','team_member_initails']
                 context = {
                     'library_form': library_form,
                     'modalshowplus': 1,
@@ -411,19 +403,19 @@ def SeqsCreateView(request):
                 if not sampinfo.species and sampspecies:
                     updatesampflag = 1
                     updatesamprequired  = 1
-            print(pseudolibrequired)
+            
             if '-' in fields[6].strip():
                 datesub = fields[6].strip()
             else:
                 datesub = datetransform(fields[6].strip())
             memebername = User.objects.get(username=fields[5].strip())
             indexname = fields[15].strip()
-            if indexname and indexname not in ['NA', 'Other (please explain in notes)', 'N/A'] and exptype not in ['scATAC-seq', 'snATAC-seq']:
+            if indexname and indexname not in ['NA', 'Other (please explain in notes)', 'N/A']:
                 i7index = Barcode.objects.get(indexid=indexname)
             else:
                 i7index = None
             indexname2 = fields[16].strip()
-            if indexname2 and indexname2 not in ['NA', 'Other (please explain in notes)', 'N/A'] and exptype not in ['scATAC-seq', 'snATAC-seq']:
+            if indexname2 and indexname2 not in ['NA', 'Other (please explain in notes)', 'N/A']:
                 i5index = Barcode.objects.get(indexid=indexname2)
             else:
                 i5index = None
@@ -486,11 +478,11 @@ def SeqsCreateView(request):
                     sampleinfo = SampleInfo.objects.get(sample_index=v['sample_index'])
                     sampleinfo.species = v['species']
                     sampleinfo.save()
-                if v['indexname'] and v['indexname'] not in ['NA', 'Other (please explain in notes)', 'N/A'] and exptype not in ['scATAC-seq', 'snATAC-seq']:
+                if v['indexname'] and v['indexname'] not in ['NA', 'Other (please explain in notes)', 'N/A']:
                     i7index = Barcode.objects.get(indexid=v['indexname'])
                 else:
                     i7index = None
-                if v['indexname2'] and v['indexname2'] not in ['NA', 'Other (please explain in notes)', 'N/A'] and exptype not in ['scATAC-seq', 'snATAC-seq']:
+                if v['indexname2'] and v['indexname2'] not in ['NA', 'Other (please explain in notes)', 'N/A']:
                     i5index = Barcode.objects.get(indexid=v['indexname2'])
                 else:
                     i5index = None
@@ -514,8 +506,8 @@ def SeqsCreateView(request):
         if 'Preview' in request.POST:
             displayorder = ['libraryinfo', 'default_label', 'date_submitted', 'team_member_initails', 'read_length',
                             'read_type', 'portion_of_lane', 'seqcore', 'machine', 'i7index', 'i5index', 'notes']
-            displayorder2 = ['sample_index','sample_id','species']
-            displayorder3 = ['library_id','sampleinfo','experiment_index','experiment_type']
+            displayorder2 = ['sample_index','sample_id','species','team_member_initails']
+            displayorder3 = ['library_id','sampleinfo','experiment_index','experiment_type','team_member_initails']
             context = {
                     'updatesamprequired':updatesamprequired,
                     'pseudosamprequired':pseudosamprequired,
@@ -833,8 +825,8 @@ def SeqUpdateView(request, pk):
 def SampleDetailView(request, pk):
     sampleinfo = get_object_or_404(SampleInfo.objects.select_related(
         'team_member', 'research_person__person_id', 'fiscal_person__person_id'), pk=pk)
-    summaryfield = ['status', 'sample_index', 'sample_id', 'team_member', 'species',
-                    'sample_type', 'preparation', 'fixation', 'sample_amount', 'unit', 'description', 'notes']
+    summaryfield = ['status', 'sample_index', 'sample_id','description', 'date','date_received','team_member', 'species',
+                    'sample_type', 'preparation', 'fixation', 'sample_amount', 'unit', 'storage', 'notes']
     requestedfield = ['date', 'service_requested', 'seq_depth_to_target',
                       'seq_length_requested', 'seq_type_requested']
     libfield = ['library_id', 'experiment_type',

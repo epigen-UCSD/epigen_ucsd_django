@@ -98,7 +98,7 @@ def main():
 		for line in f:
 			fields = line.split('\t')
 			if fields[8]:
-				print(fields[21].strip())
+				#print(fields[21].strip())
 				active_index.append(fields[21].strip())
 				sampletype_tm = fields[11].strip().lower()
 				species_tm = fields[10].lower().strip()
@@ -129,7 +129,7 @@ def main():
 					species_tm = 'other (please explain in notes)'
 
 				if preparation_tm in ['facs sorted cells','douncing homogenization']:
-					notes_tm = ';'.join([notes_tm,preparation_tm]).strip(';')
+					notes_tm = ';'.join([notes_tm,'sample preparation:',preparation_tm]).strip(';')
 					preparation_tm = 'other (please explain in notes)'
 				elif preparation_tm.startswith('other'):
 					preparation_tm = 'other (please explain in notes)'
@@ -178,7 +178,7 @@ def main():
 		for line in f:
 			fields = line.split('\t')
 			if fields[8] and not fields[21].strip() in active_index:
-				print(fields[21].strip())
+				#print(fields[21].strip())
 				sampletype_tm = fields[11].strip().lower()
 				species_tm = fields[10].lower().strip()
 				preparation_tm = fields[12].lower().strip()
@@ -208,7 +208,7 @@ def main():
 					species_tm = 'other (please explain in notes)'
 
 				if preparation_tm in ['facs sorted cells','douncing homogenization']:
-					notes_tm = ';'.join([notes_tm,preparation_tm]).strip(';')
+					notes_tm = ';'.join([notes_tm,'sample preparation:',preparation_tm]).strip(';')
 					preparation_tm = 'other (please explain in notes)'
 				elif preparation_tm.startswith('other'):
 					preparation_tm = 'other (please explain in notes)'

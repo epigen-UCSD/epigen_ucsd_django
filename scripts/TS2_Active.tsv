@@ -1302,3 +1302,14 @@ NA	H3K27me3_4ug Ab_10ug chr	AVD	2/12/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT
 NA	H3K27me3_4ug Ab_20ug chr	AVD	2/12/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_331	H3K27me3 Antibody Titration Experiment	EXP-1620
 NA	H3K27me3_8ug Ab_10ug chr	AVD	2/12/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_332	H3K27me3 Antibody Titration Experiment	EXP-1621
 NA	H3K27me3_16ug Ab_10ug chr	AVD	2/12/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_333	H3K27me3 Antibody Titration Experiment	EXP-1622
+SAMP-1088	CEMBA190305_11E	XH	3/5/2019	3/6/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_143		EXP-1623
+SAMP-1089	CEMBA190305_11F	XH	3/5/2019	3/6/2019	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_144		EXP-1624
+SAMP-1040	SALK BA9_2037	XH	3/1/2019	3/6/2019	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_145		EXP-1625
+SAMP-1041	SALK BA9_2057	XH	3/1/2019	3/6/2019	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_146		EXP-1626
+SAMP-1042	SALK BA9_2012	XH	3/1/2019	3/6/2019	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_147		EXP-1627
+SAMP-1043	SALK BA9_2097	XH	3/1/2019	3/6/2019	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_148		EXP-1628
+SAMP-1044	SALK BA9_2021	XH	3/8/2019	3/8/2019	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_149		EXP-1629
+SAMP-1045	SALK BA9_2058	XH	3/8/2019	3/8/2019	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_150		EXP-1630
+SAMP-1046	SALK BA9_2068	XH	3/8/2019	3/8/2019	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_151		EXP-1631
+SAMP-1047	SALK BA9_2122	XH	3/8/2019	3/8/2019	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_152		EXP-1632
+SAMP-1096	Sorted Fibroblast	JYH	3/6/2019	3/6/2019	scATAC-seq	ATAC-seq for cells, 10X		Yes	Yes	JYH_813		EXP-1633
