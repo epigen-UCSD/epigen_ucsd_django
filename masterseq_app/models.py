@@ -99,9 +99,10 @@ class SampleInfo(models.Model):
     fixation = models.CharField(
         max_length=50, choices=choice_for_fixation, null=True)
     notes = models.TextField(blank=True)
-    sample_amount = models.CharField(max_length=20, blank=True, null=True)
+    sample_amount = models.CharField(max_length=100, blank=True, null=True)
     unit_choice = choice_for_unit
     unit = models.CharField(max_length=50, choices=unit_choice, null=True)
+    storage = models.CharField(max_length=50, blank=True, null=True)
     experiment_type_choice = choice_for_experiment_type
     service_requested = models.CharField(
         max_length=50, choices=experiment_type_choice, null=True)

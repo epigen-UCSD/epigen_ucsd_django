@@ -1,0 +1,51 @@
+libraries:
+SAMP-128	GM_SLOW19240	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	No		control	EXP-416
+SAMP-543	G2-48-6 LB	RMM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p85-88	Yes	Yes		Robert ATAC 	EXP-645
+SAMP-175	GM19240	RMM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p85-88	Yes	Yes		Robert ATAC 	EXP-648
+Other	GM19240 (O/N)	RMM	08/13/2018	09/14/2018	CUT&RUN	Henikoff CnR	nb1_p127-129	Yes				EXP-1074
+Other	GM19240 (O/N)	RMM	08/13/2018	09/14/2018	CUT&RUN	Henikoff CnR	nb1_p127-129	Yes				EXP-1075
+Other	GM19240 (15min)	RMM	08/21/2018	08/22/2018	CUT&RUN	Henikoff CnR	nb1_p134-136	Yes				EXP-1078
+Other	GM19240 (15min)	RMM	08/21/2018	08/22/2018	CUT&RUN	Henikoff CnR	nb1_p134-136	Yes				EXP-1079
+SAMP-726	NA0007890679	JIB	9/11/2018	9/14/2018	scRNA-seq	10X_nuclei		No	No		No library generated	EXP-1194
+SAMP-897	CE1	JIB	11/19/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1372
+SAMP-898	CE2	JIB	11/19/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1373
+SAMP-899	CE3	JIB	11/19/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1374
+SAMP-900	CE4	JIB	11/19/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1375
+SAMP-901	CE5	JIB	11/27/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1376
+SAMP-902	CE6	JIB	11/27/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1377
+SAMP-903	CE7	JIB	11/27/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1378
+SAMP-911	CE8	JIB	11/20/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1379
+SAMP-912	CE9	JIB	11/20/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1380
+SAMP-913	CE10	JIB	11/20/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1381
+SAMP-914	CE11	JIB	11/20/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1382
+SAMP-915	CE12	JIB	11/27/2018	11/29/2018	scRNA-seq	10X Genomics 3' V2		Yes	Yes		Library handed off to Conchi for sequencing	EXP-1383
+SAMP-1023	BG Classical Monocytes	JIB	2/21/2018	2/22/2018	scRNA-seq	10X Genomics V3						EXP-1550
+SAMP-1023	EHB Classical Monocytes	JIB	2/21/2018	2/22/2018	scRNA-seq	10X Genomics V3						EXP-1551
+other	D0_rep2_CVDC2	JYH	10/13/2017	10/13/2017	ATAC-seq	ATAC-seq for cells	nb1_p115	Yes	No	NA	test	EXP-109
+other	D15_rep1_CVDC2	JYH	10/13/2017	10/13/2017	ATAC-seq	ATAC-seq for cells	nb1_p115	Yes	No	NA	test	EXP-110
+SAMP-159	GM19240	JYH	11/3/2017	11/6/2017	ATAC-seq	ATAC-seq_cells	nb1_p127	Yes	No	NA	Tagmentation Volume 30 ul	EXP-174
+SAMP-204	FX15.6 HCC	JYH	11/3/2017	11/6/2017	ATAC-seq	ATAC-seq_tissues	nb1_p127	Yes	No	NA	without filter	EXP-175
+SAMP-76	GBM5.3	XW	8/7/2017	8/8/2017	scATAC-seq	scATAC-seq for tissue	nb1_p11	Yes				EXP-195
+SAMP-70	GBM4.2	XW	9/15/2017	9/18/2017	scRNA-seq	scRNA-seq for tissue	nb1_p16	No	Other (please explain in notes)	NA	clumps, very few nuclei, therfore no library	EXP-198
+SAMP-128	GM_SLOW19240	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	No		control	EXP-416
+SAMP-525	CEMBA180308_3B	XW	03/08/2018	3/9/2018	scATAC-seq	scATAC-seq for tissue	nb1_p72	Yes	Yes			EXP-490
+SAMP-526	CEMBA180312_3B	XW	03/12/2018	03/16/2018	scATAC-seq	scATAC-seq for tissue	nb1_p72,74,75	Yes	Yes			EXP-491
+SAMP-595	CEMBA180402_4F	XW	4/2/2018	4/6/2018	scATAC-seq	scATAC-seq for tissue	nb1_p82,85	yes	yes			EXP-540
+SAMP-598	CEMBA180409_2C	XW	04/09/2018	04/10/2018	scATAC-seq	scATAC-seq for tissue	nb1_p85,87	Yes	Yes			EXP-615
+SAMP-599	CEMBA180410_2C	XH	04/10/2018		scATAC-seq	scATAC-seq for tissue						EXP-616
+SAMP-600	CEMBA180412_3D	XW	04/12/2018		scATAC-seq	scATAC-seq for tissue						EXP-617
+SAMP-601	CEMBA180416_3D	XH	04/16/2018		scATAC-seq	scATAC-seq for tissue						EXP-618
+SAMP-602	CEMBA180417_4C	XW	04/17/2018		scATAC-seq	scATAC-seq for tissue						EXP-619
+SAMP-603	CEMBA180419_4C	XH	04/19/2018		scATAC-seq	scATAC-seq for tissue						EXP-620
+SAMP-543	G2-48-6 LB	RMM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes		Robert ATAC 	EXP-645
+SAMP-175	GM19240	RMM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes		Robert ATAC 	EXP-648
+Sequencings:
+Other	GM19240 (O/N)	GM19240 (O/N)	human	EXP-1074	RMM													SEQ-1822			NA	NA	NA	NA	NA	NA	NA		
+Other	GM19240 (O/N)	GM19240 (O/N)	human	EXP-1075	RMM													SEQ-1823			NA	NA	NA	NA	NA	NA	NA		
+Other	GM19240 (15min)	GM19240 (15min)	human	EXP-1078	RMM													SEQ-1826			NA	NA	NA	NA	NA	NA	NA		
+Other	GM19240 (15min)	GM19240 (15min)	human	EXP-1079	RMM													SEQ-1827			NA	NA	NA	NA	NA	NA	NA		
+Other	GM19240 (A) NR2F2 RM	GM19240 (A) NR2F2 RM	human	EXP-1199	RMM	2018-09-27			Fast 4C	EPIGEN	NextSeq550 Mid	75	PE	0.03				SEQ-1957											
+Other	GM19240 (B) NR2F2 DG	GM19240 (B) NR2F2 DG	human	EXP-1204	RMM	2018-09-27			Fast 4C	EPIGEN	NextSeq550 Mid	75	PE	0.03				SEQ-1962											
+SAMP-863	Aging mouse heart 3 month	AM heart 3_10_18	mouse	EXP-1246	XH													SEQ-2018											
+SAMP-864	Aging mouse heart  10 month	AM heart 3_10_18	mouse	EXP-1247	XH													SEQ-2019											
+SAMP-865	Aging mouse heart  18 month	AM heart 3_10_18	mouse	EXP-1248	XH													SEQ-2020											

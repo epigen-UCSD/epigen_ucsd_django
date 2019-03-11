@@ -12,16 +12,17 @@ from django.shortcuts import get_object_or_404
 
 class SampleCreationForm(forms.ModelForm):
 
-    class Meta:
-        model = SampleInfo
-        fields = ['sample_id', 'date', 'species', 'sample_type', 'preparation',
-                  'fixation', 'sample_amount', 'unit', 'service_requested',
-                  'seq_depth_to_target', 'seq_length_requested', 'seq_type_requested', 'description', 'notes', 'status']
-        widgets = {
-            'date': forms.DateInput(),
-            'description': forms.Textarea(attrs={'cols': 60, 'rows': 3}),
-            'notes': forms.Textarea(attrs={'cols': 60, 'rows': 3}),
-        }
+
+	class Meta:
+		model = SampleInfo
+		fields = ['sample_id','date','species','sample_type','preparation',\
+		'fixation','sample_amount','unit','storage','service_requested',\
+		'seq_depth_to_target','seq_length_requested','seq_type_requested','description','notes','status']
+		widgets ={
+			'date': forms.DateInput(),
+			'description':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
+			'notes':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
+		}
 
 
 class LibraryCreationForm(forms.ModelForm):
@@ -172,96 +173,108 @@ class SeqCreationForm2(forms.Form):
 
 
 class SamplesCreationForm(forms.Form):
-    samplesinfo = forms.CharField(
-        label='SampleInfo(Please copy and paste all of the columns from TrackingSheet 1)',
-        widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
-        required=True,
-    )
+	samplesinfo = forms.CharField(
+			label='SampleInfo(Please copy and paste all of the columns from TrackingSheet 1)',
+			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
+			required=True,
+					)
+	def clean_samplesinfo(self):
+		data = self.cleaned_data['samplesinfo']
+		cleaneddata = []
+		flagdate = 0
+		flagspecies = 0
+		flagtype = 0
+		flagindex = 0
+		flagunit = 0
+		flagfixation = 0
+		flaguser = 0
+		#flagprep = 0
+		invaliddate = []
+		invalidspecies = []
+		invalidtype = []
+		invalidindex = []
+		invalidunit = []
+		invalidfixation = []
+		invaliduserlist = []
+		#invalidprep = []
+		for lineitem in data.strip().split('\n'):
+			if lineitem != '\r':
+				fields = lineitem.split('\t')
+				try:
+					samdate = datetransform(fields[0].strip())
+				except:
+					invaliddate.append(fields[0].strip())
+					flagdate = 1
+				samid = fields[8].strip()
+				samdescript = fields[9].strip()
+				samspecies = fields[10].split('(')[0].lower().strip()
+				if samspecies not in [x[0].split('(')[0].strip() for x in choice_for_species]:
+					invalidspecies.append(samspecies)
+					flagspecies = 1
+				samtype = fields[11].split('(')[0].strip().lower()
+				if samtype not in [x[0].split('(')[0].strip() for x in choice_for_sample_type]:
+					invalidtype.append(samtype)
+					flagtype = 1
+				unit = fields[15].split('(')[0].strip().lower()
+				if unit not in [x[0].split('(')[0].strip() for x in choice_for_unit]:
+					invalidunit.append(fields[15])
+					flagunit = 1
+				fixation = fields[13].strip().lower()
+				if fixation not in [x[0].lower() for x in choice_for_fixation]:
+					invalidfixation.append(fields[13])
+					flagfixation = 1
+				try:
+					membername = fields[25].strip()
+				except:
+					membername = ''
+				if membername and not User.objects.filter(username=membername).exists():
+					invaliduserlist.append(membername)
+					flaguser = 1
+				
 
-    def clean_samplesinfo(self):
-        data = self.cleaned_data['samplesinfo']
-        cleaneddata = []
-        flagdate = 0
-        flagspecies = 0
-        flagtype = 0
-        flagindex = 0
-        flagunit = 0
-        flagfixation = 0
-        #flagprep = 0
-        invaliddate = []
-        invalidspecies = []
-        invalidtype = []
-        invalidindex = []
-        invalidunit = []
-        invalidfixation = []
-        #invalidprep = []
-        for lineitem in data.strip().split('\n'):
-            if lineitem != '\r':
-                fields = lineitem.split('\t')
-                try:
-                    samdate = datetransform(fields[0].strip())
-                except:
-                    invaliddate.append(fields[0].strip())
-                    flagdate = 1
-                samid = fields[8].strip()
-                samdescript = fields[9].strip()
-                samspecies = fields[10].split('(')[0].lower().strip()
-                if samspecies not in [x[0].split('(')[0].strip() for x in choice_for_species]:
-                    invalidspecies.append(samspecies)
-                    flagspecies = 1
-                samtype = fields[11].split('(')[0].strip().lower()
-                if samtype not in [x[0].split('(')[0].strip() for x in choice_for_sample_type]:
-                    invalidtype.append(samtype)
-                    flagtype = 1
-                unit = fields[15].split('(')[0].strip().lower()
-                if unit not in [x[0].split('(')[0].strip() for x in choice_for_unit]:
-                    invalidunit.append(fields[15])
-                    flagunit = 1
-                fixation = fields[13].strip().lower()
-                if fixation not in [x[0].lower() for x in choice_for_fixation]:
-                    invalidfixation.append(fields[13])
-                    flagfixation = 1
 
-                # samprep = fields[12].split('(')[0].strip()
-                # if samprep == 'flash frozen':
-                # 	samprep = 'flash frozen without cryopreservant'
-                # 	# raise forms.ValidationError('Please denote whether the preparation is\
-                # 	# 	flash frozen without cryopreservant or flash frozen with cryopreservant')
-                # if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:
-                # 	invalidprep.append(samprep)
-                # 	flagprep = 1
-                samnotes = fields[20].strip()
-                print(samnotes)
-                samindex = fields[21].strip()
-                if SampleInfo.objects.filter(sample_index=samindex).exists():
-                    invalidindex.append(samindex)
-                    flagindex = 1
 
-                cleaneddata.append(lineitem)
-        if flagdate == 1:
-            raise forms.ValidationError(
-                'Invalid date:'+','.join(invaliddate)+'. Please enter like this: 10/30/2018')
-        if flagspecies == 1:
-            raise forms.ValidationError(
-                'Invalid species:'+','.join(invaliddate))
-        if flagtype == 1:
-            raise forms.ValidationError(
-                'Invalid sample type:'+','.join(invalidtype))
-        if flagindex == 1:
-            raise forms.ValidationError(
-                ','.join(invalidindex)+' is already existed in database')
-        if flagunit == 1:
-            raise forms.ValidationError('Invalid unit:'+','.join(invalidunit) +
-                                        '.  Should be one of ('+','.join([x[0] for x in
-                                                                          choice_for_unit])+')')
-        if flagfixation == 1:
-            raise forms.ValidationError('Invalid fixation:'+','.join(invalidfixation) +
-                                        '.  Should be one of ('+','.join([x[0] for x in
-                                                                          choice_for_fixation])+')')
+				# samprep = fields[12].split('(')[0].strip()
+				# if samprep == 'flash frozen':
+				# 	samprep = 'flash frozen without cryopreservant'
+				# 	# raise forms.ValidationError('Please denote whether the preparation is\
+				# 	# 	flash frozen without cryopreservant or flash frozen with cryopreservant')
+				# if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:
+				# 	invalidprep.append(samprep)
+				# 	flagprep = 1
+				samnotes = fields[20].strip()
+				print(samnotes)
+				samindex = fields[21].strip()
+				if SampleInfo.objects.filter(sample_index=samindex).exists():
+					invalidindex.append(samindex)
+					flagindex = 1
+					
+				cleaneddata.append(lineitem)
+		if flagdate == 1:
+			raise forms.ValidationError('Invalid date:'+','.join(invaliddate)+'. Please enter like this: 10/30/2018')
+		if flagspecies == 1:
+			raise forms.ValidationError('Invalid species:'+','.join(invaliddate))
+		if flagtype == 1:
+			raise forms.ValidationError('Invalid sample type:'+','.join(invalidtype))
+		if flagindex  == 1:
+			raise forms.ValidationError(','.join(invalidindex)+' is already existed in database')
+		if flagunit == 1:
+			raise forms.ValidationError('Invalid unit:'+','.join(invalidunit)+\
+				'.  Should be one of ('+','.join([x[0] for x in\
+				 choice_for_unit])+')')
+		if flagfixation == 1:
+			raise forms.ValidationError('Invalid fixation:'+','.join(invalidfixation)+\
+				'.  Should be one of ('+','.join([x[0] for x in\
+				 choice_for_fixation])+')')
+		if flaguser == 1:
+			raise forms.ValidationError(
+				'Invalid Member Name:'+','.join(invaliduserlist))
 
-        # if flagprep == 1:
-        # 	raise forms.ValidationError('Invalid sample preparation:'+','.join(invalidprep))
-        return '\n'.join(cleaneddata)
+		# if flagprep == 1:
+		# 	raise forms.ValidationError('Invalid sample preparation:'+','.join(invalidprep))
+		return '\n'.join(cleaneddata)
+
+
 
 
 class LibsCreationForm(forms.Form):

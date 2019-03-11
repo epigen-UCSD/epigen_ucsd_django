@@ -134,11 +134,33 @@ def SamplesCreateView(request):
         for lineitem in sampleinfo.strip().split('\n'):
             fields = lineitem.strip('\n').split('\t')
             samindex = fields[21].strip()
-            samnotes = fields[20].strip()
+            try:
+                samnotes = ';'.join([fields[20].strip(),fields[28].strip()]).strip(';')
+            except:
+                samnotes = fields[20].strip()
             samprep = fields[12].strip()
-            if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:               
-                samnotes = ';'.join([samnotes,'sample preparation:'+samprep]).strip(';')
-                samprep = 'other (please explain in notes)'
+            
+            try:
+                membername = fields[25].strip()
+                if membername == '':
+                    membername = request.user.username
+            except:
+                membername = request.user.username
+            try:
+                storage_tm = fields[26].strip()
+            except:
+                storage_tm = ''
+            print('hahha:'+membername)
+            service_requested_tm = fields[16].strip()
+            seq_depth_to_target_tm = fields[17].strip()
+            seq_length_requested_tm = fields[18].strip()
+            seq_type_requested_tm = fields[19].strip()
+            if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:
+                if samprep.lower().startswith('other'):
+                    samprep = 'other (please explain in notes)'
+                else:
+                    samnotes = ';'.join([samnotes,'sample preparation:'+samprep]).strip(';')
+                    samprep = 'other (please explain in notes)'
             samtype = fields[11].split('(')[0].strip().lower()
             if samtype == 'other':
                 samtype = 'other (please explain in notes)'
@@ -153,15 +175,18 @@ def SamplesCreateView(request):
                 fixation = 'Yes (1% FA)'
             elif fixation == 'no':
                 fixation = 'No'
+            if service_requested_tm.lower().startswith('other'):
+                service_requested_tm = 'other (please explain in notes)'
             sample_amount = fields[14].strip()
 
             samdescript = fields[9].strip()
             samid = fields[8].strip()
             data[samid] = {}
             samdate = datetransform(fields[0].strip())
+
             data[samid] = {
                 'sample_index': samindex,
-                'team_member': request.user.username,
+                'team_member': membername,
                 'date': samdate,
                 'species': samspecies,
                 'sample_type': samtype,
@@ -170,7 +195,12 @@ def SamplesCreateView(request):
                 'sample_amount':sample_amount,
                 'unit':unit,
                 'description': samdescript,
-                'notes': samnotes
+                'storage':storage_tm,
+                'notes': samnotes,
+                'service_requested':service_requested_tm,
+                'seq_depth_to_target':seq_depth_to_target_tm,
+                'seq_length_requested':seq_length_requested_tm,
+                'seq_type_requested':seq_type_requested_tm,
             }
             tosave_item = SampleInfo(
                 sample_index=samindex,
@@ -183,8 +213,13 @@ def SamplesCreateView(request):
                 sample_amount=sample_amount,
                 fixation=fixation,
                 notes=samnotes,
-                team_member=request.user,
+                team_member=User.objects.get(username=membername),
                 date=samdate,
+                storage=storage_tm,
+                service_requested=service_requested_tm,
+                seq_depth_to_target=seq_depth_to_target_tm,
+                seq_length_requested=seq_length_requested_tm,
+                seq_type_requested=seq_type_requested_tm,
             )
             tosave_list.append(tosave_item)
         if 'Save' in request.POST:
@@ -192,7 +227,9 @@ def SamplesCreateView(request):
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
             displayorder = ['sample_index', 'team_member', 'date', 'species', 'sample_type',
-                            'preparation', 'fixation','sample_amount','unit','description', 'notes']
+                            'preparation', 'fixation','sample_amount','unit',
+                            'description', 'notes','storage','service_requested','seq_depth_to_target',
+                            'seq_length_requested','seq_type_requested']
             context = {
                 'sample_form': sample_form,
                 'modalshow': 1,
@@ -269,7 +306,8 @@ def LibrariesCreateView(request):
                 if v['pseudoflag'] == 1:
                     SampleInfo.objects.create(
                         sample_id=v['sample_id'],
-                        sample_index=v['sample_index']
+                        sample_index=v['sample_index'],
+                        team_member=User.objects.get(username=v['team_member_initails']),
                         )
                 tosave_item = LibraryInfo(
                     library_id=k,
@@ -433,14 +471,16 @@ def SeqsCreateView(request):
                         SampleInfo.objects.create(
                             sample_id=v['sample_id'],
                             sample_index=v['sample_index'],
-                            species=v['species']
+                            species=v['species'],
+                            team_member=User.objects.get(username=v['team_member_initails']),
                             )
 
                     LibraryInfo.objects.create(
                         library_id=v['library_id'],
                         experiment_index=v['experiment_index'],
                         experiment_type=v['experiment_type'],
-                        sampleinfo=SampleInfo.objects.get(sample_index=v['sample_index'])
+                        sampleinfo=SampleInfo.objects.get(sample_index=v['sample_index']),
+                        team_member_initails=User.objects.get(username=v['team_member_initails']),
                             )
                 if v['updatesampflag'] == 1:
                     sampleinfo = SampleInfo.objects.get(sample_index=v['sample_index'])
