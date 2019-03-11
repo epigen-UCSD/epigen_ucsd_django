@@ -91,8 +91,8 @@ SAMP-123	SS_AT1_L2-B-Cells	JYH	8/28/2017	8/29/2107	ATAC-seq	ATAC-seq for cells	n
 SAMP-120	SS_AT1_S2-1-B-Cells	JYH	8/28/2017	8/29/2107	ATAC-seq	ATAC-seq for cells	nb1_p98	Yes	Yes	JYH_114	SS_AT1_S2-1-B-Cells using 20,000cells with 0.5 ul Tn5	EXP-88
 SAMP-34	Pal14-072817	JYH	9/6/2017	9/6/2017	ATAC-seq	ATAC-seq for cells	nb1_p103	Yes	Yes	JYH_118	Tn5 0.5 ul	EXP-89
 SAMP-35	5-8_072817	JYH	9/6/2017	9/6/2017	ATAC-seq	ATAC-seq for cells	nb1_p103	Yes	Yes	JYH_119	Tn5 1.0 ul	EXP-90
-other	HG00514_2_TB_gly	JYH	9/6/2017	9/6/2017	ATAC-seq	ATAC-seq for cells	nb1_p103	Yes	No	NA	50k, tn5 1 ul	EXP-91
-other	HG00514_2_TB_gly	JYH	9/6/2017	9/6/2017	ATAC-seq	ATAC-seq for cells	nb1_p103	Yes	No	NA	20k, tn5 0.5 ul	EXP-92
+other	HG00514_2_TB_gly	JYH	9/6/2017	9/6/2017	ATAC-seq	ATAC-seq for cells	nb1_p103	Yes	No	JYH_115	50k, tn5 1 ul	EXP-91
+other	HG00514_2_TB_gly	JYH	9/6/2017	9/6/2017	ATAC-seq	ATAC-seq for cells	nb1_p103	Yes	No	JYH_116	20k, tn5 0.5 ul	EXP-92
 SAMP-124	R235	JYH	9/10/2017	9/10/2017	scATAC-seq	scATAC-seq for tissue	nb1_p105	Yes	Yes	XW2[2]	Flash Frozen nuclei, 3M	EXP-93
 SAMP-17	2015-965A1	JYH	9/13/2017	9/13/2017	scRNA-seq	scRNA-seq for tissue	nb1_p108	Yes	Yes	JYH_172	Old califano	EXP-94
 SAMP-18	2015-1103A1	JYH	9/13/2017	9/13/2017	scRNA-seq	scRNA-seq for tissue	nb1_p108	Yes	Yes	JYH_173	Old califano	EXP-95
@@ -262,17 +262,17 @@ SAMP-279	11_Pastle	JYH	12/7/2017	12/7/2017	ATAC-seq	ATAC-seq_tissues	nb1_p137	Ye
 SAMP-279	11_Pastle_filter	JYH	12/7/2017	12/7/2017	ATAC-seq	ATAC-seq_tissues	nb1_p137	Yes	Yes	JYH_187	Telese	EXP-265
 SAMP-126	GM_SNAP10_swing	JYH	12/7/2017	12/7/2017	ATAC-seq	ATAC-seq_cells	nb1_p137	Yes	Yes	JYH_188	Telese	EXP-266
 SAMP-126	GM_SNAP10_fixed	JYH	12/7/2017	12/7/2017	ATAC-seq	ATAC-seq_cells	nb1_p137	Yes	Yes	JYH_189	Telese	EXP-267
-SAMP-126	GM19240	RM	11/9/2017	11/13/2017	ATAC-seq	ATAC-seq_cells	nb1_p21	Yes	Yes	RMM_1	5% DMSO slow (Control)	EXP-268
-Other	LS_1	RM	11/9/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p21	Yes	Yes	RMM_2	Liver Tissue Acquired from AVD	EXP-269
-Other	LS_2	RM	11/9/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p21	Yes	Yes	RMM_3	Liver Tissue Acquired from AVD	EXP-270
-Other	LS_3	RM	11/9/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p21	Yes	Yes	RMM_4	Liver Tissue Acquired from AVD	EXP-271
-Other	LS_4	RM	11/9/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p21	Yes	Yes	RMM_5	Liver Tissue Acquired from AVD	EXP-272
-Other	LS_5	RM	11/9/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p21	Yes	Yes	RMM_6	Liver Tissue Acquired from AVD	EXP-273
-SAMP-127	GM19240	RM	11/15/2017	11/15/2017	ATAC-seq	ATAC-seq_Cells	nb1_p25	Yes	Yes	RMM_7	5% DMSO Slow (Control)	EXP-274
-Other	K_562_1	RM	11/15/2017	11/15/2017	ATAC-seq	ATAC-seq_Cells	nb1_p25	Yes	Yes	RMM_8	K_562 Cells Acquired from AVD	EXP-275
-Other	K_562_2	RM	11/15/2017	11/15/2017	ATAC-seq	ATAC-seq_Cells	nb1_p25	Yes	Yes	RMM_9	K_562 Cells Acquired from AVD	EXP-276
-Other	K_562_3	RM	11/15/2017	11/15/2017	ATAC-seq	ATAC-seq_Cells	nb1_p25	Yes	Yes	RMM_10	K_562 Cells Acquired from AVD	EXP-277
-Other	K_562_4	RM	11/15/2017	11/15/2017	ATAC-seq	ATAC-seq_Cells	nb1_p25	Yes	Yes	RMM_11	K_562 Cells Acquired from AVD	EXP-278
+SAMP-126	GM19240	RMM	11/9/2017	11/13/2017	ATAC-seq	ATAC-seq_cells	nb1_p21	Yes	Yes	RMM_1	5% DMSO slow (Control)	EXP-268
+Other	LS_1	RMM	11/9/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p21	Yes	Yes	RMM_2	Liver Tissue Acquired from AVD	EXP-269
+Other	LS_2	RMM	11/9/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p21	Yes	Yes	RMM_3	Liver Tissue Acquired from AVD	EXP-270
+Other	LS_3	RMM	11/9/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p21	Yes	Yes	RMM_4	Liver Tissue Acquired from AVD	EXP-271
+Other	LS_4	RMM	11/9/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p21	Yes	Yes	RMM_5	Liver Tissue Acquired from AVD	EXP-272
+Other	LS_5	RMM	11/9/2017	11/13/2017	ATAC-seq	ATAC-seq_tissues	nb1_p21	Yes	Yes	RMM_6	Liver Tissue Acquired from AVD	EXP-273
+SAMP-127	GM19240	RMM	11/15/2017	11/15/2017	ATAC-seq	ATAC-seq_Cells	nb1_p25	Yes	Yes	RMM_7	5% DMSO Slow (Control)	EXP-274
+Other	K_562_1	RMM	11/15/2017	11/15/2017	ATAC-seq	ATAC-seq_Cells	nb1_p25	Yes	Yes	RMM_8	K_562 Cells Acquired from AVD	EXP-275
+Other	K_562_2	RMM	11/15/2017	11/15/2017	ATAC-seq	ATAC-seq_Cells	nb1_p25	Yes	Yes	RMM_9	K_562 Cells Acquired from AVD	EXP-276
+Other	K_562_3	RMM	11/15/2017	11/15/2017	ATAC-seq	ATAC-seq_Cells	nb1_p25	Yes	Yes	RMM_10	K_562 Cells Acquired from AVD	EXP-277
+Other	K_562_4	RMM	11/15/2017	11/15/2017	ATAC-seq	ATAC-seq_Cells	nb1_p25	Yes	Yes	RMM_11	K_562 Cells Acquired from AVD	EXP-278
 SAMP-403	CD11b_CD45_GBM1_IDH_WT	XW	11/28/2017	11/29/2017	scRNA-seq	scRNA-seq for cells	nb1_p36	Yes	Yes	XW33		EXP-279
 SAMP-403	CD11b_CD45_GBM1_IDH_WT	XW	11/28/2017	11/29/2017	scRNA-seq	scRNA-seq for cells	nb1_p36	Yes	Yes	XW34		EXP-280
 SAMP-403	CD11b_CD45_GBM1_IDH_WT	XW	11/28/2017	11/29/2017	scRNA-seq	scRNA-seq for cells	nb1_p36	Yes	Yes	XW35		EXP-281
@@ -361,11 +361,11 @@ SAMP-415	13	JYH	1/11/2018	1/11/2018	ATAC-seq	ATAC-seq_cells	nb1_p148	Yes	Yes	JYH
 SAMP-416	14	JYH	1/11/2018	1/11/2018	ATAC-seq	ATAC-seq_cells	nb1_p148	Yes	Yes	JYH_244	NCI-H1299, sgRNA4.2	EXP-364
 SAMP-417	15	JYH	1/11/2018	1/11/2018	ATAC-seq	ATAC-seq_cells	nb1_p148	Yes	Yes	JYH_245	NCI-H1299, sgRNA4.3	EXP-365
 SAMP-126	GM_SNAP10	JYH	1/11/2018	1/11/2018	ATAC-seq	ATAC-seq_cells	nb1_p148	Yes	Yes	JYH_246	Control	EXP-366
-SAMP-441	CZ05	RM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_247	Fatty Acid Free BSA + NP-40; bulk-ATAC-seq	EXP-367
-SAMP-442	CZ05	RM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_248	Fatty Acid Free BSA + digitonin; bulk-ATAC-seq	EXP-368
-SAMP-443	CZ05	RM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_249	Fatty Acid Free BSA + NP-40,digitonin,tween20; bulk-ATAC-seq	EXP-369
-SAMP-444	CZ05	RM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_250	Normal BSA + NP-40; bulk-ATAC-seq	EXP-370
-SAMP-445	CZ05	RM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_251	Omni-ATAC-seq buffer; bulk-ATAC-seq	EXP-371
+SAMP-441	CZ05	RMM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_247	Fatty Acid Free BSA + NP-40; bulk-ATAC-seq	EXP-367
+SAMP-442	CZ05	RMM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_248	Fatty Acid Free BSA + digitonin; bulk-ATAC-seq	EXP-368
+SAMP-443	CZ05	RMM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_249	Fatty Acid Free BSA + NP-40,digitonin,tween20; bulk-ATAC-seq	EXP-369
+SAMP-444	CZ05	RMM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_250	Normal BSA + NP-40; bulk-ATAC-seq	EXP-370
+SAMP-445	CZ05	RMM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_251	Omni-ATAC-seq buffer; bulk-ATAC-seq	EXP-371
 SAMP-441	CZ05	JYH	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_252	Fatty Acid Free BSA + NP-40; scATAC-seq test	EXP-372
 SAMP-442	CZ05	JYH	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_253	Fatty Acid Free BSA + digitonin; scATAC-seq test	EXP-373
 SAMP-443	CZ05	JYH	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_254	Fatty Acid Free BSA + NP-40,digitonin,tween20; scATAC-seq test	EXP-374
@@ -410,12 +410,12 @@ SAMP-440	Day3_-Gx	JYH	2/12/2018	2/12/2018	ATAC-seq	ATAC-seq_cells	nb1_p168	Yes	Y
 SAMP-126	GM_SNAP10	JYH	2/12/2018	2/12/2018	ATAC-seq	ATAC-seq_cells	nb1_p168	Yes	Yes	JYH_285	Control	EXP-413
 SAMP-126	GM_SNAP10	JYH	2/9/2018	2/9/2018	ATAC-seq	ATAC-seq_cells	nb1_p167	Yes	Yes	JYH_286	Biomek_6th	EXP-414
 SAMP-126	GM_SNAP10	JYH	2/9/2018	2/9/2018	ATAC-seq	ATAC-seq_cells	nb1_p167	Yes	Yes	JYH_287	Biomek_6th	EXP-415
-SAMP-128	GM_SLOW19240	RM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	No		control	EXP-416
-Other	K_562_0.1	RM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_17		EXP-417
-Other	K_562_0.2	RM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_18		EXP-418
-Other	K_562_0.5	RM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_19		EXP-419
-Other	K_562_1.0	RM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_20		EXP-420
-Other	K_562_2.0	RM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_21		EXP-421
+SAMP-128	GM_SLOW19240	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	No		control	EXP-416
+Other	K_562_0.1	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_17		EXP-417
+Other	K_562_0.2	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_18		EXP-418
+Other	K_562_0.5	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_19		EXP-419
+Other	K_562_1.0	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_20		EXP-420
+Other	K_562_2.0	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_21		EXP-421
 NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_89	Chromatin shearing Input testing - varying DF	EXP-422
 NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_90	Chromatin shearing Input testing - varying DF	EXP-423
 NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_92	Chromatin shearing Input testing - varying DF	EXP-424
@@ -497,12 +497,12 @@ SAMP-126	GM_SNAP10	JYH	3/2/2018	3/2/2018	ATAC-seq	ATAC-seq_cells	nb1_p178	Yes	Ye
 SAMP-126	GM_SNAP10	JYH	3/2/2018	3/2/2018	ATAC-seq	ATAC-seq_cells	nb1_p178	Yes	Yes	JYH_311	Biomek_9th_8	EXP-500
 SAMP-126	GM_SNAP10	JYH	2/23/2018	2/26/2018	ATAC-seq	ATAC-seq_cells	nb1_p178	Yes	Yes	JYH_303	Gleeson control	EXP-462
 SAMP-546	Human from Salk (Dounce)	XW	03/15/2018	03/22/2018	scATAC-seq	scATAC-seq for tissue	nb1_p59-p64	yes	Yes	XW_75		EXP-502
-Other 	Grind Meth. H1	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_22		EXP-503
-Other 	Grind Meth. H2	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_23		EXP-504
-Other 	Grind Meth. C1	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_24		EXP-505
-Other 	Grind Meth. C2	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_25		EXP-506
-Other 	Grind Meth. M1	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_26		EXP-507
-Other 	Grind Meth. M2	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_27		EXP-508
+Other 	Grind Meth. H1	RMM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_22		EXP-503
+Other 	Grind Meth. H2	RMM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_23		EXP-504
+Other 	Grind Meth. C1	RMM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_24		EXP-505
+Other 	Grind Meth. C2	RMM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_25		EXP-506
+Other 	Grind Meth. M1	RMM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_26		EXP-507
+Other 	Grind Meth. M2	RMM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RM_27		EXP-508
 NA	Chi_D0_Input Optimization_DF5	AVD	3/1/2018	3/15/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_113	Chi ChIP Input Testing	EXP-509
 NA	Chi_D0_Input Optimization_DF10	AVD	3/1/2018	3/15/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_114	Chi ChIP Input Testing	EXP-510
 NA	Chi_D0_Input Optimization_DF15	AVD	3/1/2018	3/15/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_115	Chi ChIP Input Testing	EXP-511
@@ -529,14 +529,14 @@ NA	Chi_D3_Input Optimization_DF20	AVD	3/6/2018	03/22/2018	ChIP-seq	Covaris Chrom
 NA	Chi_D3_Input Optimization_DF25	AVD	3/6/2018	03/22/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_134	Chi ChIP Input Testing	EXP-532
 SAMP-562	CEMBA180326_3E	XW	3/26/2018	3/28/2018	scATAC-seq	scATAC-seq for tissue	nb1_p78,81	Yes	Yes	XW_80		EXP-533
 SAMP-48	AN15506	JYH	2/15/2018	2/15/2018	scATAC-seq	scATAC-seq for tissue	nb1_p171	Yes	Yes	XW71	Hippocampus	EXP-534
-Other 	K_562_1	RM	3/6/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p65-68	yes	yes	RM_28	Hi-C protocol K_562	EXP-535
-Other	Active Motif 12878_1	RM	3/19/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RM_29	Hi-C protocol Active Motif sample 10 million GM12878 (5 million per sample)	EXP-536
-Other	Actove Motif 12878_2	RM	3/20/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RM_30	Hi-c protocol Active Motif sample 10 million GM12878 (5 million per sample)	EXP-537
-Other	Epigen 12878_1	RM	3/21/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RM_31	Hi-C protocol Epigen GM 12878 5 million	EXP-538
-Other	Epigen 12878_2	RM	3/22/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RM_32	Hi-C protocol Epigen GM 12878 5 million	EXP-539
+Other 	K_562_1	RMM	3/6/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p65-68	yes	yes	RM_28	Hi-C protocol K_562	EXP-535
+Other	Active Motif 12878_1	RMM	3/19/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RM_29	Hi-C protocol Active Motif sample 10 million GM12878 (5 million per sample)	EXP-536
+Other	Actove Motif 12878_2	RMM	3/20/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RM_30	Hi-c protocol Active Motif sample 10 million GM12878 (5 million per sample)	EXP-537
+Other	Epigen 12878_1	RMM	3/21/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RM_31	Hi-C protocol Epigen GM 12878 5 million	EXP-538
+Other	Epigen 12878_2	RMM	3/22/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RM_32	Hi-C protocol Epigen GM 12878 5 million	EXP-539
 SAMP-595	CEMBA180402_4F	XW	4/2/2018	4/6/2018	scATAC-seq	scATAC-seq for tissue	nb1_p82,85	yes	yes			EXP-540
-SAMP-396	GM12878-Arima-1	RM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RM_33		EXP-541
-NA	GM12878 Epigen	RM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RM_34		EXP-542
+SAMP-396	GM12878-Arima-1	RMM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RM_33		EXP-541
+NA	GM12878 Epigen	RMM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RM_34		EXP-542
 Other	Brain3	JYH	3/29/2018	3/29/2018	ATAC-seq	ATAC-seq_tissues	nb1_185	Yes	Yes	JYH_381	3week_ground	EXP-549
 Other	Brain4	JYH	3/29/2018	3/29/2018	ATAC-seq	ATAC-seq_tissues	nb1_185	Yes	Yes	JYH_382	3week_ground	EXP-550
 Other	Heart3	JYH	3/29/2018	3/29/2018	ATAC-seq	ATAC-seq_tissues	nb1_185	Yes	Yes	JYH_383	3week_ground	EXP-551
@@ -609,31 +609,31 @@ SAMP-600	CEMBA180412_3D	XW	04/12/2018		scATAC-seq	scATAC-seq for tissue						EXP
 SAMP-601	CEMBA180416_3D	XH	04/16/2018		scATAC-seq	scATAC-seq for tissue						EXP-618
 SAMP-602	CEMBA180417_4C	XW	04/17/2018		scATAC-seq	scATAC-seq for tissue						EXP-619
 SAMP-603	CEMBA180419_4C	XH	04/19/2018		scATAC-seq	scATAC-seq for tissue						EXP-620
-Other	Gli2-118-2_10.5 head	RM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_35	Kevin Peterson ATAC on Samples	EXP-621
-Other	Gli2-118-2_10.5 trunk	RM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_36	Kevin Peterson ATAC on Samples	EXP-622
-Other	Gli2-L4_14.5_lung	RM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_37	Kevin Peterson ATAC on Samples	EXP-623
-Other	Gli2-L4_14.5_palate	RM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_38	Kevin Peterson ATAC on Samples	EXP-624
-Other	Gli2-122-3_MNP	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_39	Kevin Peterson ATAC on Samples	EXP-625
-Other	Gli2-122-4_MNP	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_40	Kevin Peterson ATAC on Samples	EXP-626
-Other	Gli2-122-1_MNP	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_41	Kevin Peterson ATAC on Samples	EXP-627
-Other	Gli2-48-1_MNP	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_42	Kevin Peterson ATAC on Samples	EXP-628
-Other	G3XG3-11.5-16	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_43	Kevin Peterson ATAC on Samples	EXP-629
-Other	G3XG3-11.5-20	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_44	Kevin Peterson ATAC on Samples	EXP-630
-Other	F1/F2XHand2Cre-2	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_45	Kevin Peterson ATAC on Samples	EXP-631
-Other	F1/F2XHand2Cre-4	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_46	Kevin Peterson ATAC on Samples	EXP-632
-Other	F1/F2XHand2Cre-14	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_47	Kevin Peterson ATAC on Samples	EXP-633
-Other	Gli2-118-7 10.5head	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_48	Kevin Peterson ATAC on Samples	EXP-634
-Other	Gli2-118-7 10.5trunk	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_49	Kevin Peterson ATAC on Samples	EXP-635
-Other	Gli2-118-4 10.5head	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_50	Kevin Peterson ATAC on Samples	EXP-636
-Other	Gli2-118-4 10.5trunk	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_51	Kevin Peterson ATAC on Samples	EXP-637
-Other	Gli2-118-5 10.5head	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_52	Kevin Peterson ATAC on Samples	EXP-638
-Other	Gli2-118-5 10.5trunk	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_53	Kevin Peterson ATAC on Samples	EXP-639
-Other	G3XG3-10.5-29head	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_54	Kevin Peterson ATAC on Samples	EXP-640
-Other	G3XG3-10.5-29trunk	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_55	Kevin Peterson ATAC on Samples	EXP-641
-Other	G3XG3-10.5-31head	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_56	Kevin Peterson ATAC on Samples	EXP-642
-Other	Gli2-L5lung	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_57	Kevin Peterson ATAC on Samples	EXP-643
-Other	Gli2-L5palate	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_58	Kevin Peterson ATAC on Samples	EXP-644
-SAMP-543	G2-48-6 LB	RM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes		Robert ATAC 	EXP-645
-SAMP-544	G2-48-6 MNP	RM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_59	Robert ATAC 	EXP-646
-SAMP-545	G2-48-6 FNP	RM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_60	Robert ATAC 	EXP-647
-SAMP-175	GM19240	RM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes		Robert ATAC 	EXP-648
+Other	Gli2-118-2_10.5 head	RMM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_35	Kevin Peterson ATAC on Samples	EXP-621
+Other	Gli2-118-2_10.5 trunk	RMM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_36	Kevin Peterson ATAC on Samples	EXP-622
+Other	Gli2-L4_14.5_lung	RMM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_37	Kevin Peterson ATAC on Samples	EXP-623
+Other	Gli2-L4_14.5_palate	RMM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_38	Kevin Peterson ATAC on Samples	EXP-624
+Other	Gli2-122-3_MNP	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_39	Kevin Peterson ATAC on Samples	EXP-625
+Other	Gli2-122-4_MNP	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_40	Kevin Peterson ATAC on Samples	EXP-626
+Other	Gli2-122-1_MNP	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_41	Kevin Peterson ATAC on Samples	EXP-627
+Other	Gli2-48-1_MNP	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_42	Kevin Peterson ATAC on Samples	EXP-628
+Other	G3XG3-11.5-16	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_43	Kevin Peterson ATAC on Samples	EXP-629
+Other	G3XG3-11.5-20	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_44	Kevin Peterson ATAC on Samples	EXP-630
+Other	F1/F2XHand2Cre-2	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_45	Kevin Peterson ATAC on Samples	EXP-631
+Other	F1/F2XHand2Cre-4	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_46	Kevin Peterson ATAC on Samples	EXP-632
+Other	F1/F2XHand2Cre-14	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_47	Kevin Peterson ATAC on Samples	EXP-633
+Other	Gli2-118-7 10.5head	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_48	Kevin Peterson ATAC on Samples	EXP-634
+Other	Gli2-118-7 10.5trunk	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_49	Kevin Peterson ATAC on Samples	EXP-635
+Other	Gli2-118-4 10.5head	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_50	Kevin Peterson ATAC on Samples	EXP-636
+Other	Gli2-118-4 10.5trunk	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_51	Kevin Peterson ATAC on Samples	EXP-637
+Other	Gli2-118-5 10.5head	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_52	Kevin Peterson ATAC on Samples	EXP-638
+Other	Gli2-118-5 10.5trunk	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_53	Kevin Peterson ATAC on Samples	EXP-639
+Other	G3XG3-10.5-29head	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_54	Kevin Peterson ATAC on Samples	EXP-640
+Other	G3XG3-10.5-29trunk	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_55	Kevin Peterson ATAC on Samples	EXP-641
+Other	G3XG3-10.5-31head	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_56	Kevin Peterson ATAC on Samples	EXP-642
+Other	Gli2-L5lung	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_57	Kevin Peterson ATAC on Samples	EXP-643
+Other	Gli2-L5palate	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_58	Kevin Peterson ATAC on Samples	EXP-644
+SAMP-543	G2-48-6 LB	RMM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes		Robert ATAC 	EXP-645
+SAMP-544	G2-48-6 MNP	RMM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_59	Robert ATAC 	EXP-646
+SAMP-545	G2-48-6 FNP	RMM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes	RM_60	Robert ATAC 	EXP-647
+SAMP-175	GM19240	RMM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues		Yes	Yes		Robert ATAC 	EXP-648

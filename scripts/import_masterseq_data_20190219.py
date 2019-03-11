@@ -88,7 +88,7 @@ def main():
 			)
 
 # import SampleInfo
-	print("importing  SampleInfo ........... ")
+	print("importing SampleInfo ........... ")
 	active_index = []
 	notimporting_samp =[]
 	with open('scripts/TS1_Active.tsv','r') as f:
@@ -98,6 +98,7 @@ def main():
 		for line in f:
 			fields = line.split('\t')
 			if fields[8]:
+				print(fields[21].strip())
 				active_index.append(fields[21].strip())
 				sampletype_tm = fields[11].strip().lower()
 				species_tm = fields[10].lower().strip()
@@ -164,7 +165,7 @@ def main():
 				obj.seq_length_requested = seq_length_requested_tm
 				obj.seq_type_requested = seq_type_requested_tm
 				obj.storage = storage_tm
-				#obj.date_sample_received = datetransform(fields[23].strip())
+				obj.date_received = datetransform(fields[23].strip())
 				obj.save()
 			else:
 				#print(line.strip('\n'))
@@ -177,6 +178,7 @@ def main():
 		for line in f:
 			fields = line.split('\t')
 			if fields[8] and not fields[21].strip() in active_index:
+				print(fields[21].strip())
 				sampletype_tm = fields[11].strip().lower()
 				species_tm = fields[10].lower().strip()
 				preparation_tm = fields[12].lower().strip()
@@ -242,7 +244,7 @@ def main():
 				obj.seq_length_requested = seq_length_requested_tm
 				obj.seq_type_requested = seq_type_requested_tm
 				obj.storage = storage_tm
-				#obj.date_sample_received = datetransform(fields[23].strip())
+				obj.date_received = datetransform(fields[23].strip())
 				obj.save()
 			else:
 				#print(line.strip('\n'))
@@ -294,6 +296,7 @@ def main():
 				else:
 					if fields[0].strip().lower() in ['samp-388 / samp-389','samp-344 & 345','samp-352 & 353']:
 						sampindextm = fields[0].strip()
+						samp_notes = fields[0].strip()
 					else:
 						sampindextm = 'SAMPNA-'+str(i)
 					i = i+1
@@ -302,7 +305,13 @@ def main():
 					else:
 						sampidtm = sampindextm
 					sampinfo,created = SampleInfo.objects.get_or_create(sample_index=sampindextm)
-					sampinfo.sample_id=sampidtm
+					sampinfo.sample_id = sampidtm
+					sampinfo.species = ''
+					sampinfo.team_member = lib_member_tm
+					try:
+						sampinfo.notes = samp_notes
+					except:
+						pass
 					sampinfo.save()
 				
 				obj,created = LibraryInfo.objects.get_or_create(
@@ -364,8 +373,10 @@ def main():
 						except:
 							print(line)
 					else:
+						notestmtm = ''
 						if fields[0].strip().lower() in ['samp-388 / samp-389','samp-344 & 345','samp-352 & 353']:
 							sampindextm = fields[0].strip()
+							samp_notes = fields[0].strip()
 						else:
 							sampindextm = 'SAMPNA-'+str(i)
 						i = i+1
@@ -375,6 +386,12 @@ def main():
 							sampidtm = sampindextm
 						sampinfo,created = SampleInfo.objects.get_or_create(sample_index=sampindextm)
 						sampinfo.sample_id = sampidtm
+						sampinfo.species = ''
+						sampinfo.team_member = lib_member_tm
+						try:
+							sampinfo.notes = samp_notes
+						except:
+							pass
 						sampinfo.save()			
 					obj,created = LibraryInfo.objects.get_or_create(
 						library_id = libid,
@@ -467,13 +484,13 @@ def main():
 							portionoflane = float(fields[14].strip())
 						except:
 							portionoflane = None
-							if not fields[14].strip() in ['NA', 'Other (please explain in notes)', 'N/A']:
+							if not fields[14].strip() in ['','NA', 'Other (please explain in notes)', 'N/A']:
 								note_tm = ';'.join([note_tm,'portionoflane:'+fields[14].strip()]).strip(';')			
 						try:
 							totalreadsnum = int(fields[22].strip().replace(',', ''))
 						except:
 							totalreadsnum = None
-							if fields[22].strip() != 'NA':
+							if not fields[22].strip() in ['','NA', 'Other (please explain in notes)', 'N/A']:
 								note_tm = ';'.join([note_tm,'totalreadsnum:'+fields[22].strip()]).strip(';')
 						if SeqMachineInfo.objects.filter(sequencing_core = fields[10].split('(')[0].strip(),machine_name = fields[11].split('(')[0].strip()).exists():
 							machineused = SeqMachineInfo.objects.get(sequencing_core = fields[10].split('(')[0].strip(),machine_name = fields[11].split('(')[0].strip())

@@ -46,11 +46,11 @@ SAMP-415	13	JYH	1/11/2018	1/11/2018	ATAC-seq	ATAC-seq_cells	nb1_p148	Yes	Yes	JYH
 SAMP-416	14	JYH	1/11/2018	1/11/2018	ATAC-seq	ATAC-seq_cells	nb1_p148	Yes	Yes	JYH_244	NCI-H1299, sgRNA4.2	EXP-364
 SAMP-417	15	JYH	1/11/2018	1/11/2018	ATAC-seq	ATAC-seq_cells	nb1_p148	Yes	Yes	JYH_245	NCI-H1299, sgRNA4.3	EXP-365
 SAMP-126	GM_SNAP10	JYH	1/11/2018	1/11/2018	ATAC-seq	ATAC-seq_cells	nb1_p148	Yes	Yes	JYH_246	Control	EXP-366
-SAMP-441	CZ05	RM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_247	Fatty Acid Free BSA + NP-40; bulk-ATAC-seq	EXP-367
-SAMP-442	CZ05	RM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_248	Fatty Acid Free BSA + digitonin; bulk-ATAC-seq	EXP-368
-SAMP-443	CZ05	RM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_249	Fatty Acid Free BSA + NP-40,digitonin,tween20; bulk-ATAC-seq	EXP-369
-SAMP-444	CZ05	RM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_250	Normal BSA + NP-40; bulk-ATAC-seq	EXP-370
-SAMP-445	CZ05	RM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_251	Omni-ATAC-seq buffer; bulk-ATAC-seq	EXP-371
+SAMP-441	CZ05	RMM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_247	Fatty Acid Free BSA + NP-40; bulk-ATAC-seq	EXP-367
+SAMP-442	CZ05	RMM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_248	Fatty Acid Free BSA + digitonin; bulk-ATAC-seq	EXP-368
+SAMP-443	CZ05	RMM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_249	Fatty Acid Free BSA + NP-40,digitonin,tween20; bulk-ATAC-seq	EXP-369
+SAMP-444	CZ05	RMM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_250	Normal BSA + NP-40; bulk-ATAC-seq	EXP-370
+SAMP-445	CZ05	RMM	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_251	Omni-ATAC-seq buffer; bulk-ATAC-seq	EXP-371
 SAMP-441	CZ05	JYH	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_252	Fatty Acid Free BSA + NP-40; scATAC-seq test	EXP-372
 SAMP-442	CZ05	JYH	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_253	Fatty Acid Free BSA + digitonin; scATAC-seq test	EXP-373
 SAMP-443	CZ05	JYH	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_tissues	nb1_p152	Yes	Yes	JYH_254	Fatty Acid Free BSA + NP-40,digitonin,tween20; scATAC-seq test	EXP-374
@@ -95,12 +95,12 @@ SAMP-440	Day3_-Gx	JYH	2/12/2018	2/12/2018	ATAC-seq	ATAC-seq_cells	nb1_p168	Yes	Y
 SAMP-126	GM_SNAP10	JYH	2/12/2018	2/12/2018	ATAC-seq	ATAC-seq_cells	nb1_p168	Yes	Yes	JYH_285	Control	EXP-413
 SAMP-126	GM_SNAP10	JYH	2/9/2018	2/9/2018	ATAC-seq	ATAC-seq_cells	nb1_p167	Yes	Yes	JYH_286	Biomek_6th	EXP-414
 SAMP-126	GM_SNAP10	JYH	2/9/2018	2/9/2018	ATAC-seq	ATAC-seq_cells	nb1_p167	Yes	Yes	JYH_287	Biomek_6th	EXP-415
-SAMP-128	GM_SLOW19240	RM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	No		control	EXP-416
-Other	K_562_0.1	RM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_17		EXP-417
-Other	K_562_0.2	RM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_18		EXP-418
-Other	K_562_0.5	RM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_19		EXP-419
-Other	K_562_1.0	RM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_20		EXP-420
-Other	K_562_2.0	RM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_21		EXP-421
+SAMP-128	GM_SLOW19240	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	No		control	EXP-416
+Other	K_562_0.1	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_17		EXP-417
+Other	K_562_0.2	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_18		EXP-418
+Other	K_562_0.5	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_19		EXP-419
+Other	K_562_1.0	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_20		EXP-420
+Other	K_562_2.0	RMM	01/25/2018	01/26/2018	ATAC-seq	ATAC-seq_cells	nb1_pg47-52	Yes	Yes	RMM_21		EXP-421
 NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_89	Chromatin shearing Input testing - varying DF	EXP-422
 NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_90	Chromatin shearing Input testing - varying DF	EXP-423
 NA	NA	AVD	2/6/2018	2/9/2018	Other (please explain in notes)	Covaris Chromatin Shearing	Nb1_pg	Yes	Yes	AVD_92	Chromatin shearing Input testing - varying DF	EXP-424
@@ -181,12 +181,12 @@ SAMP-126	GM_SNAP10	JYH	3/2/2018	3/2/2018	ATAC-seq	ATAC-seq_cells	nb1_p178	Yes	Ye
 SAMP-126	GM_SNAP10	JYH	3/2/2018	3/2/2018	ATAC-seq	ATAC-seq_cells	nb1_p178	Yes	Yes	JYH_310	Biomek_9th_7	EXP-499
 SAMP-126	GM_SNAP10	JYH	3/2/2018	3/2/2018	ATAC-seq	ATAC-seq_cells	nb1_p178	Yes	Yes	JYH_311	Biomek_9th_8	EXP-500
 SAMP-546	Human from Salk (Dounce)	XW	03/15/2018	03/22/2018	scATAC-seq	scATAC-seq for tissue	nb1_p59-p64	yes	Yes	XW_75		EXP-502
-Other 	Grind Meth. H1	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_22		EXP-503
-Other 	Grind Meth. H2	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_23		EXP-504
-Other 	Grind Meth. C1	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_24		EXP-505
-Other 	Grind Meth. C2	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_25		EXP-506
-Other 	Grind Meth. M1	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_26		EXP-507
-Other 	Grind Meth. M2	RM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_27		EXP-508
+Other 	Grind Meth. H1	RMM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_22		EXP-503
+Other 	Grind Meth. H2	RMM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_23		EXP-504
+Other 	Grind Meth. C1	RMM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_24		EXP-505
+Other 	Grind Meth. C2	RMM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_25		EXP-506
+Other 	Grind Meth. M1	RMM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_26		EXP-507
+Other 	Grind Meth. M2	RMM	02/23/2018	3/12/2018	ATAC-seq	ATAC-seq_tissues	nb1_p59-p64	yes	Yes	RMM_27		EXP-508
 NA	Chi_D0_Input Optimization_DF5	AVD	3/1/2018	3/15/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_113	Chi ChIP Input Testing	EXP-509
 NA	Chi_D0_Input Optimization_DF10	AVD	3/1/2018	3/15/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_114	Chi ChIP Input Testing	EXP-510
 NA	Chi_D0_Input Optimization_DF15	AVD	3/1/2018	3/15/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_115	Chi ChIP Input Testing	EXP-511
@@ -213,14 +213,14 @@ NA	Chi_D3_Input Optimization_DF20	AVD	3/6/2018	03/22/2018	ChIP-seq	Covaris Chrom
 NA	Chi_D3_Input Optimization_DF25	AVD	3/6/2018	03/22/2018	ChIP-seq	Covaris Chromatin Shearing	nb1_pg	Yes	Yes	AVD_134	Chi ChIP Input Testing	EXP-532
 SAMP-562	CEMBA180326_3E	XW	3/26/2018	3/28/2018	scATAC-seq	scATAC-seq for tissue	nb1_p78,81	Yes	Yes	XW_80		EXP-533
 SAMP-48	AN15506	JYH	2/15/2018	2/15/2018	scATAC-seq	scATAC-seq for tissue	nb1_p171	Yes	Yes	XW_71	Hippocampus	EXP-534
-Other 	K_562_1	RM	3/6/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p65-68	yes	yes	RMM_28	Hi-C protocol K_562	EXP-535
-Other	Active Motif 12878_1	RM	3/19/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RMM_29	Hi-C protocol Active Motif sample 10 million GM12878 (5 million per sample)	EXP-536
-Other	Active Motif 12878_2	RM	3/20/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RMM_30	Hi-c protocol Active Motif sample 10 million GM12878 (5 million per sample)	EXP-537
-Other	Epigen 12878_1	RM	3/21/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RMM_31	Hi-C protocol Epigen GM 12878 5 million	EXP-538
-Other	Epigen 12878_2	RM	3/22/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RMM_32	Hi-C protocol Epigen GM 12878 5 million	EXP-539
+Other 	K_562_1	RMM	3/6/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p65-68	yes	yes	RMM_28	Hi-C protocol K_562	EXP-535
+Other	Active Motif 12878_1	RMM	3/19/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RMM_29	Hi-C protocol Active Motif sample 10 million GM12878 (5 million per sample)	EXP-536
+Other	Active Motif 12878_2	RMM	3/20/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RMM_30	Hi-c protocol Active Motif sample 10 million GM12878 (5 million per sample)	EXP-537
+Other	Epigen 12878_1	RMM	3/21/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RMM_31	Hi-C protocol Epigen GM 12878 5 million	EXP-538
+Other	Epigen 12878_2	RMM	3/22/2018	3/27/2018	Hi-C Epigen	Epigen Hi-C	nb1_p69-72	yes	yes	RMM_32	Hi-C protocol Epigen GM 12878 5 million	EXP-539
 SAMP-595	CEMBA180402_4F	XW	4/2/2018	4/6/2018	scATAC-seq	scATAC-seq for tissue	nb1_p82,85	yes	yes	XH_19		EXP-540
-SAMP-396	GM12878-Arima-1	RM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RMM_33		EXP-541
-NA	GM12878 Epigen	RM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RMM_34		EXP-542
+SAMP-396	GM12878-Arima-1	RMM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RMM_33		EXP-541
+NA	GM12878 Epigen	RMM	4/3/2018	4/6/2018	Hi-C Arima Kit	Arima Hi-C	nb1_p73-77	Yes	Yes	RMM_34		EXP-542
 Other	Brain3	JYH	3/9/2018	3/9/2018	ATAC-seq	ATAC-seq_tissues	nb1_179	Yes	Yes	JYH_387	Immediate	EXP-543
 Other	Brain4	JYH	3/9/2018	3/9/2018	ATAC-seq	ATAC-seq_tissues	nb1_179	Yes	Yes	JYH_388	Immediate	EXP-544
 Other	Heart3	JYH	3/9/2018	3/9/2018	ATAC-seq	ATAC-seq_tissues	nb1_179	Yes	Yes	JYH_389	Immediate	EXP-545
@@ -299,34 +299,34 @@ SAMP-600	CEMBA180412_3D	XW	04/12/2018	04/13/2018	scATAC-seq	scATAC-seq for tissu
 SAMP-601	CEMBA180416_3D	XH	04/16/2018	04/17/2018	scATAC-seq	scATAC-seq for tissue	NB1_p61	Yes	Yes	XH_23		EXP-618
 SAMP-602	CEMBA180417_4C	XW	04/17/2018	04/18/2018	scATAC-seq	scATAC-seq for tissue		Yes	Yes	XH_24		EXP-619
 SAMP-603	CEMBA180419_4C	XH	04/19/2018	04/20/2018	scATAC-seq	scATAC-seq for tissue	NB1_p64	Yes	Yes	XH_25		EXP-620
-Other	Gli2-118-2_10.5 head	RM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_35	Kevin Peterson ATAC on Samples	EXP-621
-Other	Gli2-118-2_10.5 trunk	RM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_36	Kevin Peterson ATAC on Samples	EXP-622
-Other	Gli2-L4_14.5_lung	RM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_37	Kevin Peterson ATAC on Samples	EXP-623
-Other	Gli2-L4_14.5_palate	RM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_38	Kevin Peterson ATAC on Samples	EXP-624
-Other	Gli2-122-3_MNP	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_39	Kevin Peterson ATAC on Samples	EXP-625
-Other	Gli2-122-4_MNP	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_40	Kevin Peterson ATAC on Samples	EXP-626
-Other	Gli2-122-1_MNP	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_41	Kevin Peterson ATAC on Samples	EXP-627
-Other	Gli2-48-1_MNP	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_42	Kevin Peterson ATAC on Samples	EXP-628
-Other	G3XG3-11.5-16	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_43	Kevin Peterson ATAC on Samples	EXP-629
-Other	G3XG3-11.5-20	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_44	Kevin Peterson ATAC on Samples	EXP-630
-Other	F1/F2XHand2Cre-2	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_45	Kevin Peterson ATAC on Samples	EXP-631
-Other	F1/F2XHand2Cre-4	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_46	Kevin Peterson ATAC on Samples	EXP-632
-Other	F1/F2XHand2Cre-14	RM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_47	Kevin Peterson ATAC on Samples	EXP-633
-Other	Gli2-118-7 10.5head	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_48	Kevin Peterson ATAC on Samples	EXP-634
-Other	Gli2-118-7 10.5trunk	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_49	Kevin Peterson ATAC on Samples	EXP-635
-Other	Gli2-118-4 10.5head	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_50	Kevin Peterson ATAC on Samples	EXP-636
-Other	Gli2-118-4 10.5trunk	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_51	Kevin Peterson ATAC on Samples	EXP-637
-Other	Gli2-118-5 10.5head	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_52	Kevin Peterson ATAC on Samples	EXP-638
-Other	Gli2-118-5 10.5trunk	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_53	Kevin Peterson ATAC on Samples	EXP-639
-Other	G3XG3-10.5-29head	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_54	Kevin Peterson ATAC on Samples	EXP-640
-Other	G3XG3-10.5-29trunk	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_55	Kevin Peterson ATAC on Samples	EXP-641
-Other	G3XG3-10.5-31head	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_56	Kevin Peterson ATAC on Samples	EXP-642
-Other	Gli2-L5lung	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_57	Kevin Peterson ATAC on Samples	EXP-643
-Other	Gli2-L5palate	RM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_58	Kevin Peterson ATAC on Samples	EXP-644
-SAMP-543	G2-48-6 LB	RM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p85-88	Yes	Yes		Robert ATAC 	EXP-645
-SAMP-544	G2-48-6 MNP	RM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p85-88	Yes	Yes	RM_59	Robert ATAC 	EXP-646
-SAMP-545	G2-48-6 FNP	RM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p85-88	Yes	Yes	RM_60	Robert ATAC 	EXP-647
-SAMP-175	GM19240	RM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p85-88	Yes	Yes		Robert ATAC 	EXP-648
+Other	Gli2-118-2_10.5 head	RMM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_35	Kevin Peterson ATAC on Samples	EXP-621
+Other	Gli2-118-2_10.5 trunk	RMM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_36	Kevin Peterson ATAC on Samples	EXP-622
+Other	Gli2-L4_14.5_lung	RMM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_37	Kevin Peterson ATAC on Samples	EXP-623
+Other	Gli2-L4_14.5_palate	RMM	4/16/18	4/16/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_38	Kevin Peterson ATAC on Samples	EXP-624
+Other	Gli2-122-3_MNP	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_39	Kevin Peterson ATAC on Samples	EXP-625
+Other	Gli2-122-4_MNP	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_40	Kevin Peterson ATAC on Samples	EXP-626
+Other	Gli2-122-1_MNP	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_41	Kevin Peterson ATAC on Samples	EXP-627
+Other	Gli2-48-1_MNP	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_42	Kevin Peterson ATAC on Samples	EXP-628
+Other	G3XG3-11.5-16	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_43	Kevin Peterson ATAC on Samples	EXP-629
+Other	G3XG3-11.5-20	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_44	Kevin Peterson ATAC on Samples	EXP-630
+Other	F1/F2XHand2Cre-2	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_45	Kevin Peterson ATAC on Samples	EXP-631
+Other	F1/F2XHand2Cre-4	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_46	Kevin Peterson ATAC on Samples	EXP-632
+Other	F1/F2XHand2Cre-14	RMM	4/17/18	4/17/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_47	Kevin Peterson ATAC on Samples	EXP-633
+Other	Gli2-118-7 10.5head	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_48	Kevin Peterson ATAC on Samples	EXP-634
+Other	Gli2-118-7 10.5trunk	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_49	Kevin Peterson ATAC on Samples	EXP-635
+Other	Gli2-118-4 10.5head	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_50	Kevin Peterson ATAC on Samples	EXP-636
+Other	Gli2-118-4 10.5trunk	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_51	Kevin Peterson ATAC on Samples	EXP-637
+Other	Gli2-118-5 10.5head	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_52	Kevin Peterson ATAC on Samples	EXP-638
+Other	Gli2-118-5 10.5trunk	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_53	Kevin Peterson ATAC on Samples	EXP-639
+Other	G3XG3-10.5-29head	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_54	Kevin Peterson ATAC on Samples	EXP-640
+Other	G3XG3-10.5-29trunk	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_55	Kevin Peterson ATAC on Samples	EXP-641
+Other	G3XG3-10.5-31head	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_56	Kevin Peterson ATAC on Samples	EXP-642
+Other	Gli2-L5lung	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_57	Kevin Peterson ATAC on Samples	EXP-643
+Other	Gli2-L5palate	RMM	4/18/18	4/18/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p93-98	Yes	Yes	RM_58	Kevin Peterson ATAC on Samples	EXP-644
+SAMP-543	G2-48-6 LB	RMM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p85-88	Yes	Yes		Robert ATAC 	EXP-645
+SAMP-544	G2-48-6 MNP	RMM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p85-88	Yes	Yes	RM_59	Robert ATAC 	EXP-646
+SAMP-545	G2-48-6 FNP	RMM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p85-88	Yes	Yes	RM_60	Robert ATAC 	EXP-647
+SAMP-175	GM19240	RMM	4/12/18	4/12/18	ATAC-seq	ATAC-Seq_Tissues	nb1_p85-88	Yes	Yes		Robert ATAC 	EXP-648
 SAMP-68	GBM3	XH	04/03/2018	04/04/2018	scATAC-seq	scATAC-seq_tissues	nb1_p59	Yes	Yes	XH13	GBM	EXP-649
 SAMP-610	CEMBA180423_7B	XH	4/23/18	4/25/18	scATAC-seq	scATAC-seq for tissue	nb_1 p65	Yes	Yes	XH_26		EXP-650
 SAMP-611	CEMBA180424_7B	XH	4/24/18	4/25/18	scATAC-seq	scATAC-seq for tissue	nb_1 p65	Yes	Yes	XH_27		EXP-651
@@ -408,29 +408,29 @@ SAMP-591	H7-SNAP3177-2	JYH	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p208	
 SAMP-592	H7-SNAP2523-1	JYH	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p208	Yes	Yes	JYH_451	Biomek	EXP-727
 SAMP-593	H7-SNAP2523-1	JYH	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p208	Yes	Yes	JYH_452	Biomek	EXP-728
 SAMP-126	GM_SNAP10	JYH	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p208	Yes	Yes	JYH_453	Biomek	EXP-729
-SAMP-548	LN-308 (glioma cell line)	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_61	Bench Method ATAC-Seq w/ second size selection.	EXP-730
-SAMP-549	U87 (glioma cell line)	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_62	Bench Method ATAC-Seq w/ second size selection.	EXP-731
-SAMP-550	SF767 (glioma cell line)	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_63	Bench Method ATAC-Seq w/ second size selection.	EXP-732
-SAMP-551	LN229 (glioma cell line)	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_64	Bench Method ATAC-Seq w/ second size selection.	EXP-733
-SAMP-552	T98G (glioma cell line)	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_65	Bench Method ATAC-Seq w/ second size selection.	EXP-734
-SAMP-553	H522 (lung cell line)	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_66	Bench Method ATAC-Seq w/ second size selection.	EXP-735
-SAMP-554	HCC827 (lung cell line)	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_67	Bench Method ATAC-Seq w/ second size selection.	EXP-736
-SAMP-555	PC9 (lung cell line)	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_68	Bench Method ATAC-Seq w/ second size selection.	EXP-737
-SAMP-556	HN12 (head and neck cell line)	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_69	Bench Method ATAC-Seq w/ second size selection.	EXP-738
-SAMP-557	Cal27 (head and neck cell line)	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_70	Bench Method ATAC-Seq w/ second size selection.	EXP-739
-SAMP-558	USMCC17B (head and neck cell line)	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_71	Bench Method ATAC-Seq w/ second size selection.	EXP-740
-SAMP-559	Detroit562 (head and neck cell line)	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_72	Bench Method ATAC-Seq w/ second size selection.	EXP-741
-SAMP-126	GM_SNAP10	RM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_73	Bench Method ATAC-Seq w/ second size selection.	EXP-742
+SAMP-548	LN-308 (glioma cell line)	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_61	Bench Method ATAC-Seq w/ second size selection.	EXP-730
+SAMP-549	U87 (glioma cell line)	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_62	Bench Method ATAC-Seq w/ second size selection.	EXP-731
+SAMP-550	SF767 (glioma cell line)	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_63	Bench Method ATAC-Seq w/ second size selection.	EXP-732
+SAMP-551	LN229 (glioma cell line)	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_64	Bench Method ATAC-Seq w/ second size selection.	EXP-733
+SAMP-552	T98G (glioma cell line)	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_65	Bench Method ATAC-Seq w/ second size selection.	EXP-734
+SAMP-553	H522 (lung cell line)	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_66	Bench Method ATAC-Seq w/ second size selection.	EXP-735
+SAMP-554	HCC827 (lung cell line)	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_67	Bench Method ATAC-Seq w/ second size selection.	EXP-736
+SAMP-555	PC9 (lung cell line)	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_68	Bench Method ATAC-Seq w/ second size selection.	EXP-737
+SAMP-556	HN12 (head and neck cell line)	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_69	Bench Method ATAC-Seq w/ second size selection.	EXP-738
+SAMP-557	Cal27 (head and neck cell line)	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_70	Bench Method ATAC-Seq w/ second size selection.	EXP-739
+SAMP-558	USMCC17B (head and neck cell line)	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_71	Bench Method ATAC-Seq w/ second size selection.	EXP-740
+SAMP-559	Detroit562 (head and neck cell line)	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_72	Bench Method ATAC-Seq w/ second size selection.	EXP-741
+SAMP-126	GM_SNAP10	RMM	4/11/18	4/11/18	ATAC-seq	ATAC-Seq_Cells	nb_1p81-84	yes	Yes	RMM_73	Bench Method ATAC-Seq w/ second size selection.	EXP-742
 SAMP-595	CEMBA180329_4F	XH	4/2/2018	4/6/2018	scATAC-seq	scATAC-seq for tissue	nb1_p58	yes	yes	XH_18		EXP-743
-SAMP-586	H7-SNAPDMSO-1	RM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_74	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-744
-SAMP-587	H7-SNAPDMSO-2	RM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_75	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-745
-SAMP-588	H7-SNAP2523R-1	RM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_76	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-746
-SAMP-589	H7-SNAP2523R-2	RM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_77	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-747
-SAMP-590	H7-SNAP3177-1	RM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_78	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-748
-SAMP-591	H7-SNAP3177-2	RM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_79	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-749
-SAMP-592	H7-SNAP2523-1	RM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_80	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-750
-SAMP-593	H7-SNAP2523-1	RM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_81	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-751
-SAMP-126	GM_SNAP10	RM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_82	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-752
+SAMP-586	H7-SNAPDMSO-1	RMM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_74	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-744
+SAMP-587	H7-SNAPDMSO-2	RMM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_75	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-745
+SAMP-588	H7-SNAP2523R-1	RMM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_76	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-746
+SAMP-589	H7-SNAP2523R-2	RMM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_77	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-747
+SAMP-590	H7-SNAP3177-1	RMM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_78	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-748
+SAMP-591	H7-SNAP3177-2	RMM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_79	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-749
+SAMP-592	H7-SNAP2523-1	RMM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_80	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-750
+SAMP-593	H7-SNAP2523-1	RMM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_81	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-751
+SAMP-126	GM_SNAP10	RMM	4/25/2018	4/25/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p99-102	yes	Yes	RMM_82	Bench Method ATAC done in parallel w/ JYH Biomek	EXP-752
 SAMP-623	16p_11c6_3m	XH	5/9/2018	5/10/2018	scRNA-seq	scRNA seq for cell	NB_1 P68-69	yes	Yes	XH_30		EXP-753
 SAMP-624	16p_Bc10_3m	XH	5/9/2018	5/10/2018	scRNA-seq	scRNA seq for cell	NB_1 P68-69	yes	Yes	XH_31		EXP-754
 SAMP-625	K562	XH	5/9/2018	5/10/2018	scRNA-seq	scRNA seq for cell	NB_1 P68-69	yes	Yes	XH_32		EXP-755
@@ -446,8 +446,8 @@ SAMP-606	UC12-1108-4	JYH	5/7/2018	5/7/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p214	yes	
 SAMP-607	373835	JYH	5/7/2018	5/7/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p214	yes	Yes	JYH_465	Less cells	EXP-765
 SAMP-608	379492	JYH	5/7/2018	5/7/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p214	yes	Yes	JYH_466	Less cells	EXP-766
 SAMP-609	UC12-1108-4	JYH	5/7/2018	5/7/2018	ATAC-seq	ATAC-Seq_Cells	nb1_p214	yes	Yes	JYH_467	Less cells	EXP-767
-	CZ10									JYH_454		EXP-768
-	CZ11									JYH_455		EXP-769
+SAMP-615	CZ10	JYH	5/11/2018	5/11/2018	scATAC-seq	scATAC-seq_tissues	nb1_p216	yes	yes	JYH_468		EXP-768
+SAMP-626	CZ11	JYH	5/11/2018	5/11/2018	scATAC-seq	scATAC-seq_tissues	nb1_p217	yes	yes	JYH_469		EXP-769
 SAMP-616	CT5080	XH	5/7/2018	5/8/2018	scATAC-seq	scRNA seq for tissue		yes	Yes	XH_33	used half of the sample	EXP-770
 SAMP-617	PTEN/P53 S3	AVD	5/15/2018	5/31/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_157	PTEN/P53_H3K4me3 - Pfizer ChIP (round 1, missing 2 cell lines)	EXP-771
 SAMP-618	TRAMP C3	AVD	5/15/2018	5/31/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_p_	Yes	Yes	AVD_158	TRAMP C3_H3K4me3 - Pfizer ChIP (round 1, missing 2 cell lines)	EXP-772
@@ -526,7 +526,7 @@ SAMP-672	CEMBA180529_5B	XH	5/29/18	5/30/18	scATAC-seq	scATAC-seq for tissue	Nb1_
 SAMP-673	CEMBA180612_5D	XH	6/12/18	6/13/18	scATAC-seq	scATAC-seq for tissue	Nb1_p_85	Yes	Yes	XH_41		EXP-845
 SAMP-674	CEMBA180618_5D	XH	6/18/18	6/20/18	scATAC-seq	scATAC-seq for tissue	Nb1_p_88	Yes	Yes	XH_42		EXP-846
 SAMP-675	CEMBA180619_4G	XH	6/19/18	6/20/18	scATAC-seq	scATAC-seq for tissue	Nb1_p_88	Yes	Yes	XH_43		EXP-847
-Other	Epigen GM19240	RM	5/10/18	5/29/18	Other (please explain in notes)	Fast 4C	Nb1_p_105-111	Yes	Yes	RMM_83 & RMM_84	Two Library ID's generated with one sample. Difference is primer sets during PCR. 	EXP-848
+Other	Epigen GM19240	RMM	5/10/18	5/29/18	Other (please explain in notes)	Fast 4C	Nb1_p_105-111	Yes	Yes	RMM_83 & RMM_84	Two Library ID's generated with one sample. Difference is primer sets during PCR. 	EXP-848
 Other	HepG2	JYH	6/8/18	6/8/18	ATAC-seq	ATAC-Seq_Cells	nb1_p220	Yes	Yes	JYH_473	Biomek_19th	EXP-849
 Other	HepG2	JYH	6/8/18	6/8/18	ATAC-seq	ATAC-Seq_Cells	nb1_p220	Yes	Yes	JYH_474	Biomek_19th	EXP-850
 Other	HepG2	JYH	6/8/18	6/8/18	ATAC-seq	ATAC-Seq_Cells	nb1_p220	Yes	Yes	JYH_475	Biomek_19th	EXP-851
@@ -713,8 +713,8 @@ other	HEK293	JYH	8/1/18	8/1/18	ATAC-seq	ATAC-Seq_Cells	nb1_p	Yes	Yes	JYH_583	Ter
 other	HEK293	JYH	8/1/18	8/1/18	ATAC-seq	ATAC-Seq_Cells	nb1_p	Yes	Yes	JYH_584	ATC_4	EXP-1032
 other	HEK293	JYH	8/1/18	8/1/18	ATAC-seq	ATAC-Seq_Cells	nb1_p	Yes	Yes	JYH_585	Termomixer(shaking)_4	EXP-1033
 SAMP-709	CEMBA180807_5A	XH	8/7/18		scATAC-seq	scATAC-seq	nb2_p	Yes	Yes	XH_68		EXP-1034
-Other	GM19240 (RSV2)	RM	6/20/18	6/27/18	4C	Epigen 4C	nb1_p118-120	Yes	Yes	RMM_85	One sample two different PCR Primers	EXP-1035
-Other	GM19240 (CH12FireV2)	RM	6/20/18	6/27/18	4C	Epigen 4C	nb1_p118-121	Yes	Yes	RMM_86	One sample two different PCR Primers	EXP-1036
+Other	GM19240 (RSV2)	RMM	6/20/18	6/27/18	4C	Epigen 4C	nb1_p118-120	Yes	Yes	RMM_85	One sample two different PCR Primers	EXP-1035
+Other	GM19240 (CH12FireV2)	RMM	6/20/18	6/27/18	4C	Epigen 4C	nb1_p118-121	Yes	Yes	RMM_86	One sample two different PCR Primers	EXP-1036
 SAMP-710	BG625	JIB	8/10/2018	8/13/2018	scRNA-seq	10X Genomics	Exp6	Yes	Yes	JB_1	none	EXP-1037
 SAMP-711	JM628	JIB	8/10/2018	8/13/2018	scRNA-seq	10X Genomics	Exp6	Yes	Yes	JB_2	none	EXP-1038
 SAMP-712	WT E8.5	XH	8/15/2018		scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_69		EXP-1039
@@ -750,14 +750,14 @@ SAMP-794	RG06	JYH			ATAC-seq	ATAC for cells		Yes	Yes	JYH_601		EXP-1068
 SAMP-795	RG07	JYH			ATAC-seq	ATAC for cells		Yes	Yes	JYH_602		EXP-1069
 SAMP-796	RG08	JYH			ATAC-seq	ATAC for cells		Yes	Yes	JYH_603		EXP-1070
 SAMP-808	RIN cell	JYH			ATAC-seq	ATAC for cells		Yes	Yes	JYH_604		EXP-1071
-Other	GM19240 (O/N)	RM	08/08/2018	09/09/2018	CUT&RUN	Henikoff CnR	nb1_p122-126	Yes	Yes	RMM_87		EXP-1072
-Other	GM19240 (O/N)	RM	08/08/2018	09/09/2018	CUT&RUN	Henikoff CnR	nb1_p122-126	Yes	Yes	RMM_88		EXP-1073
-Other	GM19240 (O/N)	RM	08/13/2018	09/14/2018	CUT&RUN	Henikoff CnR	nb1_p127-129	Yes				EXP-1074
-Other	GM19240 (O/N)	RM	08/13/2018	09/14/2018	CUT&RUN	Henikoff CnR	nb1_p127-129	Yes				EXP-1075
-Other	GM19240 (4hr)	RM	08/15/2018	09/16/2018	CUT&RUN	Henikoff CnR	nb1_p130-133	Yes	Yes	RMM_89		EXP-1076
-Other	GM19240 (4hr)	RM	08/15/2018	09/16/2018	CUT&RUN	Henikoff CnR	nb1_p130-133	Yes	Yes	RMM_90		EXP-1077
-Other	GM19240 (15min)	RM	08/21/2018	08/22/2018	CUT&RUN	Henikoff CnR	nb1_p134-136	Yes				EXP-1078
-Other	GM19240 (15min)	RM	08/21/2018	08/22/2018	CUT&RUN	Henikoff CnR	nb1_p134-136	Yes				EXP-1079
+Other	GM19240 (O/N)	RMM	08/08/2018	09/09/2018	CUT&RUN	Henikoff CnR	nb1_p122-126	Yes	Yes	RMM_87		EXP-1072
+Other	GM19240 (O/N)	RMM	08/08/2018	09/09/2018	CUT&RUN	Henikoff CnR	nb1_p122-126	Yes	Yes	RMM_88		EXP-1073
+Other	GM19240 (O/N)	RMM	08/13/2018	09/14/2018	CUT&RUN	Henikoff CnR	nb1_p127-129	Yes				EXP-1074
+Other	GM19240 (O/N)	RMM	08/13/2018	09/14/2018	CUT&RUN	Henikoff CnR	nb1_p127-129	Yes				EXP-1075
+Other	GM19240 (4hr)	RMM	08/15/2018	09/16/2018	CUT&RUN	Henikoff CnR	nb1_p130-133	Yes	Yes	RMM_89		EXP-1076
+Other	GM19240 (4hr)	RMM	08/15/2018	09/16/2018	CUT&RUN	Henikoff CnR	nb1_p130-133	Yes	Yes	RMM_90		EXP-1077
+Other	GM19240 (15min)	RMM	08/21/2018	08/22/2018	CUT&RUN	Henikoff CnR	nb1_p134-136	Yes				EXP-1078
+Other	GM19240 (15min)	RMM	08/21/2018	08/22/2018	CUT&RUN	Henikoff CnR	nb1_p134-136	Yes				EXP-1079
 Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_605	Biomek_96_1st	EXP-1080
 Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_606	Biomek_96_1st	EXP-1081
 Other	GM19240	JYH	09/14/2018	09/14/2018	ATAC-seq	ATAC for cells	nb1_p	Yes	Yes	JYH_607	Biomek_96_1st	EXP-1082
@@ -874,17 +874,17 @@ SAMP-716	NA0007888232	JIB	9/11/2018	9/14/2018	scRNA-seq	10X_nuclei		Yes	Yes	JB_1
 SAMP-726	NA0007890679	JIB	9/11/2018	9/14/2018	scRNA-seq	10X_nuclei		No	No		No library generated	EXP-1194
 SAMP-775	D110--CBL-MIX-6	JIB	9/20/2018	9/24/2018	scRNA-seq	10X		Yes	Yes	JB_18		EXP-1195
 SAMP-778	D110--RML-BPS-3	JIB	9/20/2018	9/24/2018	scRNA-seq	10X_nuclei		Yes	Yes	JB_19		EXP-1196
-Other	GM19240 (A) SNP1	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_91		EXP-1197
-Other	GM19240 (A) SNP2	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_92		EXP-1198
-Other	GM19240 (A) NR2F2 RM	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_99[2]	Sequenced on 24Oct18	EXP-1199
-Other	GM19240 (A) NR2F2 DG	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_93		EXP-1200
-Other	GM19240 (B) SNP1	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_94		EXP-1201
-Other	GM19240 (B) SNP2	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_95		EXP-1202
-Other	GM19240 (B) NR2F2 RM	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_96		EXP-1203
-Other	GM19240 (B) NR2F2 DG	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_100	Sequenced on 24Oct18	EXP-1204
-Other	GM19240 V3 SNP1	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_97		EXP-1205
-Other	GM19240 V3 SNP2	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_98		EXP-1206
-Other	GM19240 V3 NR2F2 DG	RM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_99		EXP-1207
+Other	GM19240 (A) SNP1	RMM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_91		EXP-1197
+Other	GM19240 (A) SNP2	RMM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_92		EXP-1198
+Other	GM19240 (A) NR2F2 RM	RMM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_99[2]	Sequenced on 24Oct18	EXP-1199
+Other	GM19240 (A) NR2F2 DG	RMM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_93		EXP-1200
+Other	GM19240 (B) SNP1	RMM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_94		EXP-1201
+Other	GM19240 (B) SNP2	RMM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_95		EXP-1202
+Other	GM19240 (B) NR2F2 RM	RMM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_96		EXP-1203
+Other	GM19240 (B) NR2F2 DG	RMM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_100	Sequenced on 24Oct18	EXP-1204
+Other	GM19240 V3 SNP1	RMM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_97		EXP-1205
+Other	GM19240 V3 SNP2	RMM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_98		EXP-1206
+Other	GM19240 V3 NR2F2 DG	RMM	9/10/2018	9/27/2018	4C	Fast 4C Protocol	nb1_p138-141	Yes	Yes	RMM_99		EXP-1207
 SAMP-820	CEMBA180813_5E	XH	8/13/2018	8/14/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_73		EXP-1208
 SAMP-821	CEMBA180820_5E	XH	8/20/2018	8/21/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_74		EXP-1209
 SAMP-822	CEMBA180904_5J	XH	9/4/2018	9/5/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_75		EXP-1210
@@ -904,20 +904,20 @@ SAMP-830	CEMBA181015_5H	XH	10/15/2018	10/18/2018	scATAC-seq	sc_ATAC for cells		Y
 SAMP-831	CEMBA181016_5H	XH	10/16/2018	10/18/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_83		EXP-1222
 SAMP-832	CEMBA181022_6B	XH	10/22/2018	10/25/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_84		EXP-1223
 SAMP-833	CEMBA181023_6B	XH	10/23/2018	10/25/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_85		EXP-1224
-Other	GM19240 X-linked (ChIP_1) H3K4me3 1.1	RM	10/04/2018	10/09/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p142-147	Yes	Yes	RMM_102		EXP-1225
-Other	GM19240 X-linked (ChIP_1) H3K27me3 1.1	RM	10/04/2018	10/09/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p142-147	Yes	Yes	RMM_103		EXP-1226
-Other	GM19240 X-linked (ChIP_1) H3K27me3 2.1	RM	10/04/2018	10/09/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p142-147	Yes	Yes	RMM_104		EXP-1227
-Other	GM19240 X-linked (ChIP_2) H3K4me3 1.1	RM	10/15/2018	10/19/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p148-153	Yes	Yes	RMM_105		EXP-1228
-Other	GM19240 X-linked (ChIP_2) H3K27me3 1.1	RM	10/15/2018	10/19/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p148-153	Yes	Yes	RMM_106		EXP-1229
-Other	GM19240 X-linked (ChIP_2) H3K27me3 2.1	RM	10/15/2018	10/19/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p148-153	Yes	Yes	RMM_107		EXP-1230
-Other	(A) Chromatin provided by Active Motif for ChIP app on Biomek	RM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_108		EXP-1231
-Other	(B) Chromatin provided by Active Motif for ChIP app on Biomek	RM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_109		EXP-1232
-Other	(C) Chromatin provided by Active Motif for ChIP app on Biomek	RM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_110		EXP-1233
-Other	(D) Chromatin provided by Active Motif for ChIP app on Biomek	RM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_111		EXP-1234
-Other	(E) Chromatin provided by Active Motif for ChIP app on Biomek	RM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_112		EXP-1235
-Other	(F) Chromatin provided by Active Motif for ChIP app on Biomek	RM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_113		EXP-1236
-Other	(G) Chromatin provided by Active Motif for ChIP app on Biomek	RM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_114		EXP-1237
-Other	(H) Chromatin provided by Active Motif for ChIP app on Biomek	RM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_115		EXP-1238
+Other	GM19240 X-linked (ChIP_1) H3K4me3 1.1	RMM	10/04/2018	10/09/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p142-147	Yes	Yes	RMM_102		EXP-1225
+Other	GM19240 X-linked (ChIP_1) H3K27me3 1.1	RMM	10/04/2018	10/09/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p142-147	Yes	Yes	RMM_103		EXP-1226
+Other	GM19240 X-linked (ChIP_1) H3K27me3 2.1	RMM	10/04/2018	10/09/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p142-147	Yes	Yes	RMM_104		EXP-1227
+Other	GM19240 X-linked (ChIP_2) H3K4me3 1.1	RMM	10/15/2018	10/19/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p148-153	Yes	Yes	RMM_105		EXP-1228
+Other	GM19240 X-linked (ChIP_2) H3K27me3 1.1	RMM	10/15/2018	10/19/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p148-153	Yes	Yes	RMM_106		EXP-1229
+Other	GM19240 X-linked (ChIP_2) H3K27me3 2.1	RMM	10/15/2018	10/19/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p148-153	Yes	Yes	RMM_107		EXP-1230
+Other	(A) Chromatin provided by Active Motif for ChIP app on Biomek	RMM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_108		EXP-1231
+Other	(B) Chromatin provided by Active Motif for ChIP app on Biomek	RMM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_109		EXP-1232
+Other	(C) Chromatin provided by Active Motif for ChIP app on Biomek	RMM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_110		EXP-1233
+Other	(D) Chromatin provided by Active Motif for ChIP app on Biomek	RMM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_111		EXP-1234
+Other	(E) Chromatin provided by Active Motif for ChIP app on Biomek	RMM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_112		EXP-1235
+Other	(F) Chromatin provided by Active Motif for ChIP app on Biomek	RMM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_113		EXP-1236
+Other	(G) Chromatin provided by Active Motif for ChIP app on Biomek	RMM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_114		EXP-1237
+Other	(H) Chromatin provided by Active Motif for ChIP app on Biomek	RMM	10/18/2018	10/23/2018	ChIP-seq	Active Motif Biomeki7 application	nb1_p154-157	Yes	Yes	RMM_115		EXP-1238
 SAMP-817	JC007	XH	10/11/2018	10/12/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_86[1]	Nothing in the sample	EXP-1239
 SAMP-818	JC008	XH	10/11/2018	10/12/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_86[2]		EXP-1240
 SAMP-819	JC009	XH	10/11/2018	10/12/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_86[3]		EXP-1241
@@ -979,30 +979,30 @@ SAMP-640	Glioblastoma IDH1 WT_A39	JIB	11/4/2018	11/6/2018	scRNA-seq	10X 3' Chrom
 SAMP-86	GBM_Pat9_T1	JIB	11/4/2018	11/6/2018	scRNA-seq	10X 3' Chromium	worksheet	Yes	Yes	JB_31		EXP-1297
 SAMP-113	GBM_Pat11	JIB	11/4/2018	11/6/2018	scRNA-seq	10X 3' Chromium	worksheet	Yes	Yes	JB_32		EXP-1298
 SAMP-115	GBM_Pat12_T	JIB	11/4/2018	11/6/2018	scRNA-seq	10X 3' Chromium	worksheet	Yes	Yes	JB_33		EXP-1299
-SAMP-917	231 Normoxic 1/232Normoxic 2	RM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_116	Bethyl	EXP-1300
-SAMP-917	231 Normoxic 1/232Normoxic 2	RM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_117	AM Nanog	EXP-1301
-SAMP-917	231 Normoxic 1/232Normoxic 2	RM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_118	AM HIF-1a	EXP-1302
-SAMP-917	231 Normoxic 1/232Normoxic 2	RM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_119	(M) HIF-1a DB610	EXP-1303
-SAMP-917	231 Normoxic 1/232Normoxic 2	RM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_120	Novus HIF-1a NB100	EXP-1304
-SAMP-917	231 Normoxic 1/232Normoxic 2	RM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_121	CS(M) Nanog 207343	EXP-1305
-SAMP-917	231 Normoxic 1/232Normoxic 2	RM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_122	CS(R) Nanog 5232	EXP-1306
-SAMP-917	231 Normoxic 1/232Normoxic 2	RM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_123	CS(G) Nanog AF 1997	EXP-1307
-SAMP-916	GM19240	RM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_124	H3K4me3 1.1	EXP-1308
-SAMP-226	D00_Rep1	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_125	H3K27me3 Thermo	EXP-1309
-SAMP-228	D03_Rep1	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_126	H3K27me3 Thermo	EXP-1310
-SAMP-230	D05_Rep1_VE	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_127	H3K27me3 Thermo	EXP-1311
-SAMP-232	D07_Rep1_VE	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_128	H3K27me3 Thermo	EXP-1312
-SAMP-234	D09_Rep1_VE	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_129	H3K27me3 Thermo	EXP-1313
-SAMP-236	D15_Rep1_VE	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_130	H3K27me3 Thermo	EXP-1314
-SAMP-238	D05_Rep1_CM	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_131	H3K27me3 Thermo	EXP-1315
-SAMP-240	D07_Rep1_CM	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_132	H3K27me3 Thermo	EXP-1316
-SAMP-242	D09_Rep1_CM	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_133	H3K27me3 Thermo	EXP-1317
-SAMP-244	D15_Rep1_CM	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_134	H3K27me3 Thermo	EXP-1318
-SAMP-246	D05_Rep1_Epi	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_135	H3K27me3 Thermo	EXP-1319
-SAMP-248	D07_Rep1_Epi	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_136	H3K27me3 Thermo	EXP-1320
-SAMP-250	D09_Rep1_Epi	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_137	H3K27me3 Thermo	EXP-1321
-SAMP-252	D15_Rep1_Epi	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_138	H3K27me3 Thermo	EXP-1322
-SAMP-254	D20_Rep1_Epi	RM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_139	H3K27me3 Thermo	EXP-1323
+SAMP-917	231 Normoxic 1/232Normoxic 2	RMM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_116	Bethyl	EXP-1300
+SAMP-917	231 Normoxic 1/232Normoxic 2	RMM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_117	AM Nanog	EXP-1301
+SAMP-917	231 Normoxic 1/232Normoxic 2	RMM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_118	AM HIF-1a	EXP-1302
+SAMP-917	231 Normoxic 1/232Normoxic 2	RMM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_119	(M) HIF-1a DB610	EXP-1303
+SAMP-917	231 Normoxic 1/232Normoxic 2	RMM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_120	Novus HIF-1a NB100	EXP-1304
+SAMP-917	231 Normoxic 1/232Normoxic 2	RMM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_121	CS(M) Nanog 207343	EXP-1305
+SAMP-917	231 Normoxic 1/232Normoxic 2	RMM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_122	CS(R) Nanog 5232	EXP-1306
+SAMP-917	231 Normoxic 1/232Normoxic 2	RMM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_123	CS(G) Nanog AF 1997	EXP-1307
+SAMP-916	GM19240	RMM	11/5/2018	11/8/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p167-p171	Yes	Yes	RMM_124	H3K4me3 1.1	EXP-1308
+SAMP-226	D00_Rep1	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_125	H3K27me3 Thermo	EXP-1309
+SAMP-228	D03_Rep1	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_126	H3K27me3 Thermo	EXP-1310
+SAMP-230	D05_Rep1_VE	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_127	H3K27me3 Thermo	EXP-1311
+SAMP-232	D07_Rep1_VE	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_128	H3K27me3 Thermo	EXP-1312
+SAMP-234	D09_Rep1_VE	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_129	H3K27me3 Thermo	EXP-1313
+SAMP-236	D15_Rep1_VE	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_130	H3K27me3 Thermo	EXP-1314
+SAMP-238	D05_Rep1_CM	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_131	H3K27me3 Thermo	EXP-1315
+SAMP-240	D07_Rep1_CM	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_132	H3K27me3 Thermo	EXP-1316
+SAMP-242	D09_Rep1_CM	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_133	H3K27me3 Thermo	EXP-1317
+SAMP-244	D15_Rep1_CM	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_134	H3K27me3 Thermo	EXP-1318
+SAMP-246	D05_Rep1_Epi	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_135	H3K27me3 Thermo	EXP-1319
+SAMP-248	D07_Rep1_Epi	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_136	H3K27me3 Thermo	EXP-1320
+SAMP-250	D09_Rep1_Epi	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_137	H3K27me3 Thermo	EXP-1321
+SAMP-252	D15_Rep1_Epi	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_138	H3K27me3 Thermo	EXP-1322
+SAMP-254	D20_Rep1_Epi	RMM	11/15/2018	11/20/2018	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p172-p177	Yes	Yes	RMM_139	H3K27me3 Thermo	EXP-1323
 SAMP-640	GBM_A39	XH	11/5/2018	11/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_90[1]		EXP-1324
 SAMP-86	GBM9.2	XH	11/5/2018	11/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_90[2]		EXP-1325
 SAMP-113	GBM11	XH	11/5/2018	11/6/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_90[3]		EXP-1326
@@ -1077,22 +1077,22 @@ SAMP-688	A0016	JYH	12/14/2018	12/14/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	
 SAMP-691	A0018	JYH	12/14/2018	12/14/2018	scATAC-seq	sc_ATAC for tissue		Yes	Yes	JYH_776		EXP-1395
 SAMP-952	CTC WT83c6 8 mo	JIB	12/13/18	12/18/18	scRNA-seq	10x		Yes	Yes	JB_38		EXP-1396
 SAMP-953	CTC WT83c6 10 mo	JIB	12/13/18	12/18/18	scRNA-seq	10x		Yes	Yes	JB_39		EXP-1397
-SAMP-226	D00_Rep2	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_140		EXP-1398
-SAMP-228	D03_Rep2 (D3_Rep4)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_141		EXP-1399
-SAMP-230	D05_Rep2_VE (D5_V5R2)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_142		EXP-1400
-SAMP-232	D07_Rep2_VE (D7_VER2)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_143		EXP-1401
-SAMP-234	D09_Rep2_VE (D9_VER2)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_144		EXP-1402
-SAMP-236	D15_Rep2_VE (D15_V15R2)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_145		EXP-1403
-SAMP-238	D05_Rep2_CM (D5_CMR4)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_146		EXP-1404
-SAMP-240	D07_Rep2_CM (D7_C7R2)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_147		EXP-1405
-SAMP-242	D09_Rep2_CM (D9_C9R2)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_148		EXP-1406
-SAMP-244	D15_Rep2_CM (D15_CMR2)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_149		EXP-1407
-SAMP-246	D05_Rep2_Epi (E5R2)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_150		EXP-1408
-SAMP-248	D07_Rep2_Epi (E7R2)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_151		EXP-1409
-SAMP-250	D09_Rep2_Epi (E9R2)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_152		EXP-1410
-SAMP-252	D15_Rep2_Epi (E15R2)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_153		EXP-1411
-SAMP-254	D20_Rep2_Epi (E20R2)	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_154		EXP-1412
-SAMP-916	GM19240	RM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_155		EXP-1413
+SAMP-226	D00_Rep2	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_140		EXP-1398
+SAMP-228	D03_Rep2 (D3_Rep4)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_141		EXP-1399
+SAMP-230	D05_Rep2_VE (D5_V5R2)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_142		EXP-1400
+SAMP-232	D07_Rep2_VE (D7_VER2)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_143		EXP-1401
+SAMP-234	D09_Rep2_VE (D9_VER2)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_144		EXP-1402
+SAMP-236	D15_Rep2_VE (D15_V15R2)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_145		EXP-1403
+SAMP-238	D05_Rep2_CM (D5_CMR4)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_146		EXP-1404
+SAMP-240	D07_Rep2_CM (D7_C7R2)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_147		EXP-1405
+SAMP-242	D09_Rep2_CM (D9_C9R2)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_148		EXP-1406
+SAMP-244	D15_Rep2_CM (D15_CMR2)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_149		EXP-1407
+SAMP-246	D05_Rep2_Epi (E5R2)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_150		EXP-1408
+SAMP-248	D07_Rep2_Epi (E7R2)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_151		EXP-1409
+SAMP-250	D09_Rep2_Epi (E9R2)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_152		EXP-1410
+SAMP-252	D15_Rep2_Epi (E15R2)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_153		EXP-1411
+SAMP-254	D20_Rep2_Epi (E20R2)	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_154		EXP-1412
+SAMP-916	GM19240	RMM	12/17/18	12/20/18	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	nb1_p178-p183	Yes	Yes	RMM_155		EXP-1413
 SAMP-954	D205220	JYH	1/3/2018	1/4/2018	scATAC-seq	10x Genomics		Yes	Yes	JYH_778		EXP-1414
 SAMP-956	Veh 400K	JYH	1/3/2018	1/4/2018	scATAC-seq	10x Genomics		Yes	Yes	JYH_779		EXP-1415
 SAMP-958	O+P 400K	JYH	1/3/2018	1/4/2018	scATAC-seq	10x Genomics		Yes	Yes	JYH_780		EXP-1416
@@ -1114,10 +1114,10 @@ SAMP-961	CEMBA190108_6A	XH	1/8/2018	1/11/2018	scATAC-seq	sc_ATAC for cells		Yes	
 SAMP-962	CEMBA190110_7B	XH	1/10/2018	1/11/2018	scATAC-seq	sc_ATAC for cells		Yes	Yes	XH_109		EXP-1432
 SAMP-963	CEMBA190115_7B	XH	1/15/2018	1/18/2018	scATAC-seq	sc_ATAC for cells				XH_110		EXP-1433
 SAMP-964	CEMBA190117_6A	XH	1/17/2018	1/18/2018	scATAC-seq	sc_ATAC for cells				XH_111		EXP-1434
-SAMP-916	GM91240_K27ac_AM (rAb)	RM	01/07/2019	01/10/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_156		EXP-1435
-SAMP-916	GM19240_K27ac_AM(pAb)	RM	01/07/2019	01/10/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_157		EXP-1436
-SAMP-916	GM19240_K27ac_ABCAM (pAb)	RM	01/07/2019	01/10/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_158		EXP-1437
-SAMP-916	Gaulton _ CUT&RUN	RM	01/17/2019	01/17/2019	CUT&RUN	CUT&RUN	N/A	Yes	Yes	RMM_159		EXP-1438
+SAMP-916	GM91240_K27ac_AM (rAb)	RMM	01/07/2019	01/10/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_156		EXP-1435
+SAMP-916	GM19240_K27ac_AM(pAb)	RMM	01/07/2019	01/10/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_157		EXP-1436
+SAMP-916	GM19240_K27ac_ABCAM (pAb)	RMM	01/07/2019	01/10/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_158		EXP-1437
+SAMP-916	Gaulton _ CUT&RUN	RMM	01/17/2019	01/17/2019	CUT&RUN	CUT&RUN	N/A	Yes	Yes	RMM_159		EXP-1438
 SAMP-523	CEMBA180305_2B	XH	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_cells		Yes	Yes	XH_112		EXP-1439
 SAMP-524	CEMBA180306_2B	XH	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_cells		Yes	Yes	XH_113		EXP-1440
 SAMP-525	CEMBA180308_3B	XH	1/17/2018	1/17/2018	ATAC-seq	ATAC-seq_cells		Yes	Yes	XH_114		EXP-1441
@@ -1127,22 +1127,22 @@ SAMP-689	A0016	JYH	1/22/19	1/23/19	scATAC-seq	10x Genomics		Yes	Yes	JYH_791		EXP
 SAMP-692	A0018	JYH	1/22/19	1/23/19	scATAC-seq	10x Genomics		Yes	Yes	JYH_792		EXP-1445
 SAMP-975	mCortex10M_without sorting	JYH	12/3/18	12/3/18	scATAC-seq	10x Genomics		Yes	Yes	ZC_1		EXP-1446
 SAMP-976	mCortex10M_with sorting	JYH	12/3/18	12/3/18	scATAC-seq	10x Genomics		Yes	Yes	ZC_2		EXP-1447
-SAMP-226	D00_Rep1	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_160	H3K27ac (rAb)	EXP-1448
-SAMP-228	D03_Rep1	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_161	H3K27ac (rAb)	EXP-1449
-SAMP-238	D05_Rep1_CM	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_162	H3K27ac (rAb)	EXP-1450
-SAMP-240	D07_Rep1_CM	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_163	H3K27ac (rAb)	EXP-1451
-SAMP-242	D09_Rep1_CM	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_164	H3K27ac (rAb)	EXP-1452
-SAMP-244	D15_Rep1_CM	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_165	H3K27ac (rAb)	EXP-1453
-SAMP-246	D05_Rep1_Epi	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_166	H3K27ac (rAb)	EXP-1454
-SAMP-248	D07_Rep1_Epi	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_167	H3K27ac (rAb)	EXP-1455
-SAMP-250	D09_Rep1_Epi	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_168	H3K27ac (rAb)	EXP-1456
-SAMP-252	D15_Rep1_Epi	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_169	H3K27ac (rAb)	EXP-1457
-SAMP-254	D20_Rep1_Epi	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_170	H3K27ac (rAb)	EXP-1458
-SAMP-230	D05_Rep1_VE	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_171	H3K27ac (rAb)	EXP-1459
-SAMP-232	D07_Rep1_VE	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_172	H3K27ac (rAb)	EXP-1460
-SAMP-234	D09_Rep1_VE	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_173	H3K27ac (rAb)	EXP-1461
-SAMP-236	D15_Rep1_VE	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_174	H3K27ac (rAb)	EXP-1462
-SAMP-916	GM19240	RM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_175	H3K27ac (rAb)	EXP-1463
+SAMP-226	D00_Rep1	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_160	H3K27ac (rAb)	EXP-1448
+SAMP-228	D03_Rep1	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_161	H3K27ac (rAb)	EXP-1449
+SAMP-238	D05_Rep1_CM	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_162	H3K27ac (rAb)	EXP-1450
+SAMP-240	D07_Rep1_CM	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_163	H3K27ac (rAb)	EXP-1451
+SAMP-242	D09_Rep1_CM	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_164	H3K27ac (rAb)	EXP-1452
+SAMP-244	D15_Rep1_CM	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_165	H3K27ac (rAb)	EXP-1453
+SAMP-246	D05_Rep1_Epi	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_166	H3K27ac (rAb)	EXP-1454
+SAMP-248	D07_Rep1_Epi	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_167	H3K27ac (rAb)	EXP-1455
+SAMP-250	D09_Rep1_Epi	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_168	H3K27ac (rAb)	EXP-1456
+SAMP-252	D15_Rep1_Epi	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_169	H3K27ac (rAb)	EXP-1457
+SAMP-254	D20_Rep1_Epi	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_170	H3K27ac (rAb)	EXP-1458
+SAMP-230	D05_Rep1_VE	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_171	H3K27ac (rAb)	EXP-1459
+SAMP-232	D07_Rep1_VE	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_172	H3K27ac (rAb)	EXP-1460
+SAMP-234	D09_Rep1_VE	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_173	H3K27ac (rAb)	EXP-1461
+SAMP-236	D15_Rep1_VE	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_174	H3K27ac (rAb)	EXP-1462
+SAMP-916	GM19240	RMM	1/21/19	1/28/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_175	H3K27ac (rAb)	EXP-1463
 NA	aut_H3K27ac_B1	DUG			ChIP-seq					DUGAM_1		EXP-1464
 NA	aut_H3K27ac_B2_R1	DUG			ChIP-seq					DUGAM_2		EXP-1465
 NA	aut_H3K27ac_B2_R2	DUG			ChIP-seq					DUGAM_3		EXP-1466
@@ -1201,22 +1201,22 @@ SAMP-1009	5xAD-STZ hippocampus	XH	2/1/19	2/4/19	scATAC-seq	sc_ATAC for tissue		Y
 SAMP-1010	WT-STZ hippocampus	XH	2/1/19	2/4/19	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_126		EXP-1519
 SAMP-1011	5xAD-PBS hippocampus	XH	2/1/19	2/4/19	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_127		EXP-1520
 SAMP-1012	WT-PBS hippocampus	XH	2/1/19	2/4/19	scATAC-seq	sc_ATAC for tissue		Yes	Yes	XH_128		EXP-1521
-SAMP-226	D00_Rep2	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_176	H3K27ac (rAb)	EXP-1522
-SAMP-228	D03_Rep2 (D3_Rep4)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_177	H3K27ac (rAb)	EXP-1523
-SAMP-238	D05_Rep2_CM (D5_CMR4)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_178	H3K27ac (rAb)	EXP-1524
-SAMP-240	D07_Rep2_CM (D7_C7R2)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_179	H3K27ac (rAb)	EXP-1525
-SAMP-242	D09_Rep2_CM (D9_C9R2)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_180	H3K27ac (rAb)	EXP-1526
-SAMP-244	D15_Rep2_CM (D15_CMR2)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_181	H3K27ac (rAb)	EXP-1527
-SAMP-246	D05_Rep2_Epi (E5R2)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_182	H3K27ac (rAb)	EXP-1528
-SAMP-248	D07_Rep2_Epi (E7R2)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_183	H3K27ac (rAb)	EXP-1529
-SAMP-250	D09_Rep2_Epi (E9R2)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_184	H3K27ac (rAb)	EXP-1530
-SAMP-252	D15_Rep2_Epi (E15R2)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_185	H3K27ac (rAb)	EXP-1531
-SAMP-254	D20_Rep2_Epi (E20R2)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_186	H3K27ac (rAb)	EXP-1532
-SAMP-230	D05_Rep2_VE (D5_V5R2)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_187	H3K27ac (rAb)	EXP-1533
-SAMP-232	D07_Rep2_VE (D7_VER2)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_188	H3K27ac (rAb)	EXP-1534
-SAMP-234	D09_Rep2_VE (D9_VER2)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_189	H3K27ac (rAb)	EXP-1535
-SAMP-236	D15_Rep2_VE (D15_V15R2)	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_190	H3K27ac (rAb)	EXP-1536
-SAMP-916	GM19240	RM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_191	H3K27ac (rAb)	EXP-1537
+SAMP-226	D00_Rep2	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_176	H3K27ac (rAb)	EXP-1522
+SAMP-228	D03_Rep2 (D3_Rep4)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_177	H3K27ac (rAb)	EXP-1523
+SAMP-238	D05_Rep2_CM (D5_CMR4)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_178	H3K27ac (rAb)	EXP-1524
+SAMP-240	D07_Rep2_CM (D7_C7R2)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_179	H3K27ac (rAb)	EXP-1525
+SAMP-242	D09_Rep2_CM (D9_C9R2)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_180	H3K27ac (rAb)	EXP-1526
+SAMP-244	D15_Rep2_CM (D15_CMR2)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_181	H3K27ac (rAb)	EXP-1527
+SAMP-246	D05_Rep2_Epi (E5R2)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_182	H3K27ac (rAb)	EXP-1528
+SAMP-248	D07_Rep2_Epi (E7R2)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_183	H3K27ac (rAb)	EXP-1529
+SAMP-250	D09_Rep2_Epi (E9R2)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_184	H3K27ac (rAb)	EXP-1530
+SAMP-252	D15_Rep2_Epi (E15R2)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_185	H3K27ac (rAb)	EXP-1531
+SAMP-254	D20_Rep2_Epi (E20R2)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_186	H3K27ac (rAb)	EXP-1532
+SAMP-230	D05_Rep2_VE (D5_V5R2)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_187	H3K27ac (rAb)	EXP-1533
+SAMP-232	D07_Rep2_VE (D7_VER2)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_188	H3K27ac (rAb)	EXP-1534
+SAMP-234	D09_Rep2_VE (D9_VER2)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_189	H3K27ac (rAb)	EXP-1535
+SAMP-236	D15_Rep2_VE (D15_V15R2)	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_190	H3K27ac (rAb)	EXP-1536
+SAMP-916	GM19240	RMM	2/11/19	2/15/19	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep		Yes	Yes	RMM_191	H3K27ac (rAb)	EXP-1537
 SAMP-1023	BG monocyets	JIB	1/23/19	1/25/19	scRNA-seq	10X Genomics V3		Yes	Yes	JB_40		EXP-1538
 SAMP-1009	5xAD-STZ hippocampus	JIB	2/1/19	2/4/19	scRNA-seq	10X Genomics V3		Yes	Yes	JB_41		EXP-1539
 SAMP-1010	WT-STZ hippocampus	JIB	2/1/19	2/4/19	scRNA-seq	10X Genomics V3		Yes	Yes	JB_42		EXP-1540
@@ -1280,3 +1280,25 @@ SAMP-1027	B0004	JYH	2/21/2019	2/22/2019	scATAC-seq	ATAC-seq for cells, 10X		Yes	
 SAMP-1027	B0004	JYH	2/21/2019	2/22/2019	scATAC-seq	ATAC-seq for cells, 10X		Yes	Yes	JYH_810	1x omni, 1min	EXP-1598
 SAMP-1027	B0004	JYH	2/21/2019	2/22/2019	scATAC-seq	ATAC-seq for cells, 10X		Yes	Yes	JYH_811	0.1x omni, 10 min	EXP-1599
 SAMP-1027	B0004	JYH	2/21/2019	2/22/2019	scATAC-seq	ATAC-seq for cells, 10X		Yes	Yes	JYH_812	0.1x omni, 1 min	EXP-1600
+SAMP-977	Con0066 - Normoxia	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_312	JHMI K36me3	EXP-1601
+SAMP-978	Con0066 - Hypoxia 1% Rep 1	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_313	JHMI K36me3	EXP-1602
+SAMP-980	Con0070 - Normoxia	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_314	JHMI K36me3	EXP-1603
+SAMP-981	Con0070 - Hypoxia 1% Rep 1	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_315	JHMI K36me3	EXP-1604
+SAMP-983	Con0084 - Normoxia	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_316	JHMI K36me3	EXP-1605
+SAMP-984	Con0084 - Hypoxia 1% Rep 1	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_317	JHMI K36me3	EXP-1606
+SAMP-986	Kpat - Normoxia	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_318	JHMI K36me3	EXP-1607
+SAMP-987	Kpat - hypoxia 1% Rep 1	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_319	JHMI K36me3	EXP-1608
+SAMP-977	Con0066 - Normoxia	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_320	JHMI Input	EXP-1609
+SAMP-978	Con0066 - Hypoxia 1% Rep 1	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_321	JHMI Input	EXP-1610
+SAMP-980	Con0070 - Normoxia	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_322	JHMI Input	EXP-1611
+SAMP-981	Con0070 - Hypoxia 1% Rep 1	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_323	JHMI Input	EXP-1612
+SAMP-983	Con0084 - Normoxia	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_324	JHMI Input	EXP-1613
+SAMP-984	Con0084 - Hypoxia 1% Rep 1	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_325	JHMI Input	EXP-1614
+SAMP-986	Kpat - Normoxia	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_326	JHMI Input	EXP-1615
+SAMP-987	Kpat - hypoxia 1% Rep 1	AVD	2/14/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_327	JHMI Input	EXP-1616
+NA	H3K27me3_1ug Ab_10ug chr	AVD	2/12/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_328	H3K27me3 Antibody Titration Experiment	EXP-1617
+NA	H3K27me3_2ug Ab_10ug chr	AVD	2/12/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_329	H3K27me3 Antibody Titration Experiment	EXP-1618
+NA	H3K27me3_4ug Ab_10ug chr	AVD	2/12/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_330	H3K27me3 Antibody Titration Experiment	EXP-1619
+NA	H3K27me3_4ug Ab_20ug chr	AVD	2/12/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_331	H3K27me3 Antibody Titration Experiment	EXP-1620
+NA	H3K27me3_8ug Ab_10ug chr	AVD	2/12/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_332	H3K27me3 Antibody Titration Experiment	EXP-1621
+NA	H3K27me3_16ug Ab_10ug chr	AVD	2/12/2019	3/8/2019	ChIP-seq	Active Motif ChIP-IT High Sensitivity / Swift Library Prep	Nb1_pg_	Yes	Yes	AVD_333	H3K27me3 Antibody Titration Experiment	EXP-1622
