@@ -21,7 +21,7 @@
                   {% endfor %}
 <!--                      <th scope="col">Last Modified</th> -->
                      <th scope="col">Status</th>
-      
+                     <th scope="col" width="25px"></th>
 
                 </tr>
               </thead>
@@ -51,7 +51,7 @@
                     {% if Set.status == 'Done'%}
                     <td><span class="badge badge-success badge-status-green">Done</span></td>
                     {% elif Set.status == 'ClickToSubmit' %}
-                    <td><span class="badge badge-success badge-status-orange">ToSubmit</span></td>
+                    <td><a class="btn btn-danger btn-sm btn-status-orange runsetqc" href="" data-href="{% url 'setqc_app:runsetqc' Set.id %}" id={{Set.set_id}}>ClickToSubmit</a></td>
                     {% elif Set.status == 'JobSubmitted'%}
                     <td><span class="badge badge-success badge-status-blue">JobSubmitted</span></td>
                   {% elif Set.status == 'ProcessingLibs'%}
@@ -63,6 +63,10 @@
                     {% elif Set.status == 'Warning'%}
                     <td><span class="badge badge-success badge-status-yellow" data-toggle="tooltip" data-placement="right" title="contain libraries with reads number less than 1000">Warning</span></td>
                     {% endif %}
+                    <td>
+                      <a class="spacing" href="{% url 'setqc_app:setqc_update' Set.id %}"><i class="fas fa-edit"></i></a>
+                      <a onclick="return confirm('Are you sure you want to delete {{ Set.set_name }} ?');" href="{% url 'setqc_app:setqc_delete' Set.id %}"><i class="fas fa-trash-alt"></i></a>                
+                    </td>
                 </tr>
                 {% empty %}
                 <li>No Sets yet.</li>

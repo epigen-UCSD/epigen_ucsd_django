@@ -82,7 +82,12 @@ def AllSetQCView(request):
         'Sets_list': LibrariesSetQC.objects.all(),
         'DisplayField': DisplayField2,
     }
-    return render(request, 'setqc_app/setqcinfo.html', context)
+    if not request.user.groups.filter(name='bioinformatics').exists():
+        return render(request, 'setqc_app/setqcinfo.html', context)
+    else:
+        return render(request, 'setqc_app/setqcinfo_bio.html', context)
+
+
 
 
 def UserSetQCView(request):

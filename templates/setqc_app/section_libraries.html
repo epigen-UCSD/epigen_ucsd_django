@@ -43,7 +43,6 @@
               {% else %}
               <td><span style="color:#3CB371;">{{ x.7 | default_if_none:"" }}</span></td>
               {% endif %}      
-            }
             </tr>
             {% endfor %} 
 
@@ -60,10 +59,10 @@
               {% else %}
               <td><span style="color:#3CB371;">{{ x.4 | default_if_none:"" }}</span></td>
               {% endif %}
-              {% if x.4 == 'No' %}
-              <td><span style="color:red;">{{ x.4 }}</span></td>
+              {% if x.5 == 'No' %}
+              <td><span style="color:red;">{{ x.5 }}</span></td>
               {% else %}
-              <td><span style="color:#3CB371;">{{ x.4 | default_if_none:"" }}</span></td>
+              <td><span style="color:#3CB371;">{{ x.5 | default_if_none:"" }}</span></td>
               {% endif %}     
             </tr>
             {% endfor %} 

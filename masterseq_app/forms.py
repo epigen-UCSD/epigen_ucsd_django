@@ -1,15 +1,17 @@
 from django import forms
 from .models import SampleInfo, LibraryInfo, SeqMachineInfo, SeqInfo,\
     choice_for_read_type, choice_for_species, choice_for_sample_type,\
-    choice_for_preparation, choice_for_experiment_type,choice_for_unit,\
+    choice_for_preparation, choice_for_experiment_type, choice_for_unit,\
     choice_for_fixation
 from django.contrib.auth.models import User
 import datetime
 from nextseq_app.models import Barcode
-from epigen_ucsd_django.shared import datetransform,SelfUniqueValidation
+from epigen_ucsd_django.shared import datetransform, SelfUniqueValidation
 from django.shortcuts import get_object_or_404
 
+
 class SampleCreationForm(forms.ModelForm):
+
 
 	class Meta:
 		model = SampleInfo
@@ -22,136 +24,153 @@ class SampleCreationForm(forms.ModelForm):
 			'notes':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
 		}
 
+
 class LibraryCreationForm(forms.ModelForm):
-	sampleinfo = forms.ModelChoiceField(queryset=SampleInfo.objects.all(),widget=forms.TextInput({'class': 'ajax_sampleinput_form','size':50}))
-	class Meta:
-		model = LibraryInfo
-		fields = ['library_id','sampleinfo','date_started','date_completed','experiment_type','protocalinfo',\
-		'reference_to_notebook_and_page_number','notes']
-		widgets ={
-			'date_started': forms.DateInput(),
-			'date_completed':forms.DateInput(),
-			'notes':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
+    sampleinfo = forms.ModelChoiceField(queryset=SampleInfo.objects.all(
+    ), widget=forms.TextInput({'class': 'ajax_sampleinput_form', 'size': 50}))
 
-		}
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		self.initial['sampleinfo'] = self.instance.sampleinfo.__str__
+    class Meta:
+        model = LibraryInfo
+        fields = ['library_id', 'sampleinfo', 'date_started', 'date_completed', 'experiment_type', 'protocalinfo',
+                  'reference_to_notebook_and_page_number', 'notes']
+        widgets = {
+            'date_started': forms.DateInput(),
+            'date_completed': forms.DateInput(),
+            'notes': forms.Textarea(attrs={'cols': 60, 'rows': 3}),
 
-		#self.fields['sampleinfo'].queryset = SampleInfo.objects.order_by('-pk')
-	# def clean(self):
-	# def clean(self, *args, **kwargs):
-	# 	data = self.data.copy()
-	# 	if 'sampleinfo' in data:
-	# 		#print(data['sampleinfo'])
-	# 		obj = get_object_or_404(SampleInfo, sample_index=data['sampleinfo'].split(':')[0])
-	# 		print(obj.id)
-	# 		data['sampleinfo'] = str(obj.id)
-	# 	self.data = data
-	# 	print(self.data)
-	# 	return super(LibraryCreationForm,self).clean()
+        }
 
-	# 	if data is not None:
-	# 		print(data)
-	# 		data = data.copy()
-	# 		if data['sampleinfo']:
-	# 			obj = get_object_or_404(SampleInfo, sample_index=data['sampleinfo'].split(':')[0])
-	# 			data['sampleinfo'] = obj.id
-	# 			print(data['sampleinfo'])
-	# 	super().clean(*args, **kwargs)
-	# def save(self, commit=True):
-	# 	instance = super().save(commit=False)
-	# 	cleaned_sample = self.cleaned_data['sampleinfo']
-	# 	if cleaned_sample:
-	# 		f = get_object_or_404(SampleInfo,sample_index=cleaned_sample.split(':')[0])
-	# 		instance.filename = f
-	# 	else:
-	# 		instance.filename = None
-	# 	if commit:
-	# 		instance.save()
-	# 	return instance
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.initial['sampleinfo'] = self.instance.sampleinfo.__str__
+
+        #self.fields['sampleinfo'].queryset = SampleInfo.objects.order_by('-pk')
+    # def clean(self):
+    # def clean(self, *args, **kwargs):
+    # 	data = self.data.copy()
+    # 	if 'sampleinfo' in data:
+    # 		#print(data['sampleinfo'])
+    # 		obj = get_object_or_404(SampleInfo, sample_index=data['sampleinfo'].split(':')[0])
+    # 		print(obj.id)
+    # 		data['sampleinfo'] = str(obj.id)
+    # 	self.data = data
+    # 	print(self.data)
+    # 	return super(LibraryCreationForm,self).clean()
+
+    # 	if data is not None:
+    # 		print(data)
+    # 		data = data.copy()
+    # 		if data['sampleinfo']:
+    # 			obj = get_object_or_404(SampleInfo, sample_index=data['sampleinfo'].split(':')[0])
+    # 			data['sampleinfo'] = obj.id
+    # 			print(data['sampleinfo'])
+    # 	super().clean(*args, **kwargs)
+    # def save(self, commit=True):
+    # 	instance = super().save(commit=False)
+    # 	cleaned_sample = self.cleaned_data['sampleinfo']
+    # 	if cleaned_sample:
+    # 		f = get_object_or_404(SampleInfo,sample_index=cleaned_sample.split(':')[0])
+    # 		instance.filename = f
+    # 	else:
+    # 		instance.filename = None
+    # 	if commit:
+    # 		instance.save()
+    # 	return instance
+
 
 class SeqCreationForm(forms.ModelForm):
-	libraryinfo = forms.ModelChoiceField(queryset=LibraryInfo.objects.all(),widget=forms.TextInput({'class': 'ajax_libinput_form','size':50}))
-	class Meta:
-		model = SeqInfo
-		fields = ['seq_id','libraryinfo','date_submitted_for_sequencing','machine','read_length','read_type',\
-		'portion_of_lane','i7index','i5index','default_label','notes']
-		widgets ={
-			'date_submitted_for_sequencing': forms.DateInput(),
-			'notes':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
-		}
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		self.initial['libraryinfo'] = self.instance.libraryinfo.__str__
+    libraryinfo = forms.ModelChoiceField(queryset=LibraryInfo.objects.all(
+    ), widget=forms.TextInput({'class': 'ajax_libinput_form', 'size': 50}))
+
+    class Meta:
+        model = SeqInfo
+        fields = ['seq_id', 'libraryinfo', 'date_submitted_for_sequencing', 'machine', 'read_length', 'read_type',
+                  'portion_of_lane', 'i7index', 'i5index', 'default_label', 'notes']
+        widgets = {
+            'date_submitted_for_sequencing': forms.DateInput(),
+            'notes': forms.Textarea(attrs={'cols': 60, 'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.initial['libraryinfo'] = self.instance.libraryinfo.__str__
 
 
 class SeqCreationForm2(forms.Form):
-	machine = forms.ModelChoiceField(queryset=SeqMachineInfo.objects.all())	
-	read_type = forms.ChoiceField(label='read type',choices = (('', '---------'),) +choice_for_read_type,required=False,)
-	read_length = forms.CharField(label='read length:',required=False)
-	date_submitted_for_sequencing = forms.DateField(initial=datetime.date.today,required=False)
-	sequencinginfo = forms.CharField(
-			label='SeqInfo in this run:',
-			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
-			required=False,
-			initial='SeqID\tLibID\tdefault_label\tteam_member\tportion_of_lane\ti7index\ti5index\tnotes\n\n'
-		)
-	def clean_sequencinginfo(self):
-		data = self.cleaned_data['sequencinginfo']
-		invalidliblist= []
-		invaliduserlist = []
-		invalidbarcodelist = []
-		invalidbarcodelist2 = []
-		invalidpolane = []
-		flaglib = 0
-		flaguser = 0
-		flagbarcode = 0
-		flagbarcode2 = 0
-		flagpolane = 0
-		cleadata = []
-		for lineitem in data.strip().split('\n'):
-			if not lineitem.startswith('SeqID\tLibID') and lineitem != '\r':
-				cleadata.append(lineitem)
-				libid = lineitem.split('\t')[1]
-				if not LibraryInfo.objects.filter(library_id=libid).exists():
-					invalidliblist.append(libid)
-					flaglib = 1
-				membername = lineitem.split('\t')[3]
-				if not User.objects.filter(username=membername).exists():
-					invaliduserlist.append(membername)
-					flaguser = 1
-				try:
-					indexname = lineitem.split('\t')[5]
-					if indexname and not Barcode.objects.filter(indexid=indexname).exists():
-						invalidbarcodelist.append(indexname)
-						flagbarcode = 1
-				except:
-					pass
-				try:
-					indexname2 = lineitem.split('\t')[6]
-					if indexname2 and not Barcode.objects.filter(indexid=indexname2).exists():
-						invalidbarcodelist2.append(indexname)
-						flagbarcode2 = 1
-				except:
-					pass
-				if lineitem.split('\t')[4]:
-					try:
-						float(lineitem.split('\t')[4])
-					except:
-						invalidpolane.append(lineitem.split('\t')[4])
-						flagpolane = 1		
-		if flaglib == 1:
-			raise forms.ValidationError('Invalid Library:'+','.join(invalidliblist))
-		if flaguser == 1:
-			raise forms.ValidationError('Invalid Member Name:'+','.join(invaliduserlist))
-		if flagbarcode == 1:
-			raise forms.ValidationError('Invalid i7 Barcode:'+','.join(invalidbarcodelist))
-		if flagbarcode2 == 1:
-			raise forms.ValidationError('Invalid i5 Barcode:'+','.join(invalidbarcodelist2))
-		if flagpolane == 1:
-			raise forms.ValidationError('Invalid portion of lane:'+','.join(invalidpolane))
-		return '\n'.join(cleadata)
+    machine = forms.ModelChoiceField(queryset=SeqMachineInfo.objects.all())
+    read_type = forms.ChoiceField(label='read type', choices=(
+        ('', '---------'),) + choice_for_read_type, required=False,)
+    read_length = forms.CharField(label='read length:', required=False)
+    date_submitted_for_sequencing = forms.DateField(
+        initial=datetime.date.today, required=False)
+    sequencinginfo = forms.CharField(
+        label='SeqInfo in this run:',
+        widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
+        required=False,
+        initial='SeqID\tLibID\tdefault_label\tteam_member\tportion_of_lane\ti7index\ti5index\tnotes\n\n'
+    )
+
+    def clean_sequencinginfo(self):
+        data = self.cleaned_data['sequencinginfo']
+        invalidliblist = []
+        invaliduserlist = []
+        invalidbarcodelist = []
+        invalidbarcodelist2 = []
+        invalidpolane = []
+        flaglib = 0
+        flaguser = 0
+        flagbarcode = 0
+        flagbarcode2 = 0
+        flagpolane = 0
+        cleadata = []
+        for lineitem in data.strip().split('\n'):
+            if not lineitem.startswith('SeqID\tLibID') and lineitem != '\r':
+                cleadata.append(lineitem)
+                libid = lineitem.split('\t')[1]
+                if not LibraryInfo.objects.filter(library_id=libid).exists():
+                    invalidliblist.append(libid)
+                    flaglib = 1
+                membername = lineitem.split('\t')[3]
+                if not User.objects.filter(username=membername).exists():
+                    invaliduserlist.append(membername)
+                    flaguser = 1
+                try:
+                    indexname = lineitem.split('\t')[5]
+                    if indexname and not Barcode.objects.filter(indexid=indexname).exists():
+                        invalidbarcodelist.append(indexname)
+                        flagbarcode = 1
+                except:
+                    pass
+                try:
+                    indexname2 = lineitem.split('\t')[6]
+                    if indexname2 and not Barcode.objects.filter(indexid=indexname2).exists():
+                        invalidbarcodelist2.append(indexname)
+                        flagbarcode2 = 1
+                except:
+                    pass
+                if lineitem.split('\t')[4]:
+                    try:
+                        float(lineitem.split('\t')[4])
+                    except:
+                        invalidpolane.append(lineitem.split('\t')[4])
+                        flagpolane = 1
+        if flaglib == 1:
+            raise forms.ValidationError(
+                'Invalid Library:'+','.join(invalidliblist))
+        if flaguser == 1:
+            raise forms.ValidationError(
+                'Invalid Member Name:'+','.join(invaliduserlist))
+        if flagbarcode == 1:
+            raise forms.ValidationError(
+                'Invalid i7 Barcode:'+','.join(invalidbarcodelist))
+        if flagbarcode2 == 1:
+            raise forms.ValidationError(
+                'Invalid i5 Barcode:'+','.join(invalidbarcodelist2))
+        if flagpolane == 1:
+            raise forms.ValidationError(
+                'Invalid portion of lane:'+','.join(invalidpolane))
+        return '\n'.join(cleadata)
+
 
 class SamplesCreationForm(forms.Form):
 	samplesinfo = forms.CharField(
@@ -257,6 +276,7 @@ class SamplesCreationForm(forms.Form):
 
 
 
+
 class LibsCreationForm(forms.Form):
     libsinfo = forms.CharField(
         label='LibsInfo(Please copy and paste all of the columns from TrackingSheet 2):',
@@ -281,10 +301,10 @@ class LibsCreationForm(forms.Form):
         for lineitem in data.strip().split('\n'):
             if lineitem != '\r':
                 cleaneddata.append(lineitem)
-                #print(lineitem)
+                # print(lineitem)
                 fields = lineitem.split('\t')
                 samindex = fields[0].strip()
-                if not SampleInfo.objects.filter(sample_index=samindex).exists() and not samindex.strip().lower() in ['na','other','n/a']:
+                if not SampleInfo.objects.filter(sample_index=samindex).exists() and not samindex.strip().lower() in ['na', 'other', 'n/a']:
                     invalidsam.append(samindex)
                     flagsam = 1
                 try:
@@ -368,7 +388,6 @@ class SeqsCreationForm(forms.Form):
         invalidpolane = []
         invalidexp = []
 
- 
         for lineitem in data.strip().split('\n'):
             if lineitem != '\r':
                 cleaneddata.append(lineitem)
@@ -377,17 +396,17 @@ class SeqsCreationForm(forms.Form):
                 exptype = fields[9].strip()
                 expindex = fields[4].strip()
                 samindex = fields[0].strip()
-                if not SampleInfo.objects.filter(sample_index=samindex).exists() and not samindex.strip().lower() in ['na','other','n/a']:
+                if not SampleInfo.objects.filter(sample_index=samindex).exists() and not samindex.strip().lower() in ['na', 'other', 'n/a']:
                     invalidsam.append(samindex)
                     flagsam = 1
 
                 if not LibraryInfo.objects.filter(library_id=libraryid).exists():
-                    if not expindex.strip().lower() in ['','na','other','n/a']:
+                    if not expindex.strip().lower() in ['', 'na', 'other', 'n/a']:
                         invalidlib.append(libraryid)
                         flaglib = 1
                     else:
                         if exptype not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
-                            nvalidexp.append(libexp)
+                            invalidexp.append(libexp)
                             flagexp = 1
 
                 if '-' in fields[6].strip():
