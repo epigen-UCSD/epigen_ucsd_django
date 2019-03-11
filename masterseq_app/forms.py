@@ -8,6 +8,7 @@ import datetime
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform, SelfUniqueValidation
 from django.shortcuts import get_object_or_404
+from django.utils.safestring import mark_safe
 
 
 class SampleCreationForm(forms.ModelForm):
@@ -15,7 +16,7 @@ class SampleCreationForm(forms.ModelForm):
 
 	class Meta:
 		model = SampleInfo
-		fields = ['sample_id','date','species','sample_type','preparation',\
+		fields = ['sample_id','date','date_received','species','sample_type','preparation',\
 		'fixation','sample_amount','unit','storage','service_requested',\
 		'seq_depth_to_target','seq_length_requested','seq_type_requested','description','notes','status']
 		widgets ={
@@ -182,20 +183,25 @@ class SamplesCreationForm(forms.Form):
 		data = self.cleaned_data['samplesinfo']
 		cleaneddata = []
 		flagdate = 0
+		flagdate_received = 0
 		flagspecies = 0
 		flagtype = 0
 		flagindex = 0
 		flagunit = 0
 		flagfixation = 0
 		flaguser = 0
+		flagsampid = 0
 		#flagprep = 0
 		invaliddate = []
+		invaliddate_received = []
 		invalidspecies = []
 		invalidtype = []
 		invalidindex = []
 		invalidunit = []
 		invalidfixation = []
 		invaliduserlist = []
+		invalidsampid = []
+		selfsamps = []
 		#invalidprep = []
 		for lineitem in data.strip().split('\n'):
 			if lineitem != '\r':
@@ -205,6 +211,11 @@ class SamplesCreationForm(forms.Form):
 				except:
 					invaliddate.append(fields[0].strip())
 					flagdate = 1
+				try:
+					samdate_received = datetransform(fields[23].strip())
+				except:
+					invaliddate_received.append(fields[23].strip())
+					flagdate_received = 1
 				samid = fields[8].strip()
 				samdescript = fields[9].strip()
 				samspecies = fields[10].split('(')[0].lower().strip()
@@ -230,7 +241,10 @@ class SamplesCreationForm(forms.Form):
 				if membername and not User.objects.filter(username=membername).exists():
 					invaliduserlist.append(membername)
 					flaguser = 1
-				
+				if SampleInfo.objects.filter(sample_id=samid).exists():
+					invalidsampid.append(samid)
+					flagsampid = 1
+				selfsamps.append(samid)
 
 
 
@@ -243,7 +257,7 @@ class SamplesCreationForm(forms.Form):
 				# 	invalidprep.append(samprep)
 				# 	flagprep = 1
 				samnotes = fields[20].strip()
-				print(samnotes)
+				
 				samindex = fields[21].strip()
 				if SampleInfo.objects.filter(sample_index=samindex).exists():
 					invalidindex.append(samindex)
@@ -252,8 +266,11 @@ class SamplesCreationForm(forms.Form):
 				cleaneddata.append(lineitem)
 		if flagdate == 1:
 			raise forms.ValidationError('Invalid date:'+','.join(invaliddate)+'. Please enter like this: 10/30/2018')
+		if flagdate_received == 1:
+			raise forms.ValidationError('Invalid date_received:'+','.join(invaliddate_received)+'. Please enter like this: 10/30/2018')
+
 		if flagspecies == 1:
-			raise forms.ValidationError('Invalid species:'+','.join(invaliddate))
+			raise forms.ValidationError('Invalid species:'+','.join(invalidspecies))
 		if flagtype == 1:
 			raise forms.ValidationError('Invalid sample type:'+','.join(invalidtype))
 		if flagindex  == 1:
@@ -269,6 +286,13 @@ class SamplesCreationForm(forms.Form):
 		if flaguser == 1:
 			raise forms.ValidationError(
 				'Invalid Member Name:'+','.join(invaliduserlist))
+		if flagsampid == 1:
+			raise forms.ValidationError(
+				','.join(invalidsampid)+' is already existed in database')
+		sampselfduplicate = SelfUniqueValidation(selfsamps)
+		if len(sampselfduplicate) > 0:
+			raise forms.ValidationError(
+				'Duplicate Sample Name within this bulk entry:'+','.join(sampselfduplicate))
 
 		# if flagprep == 1:
 		# 	raise forms.ValidationError('Invalid sample preparation:'+','.join(invalidprep))
@@ -288,16 +312,20 @@ class LibsCreationForm(forms.Form):
         data = self.cleaned_data['libsinfo']
         cleaneddata = []
         flagsam = 0
+        flagsamid_dup = 0
         flagdate = 0
         flagexp = 0
         flaglibid = 0
         flaguser = 0
+        flagref = 0
         invalidsam = []
+        invalidsampid_dup = []
         invaliddate = []
         invalidexp = []
         selflibs = []
         invalidlibid = []
         invaliduserlist = []
+        selfsamps = []
         for lineitem in data.strip().split('\n'):
             if lineitem != '\r':
                 cleaneddata.append(lineitem)
@@ -307,6 +335,12 @@ class LibsCreationForm(forms.Form):
                 if not SampleInfo.objects.filter(sample_index=samindex).exists() and not samindex.strip().lower() in ['na', 'other', 'n/a']:
                     invalidsam.append(samindex)
                     flagsam = 1
+                if samindex.strip().lower() in ['na','other','n/a']:
+                    samid = fields[1].strip()
+                    selfsamps.append(samid)
+                    if SampleInfo.objects.filter(sample_id=samid).exists():
+                        invalidsampid_dup.append(samid)
+                        flagsamid_dup = 1
                 try:
                     datestart = datetransform(fields[3].strip())
                 except:
@@ -329,6 +363,8 @@ class LibsCreationForm(forms.Form):
                 if not User.objects.filter(username=membername).exists():
                     invaliduserlist.append(membername)
                     flaguser = 1
+                if fields[7].strip().lower() in ['','na','other','n/a']:
+                    flagref = 1
 
                 selflibs.append(libid)
 
@@ -351,6 +387,16 @@ class LibsCreationForm(forms.Form):
         if flaguser == 1:
             raise forms.ValidationError(
                 'Invalid Member Name:'+','.join(invaliduserlist))
+        if flagref == 1:
+            raise forms.ValidationError('Please do not leave Reference_to_notebook_and_page_number as blank')        	
+        
+        if flagsamid_dup == 1:
+            raise forms.ValidationError(
+                ','.join(invalidsampid_dup)+' is already existed in database')
+        sampselfduplicate = SelfUniqueValidation(selfsamps)
+        if len(sampselfduplicate) > 0:
+            raise forms.ValidationError(
+                'Duplicate Sample Name within this bulk entry:'+','.join(sampselfduplicate))
         return '\n'.join(cleaneddata)
 
 
@@ -365,6 +411,7 @@ class SeqsCreationForm(forms.Form):
         data = self.cleaned_data['seqsinfo']
         cleaneddata = []
         flagsam = 0
+        flagsamid_dup = 0
         flaglib = 0
         flagdate = 0
         flaguser = 0
@@ -376,6 +423,7 @@ class SeqsCreationForm(forms.Form):
         flagpolane = 0
         flagexp = 0
         invalidsam = []
+        invalidsampid_dup = []
         invalidlib = []
         invaliddate = []
         invaliduserlist = []
@@ -387,6 +435,8 @@ class SeqsCreationForm(forms.Form):
         invalidtype = []
         invalidpolane = []
         invalidexp = []
+        selfsamps = []
+        selflibs = []
 
         for lineitem in data.strip().split('\n'):
             if lineitem != '\r':
@@ -408,6 +458,13 @@ class SeqsCreationForm(forms.Form):
                         if exptype not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
                             invalidexp.append(libexp)
                             flagexp = 1
+                        if samindex.strip().lower() in ['na','other','n/a']:
+                            samid = fields[1].strip()
+                            selfsamps.append(samid)
+                            selflibs.append(libraryid)
+                            if SampleInfo.objects.filter(sample_id=samid).exists():
+                                invalidsampid_dup.append(samid)
+                                flagsamid_dup = 1
 
                 if '-' in fields[6].strip():
                     datesub = fields[6].strip()
@@ -467,10 +524,10 @@ class SeqsCreationForm(forms.Form):
         if flaguser == 1:
             raise forms.ValidationError(
                 'Invalid Member Name:'+','.join(invaliduserlist))
-        if flagbarcode == 1 and exptype not in ['scATAC-seq', 'snATAC-seq']:
+        if flagbarcode == 1:
             raise forms.ValidationError(
                 'Invalid i7 Barcode:'+','.join(invalidbarcodelist))
-        if flagbarcode2 == 1 and exptype not in ['scATAC-seq', 'snATAC-seq']:
+        if flagbarcode2 == 1:
             raise forms.ValidationError(
                 'Invalid i5 Barcode:'+','.join(invalidbarcodelist2))
         if flagpolane == 1:
@@ -492,5 +549,20 @@ class SeqsCreationForm(forms.Form):
         if flagexp == 1:
             raise forms.ValidationError(
                 'Invalid experiment type:'+','.join(invalidexp))
+        if flagsamid_dup == 1:
+            raise forms.ValidationError(
+                ','.join(invalidsampid_dup)+' is already existed in database')
+        libraryselfduplicate = SelfUniqueValidation(selflibs)
+        if len(libraryselfduplicate) > 0:
+            raise forms.ValidationError(mark_safe(
+                'Duplicate Library ID within this bulk entry:'+','.join(libraryselfduplicate)\
+                +'<br> We are creating pseudo libraries for those not\
+                 stored in database and assuming that they come from different samples so they should\
+                not have the same name. If you are sure they are the same library, please go to\
+                the library input interface to store the library first'))
+        sampselfduplicate = SelfUniqueValidation(selfsamps)
+        if len(sampselfduplicate) > 0:
+            raise forms.ValidationError(
+                'Duplicate Sample Name within this bulk entry:'+','.join(sampselfduplicate))
 
         return '\n'.join(cleaneddata)

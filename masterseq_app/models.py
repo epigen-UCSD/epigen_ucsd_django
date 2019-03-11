@@ -24,7 +24,7 @@ choice_for_sample_type = (
     ('other (please explain in notes)', 'other (please explain in notes)')
 )
 choice_for_preparation = (
-    ('flash frozen without cryopreservant', 'flash frozen without cryopreservant'),
+    ('flash frozen', 'flash frozen'),
     ('flash frozen with cryopreservant', 'flash frozen with cryopreservant'),
     ('slow frozen with cryopreservant', 'slow frozen with cryopreservant'),
     ('fresh', 'fresh'),
@@ -85,6 +85,8 @@ class GenomeInfo(models.Model):
 class SampleInfo(models.Model):
     sample_id = models.CharField('sample name', max_length=100)
     date = models.DateField(
+        help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03', blank=True, null=True)
+    date_received = models.DateField(
         help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03', blank=True, null=True)
     team_member = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     sample_index = models.CharField(max_length=20, blank=True)
