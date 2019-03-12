@@ -475,9 +475,9 @@ def main():
 								sample.team_member = teammemberinitails
 								sample.save()
 								
-							library,created = LibraryInfo.objects.get_or_create(experiment_index = experimentindex)									
+							library,created = LibraryInfo.objects.get_or_create(library_id = libraryid)									
 							library.sampleinfo = sample
-							library.library_id = libraryid
+							library.experiment_index = experimentindex
 							library.experiment_type = experimenttype
 							library.team_member_initails = teammemberinitails
 							library.save()
