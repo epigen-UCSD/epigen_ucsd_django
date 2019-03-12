@@ -299,7 +299,7 @@ def main():
 						samp_notes = fields[0].strip()
 					else:
 						sampindextm = 'SAMPNA-'+str(i)
-					i = i+1
+						i = i+1
 					if fields[1].strip():
 						sampidtm = fields[1].strip()
 					else:
@@ -379,7 +379,7 @@ def main():
 							samp_notes = fields[0].strip()
 						else:
 							sampindextm = 'SAMPNA-'+str(i)
-						i = i+1
+							i = i+1
 						if fields[1].strip():
 							sampidtm = fields[1].strip()
 						else:
@@ -456,17 +456,19 @@ def main():
 								sample = SampleInfo.objects.get(sample_index = fields[0].strip())
 							else:
 								sampleindex = 'SAMPNA-'+str(i)
+								i += 1
 								if fields[1].strip():
 									sampid_tm = fields[1].strip()
 								else:
 									sampid_tm = sampleindex
+
 								
 								sample,created = SampleInfo.objects.get_or_create(sample_index = sampleindex,)				
 								sample.sample_id = 	sampid_tm	
 								sample.species = fields[3].strip().lower()
 								sample.team_member = teammemberinitails
 								sample.save()
-								i += 1
+								
 							library,created = LibraryInfo.objects.get_or_create(experiment_index = experimentindex)									
 							library.sampleinfo = sample
 							library.library_id = libraryid
