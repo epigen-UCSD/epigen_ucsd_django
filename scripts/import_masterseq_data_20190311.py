@@ -299,6 +299,7 @@ def main():
 						samp_notes = fields[0].strip()
 					else:
 						sampindextm = 'SAMPNA-'+str(i)
+						samp_notes = ''
 						i = i+1
 					if fields[1].strip():
 						sampidtm = fields[1].strip()
@@ -379,6 +380,7 @@ def main():
 							samp_notes = fields[0].strip()
 						else:
 							sampindextm = 'SAMPNA-'+str(i)
+							samp_notes = ''
 							i = i+1
 						if fields[1].strip():
 							sampidtm = fields[1].strip()
@@ -445,10 +447,14 @@ def main():
 							note_tm = ';'.join([note_tm,'team_member_initails:'+fields[5].strip()]).strip(';')
 
 					
-					if not SeqInfo.objects.filter(seq_id = sequecingid).exists():		
+					#if not SeqInfo.objects.filter(seq_id = sequecingid).exists():
+					if not sequecingid in sequecingidall:
+						sequecingidall.append(sequecingid)
 						experimentindex = fields[4].strip()
-						if not LibraryInfo.objects.filter(library_id = libraryid).exists():
+						#if not LibraryInfo.objects.filter(library_id = libraryid).exists():
+						if not libraryid in libidall:
 							print(libraryid)
+							libidall.append(libraryid)
 							experimentindex = 'EXPNA-'+str(j)
 							j += 1
 							experimenttype = fields[9].strip()
@@ -477,6 +483,7 @@ def main():
 							library.save()
 						
 						else:
+							#print(libraryid)
 							library = LibraryInfo.objects.get(library_id = libraryid)
 							sampinfo = library.sampleinfo
 							if not sampinfo.species and sampspecies:
