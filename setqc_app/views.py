@@ -88,8 +88,6 @@ def AllSetQCView(request):
         return render(request, 'setqc_app/setqcinfo_bio.html', context)
 
 
-
-
 def UserSetQCView(request):
     SetQC_list = LibrariesSetQC.objects.filter(requestor=request.user)
     context = {
@@ -525,8 +523,8 @@ def RunSetQC(request, setqc_pk):
             if j == '1':
                 repname = mainname
             else:
-                repname = '_'.join([mainname,j])
-            if list_readtype[i] == 'PE':           
+                repname = '_'.join([mainname, j])
+            if list_readtype[i] == 'PE':
                 r1 = repname+'_R1.fastq.gz'
                 r2 = repname+'_R2.fastq.gz'
                 try:
@@ -541,7 +539,7 @@ def RunSetQC(request, setqc_pk):
                 r1 = repname+'.fastq.gz'
                 r1op = repname+'_R1.fastq.gz'
                 try:
-                    if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r2)) :
+                    if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
                         data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
                         return JsonResponse(data)
                 except Exception as e:
