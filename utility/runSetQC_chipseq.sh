@@ -45,9 +45,9 @@ then
 
     job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
     python updateLibrariesSetQC.py -s '1' -id $SET_ID # process libs
-    cmd2="qsub -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,type=$setqc_type -q condo  \$(which runSetQC.pbs)"
+    cmd2="qsub -k oe -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,type=$setqc_type -q condo  \$(which runSetQC.pbs)"
 else
-    cmd2="qsub -M $USER_EMAIL -v set_id=$SET_ID,type=$setqc_type -q condo  \$(which runSetQC.pbs)"
+    cmd2="qsub -k oe -M $USER_EMAIL -v set_id=$SET_ID,type=$setqc_type -q condo  \$(which runSetQC.pbs)"
 fi
 
 ##################################################
