@@ -43,7 +43,7 @@ Date requested	Requestor	Set name (for title of report)	Experiment type	Librarie
 2018-01-18	JYH	GBM[2]	ATAC-seq	JYH_223_2 - 232_2	sequencing again	http://epigenomics.sdsc.edu:8088/Set_43/f39dab58c4ac3b0bca4141cc29bf5aa4//setQC_report.html	Set_43	ZC	2018-01-24 9:17:59	91fe812	;consistent tss enrich,mito frac with set_41
 2018-01-18	JYH	Neil Chi rep1	ATAC-seq	JYH_127_2 - 141_2	sequencing again	http://epigenomics.sdsc.edu:8088/Set_44/e5e83481a804c4c25f28f99db234ea45//setQC_report.html	Set_44	ZC	2018-02-09 10:06:24	d832d21	
 2018-01-18	JYH	Neil Chi rep2	ATAC-seq	JYH_143_2 - 157_2	sequencing again	http://epigenomics.sdsc.edu:8088/Set_45/b340a929b8cc44413924d534cad62541//setQC_report.html	Set_45	ZC	2018-02-08 12:30:42	d832d21	generating pileup tracks for the libs which was processed previoulsy
-2018-01-23	JYH	Francesca	ATAC-seq	JYH_183_184, JYH_186_187, JYH_183_184_186_187	Data combine	http://epigenomics.sdsc.edu:8088/Set_46/78568226b30f0fd269a785e30b5ab560//setQC_report.html	Set_46	ZC	2018-01-24 21:38:34	91fe812	
+2018-01-23	JYH	Francesca[2]	ATAC-seq	JYH_183_184, JYH_186_187, JYH_183_184_186_187	Data combine	http://epigenomics.sdsc.edu:8088/Set_46/78568226b30f0fd269a785e30b5ab560//setQC_report.html	Set_46	ZC	2018-01-24 21:38:34	91fe812	
 2018-01-25	AVD	ChIP-seq QC1	ATAC-seq	AVD_73, AVD_74, AVD_75, AVD_76		http://epigenomics.sdsc.edu:8088/Set_47/fcb404d0162c5d37a2714266a1442add//setQC_report.html	Set_47	ZC	2018-01-31 9:40:48	91fe812	
 2018-01-29	JYH	pfizer	ATAC-seq	JYH_234 - 246	one missing	http://epigenomics.sdsc.edu:8088/Set_48/3716fe7c383c2537075d049020b66218//setQC_report.html	Set_48	ZC	2018-02-08 12:06:29	d832d21	lack JYH_241
 2018-01-29	JYH	Fresh islet	ATAC-seq	JYH_247 - 256	one missing	http://epigenomics.sdsc.edu:8088/Set_49/d7a453fecdd00854d4c25110a3e7dccc//setQC_report.html	Set_49	ZC	2018-02-08 12:44:24	d832d21	lack JYH_251
@@ -90,7 +90,7 @@ Date requested	Requestor	Set name (for title of report)	Experiment type	Librarie
 2018-04-09	JYH	Mouse tissue_3week_ground	ATAC-seq	JYH_381 - 386		http://epigenomics.sdsc.edu:8088/Set_92/3a67d27ce3125129bc0c674b6298dc3a//setQC_report.html	Set_92	ZC	2018-04-17 10:16:33	9f2d295	
 2018-04-09	JYH	Biomek_13th	ATAC-seq	JYH_324 - 331		http://epigenomics.sdsc.edu:8088/Set_93/3fa67945be494e9d965cb204b418e056//setQC_report.html	Set_93	ZC	2018-04-17 10:22:46	9f2d295	
 2018-04-17	JYH	Biomek_14th	ATAC-seq	JYH_332 - 363		http://epigenomics.sdsc.edu:8088/Set_94/e8f202e4fcbb4f6c5e9d670ba31fa51c//setQC_report.html	Set_94	ZC	2018-04-18 9:21:25	9f2d295	
-2018-04-17	JYH	Pfizer	ATAC-seq	JYH_364 - 374		http://epigenomics.sdsc.edu:8088/Set_95/fcade20f39fa2ef5b922ffeb89920cec//setQC_report.html	Set_95	ZC	2018-04-18 9:13:00	9f2d295	
+2018-04-17	JYH	Pfizer[2]	ATAC-seq	JYH_364 - 374		http://epigenomics.sdsc.edu:8088/Set_95/fcade20f39fa2ef5b922ffeb89920cec//setQC_report.html	Set_95	ZC	2018-04-18 9:13:00	9f2d295	
 2018-04-18	DUG	Sora_DG_ChIP-seq_mouse_liver	ChIP-seq	SRC_1647-1654		http://epigenomics.sdsc.edu:8088/Set_96/0f307650a4d9fa7bfb0e42da23a8d1bb//setQC_report_chip.html	Set_96	ZC	2018-04-26 13:51:23	0c96e96	
 2018-04-23	RM	Kevin Peterson Jax ATAC-Seq	ATAC-seq	RM_35-47		http://epigenomics.sdsc.edu:8088/Set_97/63e626e736345866a683f64092b96cbd//setQC_report.html	Set_97	ZC	2018-04-26 15:14:50	17b1e81	
 2017-11-07	Other (please explain in notes)	chu_mmus	ATAC-seq		sswanson@morgridge.org	http://epigenomics.sdsc.edu:8084/2017-10-25-sswangson_morgridge/b031b4e0edae5430246e4c8b28e97c25/chu_mmus/setQC_report_any.html	Set_24				
