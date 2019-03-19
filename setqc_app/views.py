@@ -78,8 +78,9 @@ def grouplibraries(librarieslist):
 
 def AllSetQCView(request):
 
+    Sets_list = LibrariesSetQC.objects.all().select_related('requestor')
     context = {
-        'Sets_list': LibrariesSetQC.objects.all(),
+        'Sets_list': Sets_list,
         'DisplayField': DisplayField2,
     }
     if not request.user.groups.filter(name='bioinformatics').exists():

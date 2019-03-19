@@ -77,6 +77,7 @@ def main():
 	setqcoutdir = settings.SETQC_DIR
 	print(setqcoutdir)
 	setqcfile = ['scripts/TS5_Archived.tsv','scripts/TS5_Active.tsv']
+	
 
 	for files in setqcfile:
 		print('from file: '+ files)
@@ -85,14 +86,23 @@ def main():
 			next(f)
 			next(f)
 			for line in f:
-				
+				tosave_list = []
 				fields = line.split('\t')
 				set_id = fields[7].strip()
 				set_date = datetransform(fields[0].strip())
 				note_tm = fields[5].strip()
 				exp_tm = fields[3].strip()
-
-				
+				try:
+					username_tm = fields[1].strip()
+					if username_tm == 'RM':
+						username_tm = 'RMM'
+					teammember = User.objects.get(username = username_tm)
+				except:
+					print('NO Requestor, assigned to ZC')
+					teammember = User.objects.get(username = 'ZC')
+					if fields[1].strip()!='' and not fields[1].strip().lower().startswith('other'):					
+						note_tm = ';'.join([note_tm,'Requestor recorded in TS5:'+fields[1].strip()]).strip(';')
+			
 				#librariestoinclude = []
 				#librariestoinclude = libraryparse(fields[4].strip())
 				# for item in librariestoinclude:
@@ -103,17 +113,8 @@ def main():
 
 				if set_date < '2018-11-14':
 					print(set_id)
-					print(fields[1].strip())
-					try:
-						username_tm = fields[1].strip()
-						if username_tm == 'RM':
-							username_tm = 'RMM'
-						teammember = User.objects.get(username = username_tm)
-					except:
-						print('NO Requestor, assigned to ZC')
-						teammember = User.objects.get(username = 'ZC')
-						if fields[1].strip()!='' and not fields[1].strip().lower().startswith('other'):					
-							note_tm = ';'.join([note_tm,'Requestor recorded in TS5:'+fields[1].strip()]).strip(';')
+					#print(fields[1].strip())
+
 
 					# if not LibrariesSetQC.objects.filter(set_id = fields[7].strip()).exists():
 					# 	print(fields[7].strip())
@@ -126,12 +127,19 @@ def main():
 					obj.date_requested = set_date
 					obj.experiment_type = fields[3].strip()
 					obj.notes = note_tm
-					obj.comments = fields[11].strip()
+					try:
+						obj.comments = fields[11].strip()
+					except Exception as e:
+						print(e)
 					obj.url = fields[6].strip()
-					obj.version =  fields[10].strip()
+					try:
+						obj.version =  fields[10].strip()
+					except Exception as e:
+						print(e)
+					obj.status = 'Done'
 					obj.save()
 					#obj.libraries_to_include.clear()
-					tosave_list = []
+					
 					if set_id in ['Set_24','Set_25','Set_26','Set_51','Set_89','Set_135','Set_156','Set_164','Set_181','Set_187','Set_185','Set_193']:
 						librariestoinclude = libraryparse(fields[4].strip())
 						#print(librariestoinclude)
@@ -188,8 +196,14 @@ def main():
 											)
 										tosave_list.append(tosave_item)	
 						#print(tosave_list)
-						LibraryInSet.objects.bulk_create(tosave_list)
-														
+					LibraryInSet.objects.bulk_create(tosave_list)
+						
+				else:
+					setobj = LibrariesSetQC.objects.get(set_id = fields[7].strip())
+					setobj.requestor = teammember
+					setobj.save()
+
+
 
 
 
