@@ -97,6 +97,7 @@ Date requested	Requestor	Set name (for title of report)	Experiment type	Librarie
 2017-11-07	Other (please explain in notes)	chu_hsap	ATAC-seq		sswanson@morgridge.org	http://epigenomics.sdsc.edu:8084/2017-10-25-sswangson_morgridge/07e71bc01fec2c53bdc3776d8ada29cc/chu_hsap/setQC_report_any.html	Set_25				
 2017-11-07	Other (please explain in notes)	Zhang	ATAC-seq		sswanson@morgridge.org	http://epigenomics.sdsc.edu:8084/2017-10-25-sswangson_morgridge/52c2bd49a5db1488681abf0a3d887629/zhang/setQC_report_any.html	Set_26				
 2/5/18	DUG	DG_SRC_ChIP-seq_ENCODE	ATAC-seq	SRC1576,SRC1577,SRC1578,SRC1579,SRC1580,SRC1581,SRC1582,SRC1583,SRC1584,SRC1585,SRC1586,SRC1587,SRC1588,SRC1589,SRC1590,SRC1591,SRC1592	ChIP-seq data (ATAC pipeline OK) - files on tscc	http://epigenomics.sdsc.edu:8088/Set_51/623ee71c0d421ca9bfd2ed7ee6da9b47//setQC_report.html	Set_51	ZC	2018-02-06 9:26:29	0ac201f	
+4/9/18	RM	First Hi-C (K562+12878) house and Arima kit	HiC	RMM_28-34	Hi-C library - please check with Dave once fastqs are ready (before processing)		Set_89				https://docs.google.com/spreadsheets/d/1-UphvVIqFxt1WeiuJalyr1PmfCEFyqq0mEZ3VsrGGpI/edit?usp=sharing
 6/25/2018	RM	Fast 4C 19240 V1	Fast 4C	RMM_83, RMM_84		http://epigenomics.sdsc.edu/zhc268/rmm_4C_180615/	Set_135				Updated fastq
 8/4/2018	RM	V2 4C 19240	Other (please explain in notes)	RMM_85	Fast 4C V2 RS6962075	http://epigenomics.sdsc.edu/zhc268/rmm_4C_180803/	Set_156
 8/28/2018	RM	V2 4C 19240 (Ch12)	Other (please explain in notes)	RMM_86	Fast 4C V2 Ch12	http://epigenomics.sdsc.edu/zhc268/rmm_hic_180904/	Set_164	
