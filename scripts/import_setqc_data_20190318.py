@@ -89,6 +89,7 @@ def main():
 				tosave_list = []
 				fields = line.split('\t')
 				set_id = fields[7].strip()
+				print(set_id)
 				set_date = datetransform(fields[0].strip())
 				note_tm = fields[5].strip()
 				exp_tm = fields[3].strip()
@@ -112,7 +113,7 @@ def main():
 
 
 				if set_date < '2018-11-14':
-					print(set_id)
+					
 					#print(fields[1].strip())
 
 
@@ -156,14 +157,14 @@ def main():
 									label=seqinfo_tm.default_label,
 									genome=GenomeInfo.objects.get(genome_name=genome_tm),
 								)
-								tosave_list.append(tosave_item)
+								tosave_item.save()
+								#tosave_list.append(tosave_item)
 					else:
 						with open(os.path.join(setqcoutdir,set_id+'.txt'),'r') as ff:
 							for line_ff in ff:
 								#fields_ff = line_ff.strip('\n').split('')
 								fields_ff = re.split(r'[\s]+', line_ff.strip('\n'))
 								if fields_ff[0].strip():
-									#print(fields_ff[0])
 									seqinfo_tm = SeqInfo.objects.get(seq_id=fields_ff[0].strip())
 									speci = seqinfo_tm.libraryinfo.sampleinfo.species
 									genome_tm = defaultgenome[speci]	
@@ -174,29 +175,34 @@ def main():
 											label=seqinfo_tm.default_label,
 											genome=GenomeInfo.objects.get(genome_name=genome_tm),
 										)
-										tosave_list.append(tosave_item)			
+										tosave_item.save()
+										#tosave_list.append(tosave_item)			
 									else:
 										if set_id in ['Set_70','Set_96','Set_70_test','Set_101','Set_113','Set_120','Set_126','Set_182','Set_184','Set_186','Set_188','Set_189','Set_190']:
 											group_tm = '1'
 											isinput_tm = 'False'
 										else:
+																							
 											#print(fields_ff[2])
 											group_tm = fields_ff[1].strip()
 											isinput_tm = fields_ff[2].strip().title()
 											if not isinput_tm in ['False','True']:
 												print('fields are separated not right!')
+
 										tosave_item = LibraryInSet(
 											librariesetqc=obj,
 											seqinfo=seqinfo_tm,
 											label=seqinfo_tm.default_label,
 											genome=GenomeInfo.objects.get(genome_name=genome_tm),
 											group_number=group_tm,
-											is_input=isinput_tm,			
-
-											)
-										tosave_list.append(tosave_item)	
-						#print(tosave_list)
-					LibraryInSet.objects.bulk_create(tosave_list)
+											is_input=isinput_tm,
+										)
+										tosave_item.save()
+										#tosave_list.append(tosave_item)	
+					# 	#print(tosave_list)
+					# if set_id == 'Set_183':
+					# 	print(tosave_list)
+					#LibraryInSet.objects.bulk_create(tosave_list)
 						
 				else:
 					setobj = LibrariesSetQC.objects.get(set_id = fields[7].strip())

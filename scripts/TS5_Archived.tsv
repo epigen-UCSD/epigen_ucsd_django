@@ -102,5 +102,6 @@ Date requested	Requestor	Set name (for title of report)	Experiment type	Librarie
 8/4/2018	RM	V2 4C 19240	Other (please explain in notes)	RMM_85	Fast 4C V2 RS6962075	http://epigenomics.sdsc.edu/zhc268/rmm_4C_180803/	Set_156
 8/28/2018	RM	V2 4C 19240 (Ch12)	Other (please explain in notes)	RMM_86	Fast 4C V2 Ch12	http://epigenomics.sdsc.edu/zhc268/rmm_hic_180904/	Set_164	
 9/27/2018	RM	Bulk 4C multiple primer sets	4C	RMM_91-99		/projects/ps-epigen/nextSeq/180927_NB501692_0057_AH7YKWAFXY/Data/Fastqs	Set_181	
-10/23/2018	ZC	Evans_snATAC_run1	ATAC-seq	JYH_781-782		http://epigenomics.sdsc.edu:8088/Set_185/9c88b7da24080d3892ccf85cbcdb40de//setQC_report.html	Set_185	ZC	2018-10-24 8:26:09	1b8a375	
+10/23/2018	ZC	Evans_snATAC_run1	ATAC-seq	JYH_781-782		http://epigenomics.sdsc.edu:8088/Set_185/9c88b7da24080d3892ccf85cbcdb40de//setQC_report.html	Set_185	ZC	2018-10-24 8:26:09	1b8a375
+10/26/2018	RM	Bulk 4C multiple primer sets_1	4C	RMM_100-101		/projects/ps-epigen/nextSeq/181024_NB501692_0064_AHCWFHAFXY/Data/Fastqs/TwoPrimers/	Set_187										
 11/13/2018	ZC	Evans_snATAC_run1_2	ATAC-seq	JYH_781-783	evans_veh_1_2 is just 2nd run of veh sample, not a merge	http://epigenomics.sdsc.edu:8088/Set_193/251d8987f96697029cf60dabd56e4754//setQC_report.html	Set_193	ZC	2018-11-14 12:13:39	ee3b13d	

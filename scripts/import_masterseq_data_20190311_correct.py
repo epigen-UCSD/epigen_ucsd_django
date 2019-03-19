@@ -67,17 +67,24 @@ def main():
 	for ids in ['SAMP-388 / SAMP-389','SAMP-344 & 345','SAMP-352 & 353']:
 		sampleinfo=SampleInfo.objects.get(sample_index=ids)
 		sampleinfo.delete()
+
 	for seqid in ['RMM_29','RMM_30','RMM_31','RMM_32','RMM_33','RMM_34','RMM_35']:
 		seq_tm = SeqInfo.objects.get(seq_id=seqid)
 		seq_tm.seq_id = '_'.join([seqid.split('_')[0],str(int(seqid.split('_')[1])-1)])
 		seq_tm.save()
-
+	lib_tm = LibraryInfo.objects.get(library_id ='RMM_100')
+	lib_tm.library_id = 'RMM_101'
+	lib_tm.save()
+	lib_tm = LibraryInfo.objects.get(library_id ='RMM_99[2]')
+	lib_tm.library_id = 'RMM_100'
+	lib_tm.save()
 	sampleids = list(SampleInfo.objects.values_list('sample_id', flat=True))
 	id_dict = {i:sampleids.count(i) for i in sampleids}
 	#print(sampleids)
-	print(id_dict)
+	#print(id_dict)
 	for item,counts in id_dict.items():
 		queryset = SampleInfo.objects.filter(sample_id=item).order_by('date')
+		#for seconday run, please uncomment the following
 		# for query in queryset:
 		# 	id_tm = query.sample_id
 		# 	query.sample_id = id_tm.rsplit('[',1)[0]

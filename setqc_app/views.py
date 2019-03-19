@@ -681,6 +681,7 @@ def SetQCDetailView(request, setqc_pk):
     list1tem = list(librariesset.values_list('seqinfo', flat=True))
     list1 = [SeqInfo.objects.values_list(
         'seq_id', flat=True).get(id=x) for x in list1tem]
+
     list_readtype = [SeqInfo.objects.values_list(
         'read_type', flat=True).get(id=x) for x in list1tem]
     seqstatus = []
@@ -723,6 +724,8 @@ def SetQCDetailView(request, setqc_pk):
             except Exception as e:
                 fastqstatus.append('No')
                 print(e)
+        else:
+            fastqstatus.append('PE or SE?')
         i += 1
 
     if setinfo.experiment_type == 'ChIP-seq':
