@@ -89,7 +89,7 @@ class SampleInfo(models.Model):
     date_received = models.DateField(
         help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03', blank=True, null=True)
     team_member = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    sample_index = models.CharField(max_length=20, blank=True)
+    sample_index = models.CharField(max_length=30, blank=True)
     species_choice = choice_for_species
     species = models.CharField(max_length=10, choices=species_choice)
     sample_type_choice = choice_for_sample_type
