@@ -456,7 +456,7 @@ class SeqsCreationForm(forms.Form):
                         flaglib = 1
                     else:
                         if exptype not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
-                            invalidexp.append(libexp)
+                            invalidexp.append(exptype)
                             flagexp = 1
                         if samindex.strip().lower() in ['na','other','n/a']:
                             samid = fields[1].strip()

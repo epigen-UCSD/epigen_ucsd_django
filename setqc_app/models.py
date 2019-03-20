@@ -13,12 +13,13 @@ class LibrariesSetQC(models.Model):
     requestor = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='requestor')
     experiment_type_choice = (
-        ('ATAC-seq', 'ATAC-seq'), ('ChIP-seq', 'ChIP-seq'), ('HiC', 'HiC'), ('Other', 'Other'))
+        ('ATAC-seq', 'ATAC-seq'), ('ChIP-seq', 'ChIP-seq'), ('HiC', 'HiC'), ('Other (please explain in notes)', 'Other (please explain in notes)'))
     experiment_type = models.CharField(
-        max_length=10, choices=experiment_type_choice)
+        max_length=50, choices=experiment_type_choice)
     libraries_to_include = models.ManyToManyField(
         SeqInfo, through='LibraryInSet')
     notes = models.TextField(blank=True)
+    comments = models.TextField(blank=True)
     last_modified = models.DateTimeField(auto_now=True)
     url = models.URLField(blank=True)
     version = models.CharField(max_length=200, blank=True)
@@ -39,6 +40,6 @@ class LibraryInSet(models.Model):
         SeqInfo, on_delete=models.CASCADE, blank=True, null=True)
     group_number = models.CharField(max_length=10, blank=True)
     is_input = models.NullBooleanField('Is it input?', blank=True)
-    label = models.CharField(max_length=50, blank=True)
+    label = models.CharField(max_length=100, blank=True)
     genome = models.ForeignKey(
         GenomeInfo, on_delete=models.CASCADE, blank=True, null=True)

@@ -55,7 +55,7 @@ $(document).ready( function () {
     $('#datatabledetailnotes').DataTable({
 	"aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
 	"iDisplayLength": 20,
-    	"order": [[ 1, "desc" ]],
+    	"order": [[ 3, "desc" ],[ 1, "desc" ]],
     	"columnDefs": [ {
    	    "orderable":false,
    	    "targets": [0,-1,-2],            
