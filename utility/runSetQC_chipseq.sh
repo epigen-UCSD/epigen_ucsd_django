@@ -1,4 +1,4 @@
-#!/bin/bash
+b#!/bin/bash
 
 # THISPID=$$
 SCRIPT_PATH="${BASH_SOURCE[0]}"
@@ -19,7 +19,7 @@ n_libs=$(awk -v FS='\t' 'BEGIN{n=0};{if(NR>1&&$6=="No") n=n+1}END{print n}' $STA
 ## determine which pipeline to run
 if [ $(grep -c True $STATUS_FILE) -eq 0 ] 
 then
-    # assume no input)
+    #  no input
     RUN_LOG_PIP=${LOG_DIR}$(date +%Y%m%d)"_"${SET_ID}.txt
     awk -v FS='\t' '(NR>1&&$6=="No"){print $1,$4,$7}' $STATUS_FILE > $RUN_LOG_PIP
     awk '(NR>1){print $1}' $STATUS_FILE > $SETQC_FILE
@@ -30,18 +30,18 @@ else
     for g in ${groups[@]} # for each group 
     do
 	RUN_LOG_PIP=${LOG_DIR}$(date +%Y%m%d)"_"${SET_ID}"_${g}.txt"
-	awk -v FS='\t' -v gr=$g '(NR>1&&$2==gr){print $1,$4,$3}' $STATUS_FILE > $RUN_LOG_PIP
+	awk -v FS='\t' -v gr=$g '(NR>1&&$2==gr){print $1,$4,$7,$3}' $STATUS_FILE > $RUN_LOG_PIP
 	nrow=$(wc -l $RUN_LOG_PIP)
 	#cmd1="qsub -v samples=${RUN_LOG_PIP},chipseq=true -t 0-$[nrow-1] -M $USER_EMAIL -q home-epigen -l walltime=16:00:00  \$(which runBulkCHIP_fastq.pbs)"
     done
-    awk '(NR>1){print $1,$2,$3}' $STATUS_FILE > $SETQC_FILE
+    awk '(NR>1){print $1,$2,$3}' $STATUS_FILE > $SETQC_FILE # id,groupid,input 
 fi
 
 
 ## run pipeline and setQC 
 if [[ $n_libs -gt 0 ]] && [[ $setqc_type = "atac_chip" ]] 
 then
-    cmd1="qsub -v samples=${RUN_LOG_PIP},chipseq=true -t 0-$[n_libs-1] -M $USER_EMAIL -q home-epigen -l walltime=16:00:00  \$(which runBulkATAC_fastq.pbs)"
+    cmd1="qsub -k oe  -v samples=${RUN_LOG_PIP},chipseq=true -t 0-$[n_libs-1] -M $USER_EMAIL -q home-epigen -l walltime=16:00:00  \$(which runBulkATAC_fastq.pbs)"
 
     job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
     python updateLibrariesSetQC.py -s '1' -id $SET_ID # process libs
