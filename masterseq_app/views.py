@@ -174,7 +174,10 @@ def SamplesCreateView(request):
             samdescript = fields[9].strip()
             samid = fields[8].strip()
             samdate = datetransform(fields[0].strip())
-            date_received = datetransform(fields[23].strip())
+            try:
+                date_received = datetransform(fields[23].strip())
+            except:
+                date_received = None
             data[samid] = {}
             data[samid] = {
                 'sample_index': samindex,

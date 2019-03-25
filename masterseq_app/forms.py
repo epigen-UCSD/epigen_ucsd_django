@@ -213,6 +213,8 @@ class SamplesCreationForm(forms.Form):
 					flagdate = 1
 				try:
 					samdate_received = datetransform(fields[23].strip())
+				except IndexError:
+					pass
 				except:
 					invaliddate_received.append(fields[23].strip())
 					flagdate_received = 1
@@ -265,9 +267,9 @@ class SamplesCreationForm(forms.Form):
 					
 				cleaneddata.append(lineitem)
 		if flagdate == 1:
-			raise forms.ValidationError('Invalid date:'+','.join(invaliddate)+'. Please enter like this: 10/30/2018')
+			raise forms.ValidationError('Invalid date:'+','.join(invaliddate)+'. Please enter like this: 10/30/2018 or 10/30/18')
 		if flagdate_received == 1:
-			raise forms.ValidationError('Invalid date_received:'+','.join(invaliddate_received)+'. Please enter like this: 10/30/2018')
+			raise forms.ValidationError('Invalid date_received:'+','.join(invaliddate_received)+'. Please enter like this: 10/30/2018 or 10/30/18')
 
 		if flagspecies == 1:
 			raise forms.ValidationError('Invalid species:'+','.join(invalidspecies))
