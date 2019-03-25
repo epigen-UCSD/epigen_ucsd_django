@@ -445,6 +445,70 @@ a[aria-expanded=false] .fa-caret-down {
   margin-left: 16px;
   border-style: hidden;
 }
+
+
+
+.list-group-item-action-custom-darkblue {
+  color: #ffc500;
+  background-color: white;
+  /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+  /*font-size: 1em;*/
+  /*text-align: center;*/
+  -webkit-transition: .3s;
+  -moz-transition: .3s;
+  -ms-transition: .3s;
+  -o-transition: .3s;
+  transition: .3s;
+}
+
+.list-group-item-action-custom-darkblue:hover{
+  color: #ffc500;
+  text-decoration: none;
+  background-color: #f8f9fa;
+  margin-left: 8px;
+}
+
+.list-group-item-action-custom-darkblue:active {
+  color: white;
+  background-color: #F6BE00;
+  margin-left: 8px;
+}
+.list-group-item-action-custom-darkblue.active {
+  color: white;
+  background-color: #F6BE00;
+  margin-left: 8px;
+  border-style: hidden;
+}
+
+.list-group-item-action-custom-darkblue.submenu:hover,.list-group-item-action.submenu:focus{
+  color: #F6BE00;
+  text-decoration: none;
+  background-color: #f8f9fa;
+  margin-left: 16px;
+}
+.list-group-item-action-custom-darkblue.submenu:active {
+  color: white;
+  background-color: #F6BE00;
+  margin-left: 16px;
+}
+.list-group-item-action-custom-darkblue.submenu.active {
+  color: white;
+  background-color: #F6BE00;
+  margin-left: 16px;
+  border-style: hidden;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 .navsiebar > .list-group-item[aria-expanded="true"]{
   background-color: #00B5E2 !important;
   color: white;

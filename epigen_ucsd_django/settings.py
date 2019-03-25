@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'masterseq_app',
     'epigen_ucsd_django',
     'django.contrib.humanize',
+    'manager_app',
     'collaborator_app',
 ]
 

@@ -25,6 +25,7 @@ urlpatterns = [
     path('nextseq/', include('nextseq_app.urls')),
     path('setqc/', include('setqc_app.urls')),
     path('metadata/', include('masterseq_app.urls')),
+    path('manager/', include('manager_app.urls')),
     path('epigen/', include('collaborator_app.urls')),
     path('nextseq/login/', views.UserLoginView.as_view(), name='loginfromnexseq'),
     path('nextseq_app/login/', views.UserLoginView.as_view(),
