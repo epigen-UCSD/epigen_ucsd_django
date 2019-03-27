@@ -621,16 +621,18 @@ def SampleDataView(request):
 
 
 def LibDataView(request):
-    Libs_list = LibraryInfo.objects.all().values(
-        'pk', 'library_id', 'date_started', 'date_completed', 'experiment_type')
+    Libs_list = LibraryInfo.objects.all().select_related('sampleinfo__group').values(
+        'pk', 'library_id','sampleinfo__id','sampleinfo__sample_id','sampleinfo__description',\
+        'sampleinfo__group__name','date_started', 'date_completed', 'experiment_type')
     data = list(Libs_list)
 
     return JsonResponse(data, safe=False)
 
 
 def SeqDataView(request):
-    Seqs_list = SeqInfo.objects.all().values(
-        'pk', 'seq_id', 'date_submitted_for_sequencing', 'read_length', 'read_type')
+    Seqs_list = SeqInfo.objects.all().select_related('libraryinfo__sampleinfo__group').values(
+        'pk', 'seq_id', 'libraryinfo__sampleinfo__id','libraryinfo__sampleinfo__sample_id',\
+        'libraryinfo__sampleinfo__description','libraryinfo__sampleinfo__group__name','date_submitted_for_sequencing', 'read_length', 'read_type')
     data = list(Seqs_list)
 
     return JsonResponse(data, safe=False)
@@ -651,16 +653,21 @@ def UserSampleDataView(request):
 
 
 def UserLibDataView(request):
-    Libs_list = LibraryInfo.objects.filter(team_member_initails=request.user).values(
-        'pk', 'library_id', 'date_started', 'date_completed', 'experiment_type')
+    Libs_list = LibraryInfo.objects.filter(team_member_initails=request.user)\
+    .select_related('sampleinfo__group').values(
+        'pk', 'library_id','sampleinfo__id', 'sampleinfo__sample_id','sampleinfo__description',\
+        'sampleinfo__group__name','date_started', 'date_completed', 'experiment_type')
     data = list(Libs_list)
 
     return JsonResponse(data, safe=False)
 
 
 def UserSeqDataView(request):
-    Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user).values(
-        'pk', 'seq_id', 'date_submitted_for_sequencing', 'read_length', 'read_type')
+    Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user)\
+    .select_related('libraryinfo__sampleinfo__group').values(
+        'pk', 'seq_id','libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',\
+        'libraryinfo__sampleinfo__description','libraryinfo__sampleinfo__group__name',\
+        'date_submitted_for_sequencing', 'read_length', 'read_type')
     data = list(Seqs_list)
 
     return JsonResponse(data, safe=False)
