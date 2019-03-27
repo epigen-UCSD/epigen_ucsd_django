@@ -8,10 +8,12 @@
             All Collaborator's Profile
           </div><!-- /.card-header -->
           <div class="card-body">
-            <table id="datatabledetailnotes" class="table table-striped table-sm text-center table-responsive-xl">
+            <table class="table table-striped table-sm text-left table-responsive-xl datatable">
               <thead>
                 <tr>
+                  <th scope="col">group</th>                  
                   <th scope="col">role</th>
+                  <th scope="col">username</th>
                   <th scope="col">first_name</th>
                   <th scope="col">last_name</th>
                   <th scope="col">email</th>
@@ -22,12 +24,14 @@
               <tbody>
                 {% for collab in collab_list %}
                 <tr>
+                  <td>{{ collab.person_id__groups__name | default_if_none:"" }}</td>
                   <td>{{ collab.role }}</td>
+                  <td>{{ collab.person_id__username }}</td>
                   <td>{{ collab.person_id__first_name | default_if_none:"" }}</td>
                   <td>{{ collab.person_id__last_name | default_if_none:"" }}</td>
                   <td>{{ collab.person_id__email | default_if_none:"" }}</td>
                   <td>{{ collab.cell_phone | default_if_none:"" }}</td>
-                  <td>{{ collab.fiscal_index | default_if_none:"" }}</td>
+                  <td>{{ collab.person_index__index_name | default_if_none:"" }}</td>
                   
                 </tr>
                 {% empty %}

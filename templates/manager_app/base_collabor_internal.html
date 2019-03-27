@@ -9,8 +9,8 @@
   <div class="list-group navsiebar">
     <li class="sidebar-header">Manager App</li>
     <a href="{% url 'manager_app:collab_list' %}" class="list-group-item list-group-item-action-custom-darkblue editable">All Collaborators</a>
-    <a href="" class="list-group-item list-group-item-action-custom-darkblue ">Add a new collaborator</a> 
-    
+    <a href="{% url 'manager_app:collab_add' %}" class="list-group-item list-group-item-action-custom-darkblue ">Add a new collaborator</a> 
+     <a href="{% url 'manager_app:index_add' %}" class="list-group-item list-group-item-action-custom-darkblue ">Add a new index</a>    
   </div>
 </div> 
 
