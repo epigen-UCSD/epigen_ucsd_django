@@ -295,12 +295,16 @@ $(document).ready( function () {
     "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
     "iDisplayLength": 20,
     "processing": true,
+    "order": [[ 4, "desc" ],[ 3, "desc" ]],
     "ajax": {
          url: metalibsurl,
          dataSrc: ''
         },
     "columns": [
             { "data": "library_id"},
+            { "data": "sampleinfo__sample_id"},
+            { "data": "sampleinfo__description"},
+            { "data": "sampleinfo__group__name"},
             { "data": "date_started"},
             { "data": "date_completed"},
             { "data": "experiment_type"},
@@ -314,7 +318,16 @@ $(document).ready( function () {
             var itemID = row["pk"];                   
             return '<a href="/metadata/lib/' + itemID + '">' + data + '</a>';
         }
-    }], 
+    },
+    {
+        "targets": 1,
+        "render": function ( data, type, row ) {
+            var itemID = row["sampleinfo__id"];                   
+            return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+        }
+    },
+
+    ], 
     });
 
     var metalibsurl=$('#metadata_libs_bio').attr("data-href");
@@ -332,6 +345,7 @@ $(document).ready( function () {
     ],
     "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
     "iDisplayLength": 20,
+    "order": [[ 4, "desc" ],[ 3, "desc" ]],
     "processing": true,
     "ajax": {
          url: metalibsurl,
@@ -339,6 +353,9 @@ $(document).ready( function () {
         },
     "columns": [
             { "data": "library_id"},
+            { "data": "sampleinfo__sample_id"},
+            { "data": "sampleinfo__description"},
+            { "data": "sampleinfo__group__name"},
             { "data": "date_started"},
             { "data": "date_completed"},
             { "data": "experiment_type"},
@@ -355,7 +372,14 @@ $(document).ready( function () {
         }
     },
     {
-        "targets": 4,
+        "targets": 1,
+        "render": function ( data, type, row ) {
+            var itemID = row["sampleinfo__id"];                   
+            return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+        }
+    },
+    {
+        "targets": 7,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
             return '<a class="spacing" href="/metadata/lib/'+itemID+'/update/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete library '+row["library_id"]+'?\');" href="/metadata/lib/'+itemID+'/delete/"><i class="fas fa-trash-alt"></i></a>';
@@ -382,12 +406,16 @@ $(document).ready( function () {
     "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
     "iDisplayLength": 20,
     "processing": true,
+    "order": [[ 4, "desc" ],[ 3, "desc" ]],
     "ajax": {
          url: metaseqsurl,
          dataSrc: ''
         },
     "columns": [
             { "data": "seq_id"},
+            { "data": "libraryinfo__sampleinfo__sample_id"},
+            { "data": "libraryinfo__sampleinfo__description"},
+            { "data": "libraryinfo__sampleinfo__group__name"},
             { "data": "date_submitted_for_sequencing"},
             { "data": "read_length"},
             { "data": "read_type"},
@@ -402,7 +430,16 @@ $(document).ready( function () {
             var itemID = row["pk"];                   
             return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
         }
-    }], 
+    },
+    {
+        "targets": 1,
+        "render": function ( data, type, row ) {
+            var itemID = row["libraryinfo__sampleinfo__id"];                   
+            return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+        }
+    },
+
+    ], 
     });
 
 
@@ -422,12 +459,16 @@ $(document).ready( function () {
     "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
     "iDisplayLength": 20,
     "processing": true,
+    "order": [[ 4, "desc" ],[ 3, "desc" ]],
     "ajax": {
          url: metaseqsurl,
          dataSrc: ''
         },
     "columns": [
             { "data": "seq_id"},
+            { "data": "libraryinfo__sampleinfo__sample_id"},
+            { "data": "libraryinfo__sampleinfo__description"},
+            { "data": "libraryinfo__sampleinfo__group__name"},
             { "data": "date_submitted_for_sequencing"},
             { "data": "read_length"},
             { "data": "read_type"},
@@ -445,7 +486,15 @@ $(document).ready( function () {
         }
     },
     {
-        "targets": 4,
+        "targets": 1,
+        "render": function ( data, type, row ) {
+            var itemID = row["libraryinfo__sampleinfo__id"];                   
+            return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+        }
+    },
+
+    {
+        "targets": 7,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
             return '<a class="spacing" href="/metadata/seq/'+itemID+'/update/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete sequencing '+row["seq_id"]+'?\');" href="/metadata/seq/'+itemID+'/delete/"><i class="fas fa-trash-alt"></i></a>';
