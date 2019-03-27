@@ -647,7 +647,7 @@ def SampleDataView(request):
 def LibDataView(request):
     Libs_list = LibraryInfo.objects.all().select_related('sampleinfo__group').values(
         'pk', 'library_id', 'sampleinfo__id', 'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
-        'sampleinfo__group__name', 'date_started', 'experiment_type')
+        'sampleinfo__species', 'sampleinfo__group__name', 'date_started', 'experiment_type')
     data = list(Libs_list)
 
     return JsonResponse(data, safe=False)
@@ -680,7 +680,7 @@ def UserLibDataView(request):
     Libs_list = LibraryInfo.objects.filter(team_member_initails=request.user)\
         .select_related('sampleinfo__group').values(
             'pk', 'library_id', 'sampleinfo__id',  'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
-        'sampleinfo__group__name', 'date_started', 'experiment_type')
+        'sampleinfo__species', 'sampleinfo__group__name', 'date_started', 'experiment_type')
     data = list(Libs_list)
 
     return JsonResponse(data, safe=False)

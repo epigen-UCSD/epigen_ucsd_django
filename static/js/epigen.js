@@ -305,6 +305,7 @@ $(document).ready( function () {
             { "data": "sampleinfo__sample_id"},
             { "data": "sampleinfo__sample_type"},	
             { "data": "sampleinfo__description"},
+            { "data": "sampleinfo__species"},	
             { "data": "sampleinfo__group__name"},
             { "data": "date_started"},
             { "data": "experiment_type"},
@@ -356,6 +357,7 @@ $(document).ready( function () {
             { "data": "sampleinfo__sample_id"},
             { "data": "sampleinfo__sample_type"},		
             { "data": "sampleinfo__description"},
+            { "data": "sampleinfo__species"},	
             { "data": "sampleinfo__group__name"},
             { "data": "date_started"},
             { "data": "experiment_type"},
@@ -379,7 +381,7 @@ $(document).ready( function () {
         }
     },
     {
-        "targets": 7,
+        "targets": 8,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
             return '<a class="spacing" href="/metadata/lib/'+itemID+'/update/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete library '+row["library_id"]+'?\');" href="/metadata/lib/'+itemID+'/delete/"><i class="fas fa-trash-alt"></i></a>';
