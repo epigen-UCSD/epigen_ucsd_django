@@ -295,6 +295,7 @@ $(document).ready( function () {
     "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
     "iDisplayLength": 20,
     "processing": true,
+    "order": [[ 4, "desc" ],[ 3, "desc" ]],
     "ajax": {
          url: metalibsurl,
          dataSrc: ''
@@ -344,6 +345,7 @@ $(document).ready( function () {
     ],
     "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
     "iDisplayLength": 20,
+    "order": [[ 4, "desc" ],[ 3, "desc" ]],
     "processing": true,
     "ajax": {
          url: metalibsurl,
@@ -404,6 +406,7 @@ $(document).ready( function () {
     "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
     "iDisplayLength": 20,
     "processing": true,
+    "order": [[ 4, "desc" ],[ 3, "desc" ]],
     "ajax": {
          url: metaseqsurl,
          dataSrc: ''
@@ -456,6 +459,7 @@ $(document).ready( function () {
     "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
     "iDisplayLength": 20,
     "processing": true,
+    "order": [[ 4, "desc" ],[ 3, "desc" ]],
     "ajax": {
          url: metaseqsurl,
          dataSrc: ''
