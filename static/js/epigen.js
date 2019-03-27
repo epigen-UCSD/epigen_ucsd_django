@@ -303,10 +303,10 @@ $(document).ready( function () {
     "columns": [
             { "data": "library_id"},
             { "data": "sampleinfo__sample_id"},
+            { "data": "sampleinfo__sample_type"},	
             { "data": "sampleinfo__description"},
             { "data": "sampleinfo__group__name"},
             { "data": "date_started"},
-            { "data": "date_completed"},
             { "data": "experiment_type"},
         ],
     "deferRender": true,
@@ -354,10 +354,10 @@ $(document).ready( function () {
     "columns": [
             { "data": "library_id"},
             { "data": "sampleinfo__sample_id"},
+            { "data": "sampleinfo__sample_type"},		
             { "data": "sampleinfo__description"},
             { "data": "sampleinfo__group__name"},
             { "data": "date_started"},
-            { "data": "date_completed"},
             { "data": "experiment_type"},
             { "data": null, defaultContent: ""},
         ],

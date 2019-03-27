@@ -5,8 +5,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm, LibraryCreationForm, SeqCreationForm,\
     SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm
 from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
-SeqMachineInfo, SeqBioInfo,choice_for_preparation,choice_for_fixation,\
-choice_for_unit,choice_for_sample_type
+    SeqMachineInfo, SeqBioInfo, choice_for_preparation, choice_for_fixation,\
+    choice_for_unit, choice_for_sample_type
 from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
@@ -135,9 +135,10 @@ def SamplesCreateView(request):
             fields = lineitem.strip('\n').split('\t')
             samindex = fields[21].strip()
             try:
-                samnotes = ';'.join([fields[20].strip(),fields[28].strip()]).strip(';')
+                samnotes = ';'.join(
+                    [fields[20].strip(), fields[28].strip()]).strip(';')
             except:
-                samnotes = fields[20].strip()           
+                samnotes = fields[20].strip()
             try:
                 membername = fields[25].strip()
                 if membername == '':
@@ -152,13 +153,15 @@ def SamplesCreateView(request):
             seq_depth_to_target_tm = fields[17].strip()
             seq_length_requested_tm = fields[18].strip()
             seq_type_requested_tm = fields[19].strip()
-            samprep = fields[12].strip().replace('crypreserant','cryopreservant')
+            samprep = fields[12].strip().replace(
+                'crypreserant', 'cryopreservant')
             if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:
                 if samprep.lower().startswith('other'):
                     samprep = 'other (please explain in notes)'
                 else:
                     if samprep:
-                        samnotes = ';'.join([samnotes,'sample preparation:'+samprep]).strip(';')
+                        samnotes = ';'.join(
+                            [samnotes, 'sample preparation:'+samprep]).strip(';')
                     samprep = 'other (please explain in notes)'
             samtype = fields[11].split('(')[0].strip().lower()
             samspecies = fields[10].split('(')[0].lower().strip()
@@ -183,20 +186,20 @@ def SamplesCreateView(request):
                 'sample_index': samindex,
                 'team_member': membername,
                 'date': samdate,
-                'date_received':date_received,
+                'date_received': date_received,
                 'species': samspecies,
                 'sample_type': samtype,
                 'preparation': samprep,
-                'fixation':fixation,
-                'sample_amount':sample_amount,
-                'unit':unit,
+                'fixation': fixation,
+                'sample_amount': sample_amount,
+                'unit': unit,
                 'description': samdescript,
-                'storage':storage_tm,
+                'storage': storage_tm,
                 'notes': samnotes,
-                'service_requested':service_requested_tm,
-                'seq_depth_to_target':seq_depth_to_target_tm,
-                'seq_length_requested':seq_length_requested_tm,
-                'seq_type_requested':seq_type_requested_tm,
+                'service_requested': service_requested_tm,
+                'seq_depth_to_target': seq_depth_to_target_tm,
+                'seq_length_requested': seq_length_requested_tm,
+                'seq_type_requested': seq_type_requested_tm,
             }
             tosave_item = SampleInfo(
                 sample_index=samindex,
@@ -223,10 +226,10 @@ def SamplesCreateView(request):
             SampleInfo.objects.bulk_create(tosave_list)
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
-            displayorder = ['sample_index','description', 'team_member', 'date','date_received','species', 'sample_type',
-                            'preparation', 'fixation','sample_amount','unit',
-                             'notes','storage','service_requested','seq_depth_to_target',
-                            'seq_length_requested','seq_type_requested']
+            displayorder = ['sample_index', 'description', 'team_member', 'date', 'date_received', 'species', 'sample_type',
+                            'preparation', 'fixation', 'sample_amount', 'unit',
+                            'notes', 'storage', 'service_requested', 'seq_depth_to_target',
+                            'seq_length_requested', 'seq_type_requested']
             context = {
                 'sample_form': sample_form,
                 'modalshow': 1,
@@ -252,40 +255,42 @@ def LibrariesCreateView(request):
         libsinfo = library_form.cleaned_data['libsinfo']
         # print(sequencinginfo)
         sampid = {}
-        samp_indexes = list(SampleInfo.objects.values_list('sample_index', flat=True))
-        existingmaxindex = max([int(x.split('-')[1]) for x in samp_indexes if x.startswith('SAMPNA')])
+        samp_indexes = list(SampleInfo.objects.values_list(
+            'sample_index', flat=True))
+        existingmaxindex = max([int(x.split('-')[1])
+                                for x in samp_indexes if x.startswith('SAMPNA')])
         for lineitem in libsinfo.strip().split('\n'):
             fields = lineitem.strip('\n').split('\t')
             libid = fields[10].strip()
             sampid = fields[1].strip()
-            if fields[0].strip().lower() in ['na','other','n/a']:
+            if fields[0].strip().lower() in ['na', 'other', 'n/a']:
                 pseudorequired = 1
                 pseudoflag = 1
-                sampindex = 'SAMPNA-'+str(existingmaxindex+1)              
+                sampindex = 'SAMPNA-'+str(existingmaxindex+1)
                 existingmaxindex += 1
-                if sampid.strip().lower() in ['','na','other','n/a']:
+                if sampid.strip().lower() in ['', 'na', 'other', 'n/a']:
                     sampid = sampindex
 
             else:
                 pseudoflag = 0
                 sampindex = fields[0].strip()
                 #saminfo = SampleInfo.objects.get(sample_index=fields[0].strip())
-        
+
             data[libid] = {}
             datestart = datetransform(fields[3].strip())
             dateend = datetransform(fields[4].strip())
             libexp = fields[5].strip()
-            #libprotocal = ProtocalInfo.objects.get(
-                #experiment_type=libexp, protocal_name='other (please explain in notes)')
+            # libprotocal = ProtocalInfo.objects.get(
+            # experiment_type=libexp, protocal_name='other (please explain in notes)')
             refnotebook = fields[7].strip()
             libnote = ';'.join(
-                [fields[11].strip(),'Protocol used(recorded in Tracking Sheet 2):', fields[6].strip()]).strip(';')
+                [fields[11].strip(), 'Protocol used(recorded in Tracking Sheet 2):', fields[6].strip()]).strip(';')
             #memebername = User.objects.get(username=fields[2].strip())
             data[libid] = {
                 'pseudoflag': pseudoflag,
                 'sampleinfo': sampindex,
-                'sample_index':sampindex,
-                'sample_id':sampid,
+                'sample_index': sampindex,
+                'sample_id': sampid,
                 'team_member_initails': fields[2].strip(),
                 'experiment_index': fields[12].strip(),
                 'date_started': datestart,
@@ -297,26 +302,30 @@ def LibrariesCreateView(request):
             }
 
         if 'Save' in request.POST:
-            for k,v in data.items():
+            for k, v in data.items():
                 if v['pseudoflag'] == 1:
                     SampleInfo.objects.create(
                         sample_id=v['sample_id'],
                         sample_index=v['sample_index'],
-                        team_member=User.objects.get(username=v['team_member_initails']),
-                        )
+                        team_member=User.objects.get(
+                            username=v['team_member_initails']),
+                    )
                 tosave_item = LibraryInfo(
                     library_id=k,
-                    sampleinfo=SampleInfo.objects.get(sample_index=v['sampleinfo']),
+                    sampleinfo=SampleInfo.objects.get(
+                        sample_index=v['sampleinfo']),
                     experiment_index=v['experiment_index'],
                     experiment_type=v['experiment_type'],
-                    protocalinfo=ProtocalInfo.objects.get(experiment_type=v['experiment_type'], protocal_name='other (please explain in notes)'),
+                    protocalinfo=ProtocalInfo.objects.get(
+                        experiment_type=v['experiment_type'], protocal_name='other (please explain in notes)'),
                     reference_to_notebook_and_page_number=v['reference_to_notebook_and_page_number'],
                     date_started=v['date_started'],
                     date_completed=v['date_completed'],
-                    team_member_initails=User.objects.get(username=v['team_member_initails']),
+                    team_member_initails=User.objects.get(
+                        username=v['team_member_initails']),
                     notes=v['notes']
-                    )
-                tosave_list.append(tosave_item)                
+                )
+                tosave_list.append(tosave_item)
             LibraryInfo.objects.bulk_create(tosave_list)
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
@@ -324,12 +333,13 @@ def LibrariesCreateView(request):
                             'date_completed', 'experiment_type', 'protocal_name', 'reference_to_notebook_and_page_number',
                             'notes']
             if pseudorequired == 1:
-                displayorder2 = ['sample_index','sample_id','team_member_initails']
+                displayorder2 = ['sample_index',
+                                 'sample_id', 'team_member_initails']
                 context = {
                     'library_form': library_form,
                     'modalshowplus': 1,
                     'displayorder': displayorder,
-                    'displayorder2':displayorder2,
+                    'displayorder2': displayorder2,
                     'data': data,
                 }
 
@@ -361,16 +371,20 @@ def SeqsCreateView(request):
     pseudolibrequired = 0
     if seqs_form.is_valid():
         seqsinfo = seqs_form.cleaned_data['seqsinfo']
-        samp_indexes = list(SampleInfo.objects.values_list('sample_index', flat=True))
-        existingmaxsampindex = max([int(x.split('-')[1]) for x in samp_indexes if x.startswith('SAMPNA')])
-        lib_indexes = list(LibraryInfo.objects.values_list('experiment_index', flat=True))
-        existingmaxlibindex = max([int(x.split('-')[1]) for x in lib_indexes if x.startswith('EXPNA')])
+        samp_indexes = list(SampleInfo.objects.values_list(
+            'sample_index', flat=True))
+        existingmaxsampindex = max([int(x.split('-')[1])
+                                    for x in samp_indexes if x.startswith('SAMPNA')])
+        lib_indexes = list(LibraryInfo.objects.values_list(
+            'experiment_index', flat=True))
+        existingmaxlibindex = max([int(x.split('-')[1])
+                                   for x in lib_indexes if x.startswith('EXPNA')])
 
         for lineitem in seqsinfo.strip().split('\n'):
             lineitem = lineitem+'\t\t\t\t\t\t'
             fields = lineitem.split('\t')
             updatesampflag = 0
-            pseudolibflag = 0 
+            pseudolibflag = 0
             pseudosamflag = 0
             samindex = fields[0].strip()
             sampid = fields[1].strip()
@@ -380,33 +394,34 @@ def SeqsCreateView(request):
             libraryid = fields[7].strip()
             exptype = fields[9].strip()
             data[seqid] = {}
-            if not LibraryInfo.objects.filter(library_id=fields[7]).exists() and expindex.strip().lower() in ['','na','other','n/a']:
+            if not LibraryInfo.objects.filter(library_id=fields[7]).exists() and expindex.strip().lower() in ['', 'na', 'other', 'n/a']:
                 pseudolibrequired = 1
                 pseudolibflag = 1
                 expindex = 'EXPNA-'+str(existingmaxlibindex+1)
                 existingmaxlibindex += 1
-                if not SampleInfo.objects.filter(sample_index=samindex).exists() and samindex.strip().lower() in ['na','other','n/a']:
+                if not SampleInfo.objects.filter(sample_index=samindex).exists() and samindex.strip().lower() in ['na', 'other', 'n/a']:
                     pseudosamprequired = 1
                     pseudosamflag = 1
-                    sampindex = 'SAMPNA-'+str(existingmaxsampindex+1)              
-                    existingmaxsampindex += 1 
-                    if sampid.strip().lower() in ['','na','other','n/a']:
+                    sampindex = 'SAMPNA-'+str(existingmaxsampindex+1)
+                    existingmaxsampindex += 1
+                    if sampid.strip().lower() in ['', 'na', 'other', 'n/a']:
                         sampid = sampindex
                 else:
                     sampinfo = SampleInfo.objects.get(sample_index=samindex)
                     if not sampinfo.species and sampspecies:
                         updatesampflag = 1
-                        updatesamprequired  = 1
+                        updatesamprequired = 1
             else:
-                libinfo = LibraryInfo.objects.select_related('sampleinfo').get(library_id=fields[7].strip())
+                libinfo = LibraryInfo.objects.select_related(
+                    'sampleinfo').get(library_id=fields[7].strip())
                 sampinfo = libinfo.sampleinfo
                 sampindex = sampinfo.sample_index
                 sampid = sampinfo.sample_id
-                
+
                 if not sampinfo.species and sampspecies:
                     updatesampflag = 1
-                    updatesamprequired  = 1
-            
+                    updatesamprequired = 1
+
             if '-' in fields[6].strip():
                 datesub = fields[6].strip()
             else:
@@ -433,17 +448,17 @@ def SeqsCreateView(request):
             machineused = SeqMachineInfo.objects.get(
                 sequencing_core=seqcore, machine_name=seqmachine)
             data[seqid] = {
-                'updatesampflag':updatesampflag,
-                'pseudolibflag':pseudolibflag,
-                'pseudosamflag':pseudosamflag,
-                'sample_index':sampindex,
-                'sampleinfo':sampindex,
-                'sample_id':sampid,
-                'species':sampspecies,
-                'experiment_index':expindex,
-                'experiment_type':exptype,
+                'updatesampflag': updatesampflag,
+                'pseudolibflag': pseudolibflag,
+                'pseudosamflag': pseudosamflag,
+                'sample_index': sampindex,
+                'sampleinfo': sampindex,
+                'sample_id': sampid,
+                'species': sampspecies,
+                'experiment_index': expindex,
+                'experiment_type': exptype,
                 'libraryinfo': fields[7].strip(),
-                'library_id':libraryid,
+                'library_id': libraryid,
                 'default_label': fields[2].strip(),
                 'team_member_initails': fields[5].strip(),
                 'read_length': fields[12].strip(),
@@ -453,32 +468,36 @@ def SeqsCreateView(request):
                 'machine': seqmachine,
                 'i7index': indexname,
                 'i5index': indexname2,
-                'indexname':indexname,
-                'indexname2':indexname2,
+                'indexname': indexname,
+                'indexname2': indexname2,
                 'date_submitted': datesub,
                 'notes': fields[17].strip(),
             }
-        if 'Save' in request.POST:           
-            
-            for k,v in data.items():
+        if 'Save' in request.POST:
+
+            for k, v in data.items():
                 if v['pseudolibflag'] == 1:
                     if v['pseudosamflag'] == 1:
                         SampleInfo.objects.create(
                             sample_id=v['sample_id'],
                             sample_index=v['sample_index'],
                             species=v['species'],
-                            team_member=User.objects.get(username=v['team_member_initails']),
-                            )
+                            team_member=User.objects.get(
+                                username=v['team_member_initails']),
+                        )
 
                     LibraryInfo.objects.create(
                         library_id=v['library_id'],
                         experiment_index=v['experiment_index'],
                         experiment_type=v['experiment_type'],
-                        sampleinfo=SampleInfo.objects.get(sample_index=v['sample_index']),
-                        team_member_initails=User.objects.get(username=v['team_member_initails']),
-                            )
+                        sampleinfo=SampleInfo.objects.get(
+                            sample_index=v['sample_index']),
+                        team_member_initails=User.objects.get(
+                            username=v['team_member_initails']),
+                    )
                 if v['updatesampflag'] == 1:
-                    sampleinfo = SampleInfo.objects.get(sample_index=v['sample_index'])
+                    sampleinfo = SampleInfo.objects.get(
+                        sample_index=v['sample_index'])
                     sampleinfo.species = v['species']
                     sampleinfo.save()
                 if v['indexname'] and v['indexname'] not in ['NA', 'Other (please explain in notes)', 'N/A']:
@@ -491,13 +510,16 @@ def SeqsCreateView(request):
                     i5index = None
                 tosave_item = SeqInfo(
                     seq_id=k,
-                    libraryinfo=LibraryInfo.objects.get(library_id=v['library_id']),
-                    team_member_initails=User.objects.get(username=v['team_member_initails']),
+                    libraryinfo=LibraryInfo.objects.get(
+                        library_id=v['library_id']),
+                    team_member_initails=User.objects.get(
+                        username=v['team_member_initails']),
                     read_length=v['read_length'],
                     read_type=v['read_type'],
                     portion_of_lane=v['portion_of_lane'],
                     notes=v['notes'],
-                    machine=SeqMachineInfo.objects.get(sequencing_core=v['seqcore'], machine_name=v['machine']),
+                    machine=SeqMachineInfo.objects.get(
+                        sequencing_core=v['seqcore'], machine_name=v['machine']),
                     i7index=i7index,
                     i5index=i5index,
                     default_label=v['default_label'],
@@ -509,19 +531,21 @@ def SeqsCreateView(request):
         if 'Preview' in request.POST:
             displayorder = ['libraryinfo', 'default_label', 'date_submitted', 'team_member_initails', 'read_length',
                             'read_type', 'portion_of_lane', 'seqcore', 'machine', 'i7index', 'i5index', 'notes']
-            displayorder2 = ['sample_index','sample_id','species','team_member_initails']
-            displayorder3 = ['library_id','sampleinfo','experiment_index','experiment_type','team_member_initails']
+            displayorder2 = ['sample_index', 'sample_id',
+                             'species', 'team_member_initails']
+            displayorder3 = ['library_id', 'sampleinfo',
+                             'experiment_index', 'experiment_type', 'team_member_initails']
             context = {
-                    'updatesamprequired':updatesamprequired,
-                    'pseudosamprequired':pseudosamprequired,
-                    'pseudolibrequired':pseudolibrequired,
-                    'seqs_form': seqs_form,
-                    'modalshowplus': 1,
-                    'displayorder': displayorder,
-                    'displayorder2':displayorder2,
-                    'displayorder3':displayorder3,
-                    'data': data,
-                }
+                'updatesamprequired': updatesamprequired,
+                'pseudosamprequired': pseudosamprequired,
+                'pseudolibrequired': pseudolibrequired,
+                'seqs_form': seqs_form,
+                'modalshowplus': 1,
+                'displayorder': displayorder,
+                'displayorder2': displayorder2,
+                'displayorder3': displayorder3,
+                'data': data,
+            }
 
             return render(request, 'masterseq_app/seqsadd.html', context)
     context = {
@@ -608,7 +632,7 @@ def SeqsCreateView(request):
 
 def SampleDataView(request):
     Samples_list = SampleInfo.objects.all().select_related('group').values(
-        'pk', 'sample_id', 'description','date', 'sample_type', 'group__name', 'status')
+        'pk', 'sample_id', 'description', 'date', 'sample_type', 'group__name', 'status')
     for sample in Samples_list:
         try:
             sample['group__name'] = sample['group__name'].replace(
@@ -622,8 +646,8 @@ def SampleDataView(request):
 
 def LibDataView(request):
     Libs_list = LibraryInfo.objects.all().select_related('sampleinfo__group').values(
-        'pk', 'library_id','sampleinfo__id','sampleinfo__sample_id','sampleinfo__description',\
-        'sampleinfo__group__name','date_started', 'date_completed', 'experiment_type')
+        'pk', 'library_id', 'sampleinfo__id', 'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
+        'sampleinfo__group__name', 'date_started', 'experiment_type')
     data = list(Libs_list)
 
     return JsonResponse(data, safe=False)
@@ -631,8 +655,8 @@ def LibDataView(request):
 
 def SeqDataView(request):
     Seqs_list = SeqInfo.objects.all().select_related('libraryinfo__sampleinfo__group').values(
-        'pk', 'seq_id', 'libraryinfo__sampleinfo__id','libraryinfo__sampleinfo__sample_id',\
-        'libraryinfo__sampleinfo__description','libraryinfo__sampleinfo__group__name','date_submitted_for_sequencing', 'read_length', 'read_type')
+        'pk', 'seq_id', 'libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
+        'libraryinfo__sampleinfo__description', 'libraryinfo__sampleinfo__group__name', 'date_submitted_for_sequencing', 'read_length', 'read_type')
     data = list(Seqs_list)
 
     return JsonResponse(data, safe=False)
@@ -640,7 +664,7 @@ def SeqDataView(request):
 
 def UserSampleDataView(request):
     Samples_list = SampleInfo.objects.filter(team_member=request.user).values(
-        'pk', 'sample_id', 'description','date', 'sample_type', 'group__name', 'status')
+        'pk', 'sample_id', 'description', 'date', 'sample_type', 'group__name', 'status')
     for sample in Samples_list:
         try:
             sample['group__name'] = sample['group__name'].replace(
@@ -654,9 +678,9 @@ def UserSampleDataView(request):
 
 def UserLibDataView(request):
     Libs_list = LibraryInfo.objects.filter(team_member_initails=request.user)\
-    .select_related('sampleinfo__group').values(
-        'pk', 'library_id','sampleinfo__id', 'sampleinfo__sample_id','sampleinfo__description',\
-        'sampleinfo__group__name','date_started', 'date_completed', 'experiment_type')
+        .select_related('sampleinfo__group').values(
+            'pk', 'library_id', 'sampleinfo__id',  'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
+        'sampleinfo__group__name', 'date_started', 'experiment_type')
     data = list(Libs_list)
 
     return JsonResponse(data, safe=False)
@@ -664,9 +688,9 @@ def UserLibDataView(request):
 
 def UserSeqDataView(request):
     Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user)\
-    .select_related('libraryinfo__sampleinfo__group').values(
-        'pk', 'seq_id','libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',\
-        'libraryinfo__sampleinfo__description','libraryinfo__sampleinfo__group__name',\
+        .select_related('libraryinfo__sampleinfo__group').values(
+        'pk', 'seq_id', 'libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
+        'libraryinfo__sampleinfo__description', 'libraryinfo__sampleinfo__group__name',
         'date_submitted_for_sequencing', 'read_length', 'read_type')
     data = list(Seqs_list)
 
@@ -835,7 +859,7 @@ def SeqUpdateView(request, pk):
 def SampleDetailView(request, pk):
     sampleinfo = get_object_or_404(SampleInfo.objects.select_related(
         'team_member', 'research_person__person_id', 'fiscal_person__person_id'), pk=pk)
-    summaryfield = ['status', 'sample_index', 'sample_id','description', 'date','date_received','team_member', 'species',
+    summaryfield = ['status', 'sample_index', 'sample_id', 'description', 'date', 'date_received', 'team_member', 'species',
                     'sample_type', 'preparation', 'fixation', 'sample_amount', 'unit', 'storage', 'notes']
     requestedfield = ['date', 'service_requested', 'seq_depth_to_target',
                       'seq_length_requested', 'seq_type_requested']
@@ -918,7 +942,7 @@ def SeqDetailView(request, pk):
                                                                'machine', 'i7index', 'i5index', 'team_member_initails'), pk=pk)
     libinfo = seqinfo.libraryinfo
     saminfo = libinfo.sampleinfo
-    summaryfield = ['seq_id', 'sampleinfo','libraryinfo', 'default_label', 'team_member_initails',
+    summaryfield = ['seq_id', 'sampleinfo', 'libraryinfo', 'default_label', 'team_member_initails',
                     'date_submitted_for_sequencing', 'machine', 'read_length', 'read_type', 'portion_of_lane',
                     'i7index', 'i5index', 'total_reads', 'notes']
     bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
@@ -926,7 +950,7 @@ def SeqDetailView(request, pk):
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
     context = {
         'libinfo': libinfo,
-        'saminfo':saminfo,
+        'saminfo': saminfo,
         'seqinfo': seqinfo,
         'summaryfield': summaryfield,
         'seqbioinfos': seqbioinfos,
@@ -934,13 +958,14 @@ def SeqDetailView(request, pk):
 
     }
     return render(request, 'masterseq_app/seqdetail.html', context=context)
+
 
 def SeqDetail2View(request, seqid):
     seqinfo = get_object_or_404(SeqInfo.objects.select_related('libraryinfo',
                                                                'machine', 'i7index', 'i5index', 'team_member_initails'), seq_id=seqid)
     libinfo = seqinfo.libraryinfo
     saminfo = libinfo.sampleinfo
-    summaryfield = ['seq_id','sampleinfo', 'libraryinfo', 'default_label', 'team_member_initails',
+    summaryfield = ['seq_id', 'sampleinfo', 'libraryinfo', 'default_label', 'team_member_initails',
                     'date_submitted_for_sequencing', 'machine', 'read_length', 'read_type', 'portion_of_lane',
                     'i7index', 'i5index', 'total_reads', 'notes']
     bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
@@ -948,7 +973,7 @@ def SeqDetail2View(request, seqid):
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
     context = {
         'libinfo': libinfo,
-        'saminfo':saminfo,
+        'saminfo': saminfo,
         'seqinfo': seqinfo,
         'summaryfield': summaryfield,
         'seqbioinfos': seqbioinfos,
@@ -956,6 +981,7 @@ def SeqDetail2View(request, seqid):
 
     }
     return render(request, 'masterseq_app/seqdetail.html', context=context)
+
 
 def load_samples(request):
     q = request.GET.get('term', '')

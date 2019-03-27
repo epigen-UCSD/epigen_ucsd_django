@@ -18,7 +18,7 @@ from setqc_app.models import LibrariesSetQC
 
 def main():
     # for example: python updateLibrariesSetQC.py -s '0' -id 'Set_168'
-    #python updateLibrariesSetQC.py -url '' -v '' -id 'Set_168'
+    # python updateLibrariesSetQC.py -url '' -v '' -id 'Set_168'
     statuscode = {'-1': 'ClickToSubmit', '0': 'JobSubmitted',
                   '1': 'ProcessingLibs', '2': 'RunSetQC', '3': 'Done', '4': 'Warning'}
     parser = argparse.ArgumentParser()
@@ -27,7 +27,7 @@ def main():
     parser.add_argument('-id', help='Set_ID')
     parser.add_argument('-url', help='url of report')
     parser.add_argument('-v', help='version of runsetqc script')
-    
+
     thissetid = parser.parse_args().id
     thisstatus = ''
     thisurl = ''
@@ -39,7 +39,7 @@ def main():
         thisversion = parser.parse_args().v
     except:
         pass
-    
+
     # would not update 'Last Modified' column in this way
     # LibrariesSetQC.objects.filter(setID=thissetid).update(status=statuscode[thisstatus])
     obj = LibrariesSetQC.objects.get(set_id=thissetid)
