@@ -275,8 +275,8 @@ def RunCreateView6(request):
 
                 tosave_list.append(tosave_sample)
 
-            # hand bulk barcodes
-            if runinfo.experiment_type in ["BK", "TA"] and samples != '\r' and samples_info[0] != 'Sequencing_ID':
+            # handle bulk barcodes
+            if runinfo.experiment_type != 'S2' and samples != '\r' and samples_info[0] != 'Sequencing_ID':
                 try:
                     if samples_info[1] and samples_info[2]:
                         tosave_sample = LibrariesInRun(

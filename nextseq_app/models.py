@@ -12,7 +12,8 @@ class Barcode(models.Model):
     indexid = models.CharField(max_length=200, unique=True)
     indexseq = models.CharField(max_length=200)
     kit_choice = (('BK', 'bulk'), ('S2', 'snATAC_v2'),
-                  ('TA', '10xATAC'), ('TR', '10xRNA'))
+                  ('TA', '10xATAC'), ('TR', '10xRNA'),
+                  ('BT', 'bulk_10xATAC'))
     kit = models.CharField(
         max_length=2, choices=kit_choice, default='BK', help_text='bulk (default), snATAC_v2:combinatory barcode v2, 10xATAC, 10xRNAseq')
 
@@ -32,7 +33,7 @@ class RunInfo(models.Model):
                             help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03', blank=True, null=True)
     read_type_choice = (('SE', 'Single-end'), ('PE', 'Paired-end'))
     exp_type_choice = (('BK', 'bulk'), ('S2', 'snATAC_v2'),
-                       ('TA', '10xATAC'), ('TR', '10xRNA'), ('BK:TA', 'bulk_10xATAC'))
+                       ('TA', '10xATAC'), ('TR', '10xRNA'), ('BT', 'bulk_10xATAC'))
     read_type = models.CharField(
         max_length=2, choices=read_type_choice, default='PE', help_text='default:PE')
     experiment_type = models.CharField(max_length=2, choices=exp_type_choice,
@@ -44,7 +45,7 @@ class RunInfo(models.Model):
         max_length=50, help_text='Bulk: one number(eg. 75); Single-cell: R1+I1+I2+R2 (eg:50+8+16+50)')
     updated_at = models.DateTimeField(auto_now=True)
     nextseqdir = models.CharField(max_length=200, blank=True, null=True)
-    #machine = models.ForeignKey('masterseq_app.SeqMachineInfo', on_delete=models.CASCADE, null=True)
+    # machine = models.ForeignKey('masterseq_app.SeqMachineInfo', on_delete=models.CASCADE, null=True)
     machine = models.CharField(
         max_length=50, choices=choice_for_machine, default='EPIGEN_NextSeq550', null=True)
     jobstatus = models.CharField(
