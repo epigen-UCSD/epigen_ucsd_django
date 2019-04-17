@@ -5,6 +5,7 @@
   {% endblock %}
 
 {% block sidebar %}
+{% load static %}
 <div id="sidebar" class="col-sm-2 col-md-2 col-lg-2" role="navigation">
   <div class="list-group navsiebar">
     <li class="sidebar-header">SeqManager App</li>
@@ -14,7 +15,24 @@
     <a href="{% url 'nextseq_app:allruns' %}" class="list-group-item list-group-item-action-custom">All Runs</a>      
     <a href="{% url 'nextseq_app:allsamples' %}" class="list-group-item list-group-item-action-custom" >All Libraries</a>
   </div>
+  <br>
+<div>
+<a class="list-group-item-action-custom-hide" data-toggle="collapse" href="#collapsecalendar" aria-expanded="false"><img src="{% static 'images/icons8-calendar-512.png' %}"  alt="Machine Scheduler" width="30" height="30"/><span>NextSeq/Sony Sorter</span></a>
+</div>
+  <div class="list-group navsiebar collapse" id="collapsecalendar">
+    <br>
+  <div class="googleCalendar">
+    <iframe src="https://calendar.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffcc33&amp;src=n8ovlcimmbn0acoc44li7bc0u8%40group.calendar.google.com&amp;color=%237A367A&amp;ctz=America%2FLos_Angeles" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+  </div>
+  <br>
+  <div class="googleCalendar">
+    <iframe src="https://calendar.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;mode=AGENDA&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffcc33&amp;src=65nstmgo42luajull3n3ajte60%40group.calendar.google.com&amp;color=%237A367A&amp;ctz=America%2FLos_Angeles" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+  </div>
+</div>
+
+
 </div> 
+
 {% endblock %}
 
 {% block content %}
