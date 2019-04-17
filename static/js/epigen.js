@@ -544,6 +544,15 @@ $(document).ready( function () {
       
     //   console.log(e)
     // });
+    // $('#calendar-trigger').on('click',function(e) {
+    //     e.preventDefault();
+    //     $( "#collapsecalendar").collapse('show');
+    //     $( "#calendar-trigger" ).hide();
+    // });      
+
+    // $('#collapsecalendar').on('hide.bs.collapse', function() {
+    //     $("#calendar-trigger" ).show();
+    // });
 
     $( "#id_date" ).datepicker();
     $( "#id_date_requested" ).datepicker();

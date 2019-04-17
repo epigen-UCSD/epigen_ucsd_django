@@ -141,6 +141,24 @@ div.detailnotes {
 .bgyellow {
   background-color: rgba(246,190,0, 0.2);
 }
+.rpadding-2 {
+  padding-right: 20px;
+
+}
+.collapse.width {
+    height: auto;
+    -webkit-transition: width 0.35s ease;
+    -moz-transition: width 0.35s ease;
+    -o-transition: width 0.35s ease;
+    transition: width 0.35s ease;
+}
+.tool_bar {
+  color:#00B5E2;
+
+  float:left;
+  left: 500px;
+}
+
 .btn-status-orange {
   background-color: #FF6A39;
   font-size: 12px;
@@ -299,7 +317,17 @@ a[aria-expanded=false] .fa-caret-down {
     text-transform: uppercase;
 
 }
-
+.list-group-item-action-custom-hide {
+  padding:4px;
+  color: #428bca;
+  background-color: white;
+  font-size:10px;
+}
+.list-group-item-action-custom-hide:hover,.list-group-item-action-hide:focus{
+  color: #00B5E2;
+  text-decoration: none;
+  background-color: #f8f9fa;
+}
 
 .list-group-item-action-custom {
   color: #428bca;
@@ -510,16 +538,6 @@ a[aria-expanded=false] .fa-caret-down {
   margin-left: 16px;
   border-style: hidden;
 }
-
-
-
-
-
-
-
-
-
-
 
 
 .navsiebar > .list-group-item[aria-expanded="true"]{

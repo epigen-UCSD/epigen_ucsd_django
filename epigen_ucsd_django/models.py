@@ -24,3 +24,4 @@ class Person_Index(models.Model):
 	person = models.ForeignKey(CollaboratorPersonInfo, on_delete=models.CASCADE)
 	class Meta:
 		unique_together = ('index_name','person')
+		

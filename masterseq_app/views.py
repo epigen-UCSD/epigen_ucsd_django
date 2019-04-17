@@ -10,9 +10,10 @@ choice_for_unit,choice_for_sample_type
 from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
-from django.http import JsonResponse
+from django.http import HttpResponse,JsonResponse
 from django.db.models import Q
 from epigen_ucsd_django.models import CollaboratorPersonInfo
+import xlwt
 # Create your views here.
 # @transaction.atomic
 # def SampleCreateView(request):
@@ -976,3 +977,36 @@ def load_libs(request):
         libsearch['value'] = lib['library_id']
         results.append(libsearch)
     return JsonResponse(results, safe=False)
+
+def SaveMyMetaDataExcel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="MyMetaData.xls"'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Samples')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    columns = ['Date','Group','PI','Research contact name','Research contact e-mail',\
+    'Research contact phone','Fiscal contact name','Fiscal conact e-mail','Index for payment',\
+    'Sample ID','Sample description','Species','Sample type','Preperation',\
+    'Fixation?','Sample amount','Units','Service requested','Sequencing depth to target',\
+    'Sequencing length requested','Sequencing type requested', 'Notes','Sample Index',\
+    'Date sample received','team member','Storage location'] 
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+    font_style = xlwt.XFStyle()
+    Samples_list = SampleInfo.objects.all().select_related('research_person__person_id','group','team_member',\
+        'fiscal_person_Index__person__person_id').values_list('date','group__name',\
+        'research_person__person_id__last_name','research_person__person_id__first_name',\
+        )
+    print(list(Samples_list))
+    print(len(Samples_list))
+    rows = User.objects.all().values_list('username', 'first_name', 'last_name', 'email')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+    wb.save(response)
+    return response
+
+
