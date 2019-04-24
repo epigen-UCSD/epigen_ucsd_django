@@ -14,6 +14,7 @@ from django.http import HttpResponse,JsonResponse
 from django.db.models import Q
 from epigen_ucsd_django.models import CollaboratorPersonInfo
 import xlwt
+from django.db.models import Prefetch
 # Create your views here.
 # @transaction.atomic
 # def SampleCreateView(request):
@@ -983,7 +984,7 @@ def SaveMyMetaDataExcel(request):
     response['Content-Disposition'] = 'attachment; filename="MyMetaData.xls"'
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('Samples')
-    row_num = 0
+    row_num = 0 
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
     columns = ['Date','Group','PI','Research contact name','Research contact e-mail',\
@@ -991,22 +992,190 @@ def SaveMyMetaDataExcel(request):
     'Sample ID','Sample description','Species','Sample type','Preperation',\
     'Fixation?','Sample amount','Units','Service requested','Sequencing depth to target',\
     'Sequencing length requested','Sequencing type requested', 'Notes','Sample Index',\
-    'Date sample received','team member','Storage location'] 
+    'Date sample received','team member','Storage location','status'] 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
-    font_style = xlwt.XFStyle()
-    Samples_list = SampleInfo.objects.all().select_related('research_person__person_id','group','team_member',\
+    Samples_list = SampleInfo.objects.filter(team_member=request.user).order_by('pk').select_related('research_person__person_id','group','team_member',\
         'fiscal_person_Index__person__person_id').values_list('date','group__name',\
-        'research_person__person_id__last_name','research_person__person_id__first_name',\
+        'research_person__person_id__first_name','research_person__person_id__last_name',\
+        'research_person__person_id__email','research_person__cell_phone',
+        'fiscal_person_Index__person__person_id__first_name','fiscal_person_Index__person__person_id__last_name',\
+        'fiscal_person_Index__person__person_id__email',\
+        'fiscal_person_Index__index_name','sample_id','description','species','sample_type',\
+        'preparation','fixation','sample_amount','unit','service_requested','seq_depth_to_target',\
+        'seq_length_requested','seq_type_requested','notes','sample_index','date_received',\
+        'team_member__username','storage','status'
         )
-    print(list(Samples_list))
-    print(len(Samples_list))
-    rows = User.objects.all().values_list('username', 'first_name', 'last_name', 'email')
+    #print(list(Samples_list))
+    #print(len(Samples_list))
+    rows = Samples_list
+    font_style = xlwt.XFStyle()
+    #rows = User.objects.all().values_list('username', 'first_name', 'last_name', 'email')
+    for row in rows:
+        row_num += 1
+        for col_num in range(0,2):
+            ws.write(row_num, col_num, str((row[col_num] or '')), font_style)
+        ws.write(row_num, 2, '', font_style)
+        ws.write(row_num, 3, (row[2] or '')+' '+(row[3] or ''), font_style)
+        for col_num in range(4,6):
+            ws.write(row_num, col_num, (row[col_num] or ''), font_style)
+        ws.write(row_num, 6, (row[6] or '')+' '+(row[7] or ''), font_style)
+        for col_num in range(7,len(row)-1):
+            ws.write(row_num, col_num, str((row[col_num+1] or '')), font_style)
+    wl = wb.add_sheet('Libraries')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    columns = ['Sample Index','Sample id','team member','date_started','date_completed',\
+    'experiment_type','protocal used','reference_to_notebook_and_page_number','library_id',
+    'notes','experiment_index'] 
+    for col_num in range(len(columns)):
+        wl.write(row_num, col_num, columns[col_num], font_style)
+    Libraries_list = LibraryInfo.objects.filter(team_member_initails=request.user).order_by('pk').select_related('protocalinfo',\
+        'team_member_initails','sampleinfo').values_list('sampleinfo__sample_index',\
+        'sampleinfo__sample_id','team_member_initails__username','date_started',\
+        'date_completed','experiment_type','protocalinfo__protocal_name',\
+        'reference_to_notebook_and_page_number','library_id','notes','experiment_index')
+    #print(list(Libraries_list))
+    #print(len(Libraries_list))
+    rows = Libraries_list
+    font_style = xlwt.XFStyle()
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):
-            ws.write(row_num, col_num, row[col_num], font_style)
+            wl.write(row_num, col_num, str((row[col_num] or '')), font_style)
+
+    we = wb.add_sheet('Sequencings')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    columns = ['Sample Index','Sample id','Label','Species','Experiment Index',\
+    'Team Member','date_submitted_for_sequencing','library_id','seq_id','experiment_type',\
+    'sequencing_core','machine','read_length','read_type','portion_of_lane',\
+    'i7index','i5index','notes','pipeline_version','Genome','total_reads',\
+    'final_reads','final_yield','mito_frac','tss_enrichment','frop'] 
+    for col_num in range(len(columns)):
+        we.write(row_num, col_num, columns[col_num], font_style)
+    Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user).order_by('pk').select_related('libraryinfo',\
+        'libraryinfo__sampleinfo','team_member_initails','machine','i7index','i5index').\
+    prefetch_related(Prefetch('seqbioinfo_set__genome')).values_list(\
+        'libraryinfo__sampleinfo__sample_index','libraryinfo__sampleinfo__sample_id',\
+        'default_label','libraryinfo__sampleinfo__species','libraryinfo__experiment_index',\
+        'team_member_initails__username','date_submitted_for_sequencing',\
+        'libraryinfo__library_id','seq_id','libraryinfo__experiment_type',\
+        'machine__sequencing_core','machine__machine_name','read_length','read_type',\
+        'portion_of_lane','i7index__indexid','i5index__indexid','notes',\
+        'seqbioinfo__pipeline_version','seqbioinfo__genome__genome_name',\
+        'total_reads','seqbioinfo__final_reads','seqbioinfo__final_yield',\
+        'seqbioinfo__mito_frac','seqbioinfo__tss_enrichment','seqbioinfo__frop')
+    #print(list(Seqs_list))
+    #print(len(Seqs_list))
+    rows = Seqs_list
+    font_style = xlwt.XFStyle()
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            we.write(row_num, col_num, str((row[col_num] or '')), font_style)
     wb.save(response)
     return response
 
+def SaveAllMetaDataExcel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="AllMetaData.xls"'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Samples')
+    row_num = 0 
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    columns = ['Date','Group','PI','Research contact name','Research contact e-mail',\
+    'Research contact phone','Fiscal contact name','Fiscal conact e-mail','Index for payment',\
+    'Sample ID','Sample description','Species','Sample type','Preperation',\
+    'Fixation?','Sample amount','Units','Service requested','Sequencing depth to target',\
+    'Sequencing length requested','Sequencing type requested', 'Notes','Sample Index',\
+    'Date sample received','team member','Storage location','status'] 
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+    Samples_list = SampleInfo.objects.all().order_by('pk').select_related('research_person__person_id','group','team_member',\
+        'fiscal_person_Index__person__person_id').values_list('date','group__name',\
+        'research_person__person_id__first_name','research_person__person_id__last_name',\
+        'research_person__person_id__email','research_person__cell_phone',
+        'fiscal_person_Index__person__person_id__first_name','fiscal_person_Index__person__person_id__last_name',\
+        'fiscal_person_Index__person__person_id__email',\
+        'fiscal_person_Index__index_name','sample_id','description','species','sample_type',\
+        'preparation','fixation','sample_amount','unit','service_requested','seq_depth_to_target',\
+        'seq_length_requested','seq_type_requested','notes','sample_index','date_received',\
+        'team_member__username','storage','status'
+        )
+    #print(list(Samples_list))
+    #print(len(Samples_list))
+    rows = Samples_list
+    font_style = xlwt.XFStyle()
+    #rows = User.objects.all().values_list('username', 'first_name', 'last_name', 'email')
+    for row in rows:
+        row_num += 1
+        for col_num in range(0,2):
+            ws.write(row_num, col_num, str((row[col_num] or '')), font_style)
+        ws.write(row_num, 2, '', font_style)
+        ws.write(row_num, 3, (row[2] or '')+' '+(row[3] or ''), font_style)
+        for col_num in range(4,6):
+            ws.write(row_num, col_num, (row[col_num] or ''), font_style)
+        ws.write(row_num, 6, (row[6] or '')+' '+(row[7] or ''), font_style)
+        for col_num in range(7,len(row)-1):
+            ws.write(row_num, col_num, str((row[col_num+1] or '')), font_style)
+    wl = wb.add_sheet('Libraries')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    columns = ['Sample Index','Sample id','team member','date_started','date_completed',\
+    'experiment_type','protocal used','reference_to_notebook_and_page_number','library_id',
+    'notes','experiment_index'] 
+    for col_num in range(len(columns)):
+        wl.write(row_num, col_num, columns[col_num], font_style)
+    Libraries_list = LibraryInfo.objects.all().order_by('pk').select_related('protocalinfo',\
+        'team_member_initails','sampleinfo').values_list('sampleinfo__sample_index',\
+        'sampleinfo__sample_id','team_member_initails__username','date_started',\
+        'date_completed','experiment_type','protocalinfo__protocal_name',\
+        'reference_to_notebook_and_page_number','library_id','notes','experiment_index')
+    #print(list(Libraries_list))
+    #print(len(Libraries_list))
+    rows = Libraries_list
+    font_style = xlwt.XFStyle()
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            wl.write(row_num, col_num, str((row[col_num] or '')), font_style)
+
+    we = wb.add_sheet('Sequencings')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    columns = ['Sample Index','Sample id','Label','Species','Experiment Index',\
+    'Team Member','date_submitted_for_sequencing','library_id','seq_id','experiment_type',\
+    'sequencing_core','machine','read_length','read_type','portion_of_lane',\
+    'i7index','i5index','notes','pipeline_version','Genome','total_reads',\
+    'final_reads','final_yield','mito_frac','tss_enrichment','frop'] 
+    for col_num in range(len(columns)):
+        we.write(row_num, col_num, columns[col_num], font_style)
+    Seqs_list = SeqInfo.objects.all().order_by('pk').select_related('libraryinfo',\
+        'libraryinfo__sampleinfo','team_member_initails','machine','i7index','i5index').\
+    prefetch_related(Prefetch('seqbioinfo_set__genome')).values_list(\
+        'libraryinfo__sampleinfo__sample_index','libraryinfo__sampleinfo__sample_id',\
+        'default_label','libraryinfo__sampleinfo__species','libraryinfo__experiment_index',\
+        'team_member_initails__username','date_submitted_for_sequencing',\
+        'libraryinfo__library_id','seq_id','libraryinfo__experiment_type',\
+        'machine__sequencing_core','machine__machine_name','read_length','read_type',\
+        'portion_of_lane','i7index__indexid','i5index__indexid','notes',\
+        'seqbioinfo__pipeline_version','seqbioinfo__genome__genome_name',\
+        'total_reads','seqbioinfo__final_reads','seqbioinfo__final_yield',\
+        'seqbioinfo__mito_frac','seqbioinfo__tss_enrichment','seqbioinfo__frop')
+    #print(list(Seqs_list))
+    #print(len(Seqs_list))
+    rows = Seqs_list
+    font_style = xlwt.XFStyle()
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            we.write(row_num, col_num, str((row[col_num] or '')), font_style)
+    wb.save(response)
+    return response
 

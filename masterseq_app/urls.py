@@ -35,5 +35,6 @@ urlpatterns = [
     #path('seqs/adds/confirm', views.SeqsCreateConfirmView, name='seqs_add_confirm'),
     #path('ajaxtest/', TemplateView.as_view(template_name="masterseq_app/ajaxtest.html"), name='ajaxtest'),
     path('savemymetadatatoexcel/', views.SaveMyMetaDataExcel, name='user_metadata_save_excel'),
+    path('saveallmetadatatoexcel/', views.SaveAllMetaDataExcel, name='all_metadata_save_excel'),
 
 ]
