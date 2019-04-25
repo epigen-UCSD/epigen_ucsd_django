@@ -656,7 +656,9 @@ def LibDataView(request):
 def SeqDataView(request):
     Seqs_list = SeqInfo.objects.all().select_related('libraryinfo__sampleinfo__group').values(
         'pk', 'seq_id', 'libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
-        'libraryinfo__sampleinfo__description', 'libraryinfo__sampleinfo__group__name', 'date_submitted_for_sequencing', 'read_length', 'read_type')
+        'libraryinfo__sampleinfo__description', 'libraryinfo__sampleinfo__group__name', \
+        'date_submitted_for_sequencing','machine__sequencing_core',\
+        'machine__machine_name','portion_of_lane','read_length', 'read_type')
     data = list(Seqs_list)
 
     return JsonResponse(data, safe=False)
@@ -688,10 +690,11 @@ def UserLibDataView(request):
 
 def UserSeqDataView(request):
     Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user)\
-        .select_related('libraryinfo__sampleinfo__group').values(
+        .select_related('libraryinfo__sampleinfo__group','machine').values(
         'pk', 'seq_id', 'libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
         'libraryinfo__sampleinfo__description', 'libraryinfo__sampleinfo__group__name',
-        'date_submitted_for_sequencing', 'read_length', 'read_type')
+        'date_submitted_for_sequencing','machine__sequencing_core',\
+        'machine__machine_name','portion_of_lane','read_length', 'read_type')
     data = list(Seqs_list)
 
     return JsonResponse(data, safe=False)

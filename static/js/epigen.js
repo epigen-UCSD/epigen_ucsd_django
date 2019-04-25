@@ -419,6 +419,9 @@ $(document).ready( function () {
             { "data": "libraryinfo__sampleinfo__description"},
             { "data": "libraryinfo__sampleinfo__group__name"},
             { "data": "date_submitted_for_sequencing"},
+            { "data": "machine__sequencing_core"},
+            { "data": "machine__machine_name"},
+            { "data": "portion_of_lane"},
             { "data": "read_length"},
             { "data": "read_type"},
             
@@ -440,7 +443,17 @@ $(document).ready( function () {
             return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
         }
     },
-
+    {
+        "targets": 5,
+        "render": function ( data, type, row ) { 
+            if(row["machine__sequencing_core"]==null){
+                return ''
+            }
+            else{
+                return row["machine__sequencing_core"]+'_'+row["machine__machine_name"];
+            }           
+        }
+    },
     ], 
     });
 
@@ -472,6 +485,8 @@ $(document).ready( function () {
             { "data": "libraryinfo__sampleinfo__description"},
             { "data": "libraryinfo__sampleinfo__group__name"},
             { "data": "date_submitted_for_sequencing"},
+            { "data": "machine__sequencing_core"},
+            { "data": "portion_of_lane"},
             { "data": "read_length"},
             { "data": "read_type"},
             { "data": null, defaultContent: ""},
@@ -494,9 +509,19 @@ $(document).ready( function () {
             return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
         }
     },
-
     {
-        "targets": 7,
+        "targets": 5,
+        "render": function ( data, type, row ) { 
+            if(row["machine__sequencing_core"]==null){
+                return ''
+            }
+            else{
+                return row["machine__sequencing_core"]+'_'+row["machine__machine_name"];
+            }           
+        }
+    },
+    {
+        "targets": 9,
         "render": function ( data, type, row ) {
             var itemID = row["pk"];                   
             return '<a class="spacing" href="/metadata/seq/'+itemID+'/update/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete sequencing '+row["seq_id"]+'?\');" href="/metadata/seq/'+itemID+'/delete/"><i class="fas fa-trash-alt"></i></a>';
