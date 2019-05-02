@@ -21,7 +21,7 @@ class CollaboratorPersonInfo(models.Model):
 
 class Person_Index(models.Model):
 	index_name = models.CharField(max_length=200,blank=True,null=True)
-	person = models.ForeignKey(CollaboratorPersonInfo, on_delete=models.CASCADE)
+	person = models.ForeignKey(CollaboratorPersonInfo, on_delete=models.CASCADE,blank=True,null=True)
 	class Meta:
 		unique_together = ('index_name','person')
 		
