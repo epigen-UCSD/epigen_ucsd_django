@@ -69,6 +69,7 @@ class LibrariesInRun(models.Model):
     i5index = models.ForeignKey(Barcode, related_name='i5_index',
                                 on_delete=models.CASCADE, blank=True, null=True)
     numberofreads = models.IntegerField(blank=True, null=True)
+    lane = models.CharField(max_length=20,blank=True, null=True)
 
     def __str__(self):
         return self.Library_ID
