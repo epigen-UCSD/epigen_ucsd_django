@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for fis in fiscalindex %}
+<option value="{{ fis.pk }}">{{fis.person.person_id.first_name}}&nbsp;{{fis.person.person_id.last_name}}__{{ fis.person.person_id.email }}__{{fis.index_name}}</option>
+{% endfor %}

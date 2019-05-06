@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for res in researchcontact %}
+<option value="{{ res.pk }}">{{res.person_id.first_name}}&nbsp;{{res.person_id.last_name}}__{{ res.person_id.email }}__{{res.cell_phone}}</option>
+{% endfor %}

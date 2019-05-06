@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm, LibraryCreationForm, SeqCreationForm,\
-    SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm
+    SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm,\
+    SamplesCollabsCreateForm
 from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
 SeqMachineInfo, SeqBioInfo,choice_for_preparation,choice_for_fixation,\
 choice_for_unit,choice_for_sample_type
@@ -12,7 +13,7 @@ from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
 from django.http import HttpResponse,JsonResponse
 from django.db.models import Q
-from epigen_ucsd_django.models import CollaboratorPersonInfo
+from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index
 import xlwt
 from django.db.models import Prefetch
 # Create your views here.
@@ -1179,3 +1180,39 @@ def SaveAllMetaDataExcel(request):
     wb.save(response)
     return response
 
+@transaction.atomic
+def SamplesCollabsCreateView(request):
+    samplescollabs_form = SamplesCollabsCreateForm(request.POST or None)
+    
+    if samplescollabs_form.is_valid():
+        samplesinfo = samplescollabs_form.cleaned_data['samplesinfo']
+        res = samplescollabs_form.cleaned_data['research_contact']
+        fis = samplescollabs_form.cleaned_data['fiscal_person_index']
+        gname = samplescollabs_form.cleaned_data['group']
+        for sam in samplesinfo.split('\n'):
+            sam = sam.strip()
+            saminfo = SampleInfo.objects.get(sample_id=sam)
+            saminfo.research_person = res
+            saminfo.fiscal_person_index = fis
+            saminfo.group = Group.objects.get(name=gname)
+            saminfo.save()
+        return redirect('masterseq_app:index')
+
+    context = {
+        'samplescollabs_form':samplescollabs_form,
+    }
+    return render(request, 'masterseq_app/samplescollabsadd.html', context=context)
+
+def load_researchcontact(request):
+    groupname = request.GET.get('group')
+    researchcontact = CollaboratorPersonInfo.objects.\
+    filter(person_id__groups__name__in=[groupname]).prefetch_related(Prefetch('person_id__groups'))
+    return render(request, 'masterseq_app/researchcontact_dropdown_list_options.html', {'researchcontact': researchcontact})
+      
+def load_fiscalindex(request):
+    groupname = request.GET.get('group')
+    queryset = User.objects.filter(groups__name__in=[groupname])
+    fiscalindex = Person_Index.objects.\
+    filter(person__person_id__groups__name__in=[groupname]).prefetch_related(Prefetch('person__person_id__groups'))
+    return render(request, 'masterseq_app/fiscalindex_dropdown_list_options.html', {'fiscalindex': fiscalindex})
+ 

@@ -3,12 +3,14 @@ from .models import SampleInfo, LibraryInfo, SeqMachineInfo, SeqInfo,\
     choice_for_read_type, choice_for_species, choice_for_sample_type,\
     choice_for_preparation, choice_for_experiment_type, choice_for_unit,\
     choice_for_fixation
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 import datetime
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform, SelfUniqueValidation
 from django.shortcuts import get_object_or_404
 from django.utils.safestring import mark_safe
+from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index
+from django.db.models import Prefetch
 
 
 class SampleCreationForm(forms.ModelForm):
@@ -568,3 +570,68 @@ class SeqsCreationForm(forms.Form):
                 'Duplicate Sample Name within this bulk entry:'+','.join(sampselfduplicate))
 
         return '\n'.join(cleaneddata)
+
+
+class SamplesCollabsCreateForm(forms.Form):
+    samplesinfo = forms.CharField(
+        label='Samples:',
+        widget=forms.Textarea(attrs={'cols': 30, 'rows': 10}),
+        initial='Please input sample name:\n\n'
+    )
+    group = forms.CharField(\
+        label='Group Name',
+        widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
+        )
+    research_contact = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
+        required=False)
+    fiscal_person_index = forms.ModelChoiceField(queryset=Person_Index.objects.all(),required=False)
+ 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.none()
+        self.fields['fiscal_person_index'].queryset = Person_Index.objects.none() 
+        if 'group' in self.data:
+            try:
+                gname = self.data.get('group')
+                self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.\
+                filter(person_id__groups__name__in=[gname]).\
+                prefetch_related(Prefetch('person_id__groups'))
+                self.fields['research_contact'].label_from_instance = \
+                lambda obj: "%s %s__%s__%s" % (obj.person_id.first_name, \
+                    obj.person_id.last_name,obj.person_id.email,obj.cell_phone)
+
+                self.fields['fiscal_person_index'].queryset = Person_Index.objects.\
+                filter(person__person_id__groups__name__in=[gname]).\
+                prefetch_related(Prefetch('person__person_id__groups'))
+                self.fields['fiscal_person_index'].label_from_instance = \
+                lambda obj: "%s %s__%s__%s" % (obj.person.person_id.first_name, \
+                    obj.person.person_id.last_name,obj.person.person_id.email,\
+                    obj.index_name)
+            
+            except (ValueError, TypeError):
+                pass 
+
+    def clean_samplesinfo(self):
+        data = self.cleaned_data['samplesinfo']
+        cleadata = []
+        invalidsamplist = []
+        flagsamp = 0
+        for lineitem in data.strip().split('\n'):
+            if not lineitem.startswith('Please input') and lineitem != '\r':
+                cleadata.append(lineitem)
+                sampid = lineitem.strip()
+                if not SampleInfo.objects.filter(sample_id=sampid).exists():
+                    invalidsamplist.append(sampid)
+                    flagsamp = 1
+
+        if flagsamp == 1:
+            raise forms.ValidationError(
+                'Invalid Sample Name:'+','.join(invalidsamplist))
+        return '\n'.join(cleadata)
+
+    def clean_group(self):
+        gname = self.cleaned_data['group']
+        if not Group.objects.filter(name=gname).exists():
+            raise forms.ValidationError('Invalid Group Name!')
+        return gname
+
