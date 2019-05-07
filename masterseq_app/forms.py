@@ -14,18 +14,50 @@ from django.db.models import Prefetch
 
 
 class SampleCreationForm(forms.ModelForm):
+    group = forms.CharField(\
+        label='Group Name',
+        widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
+        )
+    research_person = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
+        required=False,widget=forms.Select(attrs={'id':'id_research_contact'}))
+    fiscal_person_index = forms.ModelChoiceField(queryset=Person_Index.objects.all(),required=False)
 
 
-	class Meta:
-		model = SampleInfo
-		fields = ['sample_id','date','date_received','species','sample_type','preparation',\
-		'fixation','sample_amount','unit','storage','service_requested',\
-		'seq_depth_to_target','seq_length_requested','seq_type_requested','description','notes','status']
-		widgets ={
-			'date': forms.DateInput(),
-			'description':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
-			'notes':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
-		}
+    class Meta:
+        model = SampleInfo
+        fields = ['sample_id','date','date_received','group','research_person','fiscal_person_index','species','sample_type','preparation',\
+        'fixation','sample_amount','unit','storage','service_requested',\
+        'seq_depth_to_target','seq_length_requested','seq_type_requested','description','notes','status']
+        widgets ={
+            'date': forms.DateInput(),
+            'description':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
+            'notes':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.group:
+            self.initial['group'] = str(self.instance.group.name)
+            gname = str(self.instance.group.name)
+            self.fields['research_person'].queryset = CollaboratorPersonInfo.objects.\
+            filter(person_id__groups__name__in=[gname]).\
+            prefetch_related(Prefetch('person_id__groups'))
+            self.fields['research_person'].label_from_instance = \
+            lambda obj: "%s %s__%s__%s" % (obj.person_id.first_name, \
+                obj.person_id.last_name,obj.person_id.email,obj.cell_phone)
+
+            self.fields['fiscal_person_index'].queryset = Person_Index.objects.\
+            filter(person__person_id__groups__name__in=[gname]).\
+            prefetch_related(Prefetch('person__person_id__groups'))
+            self.fields['fiscal_person_index'].label_from_instance = \
+            lambda obj: "%s %s__%s__%s" % (obj.person.person_id.first_name, \
+                obj.person.person_id.last_name,obj.person.person_id.email,\
+                obj.index_name)
+    def clean_group(self):
+        gname = self.cleaned_data['group']
+        if not Group.objects.filter(name=gname).exists():
+            raise forms.ValidationError('Invalid Group Name!')
+        return Group.objects.get(name=gname)
 
 
 class LibraryCreationForm(forms.ModelForm):
@@ -635,3 +667,42 @@ class SamplesCollabsCreateForm(forms.Form):
             raise forms.ValidationError('Invalid Group Name!')
         return gname
 
+class SampleCollabsUpdateForm(forms.Form):
+    group = forms.CharField(\
+        label='Group Name',
+        widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
+        )
+    research_contact = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
+        required=False)
+    fiscal_person_index = forms.ModelChoiceField(queryset=Person_Index.objects.all(),required=False)
+ 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.none()
+        self.fields['fiscal_person_index'].queryset = Person_Index.objects.none() 
+        if 'group' in self.data:
+            try:
+                gname = self.data.get('group')
+                self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.\
+                filter(person_id__groups__name__in=[gname]).\
+                prefetch_related(Prefetch('person_id__groups'))
+                self.fields['research_contact'].label_from_instance = \
+                lambda obj: "%s %s__%s__%s" % (obj.person_id.first_name, \
+                    obj.person_id.last_name,obj.person_id.email,obj.cell_phone)
+
+                self.fields['fiscal_person_index'].queryset = Person_Index.objects.\
+                filter(person__person_id__groups__name__in=[gname]).\
+                prefetch_related(Prefetch('person__person_id__groups'))
+                self.fields['fiscal_person_index'].label_from_instance = \
+                lambda obj: "%s %s__%s__%s" % (obj.person.person_id.first_name, \
+                    obj.person.person_id.last_name,obj.person.person_id.email,\
+                    obj.index_name)
+            
+            except (ValueError, TypeError):
+                pass 
+
+    def clean_group(self):
+        gname = self.cleaned_data['group']
+        if not Group.objects.filter(name=gname).exists():
+            raise forms.ValidationError('Invalid Group Name!')
+        return gname
