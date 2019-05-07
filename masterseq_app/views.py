@@ -851,26 +851,23 @@ def SampleDetailView(request, pk):
         researchperson = ''
         researchperson_phone = ''
     try:
-        fiscalperson = sampleinfo.fiscal_person.person_id
-        fiscalperson_phone = sampleinfo.fiscal_person.cell_phone
-        index = sampleinfo.fiscal_person.fiscal_index
+        fiscalperson = sampleinfo.fiscal_person_index.person.person_id
+        fiscalperson_phone = sampleinfo.fiscal_person_index.person.cell_phone
+        index = sampleinfo.fiscal_person_index.index_name
     except:
         fiscalperson = ''
         fiscalperson_phone = ''
         index = ''
-    groupinfo = []
+    groupinfo = sampleinfo.group
     piname = []
-    piemail = []
-    if researchperson:
-        for group in researchperson.groups.all():
-            groupinfo.append(group.name)
-            for user in group.user_set.all():
-                for person in user.collaboratorpersoninfo_set.all():
-                    if 'PI' in person.role:
-                        piname.append(user.first_name + ' ' + user.last_name)
+ 
+    for user in groupinfo.user_set.all():
+        for person in user.collaboratorpersoninfo_set.all():
+            if 'PI' in person.role:
+                piname.append(user.first_name + ' ' + user.last_name)
 
     context = {
-        'groupinfo': ';'.join(groupinfo),
+        'groupinfo': groupinfo,
         'piname': ';'.join(piname),
         'researchperson': researchperson,
         'researchperson_phone': researchperson_phone,
