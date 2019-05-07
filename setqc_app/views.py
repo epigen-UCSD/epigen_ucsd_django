@@ -580,7 +580,7 @@ def RunSetQC(request, setqc_pk):
                          'Read Type','Sample Name','Species',\
                          'Experiment Type','Machine']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
-            setinfo.set_id + ' ' + request.user.email
+            setinfo.set_id + ' ' + request.user.email + ' ' + setinfo.set_name
     else:
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'],x['genome__genome_name'],\
             x['label'],seqstatus[x['seqinfo__seq_id']],x['seqinfo__read_type'],\
@@ -591,7 +591,7 @@ def RunSetQC(request, setqc_pk):
         featureheader = ['Library ID', 'Genome',
                          'Label', 'Processed Or Not', 'Read Type','Sample Name','Species',\
                          'Experiment Type','Machine']
-        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
+        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email + ' ' + setinfo.set_name
 
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
@@ -711,7 +711,7 @@ def RunSetQC2(request, setqc_pk):
                          'Read Type','Sample Name','Species',\
                          'Experiment Type','Machine']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
-            setinfo.set_id + ' ' + request.user.email
+            setinfo.set_id + ' ' + request.user.email + ' ' + setinfo.set_name
 
     else:
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'],x['genome__genome_name'],\
@@ -724,7 +724,7 @@ def RunSetQC2(request, setqc_pk):
                          'Label', 'Processed Or Not', 'Read Type','Sample Name','Species',\
                          'Experiment Type','Machine']
 
-        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
+        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email + ' ' + setinfo.set_name
 
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
