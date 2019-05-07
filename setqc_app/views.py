@@ -497,26 +497,26 @@ def RunSetQC(request, setqc_pk):
         raise PermissionDenied
     allfolder = [fname for fname in os.listdir(
         libdir) if os.path.isdir(os.path.join(libdir, fname))]
-    librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
-    list1tem = list(librariesset.values_list('seqinfo', flat=True))
-    list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x)
-             for x in list1tem]
-    list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
-        id=x) for x in list(librariesset.values_list('genome', flat=True))]
-    list5 = list(librariesset.values_list('label', flat=True))
-    list_readtype = [SeqInfo.objects.values_list(
-        'read_type', flat=True).get(id=x) for x in list1tem]
+    outinfo = list(LibraryInSet.objects.filter(librariesetqc=setinfo).\
+    select_related('seqinfo__libraryinfo__sampleinfo','seqinfo__machine','genome').\
+    values('seqinfo__seq_id','group_number','is_input','genome__genome_name',\
+        'label','seqinfo__read_type','seqinfo__libraryinfo__sampleinfo__sample_id',\
+        'seqinfo__libraryinfo__sampleinfo__species','seqinfo__libraryinfo__experiment_type',\
+        'seqinfo__machine__machine_name'))
+    
+    list1 = [x['seqinfo__seq_id'] for x in outinfo]
+    list_readtype = [x['seqinfo__read_type'] for x in outinfo]
 
-    seqstatus = []
+    seqstatus = {}
     i = 0
     for item in list1:
         if item not in allfolder:
-            seqstatus.append('No')
+            seqstatus[item]='No'
         else:
             if not os.path.isfile(os.path.join(libdir, item, '.finished.txt')):
-                seqstatus.append('No')
+                seqstatus[item]='No'
             else:
-                seqstatus.append('Yes')
+                seqstatus[item]='Yes'
 
         reps = ['1']
         reps = reps + item.split('_')[2:]
@@ -561,19 +561,30 @@ def RunSetQC(request, setqc_pk):
         i += 1
 
     if setinfo.experiment_type == 'ChIP-seq':
-        list2 = list(librariesset.values_list('group_number', flat=True))
-        list3 = list(librariesset.values_list('is_input', flat=True))
-        writecontent = '\n'.join(['\t'.join(map(str, x)) for x in zip(
-            list1, list2, list3, list4, list5, seqstatus, list_readtype)])
+        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'],x['group_number'],\
+            str(x['is_input']),x['genome__genome_name'],\
+            x['label'],seqstatus[x['seqinfo__seq_id']],x['seqinfo__read_type'],\
+            x['seqinfo__libraryinfo__sampleinfo__sample_id'],\
+            x['seqinfo__libraryinfo__sampleinfo__species'],\
+            x['seqinfo__libraryinfo__experiment_type'],\
+            x['seqinfo__machine__machine_name']]) for x in outinfo])
+
         featureheader = ['Library ID', 'Group ID',
-                         'Is Input', 'Genome', 'Label', 'Processed Or Not', 'Read Type']
+                         'Is Input', 'Genome', 'Label', 'Processed Or Not', \
+                         'Read Type','Sample Name','Species',\
+                         'Experiment Type','Machine']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
             setinfo.set_id + ' ' + request.user.email
     else:
-        writecontent = '\n'.join(['\t'.join(map(str, x))
-                                  for x in zip(list1, list4, list5, seqstatus, list_readtype)])
+        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'],x['genome__genome_name'],\
+            x['label'],seqstatus[x['seqinfo__seq_id']],x['seqinfo__read_type'],\
+            x['seqinfo__libraryinfo__sampleinfo__sample_id'],\
+            x['seqinfo__libraryinfo__sampleinfo__species'],\
+            x['seqinfo__libraryinfo__experiment_type'],\
+            x['seqinfo__machine__machine_name']]) for x in outinfo])
         featureheader = ['Library ID', 'Genome',
-                         'Label', 'Processed Or Not', 'Read Type']
+                         'Label', 'Processed Or Not', 'Read Type','Sample Name','Species',\
+                         'Experiment Type','Machine']
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
 
     # write Set_**.txt to setqcoutdir
@@ -611,40 +622,52 @@ def RunSetQC2(request, setqc_pk):
         raise PermissionDenied
     allfolder = [fname for fname in os.listdir(
         libdir) if os.path.isdir(os.path.join(libdir, fname))]
-    librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
-    list1tem = list(librariesset.values_list('seqinfo', flat=True))
-    list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x)
-             for x in list1tem]
-    list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
-        id=x) for x in list(librariesset.values_list('genome', flat=True))]
-    list5 = list(librariesset.values_list('label', flat=True))
-    list_readtype = [SeqInfo.objects.values_list(
-        'read_type', flat=True).get(id=x) for x in list1tem]
-
-    seqstatus = []
+    outinfo = list(LibraryInSet.objects.filter(librariesetqc=setinfo).\
+    select_related('seqinfo__libraryinfo__sampleinfo','seqinfo__machine','genome').\
+    values('seqinfo__seq_id','group_number','is_input','genome__genome_name',\
+        'label','seqinfo__read_type','seqinfo__libraryinfo__sampleinfo__sample_id',\
+        'seqinfo__libraryinfo__sampleinfo__species','seqinfo__libraryinfo__experiment_type',\
+        'seqinfo__machine__machine_name'))
+    
+    list1 = [x['seqinfo__seq_id'] for x in outinfo]
+    list_readtype = [x['seqinfo__read_type'] for x in outinfo]
+    seqstatus = {}
     for item in list1:
         if item not in allfolder:
-            seqstatus.append('No')
+            seqstatus[item]='No'
         else:
             if not os.path.isfile(os.path.join(libdir, item, '.finished.txt')):
-                seqstatus.append('No')
+                seqstatus[item]='No'
             else:
-                seqstatus.append('Yes')
+                seqstatus[item]='Yes'
     if setinfo.experiment_type == 'ChIP-seq':
 
-        list2 = list(librariesset.values_list('group_number', flat=True))
-        list3 = list(librariesset.values_list('is_input', flat=True))
-        writecontent = '\n'.join(['\t'.join(map(str, x)) for x in zip(
-            list1, list2, list3, list4, list5, seqstatus, list_readtype)])
+        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'],x['group_number'],\
+            str(x['is_input']),x['genome__genome_name'],\
+            x['label'],seqstatus[x['seqinfo__seq_id']],x['seqinfo__read_type'],\
+            x['seqinfo__libraryinfo__sampleinfo__sample_id'],\
+            x['seqinfo__libraryinfo__sampleinfo__species'],\
+            x['seqinfo__libraryinfo__experiment_type'],\
+            x['seqinfo__machine__machine_name']]) for x in outinfo])
+
         featureheader = ['Library ID', 'Group ID',
-                         'Is Input', 'Genome', 'Label', 'Processed Or Not', 'Read Type']
+                         'Is Input', 'Genome', 'Label', 'Processed Or Not', \
+                         'Read Type','Sample Name','Species',\
+                         'Experiment Type','Machine']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
             setinfo.set_id + ' ' + request.user.email
+
     else:
-        writecontent = '\n'.join(['\t'.join(map(str, x))
-                                  for x in zip(list1, list4, list5, seqstatus, list_readtype)])
+        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'],x['genome__genome_name'],\
+            x['label'],seqstatus[x['seqinfo__seq_id']],x['seqinfo__read_type'],\
+            x['seqinfo__libraryinfo__sampleinfo__sample_id'],\
+            x['seqinfo__libraryinfo__sampleinfo__species'],\
+            x['seqinfo__libraryinfo__experiment_type'],\
+            x['seqinfo__machine__machine_name']]) for x in outinfo])
         featureheader = ['Library ID', 'Genome',
-                         'Label', 'Processed Or Not', 'Read Type']
+                         'Label', 'Processed Or Not', 'Read Type','Sample Name','Species',\
+                         'Experiment Type','Machine']
+
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
 
     # write Set_**.txt to setqcoutdir
