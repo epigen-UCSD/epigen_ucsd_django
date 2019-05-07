@@ -994,12 +994,12 @@ def SaveMyMetaDataExcel(request):
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
     Samples_list = SampleInfo.objects.filter(team_member=request.user).order_by('pk').select_related('research_person__person_id','group','team_member',\
-        'fiscal_person_Index__person__person_id').values_list('date','group__name',\
+        'fiscal_person_index__person__person_id').values_list('date','group__name',\
         'research_person__person_id__first_name','research_person__person_id__last_name',\
         'research_person__person_id__email','research_person__cell_phone',
-        'fiscal_person_Index__person__person_id__first_name','fiscal_person_Index__person__person_id__last_name',\
-        'fiscal_person_Index__person__person_id__email',\
-        'fiscal_person_Index__index_name','sample_id','description','species','sample_type',\
+        'fiscal_person_index__person__person_id__first_name','fiscal_person_index__person__person_id__last_name',\
+        'fiscal_person_index__person__person_id__email',\
+        'fiscal_person_index__index_name','sample_id','description','species','sample_type',\
         'preparation','fixation','sample_amount','unit','service_requested','seq_depth_to_target',\
         'seq_length_requested','seq_type_requested','notes','sample_index','date_received',\
         'team_member__username','storage','status'
@@ -1094,12 +1094,12 @@ def SaveAllMetaDataExcel(request):
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
     Samples_list = SampleInfo.objects.all().order_by('pk').select_related('research_person__person_id','group','team_member',\
-        'fiscal_person_Index__person__person_id').values_list('date','group__name',\
+        'fiscal_person_index__person__person_id').values_list('date','group__name',\
         'research_person__person_id__first_name','research_person__person_id__last_name',\
         'research_person__person_id__email','research_person__cell_phone',
-        'fiscal_person_Index__person__person_id__first_name','fiscal_person_Index__person__person_id__last_name',\
-        'fiscal_person_Index__person__person_id__email',\
-        'fiscal_person_Index__index_name','sample_id','description','species','sample_type',\
+        'fiscal_person_index__person__person_id__first_name','fiscal_person_index__person__person_id__last_name',\
+        'fiscal_person_index__person__person_id__email',\
+        'fiscal_person_index__index_name','sample_id','description','species','sample_type',\
         'preparation','fixation','sample_amount','unit','service_requested','seq_depth_to_target',\
         'seq_length_requested','seq_type_requested','notes','sample_index','date_received',\
         'team_member__username','storage','status'
