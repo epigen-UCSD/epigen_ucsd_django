@@ -46,7 +46,7 @@ def main():
 			next(f)
 			for line in f:
 				fields = line.split('\t')
-				if fields[0] and fields[1] and fields[1] not in ['NA','N/A','Coriell','Joe Gleeson','Gorkin','David Gorkin']:
+				if fields[0] and fields[1] and fields[1] not in ['NA','N/A']:
 					sampindex = fields[21].strip()
 					if not sampindex in assignedsamp:
 						if not SampleInfo.objects.filter(sample_index=sampindex).exists():
@@ -63,7 +63,8 @@ def main():
 							if fields[1].strip() == 'Arima':
 								piname = 'Siddarth Selvaraj'
 							if fields[1].strip() == 'Pfizer':
-								piname = 'Thomas Paul'
+								piname = 'LSA'
+								fiscalname = 'Stephanie Shi'
 							if fields[1].strip() == 'Tempus':
 								piname = 'Kevin White'
 							if fields[1].strip() == 'CH_Pilot_Project':
