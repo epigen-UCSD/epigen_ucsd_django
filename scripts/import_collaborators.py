@@ -87,6 +87,7 @@ def main():
 									writeline.append('\t'.join([objgroup.name,nameparse[0],passwordrand,nameparse[1],nameparse[2]]))
 								else:
 									piaccount = User.objects.get(username=nameparse[0])
+									objgroup.user_set.add(piaccount)
 									piperson = CollaboratorPersonInfo.objects.get(person_id=piaccount)
 									piperson.role='PI'
 									piperson.fiscal_index=None
@@ -122,6 +123,7 @@ def main():
 										writeline.append('\t'.join([objgroup.name,nameparse[0],passwordrand,nameparse[1],nameparse[2]]))										
 									else:
 										researchaccount = User.objects.get(username=nameparse[0])
+										objgroup.user_set.add(researchaccount)
 										researchperson = CollaboratorPersonInfo.objects.get(person_id=researchaccount)
 										if researchname!=piname:
 											researchperson.role='other'
@@ -157,6 +159,7 @@ def main():
 										writeline.append('\t'.join([objgroup.name,nameparse[0],passwordrand,nameparse[1],nameparse[2]]))										
 									else:
 										fiscalaccount = User.objects.get(username=nameparse[0])
+										objgroup.user_set.add(fiscalaccount)
 										fiscalperson=CollaboratorPersonInfo.objects.get(person_id=fiscalaccount)
 										if fiscalname!=piname:
 											fiscalperson.role='other'
