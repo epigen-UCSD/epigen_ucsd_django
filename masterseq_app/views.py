@@ -861,10 +861,11 @@ def SampleDetailView(request, pk):
     groupinfo = sampleinfo.group
     piname = []
  
-    for user in groupinfo.user_set.all():
-        for person in user.collaboratorpersoninfo_set.all():
-            if 'PI' in person.role:
-                piname.append(user.first_name + ' ' + user.last_name)
+    if groupinfo:
+        for user in groupinfo.user_set.all():
+            for person in user.collaboratorpersoninfo_set.all():
+                if 'PI' in person.role:
+                    piname.append(user.first_name + ' ' + user.last_name)
 
     context = {
         'groupinfo': groupinfo,

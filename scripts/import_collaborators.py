@@ -46,7 +46,7 @@ def main():
 			next(f)
 			for line in f:
 				fields = line.split('\t')
-				if fields[0] and fields[1] and fields[1] not in ['NA','N/A']:
+				if fields[0] and fields[1] and fields[1] not in ['NA','N/A','Shikhar Sharma (Pfizer, La Jolla)']:
 					sampindex = fields[21].strip()
 					if not sampindex in assignedsamp:
 						if not SampleInfo.objects.filter(sample_index=sampindex).exists():
@@ -100,6 +100,10 @@ def main():
 										phone_tm = fields[4].strip()
 									else:
 										phone_tm = None
+									if fields[3].strip() not in ['NA','N/A']:
+										email_tm = fields[3].strip()
+									else:
+										email_tm = None
 									passwordrand = ''.join(secrets.choice(alphabet) for i in range(10))
 									if not User.objects.filter(username=nameparse[0]).exists():
 										researchaccount = User.objects.create_user(
@@ -124,8 +128,12 @@ def main():
 										else:
 											researchperson.role='PI'
 										researchperson.fiscal_index=None
-										researchperson.cell_phone=phone_tm
+										if phone_tm:
+											researchperson.cell_phone=phone_tm
+										if email_tm:
+											researchaccount.email=email_tm
 										researchperson.save()
+										researchaccount.save()
 										#writeline.append('\t'.join([objgroup.name,researchaccount.username,researchaccount.password,researchaccount.first_name,researchaccount.last_name]))
 									sampinfo.research_person = researchperson	
 		

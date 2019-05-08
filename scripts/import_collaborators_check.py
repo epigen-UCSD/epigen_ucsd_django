@@ -113,12 +113,13 @@ def main():
 								assignedsamp.append(sampindex)
 
 								if int(sampindex.split('-')[1])<830:
-									try:
-										Group.objects.get(name=group_name)
-									except:
-										print('Error in getting group:'+group_name+'!'+sampindex)
-										exit()
-									if pinameparse and piname not in ['','NA','N/A']:
+									if group_name!='David_Gorkin_group':
+										try:
+											Group.objects.get(name=group_name)
+										except:
+											print('Error in getting group:'+group_name+'!'+sampindex)
+											exit()
+									if pinameparse and piname not in ['','NA','N/A','David Gorkin']:
 										try:
 											User.objects.get(username=pinameparse[0],first_name=pinameparse[1],last_name=pinameparse[2])
 										except:
@@ -130,7 +131,7 @@ def main():
 										except:
 											print('Error in getting research user:'+researchname+'!'+sampindex)
 											exit()
-									if fisnameparse and fiscalname not in ['','NA','N/A']:
+									if fisnameparse and fiscalname not in ['','NA','N/A','Truc Dang']:
 										try:
 											User.objects.get(username=fisnameparse[0],first_name=fisnameparse[1],last_name=fisnameparse[2])
 										except:

@@ -37,7 +37,7 @@
                     <tbody>
                       <tr>
                         <th>Group:</th> 
-                        <td>{{ groupinfo }}</td>
+                        <td>{{ groupinfo|default_if_none:""}}</td>
                       </tr>
                       <tr>
                         <th>PI:</th> 
@@ -52,7 +52,7 @@
                         <td>{{ researchperson.email | default_if_none:""}}</td>
                       </tr>
                       <tr>
-                        <th>Research Contact cell phone:</th> 
+                        <th>Research Contact phone:</th> 
                         <td>{{ researchperson_phone | default_if_none:"" }}</td>
                       </tr>
                       <tr>
@@ -64,7 +64,7 @@
                         <td>{{ fiscalperson.email | default_if_none:""}}</td>
                       </tr>
                       <tr>
-                        <th>Fiscal Contact cell phone:</th> 
+                        <th>Fiscal Contact phone:</th> 
                         <td>{{ fiscalperson_phone | default_if_none:"" }}</td>
                       </tr>
                       <tr>

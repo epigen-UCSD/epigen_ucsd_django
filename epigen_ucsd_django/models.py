@@ -8,7 +8,7 @@ choice_for_roles = (
 
 class CollaboratorPersonInfo(models.Model):
 	person_id = models.ForeignKey(User, on_delete=models.CASCADE)
-	cell_phone = models.CharField(max_length=200,blank=True,null=True)
+	cell_phone = models.CharField('phone',max_length=200,blank=True,null=True)
 	fiscal_index = models.CharField(max_length=200,blank=True,null=True)
 	role_choice = choice_for_roles
 	role = models.CharField(max_length=200,choices=role_choice)
