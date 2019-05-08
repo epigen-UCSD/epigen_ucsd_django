@@ -497,13 +497,13 @@ def RunSetQC(request, setqc_pk):
         raise PermissionDenied
     allfolder = [fname for fname in os.listdir(
         libdir) if os.path.isdir(os.path.join(libdir, fname))]
-    outinfo = list(LibraryInSet.objects.filter(librariesetqc=setinfo).\
-    select_related('seqinfo__libraryinfo__sampleinfo','seqinfo__machine','genome').\
-    values('seqinfo__seq_id','group_number','is_input','genome__genome_name',\
-        'label','seqinfo__read_type','seqinfo__libraryinfo__sampleinfo__sample_id',\
-        'seqinfo__libraryinfo__sampleinfo__species','seqinfo__libraryinfo__experiment_type',\
-        'seqinfo__machine__machine_name'))
-    
+    outinfo = list(LibraryInSet.objects.filter(librariesetqc=setinfo).
+                   select_related('seqinfo__libraryinfo__sampleinfo', 'seqinfo__machine', 'genome').
+                   values('seqinfo__seq_id', 'group_number', 'is_input', 'genome__genome_name',
+                          'label', 'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__sample_id',
+                          'seqinfo__libraryinfo__sampleinfo__species', 'seqinfo__libraryinfo__experiment_type',
+                          'seqinfo__machine__machine_name'))
+
     list1 = [x['seqinfo__seq_id'] for x in outinfo]
     list_readtype = [x['seqinfo__read_type'] for x in outinfo]
 
@@ -511,18 +511,18 @@ def RunSetQC(request, setqc_pk):
     i = 0
     for item in list1:
         if item not in allfolder:
-            seqstatus[item]='No'
+            seqstatus[item] = 'No'
         else:
             if not os.path.isfile(os.path.join(libdir, item, '.finished.txt')):
-                seqstatus[item]='No'
+                seqstatus[item] = 'No'
             else:
-                seqstatus[item]='Yes'
+                seqstatus[item] = 'Yes'
 
         reps = ['1']
         reps = reps + item.split('_')[2:]
         mainname = '_'.join(item.split('_')[0:2])
 
-        if seqstatus[item]=='No':
+        if seqstatus[item] == 'No':
             if list_readtype[i] == 'PE':
                 r1 = item+'_R1.fastq.gz'
                 r2 = item+'_R2.fastq.gz'
@@ -531,7 +531,7 @@ def RunSetQC(request, setqc_pk):
                         if j == '1':
                             repname = mainname
                         else:
-                            repname = '_'.join([mainname, j])   
+                            repname = '_'.join([mainname, j])
 
                         r1 = repname+'_R1.fastq.gz'
                         r2 = repname+'_R2.fastq.gz'
@@ -542,7 +542,7 @@ def RunSetQC(request, setqc_pk):
                         except Exception as e:
                             data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
                             print(e)
-                            return JsonResponse(data)   
+                            return JsonResponse(data)
 
             elif list_readtype[i] == 'SE':
                 r1 = item+'.fastq.gz'
@@ -552,7 +552,7 @@ def RunSetQC(request, setqc_pk):
                         if j == '1':
                             repname = mainname
                         else:
-                            repname = '_'.join([mainname, j])   
+                            repname = '_'.join([mainname, j])
 
                         r1 = repname+'.fastq.gz'
                         r1op = repname+'_R1.fastq.gz'
@@ -567,31 +567,35 @@ def RunSetQC(request, setqc_pk):
         i += 1
 
     if setinfo.experiment_type == 'ChIP-seq':
-        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'],x['group_number'],\
-            str(x['is_input']),x['genome__genome_name'],\
-            x['label'],seqstatus[x['seqinfo__seq_id']],x['seqinfo__read_type'],\
-            x['seqinfo__libraryinfo__sampleinfo__sample_id'],\
-            x['seqinfo__libraryinfo__sampleinfo__species'],\
-            x['seqinfo__libraryinfo__experiment_type'],\
-            x['seqinfo__machine__machine_name']]) for x in outinfo])
+        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['group_number'],
+                                             str(x['is_input']
+                                                 ), x['genome__genome_name'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']
+                                                                   ], x['seqinfo__read_type'],
+                                             x['seqinfo__libraryinfo__sampleinfo__sample_id'],
+                                             x['seqinfo__libraryinfo__sampleinfo__species'],
+                                             x['seqinfo__libraryinfo__experiment_type'],
+                                             x['seqinfo__machine__machine_name']]) for x in outinfo])
 
         featureheader = ['Library ID', 'Group ID',
-                         'Is Input', 'Genome', 'Label', 'Processed Or Not', \
-                         'Read Type','Sample Name','Species',\
-                         'Experiment Type','Machine']
+                         'Is Input', 'Genome', 'Library Name', 'Processed Or Not',
+                         'Read Type', 'Sample Name', 'Species',
+                         'Experiment Type', 'Machine']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
             setinfo.set_id + ' ' + request.user.email + ' ' + setinfo.set_name
     else:
-        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'],x['genome__genome_name'],\
-            x['label'],seqstatus[x['seqinfo__seq_id']],x['seqinfo__read_type'],\
-            x['seqinfo__libraryinfo__sampleinfo__sample_id'],\
-            x['seqinfo__libraryinfo__sampleinfo__species'],\
-            x['seqinfo__libraryinfo__experiment_type'],\
-            x['seqinfo__machine__machine_name']]) for x in outinfo])
+        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']
+                                                                   ], x['seqinfo__read_type'],
+                                             x['seqinfo__libraryinfo__sampleinfo__sample_id'],
+                                             x['seqinfo__libraryinfo__sampleinfo__species'],
+                                             x['seqinfo__libraryinfo__experiment_type'],
+                                             x['seqinfo__machine__machine_name']]) for x in outinfo])
         featureheader = ['Library ID', 'Genome',
-                         'Label', 'Processed Or Not', 'Read Type','Sample Name','Species',\
-                         'Experiment Type','Machine']
-        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email + ' ' + setinfo.set_name
+                         'Library Name', 'Processed Or Not', 'Read Type', 'Sample Name', 'Species',
+                         'Experiment Type', 'Machine']
+        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
+            ' ' + request.user.email + ' ' + setinfo.set_name
 
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
@@ -629,30 +633,30 @@ def RunSetQC2(request, setqc_pk):
         raise PermissionDenied
     allfolder = [fname for fname in os.listdir(
         libdir) if os.path.isdir(os.path.join(libdir, fname))]
-    outinfo = list(LibraryInSet.objects.filter(librariesetqc=setinfo).\
-    select_related('seqinfo__libraryinfo__sampleinfo','seqinfo__machine','genome').\
-    values('seqinfo__seq_id','group_number','is_input','genome__genome_name',\
-        'label','seqinfo__read_type','seqinfo__libraryinfo__sampleinfo__sample_id',\
-        'seqinfo__libraryinfo__sampleinfo__species','seqinfo__libraryinfo__experiment_type',\
-        'seqinfo__machine__machine_name'))
-    
+    outinfo = list(LibraryInSet.objects.filter(librariesetqc=setinfo).
+                   select_related('seqinfo__libraryinfo__sampleinfo', 'seqinfo__machine', 'genome').
+                   values('seqinfo__seq_id', 'group_number', 'is_input', 'genome__genome_name',
+                          'label', 'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__sample_id',
+                          'seqinfo__libraryinfo__sampleinfo__species', 'seqinfo__libraryinfo__experiment_type',
+                          'seqinfo__machine__machine_name'))
+
     list1 = [x['seqinfo__seq_id'] for x in outinfo]
     list_readtype = [x['seqinfo__read_type'] for x in outinfo]
     seqstatus = {}
     i = 0
     for item in list1:
         if item not in allfolder:
-            seqstatus[item]='No'
+            seqstatus[item] = 'No'
         else:
             if not os.path.isfile(os.path.join(libdir, item, '.finished.txt')):
-                seqstatus[item]='No'
+                seqstatus[item] = 'No'
             else:
-                seqstatus[item]='Yes'
+                seqstatus[item] = 'Yes'
         reps = ['1']
         reps = reps + item.split('_')[2:]
         mainname = '_'.join(item.split('_')[0:2])
 
-        if seqstatus[item]=='No':
+        if seqstatus[item] == 'No':
             if list_readtype[i] == 'PE':
                 r1 = item+'_R1.fastq.gz'
                 r2 = item+'_R2.fastq.gz'
@@ -661,7 +665,7 @@ def RunSetQC2(request, setqc_pk):
                         if j == '1':
                             repname = mainname
                         else:
-                            repname = '_'.join([mainname, j])   
+                            repname = '_'.join([mainname, j])
 
                         r1 = repname+'_R1.fastq.gz'
                         r2 = repname+'_R2.fastq.gz'
@@ -672,7 +676,7 @@ def RunSetQC2(request, setqc_pk):
                         except Exception as e:
                             data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
                             print(e)
-                            return JsonResponse(data)   
+                            return JsonResponse(data)
 
             elif list_readtype[i] == 'SE':
                 r1 = item+'.fastq.gz'
@@ -682,7 +686,7 @@ def RunSetQC2(request, setqc_pk):
                         if j == '1':
                             repname = mainname
                         else:
-                            repname = '_'.join([mainname, j])   
+                            repname = '_'.join([mainname, j])
 
                         r1 = repname+'.fastq.gz'
                         r1op = repname+'_R1.fastq.gz'
@@ -698,33 +702,37 @@ def RunSetQC2(request, setqc_pk):
 
     if setinfo.experiment_type == 'ChIP-seq':
 
-        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'],x['group_number'],\
-            str(x['is_input']),x['genome__genome_name'],\
-            x['label'],seqstatus[x['seqinfo__seq_id']],x['seqinfo__read_type'],\
-            x['seqinfo__libraryinfo__sampleinfo__sample_id'],\
-            x['seqinfo__libraryinfo__sampleinfo__species'],\
-            x['seqinfo__libraryinfo__experiment_type'],\
-            x['seqinfo__machine__machine_name']]) for x in outinfo])
+        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['group_number'],
+                                             str(x['is_input']
+                                                 ), x['genome__genome_name'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']
+                                                                   ], x['seqinfo__read_type'],
+                                             x['seqinfo__libraryinfo__sampleinfo__sample_id'],
+                                             x['seqinfo__libraryinfo__sampleinfo__species'],
+                                             x['seqinfo__libraryinfo__experiment_type'],
+                                             x['seqinfo__machine__machine_name']]) for x in outinfo])
 
         featureheader = ['Library ID', 'Group ID',
-                         'Is Input', 'Genome', 'Label', 'Processed Or Not', \
-                         'Read Type','Sample Name','Species',\
-                         'Experiment Type','Machine']
+                         'Is Input', 'Genome', 'Library Name', 'Processed Or Not',
+                         'Read Type', 'Sample Name', 'Species',
+                         'Experiment Type', 'Machine']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
             setinfo.set_id + ' ' + request.user.email + ' ' + setinfo.set_name
 
     else:
-        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'],x['genome__genome_name'],\
-            x['label'],seqstatus[x['seqinfo__seq_id']],x['seqinfo__read_type'],\
-            x['seqinfo__libraryinfo__sampleinfo__sample_id'],\
-            x['seqinfo__libraryinfo__sampleinfo__species'],\
-            x['seqinfo__libraryinfo__experiment_type'],\
-            x['seqinfo__machine__machine_name']]) for x in outinfo])
+        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']
+                                                                   ], x['seqinfo__read_type'],
+                                             x['seqinfo__libraryinfo__sampleinfo__sample_id'],
+                                             x['seqinfo__libraryinfo__sampleinfo__species'],
+                                             x['seqinfo__libraryinfo__experiment_type'],
+                                             x['seqinfo__machine__machine_name']]) for x in outinfo])
         featureheader = ['Library ID', 'Genome',
-                         'Label', 'Processed Or Not', 'Read Type','Sample Name','Species',\
-                         'Experiment Type','Machine']
+                         'Library Name', 'Processed Or Not', 'Read Type', 'Sample Name', 'Species',
+                         'Experiment Type', 'Machine']
 
-        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email + ' ' + setinfo.set_name
+        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
+            ' ' + request.user.email + ' ' + setinfo.set_name
 
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
@@ -813,12 +821,12 @@ def SetQCDetailView(request, setqc_pk):
         featureinfo = list(zip(list1, list_readtype, list2,
                                list3, list4, list5, fastqstatus, seqstatus))
         featureheader = ['Library ID', 'Read Type', 'Group ID',
-                         'Is Input',  'Genome', 'Label', 'Has fastq', 'Processed']
+                         'Is Input',  'Genome', 'Library Name', 'Has fastq', 'Processed']
     else:
         featureinfo = list(zip(list1, list_readtype, list4,
                                list5, fastqstatus, seqstatus))
         featureheader = ['Library ID', 'Read Type',
-                         'Genome', 'Label', 'Has fastq', 'Processed']
+                         'Genome', 'Library Name', 'Has fastq', 'Processed']
     context = {
         'setinfo': setinfo,
         'summaryfield': summaryfield,

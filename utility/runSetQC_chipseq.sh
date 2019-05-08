@@ -5,6 +5,9 @@ SCRIPT_PATH="${BASH_SOURCE[0]}"
 cd "`dirname "${SCRIPT_PATH}"`"
 SET_ID=$1
 USER_EMAIL=$2
+SET_NAME=$3
+
+
 SETQC_DIR="/projects/ps-epigen/outputs/setQCs/"
 STATUS_FILE=${SETQC_DIR}"."${SET_ID}.txt
 SETQC_FILE=${SETQC_DIR}${SET_ID}.txt
@@ -45,9 +48,9 @@ then
 
     job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
     python updateLibrariesSetQC.py -s '1' -id $SET_ID # process libs
-    cmd2="qsub -k oe -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,type=$setqc_type -q condo  \$(which runSetQC.pbs)"
+    cmd2="qsub -k oe -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,set_name=$SET_NAME,type=$setqc_type -q condo  \$(which runSetQC.pbs)"
 else
-    cmd2="qsub -k oe -M $USER_EMAIL -v set_id=$SET_ID,type=$setqc_type -q condo  \$(which runSetQC.pbs)"
+    cmd2="qsub -k oe -M $USER_EMAIL -v set_id=$SET_ID,set_name=$SET_NAME,type=$setqc_type -q condo  \$(which runSetQC.pbs)"
 fi
 
 ##################################################
