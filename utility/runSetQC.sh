@@ -29,9 +29,9 @@ then
     cmd1="qsub -v samples=${RUN_LOG_PIP} -t 0-$[n_libs-1] -M $USER_EMAIL -q home-epigen -l walltime=16:00:00 \$(which runBulkATAC_fastq.pbs)"
     job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
     python updateLibrariesSetQC.py -s '1' -id $SET_ID # process libs
-    cmd2="qsub -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,set_name=$SET_NAME,type=$TYPE  \$(which runSetQC.pbs)"
+    cmd2="qsub -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,set_name='$SET_NAME',type=$TYPE  \$(which runSetQC.pbs)"
 else
-    cmd2="qsub -M $USER_EMAIL -v set_id=$SET_ID,set_name=$SET_NAME,type=$TYPE  \$(which runSetQC.pbs)"
+    cmd2="qsub -M $USER_EMAIL -v set_id=$SET_ID,set_name='$SET_NAME',type=$TYPE  \$(which runSetQC.pbs)"
 fi
 
 ##################################################

@@ -16,6 +16,7 @@ import os
 import subprocess
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
+import re
 
 # Create your views here.
 DisplayField1 = ['set_id', 'set_name',
@@ -582,7 +583,8 @@ def RunSetQC(request, setqc_pk):
                          'Read Type', 'Sample Name', 'Species',
                          'Experiment Type', 'Machine']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
-            setinfo.set_id + ' ' + request.user.email + ' ' + setinfo.set_name
+            setinfo.set_id + ' ' + request.user.email + \
+            ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
     else:
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
                                              x['label'], seqstatus[x['seqinfo__seq_id']
@@ -595,7 +597,8 @@ def RunSetQC(request, setqc_pk):
                          'Library Name', 'Processed Or Not', 'Read Type', 'Sample Name', 'Species',
                          'Experiment Type', 'Machine']
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
-            ' ' + request.user.email + ' ' + setinfo.set_name
+            ' ' + request.user.email + ' ' + \
+            re.sub(r"[\)\(]", ".", setinfo.set_name)
 
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
@@ -717,7 +720,8 @@ def RunSetQC2(request, setqc_pk):
                          'Read Type', 'Sample Name', 'Species',
                          'Experiment Type', 'Machine']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
-            setinfo.set_id + ' ' + request.user.email + ' ' + setinfo.set_name
+            setinfo.set_id + ' ' + request.user.email + \
+            ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
 
     else:
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
@@ -732,7 +736,8 @@ def RunSetQC2(request, setqc_pk):
                          'Experiment Type', 'Machine']
 
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
-            ' ' + request.user.email + ' ' + setinfo.set_name
+            ' ' + request.user.email + ' ' + \
+            re.sub(r"[\)\(]", ".", setinfo.set_name)
 
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
