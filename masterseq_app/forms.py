@@ -225,6 +225,11 @@ class SamplesCreationForm(forms.Form):
 		flagfixation = 0
 		flaguser = 0
 		flagsampid = 0
+		flaggroup = 0
+		flagresearch = 0
+		flagresearchphone = 0
+		flagfiscal = 0
+		flagindex = 0
 		#flagprep = 0
 		invaliddate = []
 		invaliddate_received = []
@@ -236,6 +241,11 @@ class SamplesCreationForm(forms.Form):
 		invaliduserlist = []
 		invalidsampid = []
 		selfsamps = []
+		invalidgroup = []
+		invalidresearch = []
+		invalidresearchphone = []
+		invalidfiscal = []
+		invalidindex = []
 		#invalidprep = []
 		for lineitem in data.strip().split('\n'):
 			if lineitem != '\r':
@@ -281,8 +291,39 @@ class SamplesCreationForm(forms.Form):
 					invalidsampid.append(samid)
 					flagsampid = 1
 				selfsamps.append(samid)
+				gname = fields[1].strip()
+				if gname and gname not in ['NA','N/A']:
+					if not Group.objects.filter(name=gname).exists():
+						invalidgroup.append(gname)
+						flaggroup = 1
+					else:
+						resname = fields[2].strip() if fields[2].strip() not in ['NA','N/A'] else ''
+						resemail = fields[3].strip() if fields[3].strip() not in ['NA','N/A'] else ''
+						resphone = fields[4].strip() if fields[4].strip() not in ['NA','N/A'] else ''
+						if resname:
+							if not User.objects.filter(groups__name__in=[gname]).filter(first_name=resname.split(' ')[0],last_name=resname.split(' ')[1],email=resemail).exists():						   
+								invalidresearch.append(resname+'_'+resemail)
+								flagresearch = 1
+							else:
+								resuser = User.objects.get(first_name=resname.split(' ')[0],last_name=resname.split(' ')[1],email=resemail)
+								if not CollaboratorPersonInfo.objects.filter(person_id=resuser).filter(cell_phone=resphone).exists():
+									invalidresearchphone.append(resphone+' of '+resname)
+									flagresearchphone = 1
+						fiscalname = fields[5].strip() if fields[5].strip() not in ['NA','N/A'] else ''
+						fiscalemail = fields[6].strip() if fields[6].strip() not in ['NA','N/A'] else ''
+						indname = fields[7].strip() if fields[7].strip() not in ['NA','N/A'] else ''
+						if fiscalname:
+							if not User.objects.filter(groups__name__in=[gname]).filter(first_name=fiscalname.split(' ')[0],last_name=fiscalname.split(' ')[1],email=fiscalemail).exists():						 
+								invalidfiscal.append(fiscalname+'_'+fiscalemail)
+								flagfiscal = 1
+							else:
+								fisuser = User.objects.get(first_name=fiscalname.split(' ')[0],last_name=fiscalname.split(' ')[1],email=fiscalemail)
+								if not Person_Index.objects.filter(person=fisuser).filter(index_name=indname).exists():
+									invalidindex.append(indname+' of '+fiscalname)
+									flagindex = 1
 
 
+				
 
 				# samprep = fields[12].split('(')[0].strip()
 				# if samprep == 'flash frozen':
@@ -325,6 +366,25 @@ class SamplesCreationForm(forms.Form):
 		if flagsampid == 1:
 			raise forms.ValidationError(
 				','.join(invalidsampid)+' is already existed in database')
+		if flaggroup == 1:
+			raise forms.ValidationError(
+				'Invalid groups:'+','.join(invalidgroup))
+		if flagresearch == 1:
+			raise forms.ValidationError(
+				'Invalid research contacts:'+','.join(invalidresearch)+'.Please check the reasons below:\
+				(1).First name, last name and email match with profile in the database.\
+				(2).The user is in the right group you provided.')
+		if flagresearchphone == 1:
+			raise forms.ValidationError(
+				'Invalid research contact phone:'+','.join(invalidresearchphone))
+		if flagfiscal == 1:
+			raise forms.ValidationError(
+				'Invalid fiscal contacts:'+','.join(invalidfiscal)+'.Please check the reasons below:\
+				(1).First name, last name and email match with profile in the database.\
+				(2).The user is in the right group you provided.')
+		if flagindex == 1:
+			raise forms.ValidationError(
+				'Invalid research contact phone:'+','.join(invalidindex))
 		sampselfduplicate = SelfUniqueValidation(selfsamps)
 		if len(sampselfduplicate) > 0:
 			raise forms.ValidationError(
