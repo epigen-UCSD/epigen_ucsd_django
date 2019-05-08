@@ -67,7 +67,7 @@ def main():
 										if piname != groupbelong[researchname]:
 											print(researchname+' duplicate!(in different group).Please correct it because the username should be unique')
 											print(piname+' vs '+groupbelong[researchname])
-											exit()
+											#exit()
 									else:
 										groupbelong[researchname] = piname
 								if fiscalname not in ['NA','N/A'] and fiscalname:
@@ -75,7 +75,7 @@ def main():
 										if piname != groupbelong[fiscalname]:
 											print(fiscalname+' duplicate!(in different group).Please correct it because the username should be unique')
 											print(piname+' vs '+groupbelong[fiscalname])
-											exit()
+											#exit()
 									else:
 										groupbelong[fiscalname] = piname		
 
@@ -136,7 +136,8 @@ def main():
 											User.objects.get(username=fisnameparse[0],first_name=fisnameparse[1],last_name=fisnameparse[2])
 										except:
 											print('Error in getting fiscal user:'+fiscalname+'!'+sampindex)
-											exit()		
+											exit()
+	print('the end!')	
 
 
 if __name__ == '__main__':
