@@ -22,9 +22,14 @@ def main():
 
 	for i in Group.objects.all():
 		gname = i.name
-		gname_tm = ' '.join(gname.split('_')[0:2])
+		if gname =='Ch_Pilot_Project_group':
+			gname_tm = ' '.join(gname.split('_')[0:3])
+		else:
+			gname_tm = ' '.join(gname.split('_')[0:2])
 		if ' group' in gname_tm:
-			i.name = gname_tm.split(' ')[0:-1]
+			gname_tm = ' '.join(gname_tm.split(' ')[0:-1])
+		print(gname_tm)
+		i.name = gname_tm
 		i.save()
 
 if __name__ == '__main__':
