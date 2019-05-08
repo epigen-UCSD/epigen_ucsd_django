@@ -137,6 +137,29 @@ def SamplesCreateView(request):
         for lineitem in sampleinfo.strip().split('\n'):
             fields = lineitem.strip('\n').split('\t')
             samindex = fields[21].strip()
+            gname = fields[1].strip() if fields[1].strip() not in ['NA','N/A'] else ''
+            if gname:
+                group_tm = Group.objects.get(name=gname)
+            else:
+                group_tm = None
+            resname = fields[2].strip() if fields[2].strip() not in ['NA','N/A'] else ''
+            resemail = fields[3].strip() if fields[3].strip() not in ['NA','N/A'] else ''
+            resphone = fields[4].strip() if fields[4].strip() not in ['NA','N/A'] else ''
+            if resname:
+                resuser = User.objects.get(first_name=resname.split(' ')[0],last_name=resname.split(' ')[1],email=resemail)
+                resperson = CollaboratorPersonInfo.objects.get(person_id=resuser,cell_phone=resphone)
+            else:
+                resperson = None
+            fiscalname = fields[5].strip() if fields[5].strip() not in ['NA','N/A'] else ''
+            fiscalemail = fields[6].strip() if fields[6].strip() not in ['NA','N/A'] else ''
+            indname = fields[7].strip() if fields[7].strip() not in ['NA','N/A'] else ''
+            if fiscalname:
+                fisuser = User.objects.get(first_name=fiscalname.split(' ')[0],last_name=fiscalname.split(' ')[1],email=fiscalemail)
+                fiscolla = CollaboratorPersonInfo.objects.get(person_id=fisuser)
+                fisc_index = Person_Index.objects.get(person=fiscolla,index_name=indname)
+            else:
+                fisc_index = None
+
             try:
                 samnotes = ';'.join([fields[20].strip(),fields[28].strip()]).strip(';')
             except:
@@ -184,6 +207,9 @@ def SamplesCreateView(request):
             data[samid] = {}
             data[samid] = {
                 'sample_index': samindex,
+                'group':gname,
+                'research_person':resname,
+                'fiscal_person_index':fiscalname+':'+indname,
                 'team_member': membername,
                 'date': samdate,
                 'date_received':date_received,
@@ -203,6 +229,9 @@ def SamplesCreateView(request):
             }
             tosave_item = SampleInfo(
                 sample_index=samindex,
+                group=group_tm,
+                research_person=resperson,
+                fiscal_person_index=fisc_index,
                 sample_id=samid,
                 species=samspecies,
                 sample_type=samtype,
@@ -226,7 +255,7 @@ def SamplesCreateView(request):
             SampleInfo.objects.bulk_create(tosave_list)
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
-            displayorder = ['sample_index','description', 'team_member', 'date','date_received','species', 'sample_type',
+            displayorder = ['sample_index','group','research_person','fiscal_person_index','description', 'team_member', 'date','date_received','species', 'sample_type',
                             'preparation', 'fixation','sample_amount','unit',
                              'notes','storage','service_requested','seq_depth_to_target',
                             'seq_length_requested','seq_type_requested']
