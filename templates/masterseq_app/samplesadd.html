@@ -18,7 +18,7 @@
             <ul>
             {% for error in field.errors %}
             <li class="error-message" >
-              {{error}}
+              {{error |safe }}
             </li>
             {% endfor %}
             </ul>

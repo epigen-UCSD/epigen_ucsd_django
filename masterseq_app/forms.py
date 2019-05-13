@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.safestring import mark_safe
 from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index
 from django.db.models import Prefetch
+from django.urls import reverse
 
 
 class SampleCreationForm(forms.ModelForm):
@@ -379,23 +380,38 @@ class SamplesCreationForm(forms.Form):
 				','.join(invalidsampid)+' is already existed in database')
 		if flaggroup == 1:
 			raise forms.ValidationError(
-				'Invalid groups:'+','.join(invalidgroup))
+				'Invalid groups:'+','.join(set(invalidgroup))+'.<p style="color:green;">\
+				Please check for accurary of the group name in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>. \
+				<br>If this is a new group please tell Dave to add in.</p>')
 		if flagresearch == 1:
 			raise forms.ValidationError(
-				'Invalid research contacts:'+','.join(invalidresearch)+'.Please check the reasons below:\
+				'Invalid research contacts:'+','.join(invalidresearch)+'.<p style="color:green;">\
+				Please check the reasons below \
+				in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>:\
 				(1).First name, last name and email match with profile in the database.\
-				(2).The user is in the right group you provided.')
+				(2).The user is in the right group you provided.<br>\
+				If this is a new reasearch contact, please add it through\
+				<a href='+reverse('manager_app:collab_add')+'>Add a Collaborator.</a></p>')
 		if flagresearchphone == 1:
 			raise forms.ValidationError(
-				'Invalid research contact phone:'+','.join(invalidresearchphone))
+				'Invalid research contact phone:'+','.join(invalidresearchphone)+'.<p style="color:green;">\
+				Please check for accurary of the phone number in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a> \
+				and update it if necessary.</p>')
 		if flagfiscal == 1:
 			raise forms.ValidationError(
-				'Invalid fiscal contacts:'+','.join(invalidfiscal)+'.Please check the reasons below:\
+				'Invalid fiscal contacts:'+','.join(invalidfiscal)+'.<p style="color:green;">\
+				Please check the reasons below \
+				in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>:\
 				(1).First name, last name and email match with profile in the database.\
-				(2).The user is in the right group you provided.')
+				(2).The user is in the right group you provided.<br>\
+				If this is a new fiscal contact, please add it through\
+				<a href='+reverse('manager_app:collab_add')+'>Add a Collaborator.</a></p>')
 		if flagfisindex == 1:
 			raise forms.ValidationError(
-				'Invalid fiscal index number:'+','.join(invalidfisindex))
+				'Invalid fiscal index number:'+','.join(invalidfisindex)+'.<p style="color:green;">\
+				Please check for accurary of the index number in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>. \
+				<br>If this is a new index please add it through\
+				<a href='+reverse('manager_app:index_add')+'>Add a new Collaborator-Index.</a></p>')
 		sampselfduplicate = SelfUniqueValidation(selfsamps)
 		if len(sampselfduplicate) > 0:
 			raise forms.ValidationError(

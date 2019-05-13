@@ -36,7 +36,15 @@
             </li>
             {% endfor %}
             </ul>
+            {% if field.name == 'role' %}
+              {{ field.label_tag }} 
+              <select name="role" required="" id="id_role">
+                <option value="PI" selected="">PI</option>
+                <option value="other">other</option>
+              </select>             
+            {% else %}
               {{ field.label_tag }} {{ field }}
+            {% endif %}
             {% if field.help_text %}
             <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
             {% endif %}

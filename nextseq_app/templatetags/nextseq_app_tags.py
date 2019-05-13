@@ -67,4 +67,3 @@ def linktrackingsheet(stringtext):
 		stringtext = stringtext.replace(k,v)
 	return stringtext
 
-
