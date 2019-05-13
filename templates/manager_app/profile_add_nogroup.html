@@ -1,0 +1,121 @@
+{% extends 'manager_app/base_collabor_internal.html' %}
+
+{% block content %}
+{% load nextseq_app_tags %}
+<div id="content" class="col-sm-10 col-md-10 col-lg-10">
+  <div class="card">
+    <div class="card-header fortable">
+      Add a new Collaborator
+    </div><!-- /.card-header -->
+    <div class="card-body">
+      <form method="post">{% csrf_token %} 
+        {% for field in user_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error}}
+            </li>
+            {% endfor %}
+            </ul>
+              {{ field.label_tag }} {{ field }}
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %} 
+        {% for field in profile_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error}}
+            </li>
+            {% endfor %}
+            </ul>
+              {{ field.label_tag }} {{ field }}
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %} 
+        {% for field in group_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error}}
+            </li>
+            {% endfor %}
+            </ul>
+              {{ field.label_tag }} {{ field }}
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% else %}
+            <span class="fontsize-sm" >If the group is not in the app, please ask Dave to add it </span>
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %} 
+        {% for field in person_index_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error}}
+            </li>
+            {% endfor %}
+            </ul>
+              {{ field.label_tag }} {{ field }}
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %} 
+        <button type="submit" name="profile_save">Save</button>
+      </form>
+    </div><!-- /.card-body -->              
+  </div><!-- /.card -->      
+</div><!-- /#content --> 
+
+<!-- Modal -->
+<div class="modal fade" id="GroupAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Add a ncdcdew Group</h5>
+
+      </div>
+      
+      <form method="post" action="{% url 'manager_app:ajax_group_add' %}" id="GroupAddAjax">{% csrf_token %} 
+        <div class="modal-body">
+        {% for field in group_create_form %}
+        <div class="fieldWrapper">
+          <p>
+            <p id="errormessage" class="error-message"></p>
+            {{ field.label_tag }} {{ field }}
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
+          </p>              
+        </div><!-- /.fieldWrapper -->  
+        {% endfor %} 
+      </div><!-- /.modal-body -->  
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" name="group_save" class="btn confirm-btn-orange">Save</button>
+      </div><!-- /.modal-footer -->   
+    </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

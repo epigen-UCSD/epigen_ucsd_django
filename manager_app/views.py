@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User,Group
 from django.http import JsonResponse
 from django.db.models import Q
+from epigen_ucsd_django.shared import is_member
 
 # Create your views here.
 
@@ -55,7 +56,10 @@ def CollaboratorCreateView(request):
         'group_create_form':group_create_form,
         'person_index_form':person_index_form,
     }
-    return render(request, 'manager_app/profile_add.html', context)
+    if is_member(request.user,'manager'):
+        return render(request, 'manager_app/profile_add.html', context)
+    else:
+        return render(request, 'manager_app/profile_add_nogroup.html', context)
 
 @transaction.atomic
 def AjaxGroupCreateView(request):
