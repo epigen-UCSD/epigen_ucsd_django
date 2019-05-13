@@ -382,7 +382,7 @@ class SamplesCreationForm(forms.Form):
 			raise forms.ValidationError(
 				'Invalid groups:'+','.join(set(invalidgroup))+'.<p style="color:green;">\
 				Please check for accurary of the group name in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>. \
-				<br>If this is a new group please tell Dave to add in.</p>')
+				<br>If this is a new group please contact Dave to add in.</p>')
 		if flagresearch == 1:
 			raise forms.ValidationError(
 				'Invalid research contacts:'+','.join(invalidresearch)+'.<p style="color:green;">\
