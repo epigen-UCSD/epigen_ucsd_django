@@ -1,4 +1,4 @@
-=#!/usr/bin/env python
+#!/usr/bin/env python
 import os
 import sys
 import django
@@ -79,7 +79,8 @@ def main():
 									else:
 										groupbelong[fiscalname] = piname		
 
-								group_name = '_'.join([x for x in piname.title().split(' ')])+'_group'
+								#group_name = '_'.join([x for x in piname.title().split(' ')])+'_group'
+								group_name = piname.title()
 								#print(group_name)
 								if fields[1].strip() == 'Arima':
 									piname = 'Siddarth Selvaraj'
@@ -118,25 +119,25 @@ def main():
 											Group.objects.get(name=group_name)
 										except:
 											print('Error in getting group:'+group_name+'!'+sampindex)
-											exit()
+											#exit()
 									if pinameparse and piname not in ['','NA','N/A','David Gorkin']:
 										try:
 											User.objects.get(username=pinameparse[0],first_name=pinameparse[1],last_name=pinameparse[2])
 										except:
 											print('Error in getting pi user:'+piname+'!'+sampindex)
-											exit()
+											#exit()
 									if resnameparse and researchname not in ['','NA','N/A']:
 										try:
 											User.objects.get(username=resnameparse[0],first_name=resnameparse[1],last_name=resnameparse[2])
 										except:
 											print('Error in getting research user:'+researchname+'!'+sampindex)
-											exit()
+											#exit()
 									if fisnameparse and fiscalname not in ['','NA','N/A','Truc Dang']:
 										try:
 											User.objects.get(username=fisnameparse[0],first_name=fisnameparse[1],last_name=fisnameparse[2])
 										except:
 											print('Error in getting fiscal user:'+fiscalname+'!'+sampindex)
-											exit()
+											#exit()
 	print('the end!')	
 
 

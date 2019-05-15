@@ -6,6 +6,7 @@ import argparse
 import datetime
 import secrets
 import string
+import re
 
 #print(os.path.abspath(__file__))
 
@@ -56,7 +57,8 @@ def main():
 							piname = fields[1].strip()							
 							researchname = fields[2].strip()
 							fiscalname = fields[5].strip()	
-							group_name = '_'.join([x for x in piname.title().split(' ')])+'_group'
+							#group_name = '_'.join([x for x in piname.title().split(' ')])+'_group'
+							group_name = piname.title()
 							#print(group_name)							
 							objgroup, created = Group.objects.get_or_create(name=group_name)
 							sampinfo.group = objgroup
@@ -86,9 +88,10 @@ def main():
 										)
 									writeline.append('\t'.join([objgroup.name,nameparse[0],passwordrand,nameparse[1],nameparse[2]]))
 								else:
+
 									piaccount = User.objects.get(username=nameparse[0])
 									objgroup.user_set.add(piaccount)
-									piperson = CollaboratorPersonInfo.objects.get(person_id=piaccount)
+									piperson, created = CollaboratorPersonInfo.objects.get_or_create(person_id=piaccount)
 									piperson.role='PI'
 									piperson.fiscal_index=None
 									piperson.save()
@@ -99,10 +102,11 @@ def main():
 								if researchname and researchname not in ['NA','N/A']:
 									if fields[4].strip() not in ['NA','N/A']:
 										phone_tm = fields[4].strip()
+										phone_tm = re.sub('-| |\.|\(|\)|ext', '', phone_tm)
 									else:
 										phone_tm = None
 									if fields[3].strip() not in ['NA','N/A']:
-										email_tm = fields[3].strip()
+										email_tm = fields[3].strip().lower()
 									else:
 										email_tm = None
 									passwordrand = ''.join(secrets.choice(alphabet) for i in range(10))
@@ -112,36 +116,42 @@ def main():
 											first_name = nameparse[1],
 											last_name = nameparse[2],
 											password = passwordrand,
-											email = fields[3].strip()
 											)
 										objgroup.user_set.add(researchaccount)
 										researchperson = CollaboratorPersonInfo.objects.create(
 											person_id = researchaccount,
 											cell_phone = phone_tm,
+											email=email_tm,
 											role = 'other'
 											)
 										writeline.append('\t'.join([objgroup.name,nameparse[0],passwordrand,nameparse[1],nameparse[2]]))										
 									else:
 										researchaccount = User.objects.get(username=nameparse[0])
 										objgroup.user_set.add(researchaccount)
-										researchperson = CollaboratorPersonInfo.objects.get(person_id=researchaccount)
-										if researchname!=piname:
+										try:
+											researchperson = CollaboratorPersonInfo.objects.get(person_id=researchaccount,role='PI')
+											researchperson.cell_phone = phone_tm
+											researchperson.email = email_tm
+										except:
+											researchperson,created = CollaboratorPersonInfo.objects.get_or_create(person_id=researchaccount,cell_phone=phone_tm,email=email_tm)
 											researchperson.role='other'
-										else:
-											researchperson.role='PI'
+
 										researchperson.fiscal_index=None
-										if phone_tm:
-											researchperson.cell_phone=phone_tm
-										if email_tm:
-											researchaccount.email=email_tm
+										# if email_tm:
+										# 	if researchaccount.email!=email_tm:												
+										# 		researchperson.notes = ';'.join\
+										# 		(set([researchperson.notes,email_tm])).strip(';')
 										researchperson.save()
-										researchaccount.save()
 										#writeline.append('\t'.join([objgroup.name,researchaccount.username,researchaccount.password,researchaccount.first_name,researchaccount.last_name]))
 									sampinfo.research_person = researchperson	
 		
 							nameparse = parsename(fiscalname)
 							if nameparse:
 								if fiscalname and fiscalname not in ['NA','N/A']:
+									if fields[6].strip() not in ['NA','N/A']:
+										email_tm = fields[6].strip().lower()
+									else:
+										email_tm = None
 									passwordrand = ''.join(secrets.choice(alphabet) for i in range(10))
 									if not User.objects.filter(username=nameparse[0]).exists():
 										fiscalaccount = User.objects.create_user(
@@ -149,24 +159,33 @@ def main():
 											first_name = nameparse[1],
 											last_name = nameparse[2],
 											password = passwordrand,
-											email = fields[6].strip()
 											)
 										objgroup.user_set.add(fiscalaccount)
 										fiscalperson = CollaboratorPersonInfo.objects.create(
 											person_id = fiscalaccount,
+											email=email_tm,
 											role = 'other'
 											)
 										writeline.append('\t'.join([objgroup.name,nameparse[0],passwordrand,nameparse[1],nameparse[2]]))										
 									else:
 										fiscalaccount = User.objects.get(username=nameparse[0])
 										objgroup.user_set.add(fiscalaccount)
-										fiscalperson=CollaboratorPersonInfo.objects.get(person_id=fiscalaccount)
+										#print(fiscalaccount.username)
+										if fiscalname==researchname:
+											fiscalperson=CollaboratorPersonInfo.objects.get(person_id=fiscalaccount,cell_phone=phone_tm,email=email_tm)
+										else:
+											fiscalperson,created=CollaboratorPersonInfo.objects.get_or_create(person_id=fiscalaccount,email=email_tm)
 										if fiscalname!=piname:
 											fiscalperson.role='other'
 										else:
 											fiscalperson.role='PI'
 
 										fiscalperson.fiscal_index=None
+										# if email_tm:
+										# 	if fiscalaccount.email!=email_tm:												
+										# 		fiscalperson.notes = ';'.join\
+										# 		(set([fiscalperson.notes,email_tm])).strip(';')									
+											
 										fiscalperson.save()
 										#writeline.append('\t'.join([objgroup.name,fiscalaccount.username,fiscalaccount.password,fiscalaccount.first_name,fiscalaccount.last_name]))
 		
@@ -201,7 +220,7 @@ def main():
 		fw.write('\n')
 		fw.write('\n'.join(writeline_final))
 		fw.write('\n')
-
+	print('the end!')	
 
 if __name__ == '__main__':
 	main()

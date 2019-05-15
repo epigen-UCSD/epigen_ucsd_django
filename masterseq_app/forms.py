@@ -12,6 +12,7 @@ from django.utils.safestring import mark_safe
 from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index
 from django.db.models import Prefetch
 from django.urls import reverse
+import re
 
 
 class SampleCreationForm(forms.ModelForm):
@@ -301,8 +302,8 @@ class SamplesCreationForm(forms.Form):
 						flaggroup = 1
 
 				resname = fields[2].strip() if fields[2].strip() not in ['NA','N/A'] else ''
-				resemail = fields[3].strip() if fields[3].strip() not in ['NA','N/A'] else ''
-				resphone = fields[4].strip() if fields[4].strip() not in ['NA','N/A'] else ''
+				resemail = fields[3].strip().lower() if fields[3].strip() not in ['NA','N/A'] else ''
+				resphone = re.sub('-| |\.|\(|\)|ext', '', fields[4].strip()) if fields[4].strip() not in ['NA','N/A'] else ''
 				if resname:
 					if not gname or not Group.objects.filter(name=gname).exists():
 						invalidgroup.append(fields[1].strip())
@@ -317,7 +318,7 @@ class SamplesCreationForm(forms.Form):
 								invalidresearchphone.append(resphone+' of '+resname)
 								flagresearchphone = 1
 				fiscalname = fields[5].strip() if fields[5].strip() not in ['NA','N/A'] else ''
-				fiscalemail = fields[6].strip() if fields[6].strip() not in ['NA','N/A'] else ''
+				fiscalemail = fields[6].strip().lower() if fields[6].strip() not in ['NA','N/A'] else ''
 				indname = fields[7].strip() if fields[7].strip() not in ['NA','N/A'] else ''
 				if fiscalname:
 					if not gname or not Group.objects.filter(name=gname).exists():

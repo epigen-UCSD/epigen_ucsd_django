@@ -16,6 +16,7 @@ from django.db.models import Q
 from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index
 import xlwt
 from django.db.models import Prefetch
+import re
 # Create your views here.
 # @transaction.atomic
 # def SampleCreateView(request):
@@ -143,15 +144,15 @@ def SamplesCreateView(request):
             else:
                 group_tm = None
             resname = fields[2].strip() if fields[2].strip() not in ['NA','N/A'] else ''
-            resemail = fields[3].strip() if fields[3].strip() not in ['NA','N/A'] else ''
-            resphone = fields[4].strip() if fields[4].strip() not in ['NA','N/A'] else ''
+            resemail = fields[3].strip().lower() if fields[3].strip() not in ['NA','N/A'] else ''
+            resphone = re.sub('-| |\.|\(|\)|ext', '', fields[4].strip()) if fields[4].strip() not in ['NA','N/A'] else ''
             if resname:
                 resuser = User.objects.get(first_name=resname.split(' ')[0],last_name=resname.split(' ')[1],email=resemail)
                 resperson = CollaboratorPersonInfo.objects.get(person_id=resuser,cell_phone=resphone)
             else:
                 resperson = None
             fiscalname = fields[5].strip() if fields[5].strip() not in ['NA','N/A'] else ''
-            fiscalemail = fields[6].strip() if fields[6].strip() not in ['NA','N/A'] else ''
+            fiscalemail = fields[6].strip().lower() if fields[6].strip() not in ['NA','N/A'] else ''
             indname = fields[7].strip() if fields[7].strip() not in ['NA','N/A'] else ''
             if fiscalname:
                 fisuser = User.objects.get(first_name=fiscalname.split(' ')[0],last_name=fiscalname.split(' ')[1],email=fiscalemail)
