@@ -76,7 +76,71 @@ def grouplibraries(librarieslist):
                     groupedlibraries.append('-'.join([start, end]))
     return ','.join(groupedlibraries)
 
+def grouplibrariesOrderKeeped(librarieslist):
+    groupedlibraries = []
+    presuffix_last = ''
+    presuffix_number = {}
+    for item in librarieslist:
+        splititem = item.split('_', 2)
+        if len(splititem) == 1:
+            groupedlibraries.append(item)
+        else:
+            prefix = item.split('_', 2)[0]
+            try:
+                suffix = item.split('_', 2)[2]
+            except IndexError as e:
+                suffix = ''
+            presuffix = ':'.join([prefix, suffix])
+            if presuffix == presuffix_last:
+                presuffix_number.append(int(item.split('_', 2)[1]))
+            else:
+                if presuffix_last:
+                    prefix = presuffix_last.split(':')[0]
+                    suffix = presuffix_last.split(':')[1]
+                    ranges = groupnumber(presuffix_number)
+                    if not suffix:
+                        for x in ranges:
+                            if x[0] == x[1]:
+                                groupedlibraries.append('_'.join([prefix, str(x[0])]))
+                            else:
+                                start = '_'.join([prefix, str(x[0])])
+                                end = '_'.join([prefix, str(x[1])])
+                                groupedlibraries.append('-'.join([start, end]))
+                    else:
+                        for x in ranges:
+                            if x[0] == x[1]:
+                                groupedlibraries.append(
+                                    '_'.join([prefix, str(x[0]), suffix]))
+                            else:
+                                start = '_'.join([prefix, str(x[0]), suffix])
+                                end = '_'.join([prefix, str(x[1]), suffix])
+                                groupedlibraries.append('-'.join([start, end]))
+                presuffix_last = presuffix
+                presuffix_number = []
+                presuffix_number.append(int(item.split('_', 2)[1]))
+    if presuffix_last:
+        prefix = presuffix_last.split(':')[0]
+        suffix = presuffix_last.split(':')[1]
+        ranges = groupnumber(presuffix_number)
+        if not suffix:
+            for x in ranges:
+                if x[0] == x[1]:
+                    groupedlibraries.append('_'.join([prefix, str(x[0])]))
+                else:
+                    start = '_'.join([prefix, str(x[0])])
+                    end = '_'.join([prefix, str(x[1])])
+                    groupedlibraries.append('-'.join([start, end]))
+        else:
+            for x in ranges:
+                if x[0] == x[1]:
+                    groupedlibraries.append(
+                        '_'.join([prefix, str(x[0]), suffix]))
+                else:
+                    start = '_'.join([prefix, str(x[0]), suffix])
+                    end = '_'.join([prefix, str(x[1]), suffix])
+                    groupedlibraries.append('-'.join([start, end]))
 
+    return ','.join(groupedlibraries)
 def AllSetQCView(request):
 
     Sets_list = LibrariesSetQC.objects.all().select_related('requestor')
@@ -197,7 +261,7 @@ def SetQCgenomelabelCreateView(request, setqc_pk):
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     regset = LibraryInSet.objects.filter(
-        librariesetqc=setinfo).order_by('seqinfo')
+        librariesetqc=setinfo).order_by('pk')
     temdic = {}
     formsetcustom = []
     initaldic = []
@@ -270,10 +334,10 @@ def SetQCUpdateView(request, setqc_pk):
 
     flag = 0
     if setinfo.experiment_type != 'ChIP-seq':
-        regset = LibraryInSet.objects.filter(librariesetqc=setinfo)
+        regset = LibraryInSet.objects.filter(librariesetqc=setinfo).order_by('pk')
         librarieslist = [x.seqinfo.seq_id for x in regset]
         libraries_form = LibrariesToIncludeCreatForm(request.POST or None,
-                                                     initial={'librariestoinclude': grouplibraries(librarieslist)})
+                                                     initial={'librariestoinclude': grouplibrariesOrderKeeped(librarieslist)})
         if request.method == 'POST':
             post = request.POST.copy()
             if post['collaborator']:
@@ -334,10 +398,10 @@ def SetQCUpdateView(request, setqc_pk):
         initialgroup = []
         for i in groupitem:
             temdic = {}
-            temdic['librariestoincludeInput'] = grouplibraries(
-                [x.seqinfo.seq_id for x in chipset.filter(group_number=i, is_input=True)])
-            temdic['librariestoincludeIP'] = grouplibraries(
-                [x.seqinfo.seq_id for x in chipset.filter(group_number=i, is_input=False)])
+            temdic['librariestoincludeInput'] = grouplibrariesOrderKeeped(
+                [x.seqinfo.seq_id for x in chipset.filter(group_number=i, is_input=True).order_by('pk')])
+            temdic['librariestoincludeIP'] = grouplibrariesOrderKeeped(
+                [x.seqinfo.seq_id for x in chipset.filter(group_number=i, is_input=False).order_by('pk')])
             initialgroup.append(temdic)
             #print([x for x in chipset.filter(group_number=i,is_input=True)])
         ChIPLibrariesFormSet = formset_factory(
@@ -422,7 +486,7 @@ def SetQCgenomelabelUpdateView(request, setqc_pk):
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     regset = LibraryInSet.objects.filter(
-        librariesetqc=setinfo).order_by('seqinfo')
+        librariesetqc=setinfo).order_by('pk')
     temdic = {}
     formsetcustom = []
     initaldic = []
@@ -503,7 +567,7 @@ def RunSetQC(request, setqc_pk):
                    values('seqinfo__seq_id', 'group_number', 'is_input', 'genome__genome_name',
                           'label', 'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__sample_id',
                           'seqinfo__libraryinfo__sampleinfo__species', 'seqinfo__libraryinfo__experiment_type',
-                          'seqinfo__machine__machine_name'))
+                          'seqinfo__machine__machine_name').order_by('pk'))
 
     list1 = [x['seqinfo__seq_id'] for x in outinfo]
     list_readtype = [x['seqinfo__read_type'] for x in outinfo]
@@ -641,7 +705,7 @@ def RunSetQC2(request, setqc_pk):
                    values('seqinfo__seq_id', 'group_number', 'is_input', 'genome__genome_name',
                           'label', 'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__sample_id',
                           'seqinfo__libraryinfo__sampleinfo__species', 'seqinfo__libraryinfo__experiment_type',
-                          'seqinfo__machine__machine_name'))
+                          'seqinfo__machine__machine_name').order_by('pk'))
 
     list1 = [x['seqinfo__seq_id'] for x in outinfo]
     list_readtype = [x['seqinfo__read_type'] for x in outinfo]
@@ -768,8 +832,10 @@ def SetQCDetailView(request, setqc_pk):
     summaryfield = ['status', 'set_id', 'set_name', 'date_requested',
                     'requestor', 'experiment_type', 'notes', 'url', 'version']
     groupinputinfo = ''
+    # librariesset = LibraryInSet.objects.filter(
+    #     librariesetqc=setinfo).order_by('group_number', '-is_input')
     librariesset = LibraryInSet.objects.filter(
-        librariesetqc=setinfo).order_by('group_number', '-is_input')
+        librariesetqc=setinfo).order_by('pk')
     list1tem = list(librariesset.values_list('seqinfo', flat=True))
     list1 = [SeqInfo.objects.values_list(
         'seq_id', flat=True).get(id=x) for x in list1tem]

@@ -43,7 +43,7 @@ def libraryparse(libraries):
                                 for x in range(int(numberrange[0]), int(numberrange[1])+1)]
         else:
             tosave_list.append(library.strip())
-    return list(sorted(set(tosave_list)))
+    return sorted(set(tosave_list), key=tosave_list.index)
 
 
 class LibrariesSetQCCreationForm(forms.ModelForm):
@@ -106,7 +106,7 @@ class LibrariesToIncludeCreatForm(forms.Form):
                 if not SeqInfo.objects.filter(seq_id=item).exists():
                     raise forms.ValidationError(
                         item+' is not a stored library.')
-        return list(set(tosave_list))
+        return sorted(set(tosave_list), key=tosave_list.index)
 
 
 class ChIPLibrariesToIncludeCreatForm(forms.Form):
@@ -132,7 +132,7 @@ class ChIPLibrariesToIncludeCreatForm(forms.Form):
                 if not SeqInfo.objects.filter(seq_id=item).exists():
                     raise forms.ValidationError(
                         item+' is not a stored library.')
-        return list(set(tosave_list))
+        return sorted(set(tosave_list), key=tosave_list.index)
 
     def clean_librariestoincludeIP(self):
         tosave_list = []
@@ -145,7 +145,7 @@ class ChIPLibrariesToIncludeCreatForm(forms.Form):
                 if not SeqInfo.objects.filter(seq_id=item).exists():
                     raise forms.ValidationError(
                         item+' is not a stored library.')
-        return list(set(tosave_list))
+        return sorted(set(tosave_list), key=tosave_list.index)
 
 
 class SeqLabelGenomeCreationForm(forms.Form):
