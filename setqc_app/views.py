@@ -640,12 +640,12 @@ def RunSetQC(request, setqc_pk):
                                              x['seqinfo__libraryinfo__sampleinfo__sample_id'],
                                              x['seqinfo__libraryinfo__sampleinfo__species'],
                                              x['seqinfo__libraryinfo__experiment_type'],
-                                             x['seqinfo__machine__machine_name']]) for x in outinfo])
+                                             x['seqinfo__machine__machine_name'],setinfo.set_name]) for x in outinfo])
 
         featureheader = ['Library ID', 'Group ID',
                          'Is Input', 'Genome', 'Library Name', 'Processed Or Not',
                          'Read Type', 'Sample Name', 'Species',
-                         'Experiment Type', 'Machine']
+                         'Experiment Type', 'Machine','Set Name']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
             setinfo.set_id + ' ' + request.user.email + \
             ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
@@ -656,10 +656,10 @@ def RunSetQC(request, setqc_pk):
                                              x['seqinfo__libraryinfo__sampleinfo__sample_id'],
                                              x['seqinfo__libraryinfo__sampleinfo__species'],
                                              x['seqinfo__libraryinfo__experiment_type'],
-                                             x['seqinfo__machine__machine_name']]) for x in outinfo])
+                                             x['seqinfo__machine__machine_name'],setinfo.set_name]) for x in outinfo])
         featureheader = ['Library ID', 'Genome',
                          'Library Name', 'Processed Or Not', 'Read Type', 'Sample Name', 'Species',
-                         'Experiment Type', 'Machine']
+                         'Experiment Type', 'Machine','Set Name']
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
             ' ' + request.user.email + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
@@ -777,12 +777,12 @@ def RunSetQC2(request, setqc_pk):
                                              x['seqinfo__libraryinfo__sampleinfo__sample_id'],
                                              x['seqinfo__libraryinfo__sampleinfo__species'],
                                              x['seqinfo__libraryinfo__experiment_type'],
-                                             x['seqinfo__machine__machine_name']]) for x in outinfo])
+                                             x['seqinfo__machine__machine_name'],setinfo.set_name]) for x in outinfo])
 
         featureheader = ['Library ID', 'Group ID',
                          'Is Input', 'Genome', 'Library Name', 'Processed Or Not',
                          'Read Type', 'Sample Name', 'Species',
-                         'Experiment Type', 'Machine']
+                         'Experiment Type', 'Machine','Set Name']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
             setinfo.set_id + ' ' + request.user.email + \
             ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
@@ -794,10 +794,10 @@ def RunSetQC2(request, setqc_pk):
                                              x['seqinfo__libraryinfo__sampleinfo__sample_id'],
                                              x['seqinfo__libraryinfo__sampleinfo__species'],
                                              x['seqinfo__libraryinfo__experiment_type'],
-                                             x['seqinfo__machine__machine_name']]) for x in outinfo])
+                                             x['seqinfo__machine__machine_name'],setinfo.set_name]) for x in outinfo])
         featureheader = ['Library ID', 'Genome',
                          'Library Name', 'Processed Or Not', 'Read Type', 'Sample Name', 'Species',
-                         'Experiment Type', 'Machine']
+                         'Experiment Type', 'Machine','Set Name']
 
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
             ' ' + request.user.email + ' ' + \
