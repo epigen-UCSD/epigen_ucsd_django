@@ -567,7 +567,7 @@ def RunSetQC(request, setqc_pk):
                    values('seqinfo__seq_id', 'group_number', 'is_input', 'genome__genome_name',
                           'label', 'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__sample_id',
                           'seqinfo__libraryinfo__sampleinfo__species', 'seqinfo__libraryinfo__experiment_type',
-                          'seqinfo__machine__machine_name')).order_by('pk')
+                          'seqinfo__machine__machine_name').order_by('pk'))
 
     list1 = [x['seqinfo__seq_id'] for x in outinfo]
     list_readtype = [x['seqinfo__read_type'] for x in outinfo]
@@ -705,7 +705,7 @@ def RunSetQC2(request, setqc_pk):
                    values('seqinfo__seq_id', 'group_number', 'is_input', 'genome__genome_name',
                           'label', 'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__sample_id',
                           'seqinfo__libraryinfo__sampleinfo__species', 'seqinfo__libraryinfo__experiment_type',
-                          'seqinfo__machine__machine_name')).order_by('pk')
+                          'seqinfo__machine__machine_name').order_by('pk'))
 
     list1 = [x['seqinfo__seq_id'] for x in outinfo]
     list_readtype = [x['seqinfo__read_type'] for x in outinfo]
