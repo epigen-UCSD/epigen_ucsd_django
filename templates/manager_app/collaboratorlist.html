@@ -18,22 +18,20 @@
                   <th scope="col">last_name</th>
                   <th scope="col">email</th>
                   <th scope="col">phone</th>
-                  <th scope="col">email</th>
                   <th scope="col">fiscal_index</th>
                 </tr>
               </thead>
               <tbody>
                 {% for collab in collab_list %}
                 <tr>
-                  <td>{{ collab.person_id__groups__name | default_if_none:"" }}</td>
-                  <td>{{ collab.role }}</td>
-                  <td>{{ collab.person_id__username }}</td>
+                  <td>{{ collab.group__name | default_if_none:"" }}</td>
+                  <td>{{ collab.role | default_if_none:"" }}</td>
+                  <td>{{ collab.person_id__username | default_if_none:""}}</td>
                   <td>{{ collab.person_id__first_name | default_if_none:"" }}</td>
                   <td>{{ collab.person_id__last_name | default_if_none:"" }}</td>
-                  <td>{{ collab.person_id__email | default_if_none:"" }}</td>
-                  <td>{{ collab.cell_phone | default_if_none:"" }}</td>
-                  <td>{{ collab.email | default_if_none:"" }}</td>
-                  <td>{{ collab.person_index__index_name | default_if_none:"" }}</td>
+                  <td>{{ collab.email | default_if_none:"" | join:","}}</td>
+                  <td>{{ collab.phone | default_if_none:"" | join:","}}</td>
+                  <td>{{ collab.index | default_if_none:"" | join:","}}</td>
                   
                 </tr>
                 {% empty %}

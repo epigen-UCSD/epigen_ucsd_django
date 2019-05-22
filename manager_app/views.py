@@ -13,11 +13,11 @@ from epigen_ucsd_django.shared import is_member
 
 def CollaboratorListView(request):
     collabs = CollaboratorPersonInfo.objects.all().select_related('person_id').prefetch_related('person_id__groups','person_index_set')
+    print(collabs.count())
     collabs_list = collabs.values(\
-        'person_id__groups__name','person_id__username',\
+        'group__name','person_id__username',\
         'person_id__first_name','person_id__last_name',\
-        'person_id__email','cell_phone','email','role'\
-        ,'person_index__index_name')
+        'phone','email','role','index')
 
     context = {
         'collab_list':collabs_list,

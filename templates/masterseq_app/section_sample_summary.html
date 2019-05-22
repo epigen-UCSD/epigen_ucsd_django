@@ -45,31 +45,27 @@
                       </tr>
                       <tr>
                         <th>Research Contact:</th> 
-                        <td>{{ researchperson.first_name }}<span> <span>{{ researchperson.last_name }}</td>
+                        <td>{{ researchperson_name | default_if_none:"" }}</td>
                       </tr>
                       <tr>
                         <th>Research Contact email:</th> 
-                        <td>{{ researchperson.email | default_if_none:""}}</td>
+                        <td>{{ sampleinfo.research_email | default_if_none:""}}</td>
                       </tr>
                       <tr>
                         <th>Research Contact phone:</th> 
-                        <td>{{ researchperson_phone | default_if_none:"" }}</td>
+                        <td>{{ sampleinfo.research_phone | default_if_none:"" }}</td>
                       </tr>
                       <tr>
                         <th>Fiscal Contact:</th> 
-                        <td>{{ fiscalperson.first_name }}<span> <span>{{ fiscalperson.last_name }}</td>
+                        <td>{{ fiscalperson_name }}</td>
                       </tr>
                       <tr>
                         <th>Fiscal Contact email:</th> 
-                        <td>{{ fiscalperson.email | default_if_none:""}}</td>
-                      </tr>
-                      <tr>
-                        <th>Fiscal Contact phone:</th> 
-                        <td>{{ fiscalperson_phone | default_if_none:"" }}</td>
+                        <td>{{ sampleinfo.fiscal_email | default_if_none:""}}</td>
                       </tr>
                       <tr>
                         <th>index:</th> 
-                        <td>{{ index | default_if_none:""}}</td>
+                        <td>{{ sampleinfo.fiscal_index | default_if_none:""}}</td>
                       </tr>
                     </tbody>                                     
                   </table>

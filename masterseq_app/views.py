@@ -871,23 +871,19 @@ def SampleDetailView(request, pk):
                 'read_length', 'read_type', 'total_reads']
     libinfo = sampleinfo.libraryinfo_set.all().select_related('protocalinfo')
     seqs = SeqInfo.objects.none()
+    try:
+        researchperson=CollaboratorPersonInfo.objects.get(email__contains=[sampleinfo.research_email])
+        researchperson_name=researchperson.person_id.first_name+' '+researchperson.person_id.last_name
+    except:
+        researchperson_name=''
+    try:
+        fiscalperson=CollaboratorPersonInfo.objects.get(email__contains=[sampleinfo.fiscal_email])
+        fiscalperson_name=fiscalperson.person_id.first_name+' '+fiscalperson.person_id.last_name
+    except:
+        fiscalperson_name=''
     for lib in libinfo:
         seqinfo = lib.seqinfo_set.all().select_related('machine')
         seqs = seqs | seqinfo
-    try:
-        researchperson = sampleinfo.research_person.person_id
-        researchperson_phone = sampleinfo.research_person.cell_phone
-    except:
-        researchperson = ''
-        researchperson_phone = ''
-    try:
-        fiscalperson = sampleinfo.fiscal_person_index.person.person_id
-        fiscalperson_phone = sampleinfo.fiscal_person_index.person.cell_phone
-        index = sampleinfo.fiscal_person_index.index_name
-    except:
-        fiscalperson = ''
-        fiscalperson_phone = ''
-        index = ''
     groupinfo = sampleinfo.group
     piname = []
  
@@ -900,11 +896,8 @@ def SampleDetailView(request, pk):
     context = {
         'groupinfo': groupinfo,
         'piname': ';'.join(piname),
-        'researchperson': researchperson,
-        'researchperson_phone': researchperson_phone,
-        'index': index,
-        'fiscalperson': fiscalperson,
-        'fiscalperson_phone': fiscalperson_phone,
+        'researchperson_name': researchperson_name,
+        'fiscalperson_name': fiscalperson_name,
         'summaryfield': summaryfield,
         'requestedfield': requestedfield,
         'sampleinfo': sampleinfo,
