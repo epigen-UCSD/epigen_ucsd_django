@@ -79,8 +79,8 @@ def main():
 									else:
 										groupbelong[fiscalname] = piname		
 
-								#group_name = '_'.join([x for x in piname.title().split(' ')])+'_group'
-								group_name = piname.title()
+								group_name = '_'.join([x for x in piname.title().split(' ')])+'_group'
+								#group_name = piname.title()
 								#print(group_name)
 								if fields[1].strip() == 'Arima':
 									piname = 'Siddarth Selvaraj'

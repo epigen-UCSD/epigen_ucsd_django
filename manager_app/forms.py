@@ -7,7 +7,7 @@ import string
 class UserForm(forms.ModelForm):
 	class Meta:
 		model = User
-		fields = ('username','first_name','last_name','email','password')
+		fields = ('username','first_name','last_name','password')
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		alphabet = string.ascii_letters + string.digits
@@ -16,7 +16,8 @@ class UserForm(forms.ModelForm):
 class CollaboratorPersonForm(forms.ModelForm):
 	class Meta:
 		model = CollaboratorPersonInfo
-		fields = ('cell_phone','role')
+		fields = ('email','phone','index')
+
 class GroupForm(forms.Form):
 	name = forms.CharField(\
 		label='Group Name',
@@ -49,4 +50,11 @@ class PersonIndexCreateForm(forms.ModelForm):
 	class Meta:
 		model = Person_Index
 		fields = ('index_name','person')
+
+class CollabInfoAddForm(forms.ModelForm):
+	person_id = forms.ModelChoiceField(queryset=User.objects.all(),\
+		widget=forms.TextInput({'class': 'ajax_collabinput_form', 'size': 50}), required=False)
+	class Meta:
+		model = CollaboratorPersonInfo
+		fields = ('person_id','email','phone','index')
 

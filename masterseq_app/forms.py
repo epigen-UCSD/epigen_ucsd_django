@@ -304,40 +304,42 @@ class SamplesCreationForm(forms.Form):
 				resname = fields[2].strip() if fields[2].strip() not in ['NA','N/A'] else ''
 				resemail = fields[3].strip().lower() if fields[3].strip() not in ['NA','N/A'] else ''
 				resphone = re.sub('-| |\.|\(|\)|ext', '', fields[4].strip()) if fields[4].strip() not in ['NA','N/A'] else ''
-				if resname:
+				if resemail:
 					if not gname or not Group.objects.filter(name=gname).exists():
 						invalidgroup.append(fields[1].strip())
 						flaggroup = 1
 					else:
-						if not User.objects.filter(groups__name__in=[gname]).filter(first_name=resname.split(' ')[0],last_name=resname.split(' ')[1],email=resemail).exists():						   
-							invalidresearch.append(resname+'_'+resemail)
-							flagresearch = 1
+						thisgroup = Group.objects.get(name=gname)
+						if thisgroup.collaboratorpersoninfo_set.all().filter(email__contains=[resemail]).exists():
+							thisresearch = thisgroup.collaboratorpersoninfo_set.all().get(email__contains=[resemail])
+							if resname:
+								if not thisresearch.person_id.last_name in resname.split(' '):
+									flagresearch = 1
 						else:
-							resuser = User.objects.get(first_name=resname.split(' ')[0],last_name=resname.split(' ')[1],email=resemail)
-							if not CollaboratorPersonInfo.objects.filter(person_id=resuser,cell_phone=resphone).exists():
-								invalidresearchphone.append(resphone+' of '+resname)
-								flagresearchphone = 1
+							if not resname:
+								flagresearch = 1
+							elif len(resname.split(' '))<2:
+								flagresearch = 1
+
 				fiscalname = fields[5].strip() if fields[5].strip() not in ['NA','N/A'] else ''
 				fiscalemail = fields[6].strip().lower() if fields[6].strip() not in ['NA','N/A'] else ''
 				indname = fields[7].strip() if fields[7].strip() not in ['NA','N/A'] else ''
-				if fiscalname:
+				if fiscalemail:
 					if not gname or not Group.objects.filter(name=gname).exists():
 						invalidgroup.append(fields[1].strip())
 						flaggroup = 1
 					else:
-						if not User.objects.filter(groups__name__in=[gname]).filter(first_name=fiscalname.split(' ')[0],last_name=fiscalname.split(' ')[1],email=fiscalemail).exists():						 
-							invalidfiscal.append(fiscalname+'_'+fiscalemail)
-							flagfiscal = 1
+						thisgroup = Group.objects.get(name=gname)
+						if thisgroup.collaboratorpersoninfo_set.all().filter(email__contains=[fiscalemail]).exists():
+							thisfiscal = thisgroup.collaboratorpersoninfo_set.all().get(email__contains=[fiscalemail])
+							if fiscalname:
+								if not thisfiscal.person_id.last_name in fiscalname.split(' '):
+									flagfiscal = 1				
 						else:
-							fisuser = User.objects.get(first_name=fiscalname.split(' ')[0],last_name=fiscalname.split(' ')[1],email=fiscalemail)
-							fiscolla = CollaboratorPersonInfo.objects.get(person_id=fisuser)
-							if not Person_Index.objects.filter(person=fiscolla,index_name=indname).exists():
-								invalidfisindex.append(indname+' of '+fiscalname)
-								flagfisindex = 1
-
-
-				
-
+							if not fiscalname:
+								flagfiscal = 1
+							elif len(fiscalname.split(' '))<2:
+								flagfiscal = 1
 				# samprep = fields[12].split('(')[0].strip()
 				# if samprep == 'flash frozen':
 				# 	samprep = 'flash frozen without cryopreservant'
@@ -383,7 +385,7 @@ class SamplesCreationForm(forms.Form):
 			raise forms.ValidationError(
 				'Invalid groups:'+','.join(set(invalidgroup))+'.<p style="color:green;">\
 				Please check for accurary of the group name in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>. \
-				<br>If this is a new group please contact Dave to add in.</p>')
+				<br>If this is a new group please contact the manager to add in.</p>')
 		if flagresearch == 1:
 			raise forms.ValidationError(
 				'Invalid research contacts:'+','.join(invalidresearch)+'.<p style="color:green;">\
@@ -391,13 +393,7 @@ class SamplesCreationForm(forms.Form):
 				in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>:\
 				(1).First name, last name and email match with profile in the database.\
 				(2).The user is in the right group you provided.<br>\
-				If this is a new reasearch contact, please add it through\
-				<a href='+reverse('manager_app:collab_add')+'>Add a Collaborator.</a></p>')
-		if flagresearchphone == 1:
-			raise forms.ValidationError(
-				'Invalid research contact phone:'+','.join(invalidresearchphone)+'.<p style="color:green;">\
-				Please check for accurary of the phone number in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a> \
-				and update it if necessary.</p>')
+				(3).The user name is not full name.<br>')
 		if flagfiscal == 1:
 			raise forms.ValidationError(
 				'Invalid fiscal contacts:'+','.join(invalidfiscal)+'.<p style="color:green;">\
@@ -405,14 +401,7 @@ class SamplesCreationForm(forms.Form):
 				in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>:\
 				(1).First name, last name and email match with profile in the database.\
 				(2).The user is in the right group you provided.<br>\
-				If this is a new fiscal contact, please add it through\
-				<a href='+reverse('manager_app:collab_add')+'>Add a Collaborator.</a></p>')
-		if flagfisindex == 1:
-			raise forms.ValidationError(
-				'Invalid fiscal index number:'+','.join(invalidfisindex)+'.<p style="color:green;">\
-				Please check for accurary of the index number in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>. \
-				<br>If this is a new index please add it through\
-				<a href='+reverse('manager_app:index_add')+'>Add a new Collaborator-Index.</a></p>')
+				(3).The user name is not full name.<br>')
 		sampselfduplicate = SelfUniqueValidation(selfsamps)
 		if len(sampselfduplicate) > 0:
 			raise forms.ValidationError(

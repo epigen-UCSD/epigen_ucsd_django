@@ -69,8 +69,8 @@ def main():
 							piname = fields[1].strip()							
 							researchname = fields[2].strip()
 							fiscalname = fields[5].strip()	
-							#group_name = '_'.join([x for x in piname.title().split(' ')])+'_group'
-							group_name = piname.title()
+							group_name = '_'.join([x for x in piname.title().split(' ')])+'_group'
+							#group_name = piname.title()
 							#print(group_name)							
 							objgroup, created = Group.objects.get_or_create(name=group_name)
 							sampinfo.group = objgroup
@@ -244,7 +244,15 @@ def main():
 		fw.write('\n')
 		fw.write('\n'.join(writeline_final))
 		fw.write('\n')
-	print('the end!')	
+	print('the end!')
+	emails_all = []
+	for cc in CollaboratorPersonInfo.objects.all():
+		if cc.email:
+			emails_all+=cc.email
+	for x in removenone(emails_all):
+		if CollaboratorPersonInfo.objects.filter(email__overlap=[x]).count()>1:
+			print(x)
+
 
 if __name__ == '__main__':
 	main()

@@ -115,8 +115,10 @@ class SampleInfo(models.Model):
     seq_type_requested = models.CharField(max_length=50, blank=True, null=True)
     group = models.ForeignKey(
         Group, on_delete=models.CASCADE, blank=True, null=True)
+    research_name = models.CharField(max_length=200, blank=True, null=True)
     research_email = models.CharField(max_length=200, blank=True, null=True)
     research_phone = models.CharField(max_length=200, blank=True, null=True)
+    fiscal_name = models.CharField(max_length=200, blank=True, null=True)
     fiscal_email = models.CharField(max_length=200, blank=True, null=True)
     fiscal_index = models.CharField(max_length=200, blank=True, null=True)
 

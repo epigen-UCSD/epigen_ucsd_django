@@ -1,7 +1,8 @@
 from django.shortcuts import redirect,render,get_object_or_404
 from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index
 from django.db import transaction
-from .forms import UserForm,CollaboratorPersonForm,GroupForm,GroupCreateForm,PersonIndexForm,PersonIndexCreateForm
+from .forms import UserForm,CollaboratorPersonForm,GroupForm,\
+GroupCreateForm,PersonIndexForm,PersonIndexCreateForm,CollabInfoAddForm
 from django.contrib import messages
 from django.contrib.auth.models import User,Group
 from django.http import JsonResponse
@@ -64,6 +65,37 @@ def CollaboratorCreateView(request):
         return render(request, 'manager_app/profile_add_nogroup.html', context)
 
 @transaction.atomic
+def GroupAccountCreateView(request):
+    user_form = UserForm(request.POST or None)
+    profile_form = CollaboratorPersonForm(request.POST or None)
+    group_form = GroupCreateForm(request.POST or None)
+
+    if request.method=='POST' and 'profile_save' in request.POST:
+        if user_form.is_valid() and profile_form.is_valid() and group_form.is_valid():
+            this_user = user_form.save()
+            this_profile = profile_form.save(commit=False)
+            this_profile.person_id = this_user            
+            this_group = group_form.save()
+            this_group.user_set.add(this_user)
+            this_profile.group = this_group
+            this_profile.save()
+
+            messages.success(request,'Your profile was successfully updated!')
+            return redirect('manager_app:collab_list')
+        else:
+            messages.error(request,'Please correct the error below.')
+    # elif request.method=='POST' and 'group_save' in request.POST:
+    #     if group_create_form.is_valid():
+    #         group_create_form.save()
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'group_form':group_form,
+    }
+ 
+    return render(request, 'manager_app/collab_group_account_add.html', context)
+
+@transaction.atomic
 def AjaxGroupCreateView(request):
     data = {}
     if request.method == 'POST':
@@ -106,6 +138,25 @@ def IndexCreateView(request):
         'person_index_form':person_index_form,
     }
     return render(request, 'manager_app/index_add.html', context)
+
+@transaction.atomic
+def CollabInfoAddView(request):
+    colab_info_add_form = CollabInfoAddForm(request.POST or None)
+    if request.method == 'POST':
+        post = request.POST.copy()
+        print(post['person_id'].split(':')[0])
+        obj = get_object_or_404(User, id=post['person_id'].split(':')[0])
+        post['person_id'] = obj.id
+        colab_info_add_form = CollabInfoAddForm(post)
+        if colab_info_add_form.is_valid():
+            colab_info_add_form.save()
+            return redirect('manager_app:collab_list')
+    context = {
+        'colab_info_add_form':colab_info_add_form,
+    }
+    return render(request, 'manager_app/collab_info_add.html', context)
+
+
 def load_collabs(request):
     q = request.GET.get('term', '')
     #collabusers = User.objects.filter(Q(first_name__icontains = q)|Q(last_name__icontains = q)).values('first_name','last_name')[:20]
@@ -115,6 +166,29 @@ def load_collabs(request):
         collabusers = collabusers | f.user_set.all()
     results = []
     for u in collabusers:
+
+        for gg in u.groups.all():
+            uu = {}
+            uu['id'] = str(u.id)+': '+u.first_name+' '+u.last_name + \
+                '('+gg.name+')'
+            uu['label'] = str(u.id)+': '+u.first_name+' ' + \
+                u.last_name+'('+gg.name+')'
+            uu['value'] = str(u.id)+': '+u.first_name+' ' + \
+                u.last_name+'('+gg.name+')'
+            results.append(uu)
+    return JsonResponse(results, safe=False)
+
+def load_collabs_old(request):
+    q = request.GET.get('term', '')
+    #collabusers = User.objects.filter(Q(first_name__icontains = q)|Q(last_name__icontains = q)).values('first_name','last_name')[:20]
+    collabusers = User.objects.filter(
+        Q(first_name__icontains=q) | Q(last_name__icontains=q))
+    for f in Group.objects.filter(name__icontains=q):
+        collabusers = collabusers | f.user_set.all()
+    results = []
+    for u in collabusers:
+        print(u)
+        print(u.collaboratorpersoninfo_set.first())
         uu = {}
         uu['id'] = str(u.collaboratorpersoninfo_set.first().id)+': '+u.first_name+' '+u.last_name + \
             '('+u.groups.all().first().name+')'

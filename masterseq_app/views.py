@@ -17,6 +17,22 @@ from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index
 import xlwt
 from django.db.models import Prefetch
 import re
+import secrets,string
+from random import randint
+
+def nonetolist(inputthing):
+    if not inputthing:
+        return []
+    else:
+        return inputthing
+
+def removenone(inputlist):
+    #remove None and duplicate value in inputlist, e.g. ['fe',None,'','gg'] to ['fe','gg']
+    if not inputlist:
+        return []
+    else:
+        y = [x for x in inputlist if x]
+        return list(sorted(set(y),key=y.index))
 # Create your views here.
 # @transaction.atomic
 # def SampleCreateView(request):
@@ -132,34 +148,139 @@ def SamplesCreateView(request):
     sample_form = SamplesCreationForm(request.POST or None)
     tosave_list = []
     data = {}
+    newuserrequired = 0
+    newinforequired = 0
     if sample_form.is_valid():
         sampleinfo = sample_form.cleaned_data['samplesinfo']
         # print(sequencinginfo)
         for lineitem in sampleinfo.strip().split('\n'):
             fields = lineitem.strip('\n').split('\t')
             samindex = fields[21].strip()
+            newresuserflag = 0
+            newresuser_first_name = ''
+            newresuser_last_name = ''
+            newresusername = ''
+            newresinfoflag = 0
+            new_resemail = ''
+            new_resphone = ''           
+            newfisuserflag = 0
+            newfisinfoflag = 0
+            newfisuser_first_name = ''
+            newfisuser_last_name = ''
+            newfisusername = ''
+            new_fisemail = ''
+            new_fisindex = ''
             gname = fields[1].strip() if fields[1].strip() not in ['NA','N/A'] else ''
-            if gname:
-                group_tm = Group.objects.get(name=gname)
-            else:
-                group_tm = None
             resname = fields[2].strip() if fields[2].strip() not in ['NA','N/A'] else ''
             resemail = fields[3].strip().lower() if fields[3].strip() not in ['NA','N/A'] else ''
             resphone = re.sub('-| |\.|\(|\)|ext', '', fields[4].strip()) if fields[4].strip() not in ['NA','N/A'] else ''
-            if resname:
-                resuser = User.objects.get(first_name=resname.split(' ')[0],last_name=resname.split(' ')[1],email=resemail)
-                resperson = CollaboratorPersonInfo.objects.get(person_id=resuser,cell_phone=resphone)
-            else:
-                resperson = None
-            fiscalname = fields[5].strip() if fields[5].strip() not in ['NA','N/A'] else ''
-            fiscalemail = fields[6].strip().lower() if fields[6].strip() not in ['NA','N/A'] else ''
+            if resemail:
+                thisgroup = Group.objects.get(name=gname)
+                if thisgroup.collaboratorpersoninfo_set.all().filter(email__contains=[resemail]).exists():
+                    resperson = thisgroup.collaboratorpersoninfo_set.all().get(email__contains=[resemail])
+                    resname = resperson.person_id.first_name+' '+resperson.person_id.last_name
+                else:
+                    try:
+                        resuser = User.objects.filter(groups__name__in=[gname]).get(first_name=resname.split(' ')[0],last_name=resname.split(' ')[1])
+                        resperson,created = CollaboratorPersonInfo.objects.get_or_create(person_id=resuser,group=thisgroup)
+                        newinforequired = 1
+                        newresinfoflag = 1
+                        newresuser_first_name = resname.split(' ')[0]
+                        newresuser_last_name = resname.split(' ')[1]
+                        new_resemail = resemail
+                        if resphone:
+                            if resphone not in resperson.phone:
+                                new_resphone = resphone
+
+                    except:
+                        newuserrequired = 1
+                        newresuserflag = 1
+                        newresuser_first_name = resname.split(' ')[0]
+                        newresuser_last_name = resname.split(' ')[1]
+                        newresusername = newresuser_first_name[0].lower()+newresuser_last_name.lower()
+                        if User.objects.filter(username=newresusername).exists():
+                            newresusername = newresuser_first_name[0]+str(randint(0, 9))+newresuser_last_name.lower()                        
+                        newresuser_email = resemail
+                        newresuser_phone = resphone
+
+            elif resname:
+                try:
+                    resuser = User.objects.filter(groups__name__in=[gname]).get(first_name=resname.split(' ')[0],last_name=resname.split(' ')[1])
+                    resperson,created = CollaboratorPersonInfo.objects.get_or_create(person_id=resuser,group=thisgroup)
+                    newinforequired = 1
+                    newresinfoflag = 1
+                    newresuser_first_name = resname.split(' ')[0]
+                    newresuser_last_name = resname.split(' ')[1]
+                    new_resemail = ''
+                    if resphone:
+                        if resphone not in resperson.phone:
+                            new_resphone = resphone
+                except:
+                    newuserrequired = 1
+                    newresuserflag = 1
+                    newresuser_first_name = resname.split(' ')[0]
+                    newresuser_last_name = resname.split(' ')[1]
+                    newresusername = newresuser_first_name[0].lower()+newresuser_last_name.lower()
+                    if User.objects.filter(username=newresusername).exists():
+                        newresusername = newresuser_first_name[0]+str(randint(0, 9))+newresuser_last_name.lower()                        
+                    newresuser_email = resemail
+                    newresuser_phone = resphone              
+
+            fisname = fields[5].strip() if fields[5].strip() not in ['NA','N/A'] else ''
+            fisemail = fields[6].strip().lower() if fields[6].strip() not in ['NA','N/A'] else ''
             indname = fields[7].strip() if fields[7].strip() not in ['NA','N/A'] else ''
-            if fiscalname:
-                fisuser = User.objects.get(first_name=fiscalname.split(' ')[0],last_name=fiscalname.split(' ')[1],email=fiscalemail)
-                fiscolla = CollaboratorPersonInfo.objects.get(person_id=fisuser)
-                fisc_index = Person_Index.objects.get(person=fiscolla,index_name=indname)
-            else:
-                fisc_index = None
+            if fisemail:
+                thisgroup = Group.objects.get(name=gname)
+                if thisgroup.collaboratorpersoninfo_set.all().filter(email__contains=[fisemail]).exists():
+                    fisperson = thisgroup.collaboratorpersoninfo_set.all().get(email__contains=[fisemail])
+                    fisname = fisperson.person_id.first_name+' '+fisperson.person_id.last_name
+                else:
+                    try:
+                        fisuser = User.objects.filter(groups__name__in=[gname]).get(first_name=fisname.split(' ')[0],last_name=fisname.split(' ')[1])
+                        fisperson,created = CollaboratorPersonInfo.objects.get_or_create(person_id=fisuser,group=thisgroup)
+                        newinforequired = 1
+                        newfisinfoflag = 1
+                        newfisuser_first_name = fisname.split(' ')[0]
+                        newfisuser_last_name = fisname.split(' ')[1]
+                        new_fisemail = fisemail
+                        if indname:
+                            if indname not in fisperson.index:
+                                new_fisindex = indname
+
+                    except:
+                        newuserrequired = 1
+                        newfisuserflag = 1
+                        newfisuser_first_name = fisname.split(' ')[0]
+                        newfisuser_last_name = fisname.split(' ')[1]
+                        newfisusername = newfisuser_first_name[0].lower()+newfisuser_last_name.lower()
+                        if User.objects.filter(username=newfisusername).exists():
+                            newfisusername = newfisuser_first_name[0]+str(randint(0, 9))+newfisuser_last_name.lower()                        
+                        newfisuser_email = fisemail
+                        newfisuser_index = indname
+
+            elif fisname:
+                try:
+                    fisuser = User.objects.filter(groups__name__in=[gname]).get(first_name=fisname.split(' ')[0],last_name=fisname.split(' ')[1])
+                    fisperson,created = CollaboratorPersonInfo.objects.get_or_create(person_id=fisuser,group=thisgroup)
+                    newinforequired = 1
+                    newfisinfoflag = 1
+                    newfisuser_first_name = fisname.split(' ')[0]
+                    newfisuser_last_name = fisname.split(' ')[1]
+                    new_fisemail = ''
+                    if indname:
+                        if indname not in fisperson.index:
+                            new_fisindex = indname
+                except:
+                    newuserrequired = 1
+                    newfisuserflag = 1
+                    newfisuser_first_name = fisname.split(' ')[0]
+                    newfisuser_last_name = fisname.split(' ')[1]
+                    newfisusername = newfisuser_first_name[0].lower()+newfisuser_last_name.lower()
+                    if User.objects.filter(username=newfisusername).exists():
+                        newfisusername = newfisuser_first_name[0]+str(randint(0, 9))+newfisuser_last_name.lower()                        
+                    newfisuser_email = fisemail
+                    newfisuser_phone = fisphone              
+
 
             try:
                 samnotes = ';'.join([fields[20].strip(),fields[28].strip()]).strip(';')
@@ -209,8 +330,14 @@ def SamplesCreateView(request):
             data[samid] = {
                 'sample_index': samindex,
                 'group':gname,
-                'research_person':resname,
-                'fiscal_person_index':fiscalname+':'+indname,
+                'research_name':resname, 
+                'research_email':resemail,
+                'research_phone':resphone,
+                'user_index':'',
+                'fiscal_name':fisname, 
+                'fiscal_email':fisemail,
+                'fiscal_phone':'',
+                'fiscal_index':indname,
                 'team_member': membername,
                 'date': samdate,
                 'date_received':date_received,
@@ -227,43 +354,147 @@ def SamplesCreateView(request):
                 'seq_depth_to_target':seq_depth_to_target_tm,
                 'seq_length_requested':seq_length_requested_tm,
                 'seq_type_requested':seq_type_requested_tm,
+                'newresuserflag':newresuserflag,
+                'newresinfoflag':newresinfoflag,
+                'newfisuserflag':newfisuserflag,
+                'newfisinfoflag':newfisinfoflag,
+                'user_first_name':newresuser_first_name,
+                'user_last_name':newresuser_last_name,
+                'user_username':newresusername,
+                'fisuser_first_name':newfisuser_first_name,
+                'fisuser_last_name':newfisuser_last_name,
+                'fisuse_username':newfisusername,
+                'new_resemail': new_resemail,
+                'new_resphone': new_resphone,
+                'new_fisemail': new_fisemail,
+                'new_fisindex': new_fisindex,
+                'new_resindex':'',
+                'new_fisphone':'',
+
             }
-            tosave_item = SampleInfo(
-                sample_index=samindex,
-                group=group_tm,
-                research_person=resperson,
-                fiscal_person_index=fisc_index,
-                sample_id=samid,
-                species=samspecies,
-                sample_type=samtype,
-                preparation=samprep,
-                description=samdescript,
-                unit=unit,
-                sample_amount=sample_amount,
-                fixation=fixation,
-                notes=samnotes,
-                team_member=User.objects.get(username=membername),
-                date=samdate,
-                date_received=date_received,
-                storage=storage_tm,
-                service_requested=service_requested_tm,
-                seq_depth_to_target=seq_depth_to_target_tm,
-                seq_length_requested=seq_length_requested_tm,
-                seq_type_requested=seq_type_requested_tm,
-            )
-            tosave_list.append(tosave_item)
+
         if 'Save' in request.POST:
+            for k,v in data.items():
+                if v['group']:
+                    group_tm = Group.objects.get(name=v['group'])
+                else:
+                    group_tm = None
+                if v['newresuserflag']==1:
+                    alphabet = string.ascii_letters + string.digits
+                    passwordrand = ''.join(secrets.choice(alphabet) for i in range(10))
+                    resaccount = User.objects.create_user(
+                        username = v['user_username'],
+                        first_name = v['user_first_name'],
+                        last_name = v['user_last_name'],
+                        password = passwordrand,
+                        )
+                    group_tm.user_set.add(resaccount)
+                    resperson = CollaboratorPersonInfo.objects.create(
+                        person_id=resaccount,
+                        group=group_tm,
+                        email=removenone([v['research_email']]),
+                        phone=removenone([v['research_phone']]),
+                        )
+                if v['newfisuserflag']==1:
+                    alphabet = string.ascii_letters + string.digits
+                    passwordrand = ''.join(secrets.choice(alphabet) for i in range(10))
+                    fisaccount = User.objects.create_user(
+                        username = v['fisuse_username'],
+                        first_name = v['fisuser_first_name'],
+                        last_name = v['fisuser_last_name'],
+                        password = passwordrand,
+                        )
+                    group_tm.user_set.add(fisaccount)
+                    fisperson = CollaboratorPersonInfo.objects.create(
+                        person_id=fisaccount,
+                        group=group_tm,
+                        email=removenone([v['fiscal_email']]),
+                        index=removenone([v['fiscal_index']]),
+                        )
+                if v['newresinfoflag']==1:
+                    resuser = User.objects.filter(groups__name__in=[v['group']]).\
+                    get(first_name=v['research_name'].split(' ')[0],last_name=v['research_name'].split(' ')[1])
+                    resperson = CollaboratorPersonInfo.objects.get(person_id=resuser,group=group_tm)
+                    if v['new_resemail']:
+                        current_email = nonetolist(resperson.email)
+                        current_email.insert(0,v['new_resemail'])
+                        resperson.email = removenone(current_email)
+                    if v['new_resphone']:
+                        current_phone = nonetolist(resperson.phone)
+                        current_phone.insert(0,v['new_resphone'])
+                        resperson.phone = removenone(current_phone)
+                    resperson.save()
+
+                if v['newfisinfoflag']==1:
+                    fisuser = User.objects.filter(groups__name__in=[v['group']]).\
+                    get(first_name=v['fiscal_name'].split(' ')[0],last_name=v['fiscal_name'].split(' ')[1])
+                    fisperson = CollaboratorPersonInfo.objects.get(person_id=fisuser,group=group_tm
+                        )
+
+                    if v['new_fisemail']:
+                        current_email = nonetolist(fisperson.email)
+                        current_email.insert(0,v['new_fisemail'])
+                        resperson.email = removenone(current_email)
+                    if v['new_fisindex']:
+                        current_index = nonetolist(fisperson.index)
+                        current_index.insert(0,v['new_fisindex'])
+                        resperson.index = removenone(current_index)
+                    fisperson.save()
+ 
+                tosave_item = SampleInfo(
+                    sample_index=v['sample_index'],
+                    group=group_tm,
+                    research_name=v['research_name'],
+                    research_email=v['research_email'],
+                    research_phone=v['research_phone'],
+                    fiscal_name=v['fiscal_name'],
+                    fiscal_email=v['fiscal_email'],
+                    fiscal_index=v['fiscal_index'],
+                    sample_id=k,
+                    species=v['species'],
+                    sample_type=v['sample_type'],
+                    preparation=v['preparation'],
+                    description=v['description'],
+                    unit=v['unit'],
+                    sample_amount=v['sample_amount'],
+                    fixation=v['fixation'],
+                    notes=v['notes'],
+                    team_member=User.objects.get(username=v['team_member']),
+                    date=v['date'],
+                    date_received=v['date_received'],
+                    storage=v['storage'],
+                    service_requested=v['service_requested'],
+                    seq_depth_to_target=v['seq_depth_to_target'],
+                    seq_length_requested=v['seq_length_requested'],
+                    seq_type_requested=v['seq_type_requested'],
+                )
+                tosave_list.append(tosave_item)                
             SampleInfo.objects.bulk_create(tosave_list)
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
-            displayorder = ['sample_index','group','research_person','fiscal_person_index','description', 'team_member', 'date','date_received','species', 'sample_type',
+            displayorder = ['sample_index','group','research_name','research_email',\
+            'research_phone','fiscal_name', 'fiscal_email','fiscal_index','description', \
+            'team_member', 'date','date_received','species', 'sample_type',
                             'preparation', 'fixation','sample_amount','unit',
                              'notes','storage','service_requested','seq_depth_to_target',
                             'seq_length_requested','seq_type_requested']
+            displayorder2 = ['user_username','user_first_name','user_last_name',\
+            'research_email','research_phone','user_index']
+            displayorder3 = ['fisuse_username','fisuser_first_name','fisuser_last_name',\
+            'fiscal_email','fiscal_phone','fiscal_index']
+            displayorder4 = ['group','user_first_name','user_last_name','new_resemail','new_resphone','new_resindex']
+            displayorder5 = ['group','fisuser_first_name','fisuser_last_name','new_fisemail','new_fisphone','new_fisindex']
+
             context = {
+                'newuserrequired': newuserrequired,
+                'newinforequired':newinforequired,
                 'sample_form': sample_form,
-                'modalshow': 1,
+                'modalshowplus': 1,
                 'displayorder': displayorder,
+                'displayorder2': displayorder2,
+                'displayorder3': displayorder3,
+                'displayorder4': displayorder4,
+                'displayorder5': displayorder5,
                 'data': data,
             }
 
