@@ -27,6 +27,8 @@ class CollaboratorPersonInfo(models.Model):
 	role_choice = choice_for_roles
 	role = models.CharField(max_length=200,choices=role_choice)
 	notes = models.TextField(blank=True)
+	class Meta:
+		unique_together = ('person_id','group')
 
 class Person_Index(models.Model):
 	index_name = models.CharField(max_length=200,blank=True,null=True)
@@ -36,7 +38,7 @@ class Person_Index(models.Model):
 
 class Group_Institution(models.Model):
 	group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
-	institution = models.CharField(max_length=50,choices=choice_for_institution)
+	institution = models.CharField(max_length=50,choices=choice_for_institution,default='UCSD')
 
 
 	

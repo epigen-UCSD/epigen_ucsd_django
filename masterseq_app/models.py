@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
-from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index
+from epigen_ucsd_django.models import CollaboratorPersonInfo
 # Create your models here.
 
 

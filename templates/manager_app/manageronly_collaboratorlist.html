@@ -19,6 +19,7 @@
                   <th scope="col">email</th>
                   <th scope="col">phone</th>
                   <th scope="col">fiscal_index</th>
+                  <th scope="col">initial_password</th>
                 </tr>
               </thead>
               <tbody>
@@ -32,6 +33,7 @@
                   <td>{{ collab.email | default_if_none:"" | join:","}}</td>
                   <td>{{ collab.phone | default_if_none:"" | join:","}}</td>
                   <td>{{ collab.index | default_if_none:"" | join:","}}</td>
+                  <td>{{ collab.initial_password | default_if_none:""}}</td>
                 </tr>
                 {% empty %}
                 <li>No Sets yet.</li>

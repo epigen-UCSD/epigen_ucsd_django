@@ -9,7 +9,7 @@
     </div><!-- /.card-header -->
     <div class="card-body">
       <form method="post">{% csrf_token %} 
-        {% for field in group_form %}
+        {% for field in institution_form %}
         <div class="fieldWrapper">
           <p>
             <ul>
@@ -24,8 +24,26 @@
 
             {% if field.help_text %}
             <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
-            {% else %}
-            <span class="fontsize-sm" >Please input the group name </span>
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %}
+
+        {% for field in group_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error}}
+            </li>
+            {% endfor %}
+            </ul>
+
+              Group name {{ field }}
+
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
             {% endif %}
           </p>              
         </div>
@@ -44,11 +62,13 @@
             </ul>
             {% if field.name == 'username'%}
             PI username {{ field }}
+            <span class="fontsize-sm" >PI username will be the group account username</span>
             {% else %}
               {{ field.label_tag }} {{ field }}
-            {% endif %}
+            
             {% if field.help_text %}
             <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
             {% endif %}
           </p>              
         </div>
@@ -84,37 +104,6 @@
   </div><!-- /.card -->      
 </div><!-- /#content --> 
 
-<!-- Modal -->
-<div class="modal fade" id="GroupAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Add a ncdcdew Group</h5>
-
-      </div>
-      
-      <form method="post" action="{% url 'manager_app:ajax_group_add' %}" id="GroupAddAjax">{% csrf_token %} 
-        <div class="modal-body">
-        {% for field in group_create_form %}
-        <div class="fieldWrapper">
-          <p>
-            <p id="errormessage" class="error-message"></p>
-            {{ field.label_tag }} {{ field }}
-            {% if field.help_text %}
-            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
-            {% endif %}
-          </p>              
-        </div><!-- /.fieldWrapper -->  
-        {% endfor %} 
-      </div><!-- /.modal-body -->  
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="submit" name="group_save" class="btn confirm-btn-orange">Save</button>
-      </div><!-- /.modal-footer -->   
-    </form>
-    </div>
-  </div>
-</div>
 
 
 {% endblock %}

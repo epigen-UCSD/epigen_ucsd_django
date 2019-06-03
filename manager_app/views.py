@@ -1,8 +1,9 @@
 from django.shortcuts import redirect,render,get_object_or_404
-from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index
+from epigen_ucsd_django.models import CollaboratorPersonInfo
 from django.db import transaction
 from .forms import UserForm,CollaboratorPersonForm,GroupForm,\
-GroupCreateForm,PersonIndexForm,PersonIndexCreateForm,CollabInfoAddForm
+GroupCreateForm,PersonIndexForm,PersonIndexCreateForm,CollabInfoAddForm,\
+GroupInstitutionCreateForm
 from django.contrib import messages
 from django.contrib.auth.models import User,Group
 from django.http import JsonResponse
@@ -13,17 +14,19 @@ from epigen_ucsd_django.shared import is_member
 
 
 def CollaboratorListView(request):
-    collabs = CollaboratorPersonInfo.objects.all().select_related('person_id').prefetch_related('person_id__groups','person_index_set')
-    print(collabs.count())
+    collabs = CollaboratorPersonInfo.objects.all().select_related('person_id').prefetch_related('person_id__groups')
     collabs_list = collabs.values(\
         'group__name','person_id__username',\
         'person_id__first_name','person_id__last_name',\
-        'phone','email','role','index')
+        'phone','email','role','index','initial_password')
 
     context = {
         'collab_list':collabs_list,
     }
-    return render(request, 'manager_app/collaboratorlist.html', context=context)   
+    if is_member(request.user,'manager'):
+        return render(request, 'manager_app/manageronly_collaboratorlist.html', context)
+    else:
+        return render(request, 'manager_app/collaboratorlist.html', context)
 
 @transaction.atomic
 def CollaboratorCreateView(request):
@@ -69,28 +72,29 @@ def GroupAccountCreateView(request):
     user_form = UserForm(request.POST or None)
     profile_form = CollaboratorPersonForm(request.POST or None)
     group_form = GroupCreateForm(request.POST or None)
+    institution_form = GroupInstitutionCreateForm(request.POST or None)
 
     if request.method=='POST' and 'profile_save' in request.POST:
-        if user_form.is_valid() and profile_form.is_valid() and group_form.is_valid():
+        if user_form.is_valid() and profile_form.is_valid() and group_form.is_valid() and institution_form.is_valid():
             this_user = user_form.save()
             this_profile = profile_form.save(commit=False)
             this_profile.person_id = this_user            
             this_group = group_form.save()
             this_group.user_set.add(this_user)
             this_profile.group = this_group
+            this_profile.initial_password = user_form.cleaned_data['password']
+            this_profile.role = 'PI'
             this_profile.save()
-
-            messages.success(request,'Your profile was successfully updated!')
+            this_inst = institution_form.save(commit=False)
+            this_inst.group = this_group
+            this_inst.save()
             return redirect('manager_app:collab_list')
-        else:
-            messages.error(request,'Please correct the error below.')
-    # elif request.method=='POST' and 'group_save' in request.POST:
-    #     if group_create_form.is_valid():
-    #         group_create_form.save()
+
     context = {
         'user_form': user_form,
         'profile_form': profile_form,
         'group_form':group_form,
+        'institution_form':institution_form,
     }
  
     return render(request, 'manager_app/collab_group_account_add.html', context)

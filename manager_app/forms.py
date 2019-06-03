@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User,Group
-from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index
+from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index,Group_Institution
 import secrets
 import string
 
@@ -36,6 +36,12 @@ class GroupCreateForm(forms.ModelForm):
 	class Meta:
 		model = Group
 		fields = ('name',)
+
+class GroupInstitutionCreateForm(forms.ModelForm):
+	class Meta:
+		model = Group_Institution
+		fields = ('institution',)
+
 class PersonIndexForm(forms.ModelForm):
 	class Meta:
 		model = Person_Index

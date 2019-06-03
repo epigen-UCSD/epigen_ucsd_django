@@ -97,6 +97,7 @@ def main():
 									piperson = CollaboratorPersonInfo.objects.create(
 										person_id = piaccount,
 										group = objgroup,
+										initial_password = passwordrand,
 										role = 'PI'
 										)
 									writeline.append('\t'.join([objgroup.name,nameparse[0],passwordrand,nameparse[1],nameparse[2]]))
@@ -137,6 +138,7 @@ def main():
 											group = objgroup,
 											email= removenone([email_tm]),
 											phone = removenone([phone_tm]),
+											initial_password = passwordrand,
 											role = 'other'
 											)
 										writeline.append('\t'.join([objgroup.name,nameparse[0],passwordrand,nameparse[1],nameparse[2]]))										
@@ -163,7 +165,7 @@ def main():
 										# 		(set([researchperson.notes,email_tm])).strip(';')
 										researchperson.save()
 										#writeline.append('\t'.join([objgroup.name,researchaccount.username,researchaccount.password,researchaccount.first_name,researchaccount.last_name]))
-									
+									sampinfo.research_name = researchname
 									sampinfo.research_email	= email_tm
 									sampinfo.research_phone = phone_tm
 
@@ -193,6 +195,7 @@ def main():
 											email= removenone([email_tm]),
 											phone = removenone([phone_tm]),
 											index = removenone([index_tm]),
+											initial_password = passwordrand,
 											role = 'other'
 											)
 										writeline.append('\t'.join([objgroup.name,nameparse[0],passwordrand,nameparse[1],nameparse[2]]))										
@@ -213,6 +216,7 @@ def main():
 										fiscalperson.cell_phone=None
 										fiscalperson.fiscal_index=None																			
 										fiscalperson.save()
+									sampinfo.fiscal_name = fiscalname
 									sampinfo.fiscal_email = email_tm
 									sampinfo.fiscal_index = index_tm		
 
@@ -227,6 +231,7 @@ def main():
 										fiscalperson.cell_phone=None
 										fiscalperson.fiscal_index=None																			
 										fiscalperson.save()
+										sampinfo.fiscal_name = fiscalname
 										sampinfo.fiscal_email = email_tm
 										sampinfo.fiscal_index = index_tm											
 

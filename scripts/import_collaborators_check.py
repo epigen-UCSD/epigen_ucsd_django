@@ -36,6 +36,7 @@ def main():
 	writeline = []
 	groupbelong = {}
 	assignedsamp = []
+	invalidduplicate = []
 	sampfiles = ['scripts/TS1_Archived_201904.tsv','scripts/TS1_Active_201904.tsv']
 	for file in sampfiles:
 		print(file)
@@ -61,20 +62,28 @@ def main():
 								researchname = fields[2].strip()
 								fiscalname = fields[5].strip()
 								#print(researchname)
+								if piname in groupbelong.keys():
+									if piname != groupbelong[piname] and piname+':'+piname+' vs '+groupbelong[piname] not in invalidduplicate:
+											print(piname+' duplicate!(in different group).Please correct it because the username should be unique')
+											print(piname+' vs '+groupbelong[piname])
+											invalidduplicate.append(piname+':'+piname+' vs '+groupbelong[piname])
+								else:
+									groupbelong[piname] = piname
 								if researchname not in ['NA','N/A','Wen Yan'] and researchname:
 									if researchname in groupbelong.keys():	
-
-										if piname != groupbelong[researchname]:
+										if piname != groupbelong[researchname] and researchname+':'+piname+' vs '+groupbelong[researchname] not in invalidduplicate:
 											print(researchname+' duplicate!(in different group).Please correct it because the username should be unique')
 											print(piname+' vs '+groupbelong[researchname])
+											invalidduplicate.append(researchname+':'+piname+' vs '+groupbelong[researchname])
 											#exit()
 									else:
 										groupbelong[researchname] = piname
 								if fiscalname not in ['NA','N/A'] and fiscalname:
 									if fiscalname in groupbelong.keys():
-										if piname != groupbelong[fiscalname]:
+										if piname != groupbelong[fiscalname] and fiscalname+':'+piname+' vs '+groupbelong[fiscalname] not in invalidduplicate: 
 											print(fiscalname+' duplicate!(in different group).Please correct it because the username should be unique')
 											print(piname+' vs '+groupbelong[fiscalname])
+											invalidduplicate.append(fiscalname+':'+piname+' vs '+groupbelong[fiscalname])
 											#exit()
 									else:
 										groupbelong[fiscalname] = piname		
@@ -114,13 +123,12 @@ def main():
 								assignedsamp.append(sampindex)
 
 								if int(sampindex.split('-')[1])<830:
-									if group_name!='David_Gorkin_group':
-										try:
-											Group.objects.get(name=group_name)
-										except:
-											print('Error in getting group:'+group_name+'!'+sampindex)
-											#exit()
-									if pinameparse and piname not in ['','NA','N/A','David Gorkin']:
+									try:
+										Group.objects.get(name=group_name)
+									except:
+										print('Error in getting group:'+group_name+'!'+sampindex)
+										#exit()
+									if pinameparse and piname not in ['','NA','N/A']:
 										try:
 											User.objects.get(username=pinameparse[0],first_name=pinameparse[1],last_name=pinameparse[2])
 										except:
@@ -132,7 +140,7 @@ def main():
 										except:
 											print('Error in getting research user:'+researchname+'!'+sampindex)
 											#exit()
-									if fisnameparse and fiscalname not in ['','NA','N/A','Truc Dang']:
+									if fisnameparse and fiscalname not in ['','NA','N/A']:
 										try:
 											User.objects.get(username=fisnameparse[0],first_name=fisnameparse[1],last_name=fisnameparse[2])
 										except:

@@ -231,8 +231,12 @@ class SamplesCreationForm(forms.Form):
 		flagsampid = 0
 		flaggroup = 0
 		flagresearch = 0
+		flagresearch1 = 0
+		flagresearch2 = 0
 		flagresearchphone = 0
 		flagfiscal = 0
+		flagfiscal1 = 0
+		flagfiscal2 = 0
 		flagfisindex = 0
 		#flagprep = 0
 		invaliddate = []
@@ -247,8 +251,12 @@ class SamplesCreationForm(forms.Form):
 		selfsamps = []
 		invalidgroup = []
 		invalidresearch = []
+		invalidresearch1 = []
+		invalidresearch2 = []
 		invalidresearchphone = []
 		invalidfiscal = []
+		invalidfiscal1 = []
+		invalidfiscal2 = []
 		invalidfisindex = []
 		#invalidprep = []
 		for lineitem in data.strip().split('\n'):
@@ -314,12 +322,12 @@ class SamplesCreationForm(forms.Form):
 							thisresearch = thisgroup.collaboratorpersoninfo_set.all().get(email__contains=[resemail])
 							if resname:
 								if not thisresearch.person_id.last_name in resname.split(' '):
-									flagresearch = 1
+									invalidresearch1.append(resname+':'+resemail)
+									flagresearch1 = 1
 						else:
-							if not resname:
-								flagresearch = 1
-							elif len(resname.split(' '))<2:
-								flagresearch = 1
+							if not resname or len(resname.split(' '))<2:
+								invalidresearch2.append(resname+':'+resemail)
+								flagresearch2 = 1
 
 				fiscalname = fields[5].strip() if fields[5].strip() not in ['NA','N/A'] else ''
 				fiscalemail = fields[6].strip().lower() if fields[6].strip() not in ['NA','N/A'] else ''
@@ -334,12 +342,12 @@ class SamplesCreationForm(forms.Form):
 							thisfiscal = thisgroup.collaboratorpersoninfo_set.all().get(email__contains=[fiscalemail])
 							if fiscalname:
 								if not thisfiscal.person_id.last_name in fiscalname.split(' '):
-									flagfiscal = 1				
+									invalidfiscal1.append(fiscalname+':'+fiscalemail)
+									flagfiscal1 = 1			
 						else:
-							if not fiscalname:
-								flagfiscal = 1
-							elif len(fiscalname.split(' '))<2:
-								flagfiscal = 1
+							if not fiscalname or len(fiscalname.split(' '))<2:
+								invalidfiscal2.append(fiscalname+':'+fiscalemail)
+								flagfiscal2 = 1
 				# samprep = fields[12].split('(')[0].strip()
 				# if samprep == 'flash frozen':
 				# 	samprep = 'flash frozen without cryopreservant'
@@ -394,6 +402,18 @@ class SamplesCreationForm(forms.Form):
 				(1).First name, last name and email match with profile in the database.\
 				(2).The user is in the right group you provided.<br>\
 				(3).The user name is not full name.<br>')
+		if flagresearch1 == 1:
+			raise forms.ValidationError(
+				'Invalid research contacts:'+','.join(invalidresearch1)+'.<p style="color:green;">\
+				The research contact\'s name in the database searched by email does not \
+				match with your supplied name,please check \
+				the accurary in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>')
+		if flagresearch2 == 1:
+			raise forms.ValidationError(
+				'Invalid fiscal contacts:'+','.join(invalidfiscal2)+'.<p style="color:green;">\
+				Since you are supplying a new email, please \
+				fill in the research contact\'s full name')
+
 		if flagfiscal == 1:
 			raise forms.ValidationError(
 				'Invalid fiscal contacts:'+','.join(invalidfiscal)+'.<p style="color:green;">\
@@ -402,6 +422,19 @@ class SamplesCreationForm(forms.Form):
 				(1).First name, last name and email match with profile in the database.\
 				(2).The user is in the right group you provided.<br>\
 				(3).The user name is not full name.<br>')
+
+		if flagfiscal1 == 1:
+			raise forms.ValidationError(
+				'Invalid fiscal contacts:'+','.join(invalidfiscal1)+'.<p style="color:green;">\
+				The resaearch contact\'s name in the database searched by email does not \
+				match with your supplied name,please check \
+				the accurary in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>')
+		if flagfiscal2 == 1:
+			raise forms.ValidationError(
+				'Invalid fiscal contacts:'+','.join(invalidresearch2)+'.<p style="color:green;">\
+				Since you are supplying a new email, please \
+				fill in the fiscal contact\'s full name')
+
 		sampselfduplicate = SelfUniqueValidation(selfsamps)
 		if len(sampselfduplicate) > 0:
 			raise forms.ValidationError(
