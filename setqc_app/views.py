@@ -23,7 +23,8 @@ DisplayField1 = ['set_id', 'set_name',
                  'date_requested', 'experiment_type', 'url']
 DisplayField2 = ['set_id', 'set_name', 'date_requested',
                  'requestor', 'experiment_type', 'url']
-defaultgenome = {'human': 'hg38', 'mouse': 'mm10', 'rat': 'rn6', 'cattle', 'ARS-UCD1.2'}
+defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
+                 'rat': 'rn6', 'cattle': 'ARS-UCD1.2'}
 
 
 def groupnumber(datalist):
