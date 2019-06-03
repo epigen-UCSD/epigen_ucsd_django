@@ -328,6 +328,11 @@ class SamplesCreationForm(forms.Form):
 							if not resname or len(resname.split(' '))<2:
 								invalidresearch2.append(resname+':'+resemail)
 								flagresearch2 = 1
+				elif resname:
+					if len(resname.split(' '))<2:
+						invalidresearch2.append(resname)
+						flagresearch2 = 1
+
 
 				fiscalname = fields[5].strip() if fields[5].strip() not in ['NA','N/A'] else ''
 				fiscalemail = fields[6].strip().lower() if fields[6].strip() not in ['NA','N/A'] else ''
@@ -348,6 +353,10 @@ class SamplesCreationForm(forms.Form):
 							if not fiscalname or len(fiscalname.split(' '))<2:
 								invalidfiscal2.append(fiscalname+':'+fiscalemail)
 								flagfiscal2 = 1
+				elif fiscalname:
+					if len(fiscalname.split(' '))<2:
+						invalidresearch2.append(fiscalname)
+						flagresearch2 = 1
 				# samprep = fields[12].split('(')[0].strip()
 				# if samprep == 'flash frozen':
 				# 	samprep = 'flash frozen without cryopreservant'
