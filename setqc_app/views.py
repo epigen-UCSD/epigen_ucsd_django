@@ -23,7 +23,7 @@ DisplayField1 = ['set_id', 'set_name',
                  'date_requested', 'experiment_type', 'url']
 DisplayField2 = ['set_id', 'set_name', 'date_requested',
                  'requestor', 'experiment_type', 'url']
-defaultgenome = {'human': 'hg38', 'mouse': 'mm10', 'rat': 'rn6'}
+defaultgenome = {'human': 'hg38', 'mouse': 'mm10', 'rat': 'rn6', 'cattle', 'ARS-UCD1.2'}
 
 
 def groupnumber(datalist):
@@ -76,6 +76,7 @@ def grouplibraries(librarieslist):
                     groupedlibraries.append('-'.join([start, end]))
     return ','.join(groupedlibraries)
 
+
 def grouplibrariesOrderKeeped(librarieslist):
     groupedlibraries = []
     presuffix_last = ''
@@ -101,7 +102,8 @@ def grouplibrariesOrderKeeped(librarieslist):
                     if not suffix:
                         for x in ranges:
                             if x[0] == x[1]:
-                                groupedlibraries.append('_'.join([prefix, str(x[0])]))
+                                groupedlibraries.append(
+                                    '_'.join([prefix, str(x[0])]))
                             else:
                                 start = '_'.join([prefix, str(x[0])])
                                 end = '_'.join([prefix, str(x[1])])
@@ -141,6 +143,8 @@ def grouplibrariesOrderKeeped(librarieslist):
                     groupedlibraries.append('-'.join([start, end]))
 
     return ','.join(groupedlibraries)
+
+
 def AllSetQCView(request):
 
     Sets_list = LibrariesSetQC.objects.all().select_related('requestor')
@@ -334,7 +338,8 @@ def SetQCUpdateView(request, setqc_pk):
 
     flag = 0
     if setinfo.experiment_type != 'ChIP-seq':
-        regset = LibraryInSet.objects.filter(librariesetqc=setinfo).order_by('pk')
+        regset = LibraryInSet.objects.filter(
+            librariesetqc=setinfo).order_by('pk')
         librarieslist = [x.seqinfo.seq_id for x in regset]
         libraries_form = LibrariesToIncludeCreatForm(request.POST or None,
                                                      initial={'librariestoinclude': grouplibrariesOrderKeeped(librarieslist)})
