@@ -11,7 +11,7 @@
       {% if error_message %}
           <p class="error-message">{{ error_message }}</strong></p>
       {% endif %}
-      <form id="groupdependent" action="" method="post" data-samplescollabs-url="{% url 'masterseq_app:ajax_load_researchcontact' %}" data-fiscalindex-url="{% url 'masterseq_app:ajax_load_fiscalindex' %}">{% csrf_token %}  
+      <form id="groupdependent" action="" method="post">{% csrf_token %}  
         {% for field in sample_form %}
         <div class="fieldWrapper">
           <p>

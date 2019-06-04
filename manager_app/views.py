@@ -2,13 +2,14 @@ from django.shortcuts import redirect,render,get_object_or_404
 from epigen_ucsd_django.models import CollaboratorPersonInfo
 from django.db import transaction
 from .forms import UserForm,CollaboratorPersonForm,GroupForm,\
-GroupCreateForm,PersonIndexForm,PersonIndexCreateForm,CollabInfoAddForm,\
+GroupCreateForm,CollabInfoAddForm,\
 GroupInstitutionCreateForm
 from django.contrib import messages
 from django.contrib.auth.models import User,Group
 from django.http import JsonResponse
 from django.db.models import Q
 from epigen_ucsd_django.shared import is_member
+from masterseq_app.views import nonetolist,removenone
 
 # Create your views here.
 
@@ -28,44 +29,44 @@ def CollaboratorListView(request):
     else:
         return render(request, 'manager_app/collaboratorlist.html', context)
 
-@transaction.atomic
-def CollaboratorCreateView(request):
-    user_form = UserForm(request.POST or None)
-    profile_form = CollaboratorPersonForm(request.POST or None)
-    group_form = GroupForm(request.POST or None)
-    group_create_form = GroupCreateForm(request.POST or None)
-    person_index_form = PersonIndexForm(request.POST or None)
+# @transaction.atomic
+# def CollaboratorCreateView(request):
+#     user_form = UserForm(request.POST or None)
+#     profile_form = CollaboratorPersonForm(request.POST or None)
+#     group_form = GroupForm(request.POST or None)
+#     group_create_form = GroupCreateForm(request.POST or None)
+#     person_index_form = PersonIndexForm(request.POST or None)
 
-    if request.method=='POST' and 'profile_save' in request.POST:
-        if user_form.is_valid() and profile_form.is_valid() and group_form.is_valid() and person_index_form.is_valid():
-            this_user = user_form.save()
-            this_profile = profile_form.save(commit=False)
-            this_profile.person_id = this_user
-            this_profile.save()
-            this_group = Group.objects.get(name=group_form.clean_name()) 
-            this_group.user_set.add(this_user)
-            this_person_index = person_index_form.save(commit=False)
-            this_person_index.person = this_profile
-            this_person_index.save()
+#     if request.method=='POST' and 'profile_save' in request.POST:
+#         if user_form.is_valid() and profile_form.is_valid() and group_form.is_valid() and person_index_form.is_valid():
+#             this_user = user_form.save()
+#             this_profile = profile_form.save(commit=False)
+#             this_profile.person_id = this_user
+#             this_profile.save()
+#             this_group = Group.objects.get(name=group_form.clean_name()) 
+#             this_group.user_set.add(this_user)
+#             this_person_index = person_index_form.save(commit=False)
+#             this_person_index.person = this_profile
+#             this_person_index.save()
 
-            messages.success(request,'Your profile was successfully updated!')
-            return redirect('manager_app:collab_list')
-        else:
-            messages.error(request,'Please correct the error below.')
-    # elif request.method=='POST' and 'group_save' in request.POST:
-    #     if group_create_form.is_valid():
-    #         group_create_form.save()
-    context = {
-        'user_form': user_form,
-        'profile_form': profile_form,
-        'group_form':group_form,
-        'group_create_form':group_create_form,
-        'person_index_form':person_index_form,
-    }
-    if is_member(request.user,'manager'):
-        return render(request, 'manager_app/profile_add.html', context)
-    else:
-        return render(request, 'manager_app/profile_add_nogroup.html', context)
+#             messages.success(request,'Your profile was successfully updated!')
+#             return redirect('manager_app:collab_list')
+#         else:
+#             messages.error(request,'Please correct the error below.')
+#     # elif request.method=='POST' and 'group_save' in request.POST:
+#     #     if group_create_form.is_valid():
+#     #         group_create_form.save()
+#     context = {
+#         'user_form': user_form,
+#         'profile_form': profile_form,
+#         'group_form':group_form,
+#         'group_create_form':group_create_form,
+#         'person_index_form':person_index_form,
+#     }
+#     if is_member(request.user,'manager'):
+#         return render(request, 'manager_app/profile_add.html', context)
+#     else:
+#         return render(request, 'manager_app/profile_add_nogroup.html', context)
 
 @transaction.atomic
 def GroupAccountCreateView(request):
@@ -128,32 +129,28 @@ def load_groups(request):
     return JsonResponse(results, safe=False)
 
 @transaction.atomic
-def IndexCreateView(request):
-    person_index_form = PersonIndexCreateForm(request.POST or None)
-    if request.method == 'POST':
-        post = request.POST.copy()
-        obj = get_object_or_404(CollaboratorPersonInfo, id=post['person'].split(':')[0])
-        post['person'] = obj.id
-        person_index_form = PersonIndexCreateForm(post)
-        if person_index_form.is_valid():
-            person_index_form.save()
-            return redirect('manager_app:collab_list')
-    context = {
-        'person_index_form':person_index_form,
-    }
-    return render(request, 'manager_app/index_add.html', context)
-
-@transaction.atomic
 def CollabInfoAddView(request):
     colab_info_add_form = CollabInfoAddForm(request.POST or None)
     if request.method == 'POST':
         post = request.POST.copy()
         print(post['person_id'].split(':')[0])
-        obj = get_object_or_404(User, id=post['person_id'].split(':')[0])
-        post['person_id'] = obj.id
+        obj = get_object_or_404(CollaboratorPersonInfo, id=post['person_id'].split(':')[0])
+        post['person_id'] = obj.person_id.id
         colab_info_add_form = CollabInfoAddForm(post)
         if colab_info_add_form.is_valid():
-            colab_info_add_form.save()
+            current_email = nonetolist(obj.email)
+            current_email = colab_info_add_form.cleaned_data['email']+current_email
+            obj.email = removenone(current_email)
+
+            current_phone = nonetolist(obj.phone)
+            current_phone = colab_info_add_form.cleaned_data['phone']+current_phone
+            obj.phone = removenone(current_phone)
+
+            current_index = nonetolist(obj.index)
+            current_index = colab_info_add_form.cleaned_data['index']+current_index
+            obj.index = removenone(current_index)
+
+            obj.save()
             return redirect('manager_app:collab_list')
     context = {
         'colab_info_add_form':colab_info_add_form,
@@ -169,15 +166,16 @@ def load_collabs(request):
     for f in Group.objects.filter(name__icontains=q):
         collabusers = collabusers | f.user_set.all()
     results = []
-    for u in collabusers:
+    for u in collabusers.distinct():
 
         for gg in u.groups.all():
+            thiscollab = CollaboratorPersonInfo.objects.get(group=gg,person_id=u)
             uu = {}
-            uu['id'] = str(u.id)+': '+u.first_name+' '+u.last_name + \
+            uu['id'] = str(thiscollab.id)+': '+u.first_name+' '+u.last_name + \
                 '('+gg.name+')'
-            uu['label'] = str(u.id)+': '+u.first_name+' ' + \
+            uu['label'] = str(thiscollab.id)+': '+u.first_name+' ' + \
                 u.last_name+'('+gg.name+')'
-            uu['value'] = str(u.id)+': '+u.first_name+' ' + \
+            uu['value'] = str(thiscollab.id)+': '+u.first_name+' ' + \
                 u.last_name+'('+gg.name+')'
             results.append(uu)
     return JsonResponse(results, safe=False)

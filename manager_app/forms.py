@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User,Group
-from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index,Group_Institution
+from epigen_ucsd_django.models import CollaboratorPersonInfo,Group_Institution
 import secrets
 import string
 
@@ -42,24 +42,9 @@ class GroupInstitutionCreateForm(forms.ModelForm):
 		model = Group_Institution
 		fields = ('institution',)
 
-class PersonIndexForm(forms.ModelForm):
-	class Meta:
-		model = Person_Index
-		fields = ('index_name',)
-		help_texts = {
-		'index_name': 'If the Collaborator(fiscal contact person)you are adding is in charge of the index that we\
-		 will charge on,please fill in',
-		}
-class PersonIndexCreateForm(forms.ModelForm):
-	person = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
-		widget=forms.TextInput({'class': 'ajax_collabinput_form', 'size': 50}), required=False)
-	class Meta:
-		model = Person_Index
-		fields = ('index_name','person')
-
 class CollabInfoAddForm(forms.ModelForm):
 	person_id = forms.ModelChoiceField(queryset=User.objects.all(),\
-		widget=forms.TextInput({'class': 'ajax_collabinput_form', 'size': 50}), required=False)
+		widget=forms.TextInput({'class': 'ajax_collabinput_form', 'size': 50}))
 	class Meta:
 		model = CollaboratorPersonInfo
 		fields = ('person_id','email','phone','index')

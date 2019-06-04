@@ -3,8 +3,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm, LibraryCreationForm, SeqCreationForm,\
-    SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm,\
-    SamplesCollabsCreateForm
+    SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm
 from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
 SeqMachineInfo, SeqBioInfo,choice_for_preparation,choice_for_fixation,\
 choice_for_unit,choice_for_sample_type
@@ -188,7 +187,7 @@ def SamplesCreateView(request):
                     resperson = thisgroup.collaboratorpersoninfo_set.all().get(email__contains=[resemail])
                     resname = resperson.person_id.first_name+' '+resperson.person_id.last_name
                     user_first_name = resname.split(' ')[0]
-                    user_last_name = resname.split(' ')[1]
+                    user_last_name = resname.split(' ')[-1]
                     if resphone:
                         if resphone not in resperson.phone:
                             newinforequired = 1
@@ -197,9 +196,9 @@ def SamplesCreateView(request):
                 
                 else:
                     user_first_name = resname.split(' ')[0]
-                    user_last_name = resname.split(' ')[1]
+                    user_last_name = resname.split(' ')[-1]
                     try:
-                        resuser = User.objects.filter(groups__name__in=[gname]).get(first_name=resname.split(' ')[0],last_name=resname.split(' ')[1])
+                        resuser = User.objects.filter(groups__name__in=[gname]).get(first_name=resname.split(' ')[0],last_name=resname.split(' ')[-1])
                         resperson,created = CollaboratorPersonInfo.objects.get_or_create(person_id=resuser,group=thisgroup)
                         newinforequired = 1
                         newresinfoflag = 1
@@ -211,16 +210,16 @@ def SamplesCreateView(request):
                     except:
                         newuserrequired = 1
                         newresuserflag = 1
-                        newresusername = user_first_name[0].lower()+user_last_name.lower()
-                        if User.objects.filter(username=newresusername).exists():
+                        user_username = user_first_name[0].lower()+user_last_name.lower()
+                        if User.objects.filter(username=user_username).exists():
                             user_username = user_first_name[0]+str(randint(0, 9))+user_last_name.lower()                        
 
 
             elif resname:
                 user_first_name = resname.split(' ')[0]
-                user_last_name = resname.split(' ')[1]
+                user_last_name = resname.split(' ')[-1]
                 try:
-                    resuser = User.objects.filter(groups__name__in=[gname]).get(first_name=resname.split(' ')[0],last_name=resname.split(' ')[1])
+                    resuser = User.objects.filter(groups__name__in=[gname]).get(first_name=resname.split(' ')[0],last_name=resname.split(' ')[-1])
                     resperson,created = CollaboratorPersonInfo.objects.get_or_create(person_id=resuser,group=thisgroup)
                     newinforequired = 1
                     newresinfoflag = 1
@@ -231,8 +230,8 @@ def SamplesCreateView(request):
                 except:
                     newuserrequired = 1
                     newresuserflag = 1
-                    newresusername = user_first_name[0].lower()+user_last_name.lower()
-                    if User.objects.filter(username=newresusername).exists():
+                    user_username = user_first_name[0].lower()+user_last_name.lower()
+                    if User.objects.filter(username=user_username).exists():
                         user_username = user_first_name[0]+str(randint(0, 9))+user_last_name.lower()                                    
 
             fisname = fields[5].strip() if fields[5].strip() not in ['NA','N/A'] else ''
@@ -244,7 +243,7 @@ def SamplesCreateView(request):
                     fisperson = thisgroup.collaboratorpersoninfo_set.all().get(email__contains=[fisemail])
                     fisname = fisperson.person_id.first_name+' '+fisperson.person_id.last_name
                     fisuser_first_name = fisname.split(' ')[0]
-                    fisuser_last_name = fisname.split(' ')[1]
+                    fisuser_last_name = fisname.split(' ')[-1]
                     if indname:
                         if indname not in fisperson.index:
                             newinforequired = 1
@@ -252,10 +251,10 @@ def SamplesCreateView(request):
                             fisnew_index = indname  
 
                 else:
-                    fisuser_first_name = resname.split(' ')[0]
-                    fisuser_last_name = resname.split(' ')[1]
+                    fisuser_first_name = fisname.split(' ')[0]
+                    fisuser_last_name = fisname.split(' ')[-1]
                     try:
-                        fisuser = User.objects.filter(groups__name__in=[gname]).get(first_name=fisname.split(' ')[0],last_name=fisname.split(' ')[1])
+                        fisuser = User.objects.filter(groups__name__in=[gname]).get(first_name=fisname.split(' ')[0],last_name=fisname.split(' ')[-1])
                         fisperson,created = CollaboratorPersonInfo.objects.get_or_create(person_id=fisuser,group=thisgroup)
                         newinforequired = 1
                         newfisinfoflag = 1
@@ -267,15 +266,15 @@ def SamplesCreateView(request):
                     except:
                         newuserrequired = 1
                         newfisuserflag = 1
-                        newfisusername = fisuser_first_name[0].lower()+newfisuser_last_name.lower()
-                        if User.objects.filter(username=newfisusername).exists():
-                            fisuser_username = fisuser_first_name[0]+str(randint(0, 9))+newfisuser_last_name.lower() 
+                        fisuser_username = fisuser_first_name[0].lower()+fisuser_last_name.lower()
+                        if User.objects.filter(username=fisuser_username).exists():
+                            fisuser_username = fisuser_first_name[0]+str(randint(0, 9))+fisuser_last_name.lower() 
 
             elif fisname:
-                fisuser_first_name = resname.split(' ')[0]
-                fisuser_last_name = resname.split(' ')[1]
+                fisuser_first_name = fisname.split(' ')[0]
+                fisuser_last_name = fisname.split(' ')[-1]
                 try:
-                    fisuser = User.objects.filter(groups__name__in=[gname]).get(first_name=fisname.split(' ')[0],last_name=fisname.split(' ')[1])
+                    fisuser = User.objects.filter(groups__name__in=[gname]).get(first_name=fisname.split(' ')[0],last_name=fisname.split(' ')[-1])
                     fisperson,created = CollaboratorPersonInfo.objects.get_or_create(person_id=fisuser,group=thisgroup)
                     newinforequired = 1
                     newfisinfoflag = 1
@@ -286,9 +285,9 @@ def SamplesCreateView(request):
                 except:
                     newuserrequired = 1
                     newfisuserflag = 1
-                    newfisusername = newfisuser_first_name[0].lower()+newfisuser_last_name.lower()
-                    if User.objects.filter(username=newfisusername).exists():
-                        fisuser_username = newfisuser_first_name[0]+str(randint(0, 9))+newfisuser_last_name.lower()                                    
+                    fisuser_username = fisuser_first_name[0].lower()+fisuser_last_name.lower()
+                    if User.objects.filter(username=fisuser_username).exists():
+                        fisuser_username = fisuser_first_name[0]+str(randint(0, 9))+fisuser_last_name.lower()                                    
 
             try:
                 samnotes = ';'.join([fields[20].strip(),fields[28].strip()]).strip(';')
@@ -494,7 +493,7 @@ def SamplesCreateView(request):
                             'seq_length_requested','seq_type_requested']
             displayorder2 = ['user_username','user_first_name','user_last_name',\
             'user_email','user_phone','user_index']
-            displayorder3 = ['fisuse_username','fisuser_first_name','fisuser_last_name',\
+            displayorder3 = ['fisuser_username','fisuser_first_name','fisuser_last_name',\
             'fisuser_email','fisuser_phone','fisuser_index']
             displayorder4 = ['group','user_first_name','user_last_name','new_email','new_phone','new_index']
             displayorder5 = ['group','fisuser_first_name','fisuser_last_name','fisnew_email','fisnew_phone','fisnew_index']
@@ -1427,28 +1426,28 @@ def SaveAllMetaDataExcel(request):
     wb.save(response)
     return response
 
-@transaction.atomic
-def SamplesCollabsCreateView(request):
-    samplescollabs_form = SamplesCollabsCreateForm(request.POST or None)
+# @transaction.atomic
+# def SamplesCollabsCreateView(request):
+#     samplescollabs_form = SamplesCollabsCreateForm(request.POST or None)
     
-    if samplescollabs_form.is_valid():
-        samplesinfo = samplescollabs_form.cleaned_data['samplesinfo']
-        res = samplescollabs_form.cleaned_data['research_contact']
-        fis = samplescollabs_form.cleaned_data['fiscal_person_index']
-        gname = samplescollabs_form.cleaned_data['group']
-        for sam in samplesinfo.split('\n'):
-            sam = sam.strip()
-            saminfo = SampleInfo.objects.get(sample_id=sam)
-            saminfo.research_person = res
-            saminfo.fiscal_person_index = fis
-            saminfo.group = Group.objects.get(name=gname)
-            saminfo.save()
-        return redirect('masterseq_app:index')
+#     if samplescollabs_form.is_valid():
+#         samplesinfo = samplescollabs_form.cleaned_data['samplesinfo']
+#         res = samplescollabs_form.cleaned_data['research_contact']
+#         fis = samplescollabs_form.cleaned_data['fiscal_person_index']
+#         gname = samplescollabs_form.cleaned_data['group']
+#         for sam in samplesinfo.split('\n'):
+#             sam = sam.strip()
+#             saminfo = SampleInfo.objects.get(sample_id=sam)
+#             saminfo.research_person = res
+#             saminfo.fiscal_person_index = fis
+#             saminfo.group = Group.objects.get(name=gname)
+#             saminfo.save()
+#         return redirect('masterseq_app:index')
 
-    context = {
-        'samplescollabs_form':samplescollabs_form,
-    }
-    return render(request, 'masterseq_app/samplescollabsadd.html', context=context)
+#     context = {
+#         'samplescollabs_form':samplescollabs_form,
+#     }
+#     return render(request, 'masterseq_app/samplescollabsadd.html', context=context)
 
 def load_researchcontact(request):
     groupname = request.GET.get('group')
@@ -1456,10 +1455,10 @@ def load_researchcontact(request):
     filter(person_id__groups__name__in=[groupname]).prefetch_related(Prefetch('person_id__groups'))
     return render(request, 'masterseq_app/researchcontact_dropdown_list_options.html', {'researchcontact': researchcontact})
       
-def load_fiscalindex(request):
-    groupname = request.GET.get('group')
-    queryset = User.objects.filter(groups__name__in=[groupname])
-    fiscalindex = Person_Index.objects.\
-    filter(person__person_id__groups__name__in=[groupname]).prefetch_related(Prefetch('person__person_id__groups'))
-    return render(request, 'masterseq_app/fiscalindex_dropdown_list_options.html', {'fiscalindex': fiscalindex})
- 
+# def load_fiscalindex(request):
+#     groupname = request.GET.get('group')
+#     queryset = User.objects.filter(groups__name__in=[groupname])
+#     fiscalindex = Person_Index.objects.\
+#     filter(person__person_id__groups__name__in=[groupname]).prefetch_related(Prefetch('person__person_id__groups'))
+#     return render(request, 'masterseq_app/fiscalindex_dropdown_list_options.html', {'fiscalindex': fiscalindex})
+#  

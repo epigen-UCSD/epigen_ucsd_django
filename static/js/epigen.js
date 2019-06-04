@@ -498,32 +498,32 @@ $(document).ready( function () {
             }
         })
     });
-    $('#id_group').change(function (){
-        var url = $("#groupdependent").attr("data-samplescollabs-url");
-        var url2 = $("#groupdependent").attr("data-fiscalindex-url");
-        var groupname = $(this).val();
-        $.ajax({
-            url:url,
-            cache: false,
-            data: {
-                'group':groupname
-            },
-            success:function (data){
-                $("#id_research_contact").html(data);
-            }
-        })
-        $.ajax({
-            url:url2,
-            cache: false,
-            data: {
-                'group':groupname
-            },
-            success:function (data){
-                $("#id_fiscal_person_index").html(data);
-            }
-        })
+    // $('#id_group').change(function (){
+    //     var url = $("#groupdependent").attr("data-samplescollabs-url");
+    //     var url2 = $("#groupdependent").attr("data-fiscalindex-url");
+    //     var groupname = $(this).val();
+    //     $.ajax({
+    //         url:url,
+    //         cache: false,
+    //         data: {
+    //             'group':groupname
+    //         },
+    //         success:function (data){
+    //             $("#id_research_contact").html(data);
+    //         }
+    //     })
+    //     $.ajax({
+    //         url:url2,
+    //         cache: false,
+    //         data: {
+    //             'group':groupname
+    //         },
+    //         success:function (data){
+    //             $("#id_fiscal_person_index").html(data);
+    //         }
+    //     })
 
-    });
+    // });
 
 
 // $('[data-toggle="tabajax"]').click(function(e) {

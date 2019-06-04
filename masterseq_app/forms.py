@@ -9,7 +9,7 @@ from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform, SelfUniqueValidation
 from django.shortcuts import get_object_or_404
 from django.utils.safestring import mark_safe
-from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index
+from epigen_ucsd_django.models import CollaboratorPersonInfo
 from django.db.models import Prefetch
 from django.urls import reverse
 import re
@@ -21,14 +21,14 @@ class SampleCreationForm(forms.ModelForm):
         required=False,
         widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
         )
-    research_person = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
-        required=False,widget=forms.Select(attrs={'id':'id_research_contact'}))
-    fiscal_person_index = forms.ModelChoiceField(queryset=Person_Index.objects.all(),required=False)
-
+    # research_person = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
+    #     required=False,widget=forms.Select(attrs={'id':'id_research_contact'}))
 
     class Meta:
         model = SampleInfo
-        fields = ['sample_id','date','date_received','group','research_person','fiscal_person_index','species','sample_type','preparation',\
+        fields = ['sample_id','date','date_received','group','research_name',\
+        'research_email','research_phone','fiscal_name','fiscal_email','fiscal_index',\
+        'species','sample_type','preparation',\
         'fixation','sample_amount','unit','storage','service_requested',\
         'seq_depth_to_target','seq_length_requested','seq_type_requested','description','notes','status']
         widgets ={
@@ -42,20 +42,20 @@ class SampleCreationForm(forms.ModelForm):
         if self.instance.group:
             self.initial['group'] = str(self.instance.group.name)
             gname = str(self.instance.group.name)
-            self.fields['research_person'].queryset = CollaboratorPersonInfo.objects.\
-            filter(person_id__groups__name__in=[gname]).\
-            prefetch_related(Prefetch('person_id__groups'))
-            self.fields['research_person'].label_from_instance = \
-            lambda obj: "%s %s__%s__%s" % (obj.person_id.first_name, \
-                obj.person_id.last_name,obj.person_id.email,obj.cell_phone)
+            # self.fields['research_person'].queryset = CollaboratorPersonInfo.objects.\
+            # filter(person_id__groups__name__in=[gname]).\
+            # prefetch_related(Prefetch('person_id__groups'))
+            # self.fields['research_person'].label_from_instance = \
+            # lambda obj: "%s %s__%s__%s" % (obj.person_id.first_name, \
+            #     obj.person_id.last_name,obj.person_id.email,obj.cell_phone)
 
-            self.fields['fiscal_person_index'].queryset = Person_Index.objects.\
-            filter(person__person_id__groups__name__in=[gname]).\
-            prefetch_related(Prefetch('person__person_id__groups'))
-            self.fields['fiscal_person_index'].label_from_instance = \
-            lambda obj: "%s %s__%s__%s" % (obj.person.person_id.first_name, \
-                obj.person.person_id.last_name,obj.person.person_id.email,\
-                obj.index_name)
+            # self.fields['fiscal_person_index'].queryset = Person_Index.objects.\
+            # filter(person__person_id__groups__name__in=[gname]).\
+            # prefetch_related(Prefetch('person__person_id__groups'))
+            # self.fields['fiscal_person_index'].label_from_instance = \
+            # lambda obj: "%s %s__%s__%s" % (obj.person.person_id.first_name, \
+            #     obj.person.person_id.last_name,obj.person.person_id.email,\
+            #     obj.index_name)
     def clean_group(self):
         gname = self.cleaned_data['group']
         if gname:
@@ -321,7 +321,7 @@ class SamplesCreationForm(forms.Form):
 						if thisgroup.collaboratorpersoninfo_set.all().filter(email__contains=[resemail]).exists():
 							thisresearch = thisgroup.collaboratorpersoninfo_set.all().get(email__contains=[resemail])
 							if resname:
-								if not thisresearch.person_id.last_name in resname.split(' '):
+								if not thisresearch.person_id.first_name in resname.split(' '):
 									invalidresearch1.append(resname+':'+resemail)
 									flagresearch1 = 1
 						else:
@@ -346,7 +346,7 @@ class SamplesCreationForm(forms.Form):
 						if thisgroup.collaboratorpersoninfo_set.all().filter(email__contains=[fiscalemail]).exists():
 							thisfiscal = thisgroup.collaboratorpersoninfo_set.all().get(email__contains=[fiscalemail])
 							if fiscalname:
-								if not thisfiscal.person_id.last_name in fiscalname.split(' '):
+								if not thisfiscal.person_id.first_name in fiscalname.split(' '):
 									invalidfiscal1.append(fiscalname+':'+fiscalemail)
 									flagfiscal1 = 1			
 						else:
@@ -419,7 +419,7 @@ class SamplesCreationForm(forms.Form):
 				the accurary in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>')
 		if flagresearch2 == 1:
 			raise forms.ValidationError(
-				'Invalid fiscal contacts:'+','.join(invalidfiscal2)+'.<p style="color:green;">\
+				'Invalid research contacts:'+','.join(invalidresearch2)+'.<p style="color:green;">\
 				Since you are supplying a new email, please \
 				fill in the research contact\'s full name')
 
@@ -435,12 +435,12 @@ class SamplesCreationForm(forms.Form):
 		if flagfiscal1 == 1:
 			raise forms.ValidationError(
 				'Invalid fiscal contacts:'+','.join(invalidfiscal1)+'.<p style="color:green;">\
-				The resaearch contact\'s name in the database searched by email does not \
+				The fiscal contact\'s name in the database searched by email does not \
 				match with your supplied name,please check \
 				the accurary in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>')
 		if flagfiscal2 == 1:
 			raise forms.ValidationError(
-				'Invalid fiscal contacts:'+','.join(invalidresearch2)+'.<p style="color:green;">\
+				'Invalid fiscal contacts:'+','.join(invalidfiscal2)+'.<p style="color:green;">\
 				Since you are supplying a new email, please \
 				fill in the fiscal contact\'s full name')
 
@@ -723,102 +723,102 @@ class SeqsCreationForm(forms.Form):
         return '\n'.join(cleaneddata)
 
 
-class SamplesCollabsCreateForm(forms.Form):
-    samplesinfo = forms.CharField(
-        label='Samples:',
-        widget=forms.Textarea(attrs={'cols': 30, 'rows': 10}),
-        initial='Please input sample name:\n\n'
-    )
-    group = forms.CharField(\
-        label='Group Name',
-        widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
-        )
-    research_contact = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
-        required=False)
-    fiscal_person_index = forms.ModelChoiceField(queryset=Person_Index.objects.all(),required=False)
+# class SamplesCollabsCreateForm(forms.Form):
+#     samplesinfo = forms.CharField(
+#         label='Samples:',
+#         widget=forms.Textarea(attrs={'cols': 30, 'rows': 10}),
+#         initial='Please input sample name:\n\n'
+#     )
+#     group = forms.CharField(\
+#         label='Group Name',
+#         widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
+#         )
+#     research_contact = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
+#         required=False)
+#     fiscal_person_index = forms.ModelChoiceField(queryset=Person_Index.objects.all(),required=False)
  
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.none()
-        self.fields['fiscal_person_index'].queryset = Person_Index.objects.none() 
-        if 'group' in self.data:
-            try:
-                gname = self.data.get('group')
-                self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.\
-                filter(person_id__groups__name__in=[gname]).\
-                prefetch_related(Prefetch('person_id__groups'))
-                self.fields['research_contact'].label_from_instance = \
-                lambda obj: "%s %s__%s__%s" % (obj.person_id.first_name, \
-                    obj.person_id.last_name,obj.person_id.email,obj.cell_phone)
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.none()
+#         self.fields['fiscal_person_index'].queryset = Person_Index.objects.none() 
+#         if 'group' in self.data:
+#             try:
+#                 gname = self.data.get('group')
+#                 self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.\
+#                 filter(person_id__groups__name__in=[gname]).\
+#                 prefetch_related(Prefetch('person_id__groups'))
+#                 self.fields['research_contact'].label_from_instance = \
+#                 lambda obj: "%s %s__%s__%s" % (obj.person_id.first_name, \
+#                     obj.person_id.last_name,obj.person_id.email,obj.cell_phone)
 
-                self.fields['fiscal_person_index'].queryset = Person_Index.objects.\
-                filter(person__person_id__groups__name__in=[gname]).\
-                prefetch_related(Prefetch('person__person_id__groups'))
-                self.fields['fiscal_person_index'].label_from_instance = \
-                lambda obj: "%s %s__%s__%s" % (obj.person.person_id.first_name, \
-                    obj.person.person_id.last_name,obj.person.person_id.email,\
-                    obj.index_name)
+#                 self.fields['fiscal_person_index'].queryset = Person_Index.objects.\
+#                 filter(person__person_id__groups__name__in=[gname]).\
+#                 prefetch_related(Prefetch('person__person_id__groups'))
+#                 self.fields['fiscal_person_index'].label_from_instance = \
+#                 lambda obj: "%s %s__%s__%s" % (obj.person.person_id.first_name, \
+#                     obj.person.person_id.last_name,obj.person.person_id.email,\
+#                     obj.index_name)
             
-            except (ValueError, TypeError):
-                pass 
+#             except (ValueError, TypeError):
+#                 pass 
 
-    def clean_samplesinfo(self):
-        data = self.cleaned_data['samplesinfo']
-        cleadata = []
-        invalidsamplist = []
-        flagsamp = 0
-        for lineitem in data.strip().split('\n'):
-            if not lineitem.startswith('Please input') and lineitem != '\r':
-                cleadata.append(lineitem)
-                sampid = lineitem.strip()
-                if not SampleInfo.objects.filter(sample_id=sampid).exists():
-                    invalidsamplist.append(sampid)
-                    flagsamp = 1
+#     def clean_samplesinfo(self):
+#         data = self.cleaned_data['samplesinfo']
+#         cleadata = []
+#         invalidsamplist = []
+#         flagsamp = 0
+#         for lineitem in data.strip().split('\n'):
+#             if not lineitem.startswith('Please input') and lineitem != '\r':
+#                 cleadata.append(lineitem)
+#                 sampid = lineitem.strip()
+#                 if not SampleInfo.objects.filter(sample_id=sampid).exists():
+#                     invalidsamplist.append(sampid)
+#                     flagsamp = 1
 
-        if flagsamp == 1:
-            raise forms.ValidationError(
-                'Invalid Sample Name:'+','.join(invalidsamplist))
-        return '\n'.join(cleadata)
+#         if flagsamp == 1:
+#             raise forms.ValidationError(
+#                 'Invalid Sample Name:'+','.join(invalidsamplist))
+#         return '\n'.join(cleadata)
 
-    def clean_group(self):
-        gname = self.cleaned_data['group']
-        if not Group.objects.filter(name=gname).exists():
-            raise forms.ValidationError('Invalid Group Name!')
-        return gname
+#     def clean_group(self):
+#         gname = self.cleaned_data['group']
+#         if not Group.objects.filter(name=gname).exists():
+#             raise forms.ValidationError('Invalid Group Name!')
+#         return gname
 
-class SampleCollabsUpdateForm(forms.Form):
-    group = forms.CharField(\
-        label='Group Name',
-        widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
-        )
-    research_contact = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
-        required=False)
-    fiscal_person_index = forms.ModelChoiceField(queryset=Person_Index.objects.all(),required=False)
+# class SampleCollabsUpdateForm(forms.Form):
+#     group = forms.CharField(\
+#         label='Group Name',
+#         widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
+#         )
+#     research_contact = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
+#         required=False)
+#     fiscal_person_index = forms.ModelChoiceField(queryset=Person_Index.objects.all(),required=False)
  
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.none()
-        self.fields['fiscal_person_index'].queryset = Person_Index.objects.none() 
-        if 'group' in self.data:
-            try:
-                gname = self.data.get('group')
-                self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.\
-                filter(person_id__groups__name__in=[gname]).\
-                prefetch_related(Prefetch('person_id__groups'))
-                self.fields['research_contact'].label_from_instance = \
-                lambda obj: "%s %s__%s__%s" % (obj.person_id.first_name, \
-                    obj.person_id.last_name,obj.person_id.email,obj.cell_phone)
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.none()
+#         self.fields['fiscal_person_index'].queryset = Person_Index.objects.none() 
+#         if 'group' in self.data:
+#             try:
+#                 gname = self.data.get('group')
+#                 self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.\
+#                 filter(person_id__groups__name__in=[gname]).\
+#                 prefetch_related(Prefetch('person_id__groups'))
+#                 self.fields['research_contact'].label_from_instance = \
+#                 lambda obj: "%s %s__%s__%s" % (obj.person_id.first_name, \
+#                     obj.person_id.last_name,obj.person_id.email,obj.cell_phone)
 
-                self.fields['fiscal_person_index'].queryset = Person_Index.objects.\
-                filter(person__person_id__groups__name__in=[gname]).\
-                prefetch_related(Prefetch('person__person_id__groups'))
-                self.fields['fiscal_person_index'].label_from_instance = \
-                lambda obj: "%s %s__%s__%s" % (obj.person.person_id.first_name, \
-                    obj.person.person_id.last_name,obj.person.person_id.email,\
-                    obj.index_name)
+#                 self.fields['fiscal_person_index'].queryset = Person_Index.objects.\
+#                 filter(person__person_id__groups__name__in=[gname]).\
+#                 prefetch_related(Prefetch('person__person_id__groups'))
+#                 self.fields['fiscal_person_index'].label_from_instance = \
+#                 lambda obj: "%s %s__%s__%s" % (obj.person.person_id.first_name, \
+#                     obj.person.person_id.last_name,obj.person.person_id.email,\
+#                     obj.index_name)
             
-            except (ValueError, TypeError):
-                pass 
+#             except (ValueError, TypeError):
+#                 pass 
 
     def clean_group(self):
         gname = self.cleaned_data['group']
