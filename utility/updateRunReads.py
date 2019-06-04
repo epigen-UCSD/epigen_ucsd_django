@@ -23,7 +23,7 @@ def getTotalReads(fq_dir):
     call shell function to count total reads in the library 
     '''
     log_files = subprocess.check_output(
-        "find "+fq_dir+" -name DemultiplexingStats.xml", shell=True, universal_newlines=True).split()
+        "find -L "+fq_dir+" -name DemultiplexingStats.xml", shell=True, universal_newlines=True).split()
     tree = ET.parse(log_files[0])
     flowcell = tree.getroot().getchildren()[0]
     cnts = []

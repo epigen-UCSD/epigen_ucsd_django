@@ -16,13 +16,15 @@ import os
 import subprocess
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
+import re
 
 # Create your views here.
 DisplayField1 = ['set_id', 'set_name',
                  'date_requested', 'experiment_type', 'url']
 DisplayField2 = ['set_id', 'set_name', 'date_requested',
                  'requestor', 'experiment_type', 'url']
-defaultgenome = {'human': 'hg38', 'mouse': 'mm10', 'rat': 'rn6'}
+defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
+                 'rat': 'rn6', 'cattle': 'ARS-UCD1.2'}
 
 
 def groupnumber(datalist):
@@ -73,6 +75,74 @@ def grouplibraries(librarieslist):
                     start = '_'.join([prefix, str(x[0]), suffix])
                     end = '_'.join([prefix, str(x[1]), suffix])
                     groupedlibraries.append('-'.join([start, end]))
+    return ','.join(groupedlibraries)
+
+
+def grouplibrariesOrderKeeped(librarieslist):
+    groupedlibraries = []
+    presuffix_last = ''
+    presuffix_number = {}
+    for item in librarieslist:
+        splititem = item.split('_', 2)
+        if len(splititem) == 1:
+            groupedlibraries.append(item)
+        else:
+            prefix = item.split('_', 2)[0]
+            try:
+                suffix = item.split('_', 2)[2]
+            except IndexError as e:
+                suffix = ''
+            presuffix = ':'.join([prefix, suffix])
+            if presuffix == presuffix_last:
+                presuffix_number.append(int(item.split('_', 2)[1]))
+            else:
+                if presuffix_last:
+                    prefix = presuffix_last.split(':')[0]
+                    suffix = presuffix_last.split(':')[1]
+                    ranges = groupnumber(presuffix_number)
+                    if not suffix:
+                        for x in ranges:
+                            if x[0] == x[1]:
+                                groupedlibraries.append(
+                                    '_'.join([prefix, str(x[0])]))
+                            else:
+                                start = '_'.join([prefix, str(x[0])])
+                                end = '_'.join([prefix, str(x[1])])
+                                groupedlibraries.append('-'.join([start, end]))
+                    else:
+                        for x in ranges:
+                            if x[0] == x[1]:
+                                groupedlibraries.append(
+                                    '_'.join([prefix, str(x[0]), suffix]))
+                            else:
+                                start = '_'.join([prefix, str(x[0]), suffix])
+                                end = '_'.join([prefix, str(x[1]), suffix])
+                                groupedlibraries.append('-'.join([start, end]))
+                presuffix_last = presuffix
+                presuffix_number = []
+                presuffix_number.append(int(item.split('_', 2)[1]))
+    if presuffix_last:
+        prefix = presuffix_last.split(':')[0]
+        suffix = presuffix_last.split(':')[1]
+        ranges = groupnumber(presuffix_number)
+        if not suffix:
+            for x in ranges:
+                if x[0] == x[1]:
+                    groupedlibraries.append('_'.join([prefix, str(x[0])]))
+                else:
+                    start = '_'.join([prefix, str(x[0])])
+                    end = '_'.join([prefix, str(x[1])])
+                    groupedlibraries.append('-'.join([start, end]))
+        else:
+            for x in ranges:
+                if x[0] == x[1]:
+                    groupedlibraries.append(
+                        '_'.join([prefix, str(x[0]), suffix]))
+                else:
+                    start = '_'.join([prefix, str(x[0]), suffix])
+                    end = '_'.join([prefix, str(x[1]), suffix])
+                    groupedlibraries.append('-'.join([start, end]))
+
     return ','.join(groupedlibraries)
 
 
@@ -196,7 +266,7 @@ def SetQCgenomelabelCreateView(request, setqc_pk):
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     regset = LibraryInSet.objects.filter(
-        librariesetqc=setinfo).order_by('seqinfo')
+        librariesetqc=setinfo).order_by('pk')
     temdic = {}
     formsetcustom = []
     initaldic = []
@@ -269,10 +339,11 @@ def SetQCUpdateView(request, setqc_pk):
 
     flag = 0
     if setinfo.experiment_type != 'ChIP-seq':
-        regset = LibraryInSet.objects.filter(librariesetqc=setinfo)
+        regset = LibraryInSet.objects.filter(
+            librariesetqc=setinfo).order_by('pk')
         librarieslist = [x.seqinfo.seq_id for x in regset]
         libraries_form = LibrariesToIncludeCreatForm(request.POST or None,
-                                                     initial={'librariestoinclude': grouplibraries(librarieslist)})
+                                                     initial={'librariestoinclude': grouplibrariesOrderKeeped(librarieslist)})
         if request.method == 'POST':
             post = request.POST.copy()
             if post['collaborator']:
@@ -333,10 +404,10 @@ def SetQCUpdateView(request, setqc_pk):
         initialgroup = []
         for i in groupitem:
             temdic = {}
-            temdic['librariestoincludeInput'] = grouplibraries(
-                [x.seqinfo.seq_id for x in chipset.filter(group_number=i, is_input=True)])
-            temdic['librariestoincludeIP'] = grouplibraries(
-                [x.seqinfo.seq_id for x in chipset.filter(group_number=i, is_input=False)])
+            temdic['librariestoincludeInput'] = grouplibrariesOrderKeeped(
+                [x.seqinfo.seq_id for x in chipset.filter(group_number=i, is_input=True).order_by('pk')])
+            temdic['librariestoincludeIP'] = grouplibrariesOrderKeeped(
+                [x.seqinfo.seq_id for x in chipset.filter(group_number=i, is_input=False).order_by('pk')])
             initialgroup.append(temdic)
             #print([x for x in chipset.filter(group_number=i,is_input=True)])
         ChIPLibrariesFormSet = formset_factory(
@@ -421,7 +492,7 @@ def SetQCgenomelabelUpdateView(request, setqc_pk):
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     regset = LibraryInSet.objects.filter(
-        librariesetqc=setinfo).order_by('seqinfo')
+        librariesetqc=setinfo).order_by('pk')
     temdic = {}
     formsetcustom = []
     initaldic = []
@@ -497,57 +568,63 @@ def RunSetQC(request, setqc_pk):
         raise PermissionDenied
     allfolder = [fname for fname in os.listdir(
         libdir) if os.path.isdir(os.path.join(libdir, fname))]
-    librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
-    list1tem = list(librariesset.values_list('seqinfo', flat=True))
-    list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x)
-             for x in list1tem]
-    list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
-        id=x) for x in list(librariesset.values_list('genome', flat=True))]
-    list5 = list(librariesset.values_list('label', flat=True))
-    list_readtype = [SeqInfo.objects.values_list(
-        'read_type', flat=True).get(id=x) for x in list1tem]
+    outinfo = list(LibraryInSet.objects.filter(librariesetqc=setinfo).
+                   select_related('seqinfo__libraryinfo__sampleinfo', 'seqinfo__machine', 'genome').
+                   values('seqinfo__seq_id', 'group_number', 'is_input', 'genome__genome_name',
+                          'label', 'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__sample_id',
+                          'seqinfo__libraryinfo__sampleinfo__species', 'seqinfo__libraryinfo__experiment_type',
+                          'seqinfo__machine__machine_name').order_by('pk'))
 
-    seqstatus = []
+    list1 = [x['seqinfo__seq_id'] for x in outinfo]
+    list_readtype = [x['seqinfo__read_type'] for x in outinfo]
+
+    seqstatus = {}
     i = 0
     for item in list1:
         if item not in allfolder:
-            seqstatus.append('No')
+            seqstatus[item] = 'No'
         else:
             if not os.path.isfile(os.path.join(libdir, item, '.finished.txt')):
-                seqstatus.append('No')
+                seqstatus[item] = 'No'
             else:
-                seqstatus.append('Yes')
+                seqstatus[item] = 'Yes'
 
         reps = ['1']
         reps = reps + item.split('_')[2:]
         mainname = '_'.join(item.split('_')[0:2])
 
-        if list_readtype[i] == 'PE':
-            r1 = item+'_R1.fastq.gz'
-            r2 = item+'_R2.fastq.gz'
-            if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
-                for j in set(reps):
-                    if j == '1':
-                        repname = mainname
-                    else:
-                        repname = '_'.join([mainname, j])
+        if seqstatus[item] == 'No':
+            if list_readtype[i] == 'PE':
+                r1 = item+'_R1.fastq.gz'
+                r2 = item+'_R2.fastq.gz'
+                if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
+                    for j in set(reps):
+                        if j == '1':
+                            repname = mainname
+                        else:
+                            repname = '_'.join([mainname, j])
 
-                    r1 = repname+'_R1.fastq.gz'
-                    r2 = repname+'_R2.fastq.gz'
-                    try:
-                        if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
-                            data['fastqerror'] = 'There is at least one library without fastq file. Please go to the setQC detail page.'
+                        r1 = repname+'_R1.fastq.gz'
+                        r2 = repname+'_R2.fastq.gz'
+                        try:
+                            if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
+                                data['fastqerror'] = 'There is at least one library without fastq file. Please go to the setQC detail page.'
+                                return JsonResponse(data)
+                        except Exception as e:
+                            data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
+                            print(e)
                             return JsonResponse(data)
-                    except Exception as e:
-                        data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
-                        print(e)
-                        return JsonResponse(data)
 
             elif list_readtype[i] == 'SE':
                 r1 = item+'.fastq.gz'
                 r1op = item+'_R1.fastq.gz'
                 if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
                     for j in set(reps):
+                        if j == '1':
+                            repname = mainname
+                        else:
+                            repname = '_'.join([mainname, j])
+
                         r1 = repname+'.fastq.gz'
                         r1op = repname+'_R1.fastq.gz'
                         try:
@@ -561,20 +638,37 @@ def RunSetQC(request, setqc_pk):
         i += 1
 
     if setinfo.experiment_type == 'ChIP-seq':
-        list2 = list(librariesset.values_list('group_number', flat=True))
-        list3 = list(librariesset.values_list('is_input', flat=True))
-        writecontent = '\n'.join(['\t'.join(map(str, x)) for x in zip(
-            list1, list2, list3, list4, list5, seqstatus, list_readtype)])
+        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['group_number'],
+                                             str(x['is_input']
+                                                 ), x['genome__genome_name'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']
+                                                                   ], x['seqinfo__read_type'],
+                                             x['seqinfo__libraryinfo__sampleinfo__sample_id'],
+                                             x['seqinfo__libraryinfo__sampleinfo__species'],
+                                             x['seqinfo__libraryinfo__experiment_type'],
+                                             x['seqinfo__machine__machine_name'],setinfo.set_name]) for x in outinfo])
+
         featureheader = ['Library ID', 'Group ID',
-                         'Is Input', 'Genome', 'Label', 'Processed Or Not', 'Read Type']
+                         'Is Input', 'Genome', 'Library Name', 'Processed Or Not',
+                         'Read Type', 'Sample Name', 'Species',
+                         'Experiment Type', 'Machine','Set Name']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
-            setinfo.set_id + ' ' + request.user.email
+            setinfo.set_id + ' ' + request.user.email + \
+            ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
     else:
-        writecontent = '\n'.join(['\t'.join(map(str, x))
-                                  for x in zip(list1, list4, list5, seqstatus, list_readtype)])
+        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']
+                                                                   ], x['seqinfo__read_type'],
+                                             x['seqinfo__libraryinfo__sampleinfo__sample_id'],
+                                             x['seqinfo__libraryinfo__sampleinfo__species'],
+                                             x['seqinfo__libraryinfo__experiment_type'],
+                                             x['seqinfo__machine__machine_name'],setinfo.set_name]) for x in outinfo])
         featureheader = ['Library ID', 'Genome',
-                         'Label', 'Processed Or Not', 'Read Type']
-        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
+                         'Library Name', 'Processed Or Not', 'Read Type', 'Sample Name', 'Species',
+                         'Experiment Type', 'Machine','Set Name']
+        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
+            ' ' + request.user.email + ' ' + \
+            re.sub(r"[\)\(]", ".", setinfo.set_name)
 
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
@@ -604,6 +698,7 @@ def RunSetQC(request, setqc_pk):
 @transaction.atomic
 def RunSetQC2(request, setqc_pk):
     libdir = settings.LIBQC_DIR
+    fastqdir = settings.FASTQ_DIR
     setqcoutdir = settings.SETQC_DIR
     data = {}
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
@@ -611,41 +706,108 @@ def RunSetQC2(request, setqc_pk):
         raise PermissionDenied
     allfolder = [fname for fname in os.listdir(
         libdir) if os.path.isdir(os.path.join(libdir, fname))]
-    librariesset = LibraryInSet.objects.filter(librariesetqc=setinfo)
-    list1tem = list(librariesset.values_list('seqinfo', flat=True))
-    list1 = [SeqInfo.objects.values_list('seq_id', flat=True).get(id=x)
-             for x in list1tem]
-    list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
-        id=x) for x in list(librariesset.values_list('genome', flat=True))]
-    list5 = list(librariesset.values_list('label', flat=True))
-    list_readtype = [SeqInfo.objects.values_list(
-        'read_type', flat=True).get(id=x) for x in list1tem]
+    outinfo = list(LibraryInSet.objects.filter(librariesetqc=setinfo).
+                   select_related('seqinfo__libraryinfo__sampleinfo', 'seqinfo__machine', 'genome').
+                   values('seqinfo__seq_id', 'group_number', 'is_input', 'genome__genome_name',
+                          'label', 'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__sample_id',
+                          'seqinfo__libraryinfo__sampleinfo__species', 'seqinfo__libraryinfo__experiment_type',
+                          'seqinfo__machine__machine_name').order_by('pk'))
 
-    seqstatus = []
+    list1 = [x['seqinfo__seq_id'] for x in outinfo]
+    list_readtype = [x['seqinfo__read_type'] for x in outinfo]
+    seqstatus = {}
+    i = 0
     for item in list1:
         if item not in allfolder:
-            seqstatus.append('No')
+            seqstatus[item] = 'No'
         else:
             if not os.path.isfile(os.path.join(libdir, item, '.finished.txt')):
-                seqstatus.append('No')
+                seqstatus[item] = 'No'
             else:
-                seqstatus.append('Yes')
+                seqstatus[item] = 'Yes'
+        reps = ['1']
+        reps = reps + item.split('_')[2:]
+        mainname = '_'.join(item.split('_')[0:2])
+
+        if seqstatus[item] == 'No':
+            if list_readtype[i] == 'PE':
+                r1 = item+'_R1.fastq.gz'
+                r2 = item+'_R2.fastq.gz'
+                if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
+                    for j in set(reps):
+                        if j == '1':
+                            repname = mainname
+                        else:
+                            repname = '_'.join([mainname, j])
+
+                        r1 = repname+'_R1.fastq.gz'
+                        r2 = repname+'_R2.fastq.gz'
+                        try:
+                            if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
+                                data['fastqerror'] = 'There is at least one library without fastq file. Please go to the setQC detail page.'
+                                return JsonResponse(data)
+                        except Exception as e:
+                            data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
+                            print(e)
+                            return JsonResponse(data)
+
+            elif list_readtype[i] == 'SE':
+                r1 = item+'.fastq.gz'
+                r1op = item+'_R1.fastq.gz'
+                if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
+                    for j in set(reps):
+                        if j == '1':
+                            repname = mainname
+                        else:
+                            repname = '_'.join([mainname, j])
+
+                        r1 = repname+'.fastq.gz'
+                        r1op = repname+'_R1.fastq.gz'
+                        try:
+                            if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
+                                data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
+                                return JsonResponse(data)
+                        except Exception as e:
+                            data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
+                            print(e)
+                            return JsonResponse(data)
+        i += 1
+
     if setinfo.experiment_type == 'ChIP-seq':
 
-        list2 = list(librariesset.values_list('group_number', flat=True))
-        list3 = list(librariesset.values_list('is_input', flat=True))
-        writecontent = '\n'.join(['\t'.join(map(str, x)) for x in zip(
-            list1, list2, list3, list4, list5, seqstatus, list_readtype)])
+        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['group_number'],
+                                             str(x['is_input']
+                                                 ), x['genome__genome_name'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']
+                                                                   ], x['seqinfo__read_type'],
+                                             x['seqinfo__libraryinfo__sampleinfo__sample_id'],
+                                             x['seqinfo__libraryinfo__sampleinfo__species'],
+                                             x['seqinfo__libraryinfo__experiment_type'],
+                                             x['seqinfo__machine__machine_name'],setinfo.set_name]) for x in outinfo])
+
         featureheader = ['Library ID', 'Group ID',
-                         'Is Input', 'Genome', 'Label', 'Processed Or Not', 'Read Type']
+                         'Is Input', 'Genome', 'Library Name', 'Processed Or Not',
+                         'Read Type', 'Sample Name', 'Species',
+                         'Experiment Type', 'Machine','Set Name']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
-            setinfo.set_id + ' ' + request.user.email
+            setinfo.set_id + ' ' + request.user.email + \
+            ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
+
     else:
-        writecontent = '\n'.join(['\t'.join(map(str, x))
-                                  for x in zip(list1, list4, list5, seqstatus, list_readtype)])
+        writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']
+                                                                   ], x['seqinfo__read_type'],
+                                             x['seqinfo__libraryinfo__sampleinfo__sample_id'],
+                                             x['seqinfo__libraryinfo__sampleinfo__species'],
+                                             x['seqinfo__libraryinfo__experiment_type'],
+                                             x['seqinfo__machine__machine_name'],setinfo.set_name]) for x in outinfo])
         featureheader = ['Library ID', 'Genome',
-                         'Label', 'Processed Or Not', 'Read Type']
-        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + ' ' + request.user.email
+                         'Library Name', 'Processed Or Not', 'Read Type', 'Sample Name', 'Species',
+                         'Experiment Type', 'Machine','Set Name']
+
+        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
+            ' ' + request.user.email + ' ' + \
+            re.sub(r"[\)\(]", ".", setinfo.set_name)
 
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
@@ -676,8 +838,10 @@ def SetQCDetailView(request, setqc_pk):
     summaryfield = ['status', 'set_id', 'set_name', 'date_requested',
                     'requestor', 'experiment_type', 'notes', 'url', 'version']
     groupinputinfo = ''
+    # librariesset = LibraryInSet.objects.filter(
+    #     librariesetqc=setinfo).order_by('group_number', '-is_input')
     librariesset = LibraryInSet.objects.filter(
-        librariesetqc=setinfo).order_by('group_number', '-is_input')
+        librariesetqc=setinfo).order_by('pk')
     list1tem = list(librariesset.values_list('seqinfo', flat=True))
     list1 = [SeqInfo.objects.values_list(
         'seq_id', flat=True).get(id=x) for x in list1tem]
@@ -734,12 +898,12 @@ def SetQCDetailView(request, setqc_pk):
         featureinfo = list(zip(list1, list_readtype, list2,
                                list3, list4, list5, fastqstatus, seqstatus))
         featureheader = ['Library ID', 'Read Type', 'Group ID',
-                         'Is Input',  'Genome', 'Label', 'Has fastq', 'Processed']
+                         'Is Input',  'Genome', 'Library Name', 'Has fastq', 'Processed']
     else:
         featureinfo = list(zip(list1, list_readtype, list4,
                                list5, fastqstatus, seqstatus))
         featureheader = ['Library ID', 'Read Type',
-                         'Genome', 'Label', 'Has fastq', 'Processed']
+                         'Genome', 'Library Name', 'Has fastq', 'Processed']
     context = {
         'setinfo': setinfo,
         'summaryfield': summaryfield,

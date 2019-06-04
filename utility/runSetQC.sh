@@ -5,6 +5,8 @@ SCRIPT_PATH="${BASH_SOURCE[0]}"
 cd "`dirname "${SCRIPT_PATH}"`"
 SET_ID=$1
 USER_EMAIL=$2
+SET_NAME=$3
+
 SETQC_DIR="/projects/ps-epigen/outputs/setQCs/"
 STATUS_FILE=${SETQC_DIR}"."${SET_ID}.txt
 SETQC_FILE=${SETQC_DIR}${SET_ID}.txt
@@ -24,12 +26,12 @@ awk -v FS='\t' '(NR>1&&$4=="No"){print $1,$2,$5}' $STATUS_FILE > $RUN_LOG_PIP
 n_libs=$(wc -l $RUN_LOG_PIP | awk '{print $1}')
 if [ $n_libs -gt 0 ]
 then
-    cmd1="qsub -v samples=${RUN_LOG_PIP} -t 0-$[n_libs-1] -M $USER_EMAIL -q home-epigen -l walltime=16:00:00 \$(which runBulkATAC_fastq.pbs)"
+    cmd1="qsub -v samples=${RUN_LOG_PIP} -t 0-$[n_libs-1] -M $USER_EMAIL -q hotel -l walltime=24:00:00 \$(which runBulkATAC_fastq.pbs)"
     job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
     python updateLibrariesSetQC.py -s '1' -id $SET_ID # process libs
-    cmd2="qsub -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,type=$TYPE  \$(which runSetQC.pbs)"
+    cmd2="qsub -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,set_name='$SET_NAME',type=$TYPE  \$(which runSetQC.pbs)"
 else
-    cmd2="qsub -M $USER_EMAIL -v set_id=$SET_ID,type=$TYPE  \$(which runSetQC.pbs)"
+    cmd2="qsub -M $USER_EMAIL -v set_id=$SET_ID,set_name='$SET_NAME',type=$TYPE  \$(which runSetQC.pbs)"
 fi
 
 ##################################################

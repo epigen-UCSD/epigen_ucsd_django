@@ -222,15 +222,20 @@ def RunCreateView6(request):
         samplestocreat = form.cleaned_data['samplestocreat']
         tosave_list = []
         samplestocreat += '   \nSequencing_ID'  # mannually create a newline
-        i7index_list = []
-        i5index_list = []
+        i7index_list = {}
+        i5index_list = {}
         libraryid_list = []
         for samples in samplestocreat.strip().split('\n'):
-            samples_info = re.split(r'[\s]', samples)
+            samples_info = re.split(r'[\s]', samples+' ')
 
             # handle snATAC_v2, i7 in range(1-4), i5 in range(1-8)
             if runinfo.experiment_type == "S2" and samples != '\r' and samples_info[0] != 'Sequencing_ID':
                 try:
+                    if samples_info[3]:
+                        lane_tm = samples_info[3]
+                    else:
+                        lane_tm = None
+
                     if samples_info[1] and samples_info[2]:
                         i7 = libraryparse(samples_info[1])
                         i5 = libraryparse(samples_info[2])
@@ -243,6 +248,7 @@ def RunCreateView6(request):
                                     indexid=','.join(i7)),
                                 i5index=Barcode.objects.get(
                                     indexid=','.join(i5)),
+                                lane=lane_tm,
                             )
                         else:
                             context = {
@@ -260,8 +266,11 @@ def RunCreateView6(request):
                         }
                         return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
-                    i7index_list.append(','.join(i7))
-                    i5index_list.append(','.join(i5))
+                    if lane_tm not in i7index_list.keys():
+                        i7index_list[lane_tm]=[]
+                        i5index_list[lane_tm]=[]
+                    i7index_list[lane_tm].append(samples_info[1])
+                    i5index_list[lane_tm].append(samples_info[2])
                     libraryid_list.append(samples_info[0])
 
                 except ObjectDoesNotExist:
@@ -275,9 +284,14 @@ def RunCreateView6(request):
 
                 tosave_list.append(tosave_sample)
 
-            # hand bulk barcodes
-            if runinfo.experiment_type in ["BK", "TA"] and samples != '\r' and samples_info[0] != 'Sequencing_ID':
+            # handle bulk barcodes
+            if runinfo.experiment_type != 'S2' and samples != '\r' and samples_info[0] != 'Sequencing_ID':
                 try:
+                    #print(':'.join(samples_info))
+                    if samples_info[3]:
+                        lane_tm = samples_info[3]
+                    else:
+                        lane_tm = None
                     if samples_info[1] and samples_info[2]:
                         tosave_sample = LibrariesInRun(
                             Library_ID=samples_info[0],
@@ -285,6 +299,7 @@ def RunCreateView6(request):
                                 indexid=samples_info[1]),
                             i5index=Barcode.objects.get(
                                 indexid=samples_info[2]),
+                            lane=lane_tm,
                         )
                     elif samples_info[1] and not samples_info[2]:
                         tosave_sample = LibrariesInRun(
@@ -292,6 +307,7 @@ def RunCreateView6(request):
                             Library_ID=samples_info[0],
                             i7index=Barcode.objects.get(
                                 indexid=samples_info[1]),
+                            lane=lane_tm,
                         )
                     elif not samples_info[1] and samples_info[2]:
                         tosave_sample = LibrariesInRun(
@@ -299,15 +315,19 @@ def RunCreateView6(request):
                             Library_ID=samples_info[0],
                             i5index=Barcode.objects.get(
                                 indexid=samples_info[2]),
+                            lane=lane_tm,
                         )
                     else:
                         tosave_sample = LibrariesInRun(
 
                             Library_ID=samples_info[0],
+                            lane=lane_tm,
                         )
-
-                    i7index_list.append(samples_info[1])
-                    i5index_list.append(samples_info[2])
+                    if lane_tm not in i7index_list.keys():
+                        i7index_list[lane_tm]=[]
+                        i5index_list[lane_tm]=[]
+                    i7index_list[lane_tm].append(samples_info[1])
+                    i5index_list[lane_tm].append(samples_info[2])
                     libraryid_list.append(samples_info[0])
 
                 except ObjectDoesNotExist:
@@ -346,16 +366,16 @@ def RunCreateView6(request):
             }
             return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
-        duplicate = IndexValidation(i7index_list, i5index_list)
-        if len(duplicate) > 0:
+        for ke in i7index_list.keys():
+            duplicate = IndexValidation(i7index_list[ke], i5index_list[ke])
+            if len(duplicate) > 0:  
+                context = {
+                    'run_form': run_form,
+                    'form': form,
+                    'error_message': 'Duplicates:\t' + str(duplicate)   
 
-            context = {
-                'run_form': run_form,
-                'form': form,
-                'error_message': 'Duplicates:\t' + str(duplicate)
-
-            }
-            return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
+                }
+                return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
         runinfo.save()
         for samples in tosave_list:
