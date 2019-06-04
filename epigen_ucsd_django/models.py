@@ -7,11 +7,7 @@ choice_for_roles = (
 	('PI','PI'),
 	('other','other'),
 	)
-choice_for_institution = (
-	('UCSD','UCSD'),
-	('Pfizer','Pfizer'),
-	('other','other'),
-	)
+choice_for_institution = ['UCSD','Pfizer','other']
 
 
 class CollaboratorPersonInfo(models.Model):
@@ -38,7 +34,7 @@ class CollaboratorPersonInfo(models.Model):
 
 class Group_Institution(models.Model):
 	group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
-	institution = models.CharField(max_length=50,choices=choice_for_institution,default='UCSD')
+	institution = models.CharField(max_length=50)
 
 
 	

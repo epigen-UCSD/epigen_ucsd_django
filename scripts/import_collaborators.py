@@ -18,7 +18,7 @@ django.setup()
 
 from masterseq_app.models import SampleInfo
 from django.contrib.auth.models import Group,User
-from epigen_ucsd_django.models import CollaboratorPersonInfo,Person_Index
+from epigen_ucsd_django.models import CollaboratorPersonInfo
 
 def parsename(namestring):
 	#return list of [username, firstname, lastname]
