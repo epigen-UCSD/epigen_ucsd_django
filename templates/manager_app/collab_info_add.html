@@ -1,18 +1,15 @@
-{% extends 'masterseq_app/base.html' %}
+{% extends 'manager_app/base_collabor_internal.html' %}
 
 {% block content %}
 {% load nextseq_app_tags %}
 <div id="content" class="col-sm-10 col-md-10 col-lg-10">
   <div class="card">
     <div class="card-header fortable">
-      {{ sampleinfo.sample_index }}
+      Add new email/phone/index to a collaborator
     </div><!-- /.card-header -->
     <div class="card-body">
-      {% if error_message %}
-          <p class="error-message">{{ error_message }}</strong></p>
-      {% endif %}
-      <form id="groupdependent" action="" method="post">{% csrf_token %}  
-        {% for field in sample_form %}
+      <form method="post">{% csrf_token %} 
+        {% for field in colab_info_add_form %}
         <div class="fieldWrapper">
           <p>
             <ul>
@@ -22,22 +19,16 @@
             </li>
             {% endfor %}
             </ul>
-            {% if field.field.widget|get_class == "Textarea" %}
-            <p class="textarea">{{ field.label_tag }}</p>
-               {{ field }}
-            {% else %}
               {{ field.label_tag }} {{ field }}
-            {% endif %}
             {% if field.help_text %}
             <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
             {% endif %}
           </p>              
         </div>
-        {% endfor %}   
-        <input type="submit" value="Save"/>
+        {% endfor %} 
+        <button type="submit">Save</button>
       </form>
     </div><!-- /.card-body -->              
   </div><!-- /.card -->      
 </div><!-- /#content --> 
-
 {% endblock %}

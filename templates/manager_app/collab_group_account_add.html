@@ -1,0 +1,109 @@
+{% extends 'manager_app/base_collabor_internal.html' %}
+
+{% block content %}
+{% load nextseq_app_tags %}
+<div id="content" class="col-sm-10 col-md-10 col-lg-10">
+  <div class="card">
+    <div class="card-header fortable">
+      Add a new group account
+    </div><!-- /.card-header -->
+    <div class="card-body">
+      <form method="post">{% csrf_token %} 
+        {% for field in institution_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error}}
+            </li>
+            {% endfor %}
+            </ul>
+
+              {{ field.label_tag }} {{ field }}
+
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %}
+
+        {% for field in group_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error}}
+            </li>
+            {% endfor %}
+            </ul>
+
+              Group name {{ field }}
+
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %}
+
+
+        {% for field in user_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error}}
+            </li>
+            {% endfor %}
+            </ul>
+            {% if field.name == 'username'%}
+            PI username {{ field }}
+            <span class="fontsize-sm" >PI username will be the group account username</span>
+            {% else %}
+              {{ field.label_tag }} {{ field }}
+            
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %} 
+        {% for field in profile_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error}}
+            </li>
+            {% endfor %}
+            </ul>
+            {% if field.name == 'role' %}
+              {{ field.label_tag }} 
+              <select name="role" required="" id="id_role">
+                <option value="PI" selected="">PI</option>
+              </select>             
+            {% else %}
+              {{ field.label_tag }} {{ field }}
+            {% endif %}
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %} 
+ 
+        <button type="submit" name="profile_save">Save</button>
+      </form>
+    </div><!-- /.card-body -->              
+  </div><!-- /.card -->      
+</div><!-- /#content --> 
+
+
+
+{% endblock %}

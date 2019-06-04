@@ -547,7 +547,18 @@ $(document).ready( function () {
     $('.ajax_userinput_form').autocomplete({
         source: "/setqc/ajax/load-users/",
         minLength:2,
-    });   
+    }); 
+    $('.ajax_collabinput_form').parent().addClass('ui-widget');
+    $('.ajax_collabinput_form').autocomplete({
+        source: "/manager/ajax/load-collabs/",
+        minLength:2,
+    });  
+    $('.ajax_groupinput_form').parent().addClass('ui-widget');
+    $('.ajax_groupinput_form').autocomplete({
+        source: "/manager/ajax/load-groups/",
+        minLength:2,
+    }); 
+
 
 
     $('#id_experiment_type').change(function (){
@@ -563,6 +574,33 @@ $(document).ready( function () {
             }
         })
     });
+    // $('#id_group').change(function (){
+    //     var url = $("#groupdependent").attr("data-samplescollabs-url");
+    //     var url2 = $("#groupdependent").attr("data-fiscalindex-url");
+    //     var groupname = $(this).val();
+    //     $.ajax({
+    //         url:url,
+    //         cache: false,
+    //         data: {
+    //             'group':groupname
+    //         },
+    //         success:function (data){
+    //             $("#id_research_contact").html(data);
+    //         }
+    //     })
+    //     $.ajax({
+    //         url:url2,
+    //         cache: false,
+    //         data: {
+    //             'group':groupname
+    //         },
+    //         success:function (data){
+    //             $("#id_fiscal_person_index").html(data);
+    //         }
+    //     })
+
+    // });
+
 
 // $('[data-toggle="tabajax"]').click(function(e) {
 //     var $this = $(this),
@@ -576,7 +614,31 @@ $(document).ready( function () {
 //     $this.tab('show');
 //     return false;
 // });
+    $('#GroupAddAjax').on('submit', function(e){
+        e.preventDefault();
+        var url=$(this).attr("action");
+        $.ajax({
+            url:url,
+            cache:false,
+            type:"POST",
+            data:$("#GroupAddAjax").serialize(),
+            success:function (data){
+              if (data.ok){
+                alert('New group added, please go on!')
+                $('#GroupAddModal').modal('hide');
+                return
+              }
+              if (data.error){
+                $('#GroupAddModal').modal('show');
+                $('#errormessage').html(data.error);
+                return
 
+              }
+
+            }
+        });
+
+    });
     $('#myModal').modal('show')
     $('#confirmtosave').on('click',function() {
       $( "#bindtomodalok" ).trigger( "click" );
@@ -586,6 +648,15 @@ $(document).ready( function () {
     //   $( "#previewsub" ).trigger( "click" );
       
     //   console.log(e)
+    // });
+    // $('#calendar-trigger').on('click',function(e) {
+    //     e.preventDefault();
+    //     $( "#collapsecalendar").collapse('show');
+    //     $( "#calendar-trigger" ).hide();
+    // });      
+
+    // $('#collapsecalendar').on('hide.bs.collapse', function() {
+    //     $("#calendar-trigger" ).show();
     // });
 
     $( "#id_date" ).datepicker();

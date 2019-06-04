@@ -34,5 +34,12 @@ urlpatterns = [
     path('seq/<slug:seqid>/', views.SeqDetail2View, name='seq_detail_fromseqid'),
     #path('seqs/adds/confirm', views.SeqsCreateConfirmView, name='seqs_add_confirm'),
     #path('ajaxtest/', TemplateView.as_view(template_name="masterseq_app/ajaxtest.html"), name='ajaxtest'),
+    path('savemymetadatatoexcel/', views.SaveMyMetaDataExcel, name='user_metadata_save_excel'),
+    path('saveallmetadatatoexcel/', views.SaveAllMetaDataExcel, name='all_metadata_save_excel'),
+    #path('samplescollabs/adds/', views.SamplesCollabsCreateView, name='samplescollabs_add'),
+    path('ajax/load-researchcontact/', views.load_researchcontact, name='ajax_load_researchcontact'),
+    #path('ajax/load-fiscalindex/', views.load_fiscalindex, name='ajax_load_fiscalindex'),
+
+
 
 ]

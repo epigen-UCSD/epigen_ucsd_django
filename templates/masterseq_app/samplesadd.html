@@ -18,7 +18,7 @@
             <ul>
             {% for error in field.errors %}
             <li class="error-message" >
-              {{error}}
+              {{error |safe }}
             </li>
             {% endfor %}
             </ul>
@@ -84,4 +84,120 @@
 </div>
 
 {% endif %}
+
+
+{% if modalshowplus %}
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Preview</h5>
+
+      </div>
+      <div class="modal-body">
+        {% if newuserrequired %}
+        <p>In this request, the follwing <span style="background-color: #F6BE00">new user account</span> will be created,<span style="background-color: #F6BE00">are you sure?</span></p>
+
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            {% for field in displayorder2 %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for key,value in data.items%}
+          {% if value.newresuserflag %}
+          <tr>
+            {% for field in displayorder2 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+          {% for key,value in data.items%}
+          {% if value.newfisuserflag %}
+          <tr>
+            {% for field in displayorder3 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+
+        </tbody>
+      </table> 
+
+      {% endif %}
+
+        {% if newinforequired %}
+        <p>In this request, <span style="background-color: #F6BE00">new email/phone/index </span> will be added to the collaborators, <span style="background-color: #F6BE00">are you sure?</span> </p>
+
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            {% for field in displayorder4 %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for key,value in data.items%}
+          {% if value.newresinfoflag %}
+          <tr>
+            {% for field in displayorder4 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+          {% for key,value in data.items%}
+          {% if value.newfisinfoflag %}
+          <tr>
+            {% for field in displayorder5 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table> 
+      {% endif %}
+          
+
+      <p>The following <span style="background-color: #F6BE00">new samples</span> will be created:</p>
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            <th scope="col" >sample_id</th>
+            {% for field in displayorder %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for key,value in data.items%}
+          <tr>
+            <td>{{ key }}</td>
+            {% for field in displayorder %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>  
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button id="confirmtosave" type="button" class="btn confirm-btn-orange">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+
 {% endblock %}

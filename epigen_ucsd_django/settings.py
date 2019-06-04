@@ -40,11 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'phonenumber_field',
     'nextseq_app',
     'setqc_app',
     'masterseq_app',
     'epigen_ucsd_django',
     'django.contrib.humanize',
+    'manager_app',
     'collaborator_app',
 ]
 
