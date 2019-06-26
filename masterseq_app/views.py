@@ -432,11 +432,11 @@ def SamplesCreateView(request):
                     resperson = CollaboratorPersonInfo.objects.get(person_id=resuser,group=group_tm)
                     if v['new_email']:
                         current_email = nonetolist(resperson.email)
-                        current_email.insert(0,v['new_resemail'])
+                        current_email.insert(0,v['new_email'])
                         resperson.email = removenone(current_email)
                     if v['new_phone']:
                         current_phone = nonetolist(resperson.phone)
-                        current_phone.insert(0,v['new_resphone'])
+                        current_phone.insert(0,v['new_phone'])
                         resperson.phone = removenone(current_phone)
                     resperson.save()
 
