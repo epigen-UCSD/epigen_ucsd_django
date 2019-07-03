@@ -149,12 +149,14 @@ def SamplesCreateView(request):
     data = {}
     newuserrequired = 0
     newinforequired = 0
+    alreadynewuser = []
     if sample_form.is_valid():
         sampleinfo = sample_form.cleaned_data['samplesinfo']
         # print(sequencinginfo)
         for lineitem in sampleinfo.strip().split('\n'):
             fields = lineitem.strip('\n').split('\t')
             samindex = fields[21].strip()
+            
             newresuserflag = 0
             newresinfoflag = 0
             user_first_name = ''
@@ -208,11 +210,13 @@ def SamplesCreateView(request):
                                 new_phone = resphone
 
                     except:
-                        newuserrequired = 1
-                        newresuserflag = 1
-                        user_username = user_first_name[0].lower()+user_last_name.lower()
-                        if User.objects.filter(username=user_username).exists():
-                            user_username = user_first_name[0]+str(randint(0, 9))+user_last_name.lower()                        
+                        newuserrequired = 1                       
+                        if user_first_name+' '+user_last_name not in alreadynewuser:
+                            alreadynewuser.append(user_first_name+' '+user_last_name)
+                            newresuserflag = 1
+                            user_username = user_first_name[0].lower()+user_last_name.lower()
+                            if User.objects.filter(username=user_username).exists():
+                                user_username = user_first_name[0]+str(randint(0, 9))+user_last_name.lower()
 
 
             elif resname:
@@ -229,10 +233,12 @@ def SamplesCreateView(request):
                             new_phone = resphone
                 except:
                     newuserrequired = 1
-                    newresuserflag = 1
-                    user_username = user_first_name[0].lower()+user_last_name.lower()
-                    if User.objects.filter(username=user_username).exists():
-                        user_username = user_first_name[0]+str(randint(0, 9))+user_last_name.lower()                                    
+                    if user_first_name+' '+user_last_name not in alreadynewuser:
+                        alreadynewuser.append(user_first_name+' '+user_last_name)
+                        newresuserflag = 1
+                        user_username = user_first_name[0].lower()+user_last_name.lower()
+                        if User.objects.filter(username=user_username).exists():
+                            user_username = user_first_name[0]+str(randint(0, 9))+user_last_name.lower()                                    
 
             fisname = fields[5].strip() if fields[5].strip() not in ['NA','N/A'] else ''
             fisemail = fields[6].strip().lower() if fields[6].strip() not in ['NA','N/A'] else ''
@@ -265,10 +271,12 @@ def SamplesCreateView(request):
 
                     except:
                         newuserrequired = 1
-                        newfisuserflag = 1
-                        fisuser_username = fisuser_first_name[0].lower()+fisuser_last_name.lower()
-                        if User.objects.filter(username=fisuser_username).exists():
-                            fisuser_username = fisuser_first_name[0]+str(randint(0, 9))+fisuser_last_name.lower() 
+                        if fisuser_first_name+' '+fisuser_last_name not in alreadynewuser:
+                            alreadynewuser.append(fisuser_first_name+' '+fisuser_last_name)
+                            newfisuserflag = 1
+                            fisuser_username = fisuser_first_name[0].lower()+fisuser_last_name.lower()
+                            if User.objects.filter(username=fisuser_username).exists():
+                                fisuser_username = fisuser_first_name[0]+str(randint(0, 9))+fisuser_last_name.lower() 
 
             elif fisname:
                 fisuser_first_name = fisname.split(' ')[0]
@@ -284,10 +292,12 @@ def SamplesCreateView(request):
                             fisnew_index = indname 
                 except:
                     newuserrequired = 1
-                    newfisuserflag = 1
-                    fisuser_username = fisuser_first_name[0].lower()+fisuser_last_name.lower()
-                    if User.objects.filter(username=fisuser_username).exists():
-                        fisuser_username = fisuser_first_name[0]+str(randint(0, 9))+fisuser_last_name.lower()                                    
+                    if fisuser_first_name+' '+fisuser_last_name not in alreadynewuser:
+                        alreadynewuser.append(fisuser_first_name+' '+fisuser_last_name)
+                        newfisuserflag = 1
+                        fisuser_username = fisuser_first_name[0].lower()+fisuser_last_name.lower()
+                        if User.objects.filter(username=fisuser_username).exists():
+                            fisuser_username = fisuser_first_name[0]+str(randint(0, 9))+fisuser_last_name.lower()                                    
 
             try:
                 samnotes = ';'.join(
@@ -449,11 +459,11 @@ def SamplesCreateView(request):
                     if v['fisnew_email']:
                         current_email = nonetolist(fisperson.email)
                         current_email.insert(0,v['fisnew_email'])
-                        resperson.email = removenone(current_email)
+                        fisperson.email = removenone(current_email)
                     if v['fisnew_index']:
                         current_index = nonetolist(fisperson.index)
                         current_index.insert(0,v['fisnew_index'])
-                        resperson.index = removenone(current_index)
+                        fisperson.index = removenone(current_index)
                     fisperson.save()
  
                 tosave_item = SampleInfo(
