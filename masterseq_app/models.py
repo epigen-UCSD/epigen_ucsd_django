@@ -136,6 +136,7 @@ class SampleInfo(models.Model):
 
 class LibraryInfo(models.Model):
     library_id = models.CharField('library name', max_length=100)
+    library_description = models.TextField(blank=True)
     sampleinfo = models.ForeignKey(
         SampleInfo, on_delete=models.CASCADE, null=True)
     experiment_index = models.CharField(max_length=20, blank=True)

@@ -578,6 +578,7 @@ def LibrariesCreateView(request):
                 'sampleinfo': sampindex,
                 'sample_index': sampindex,
                 'sample_id': sampid,
+                'lib_description': sampid,
                 'team_member_initails': fields[2].strip(),
                 'experiment_index': fields[12].strip(),
                 'date_started': datestart,
@@ -599,6 +600,7 @@ def LibrariesCreateView(request):
                     )
                 tosave_item = LibraryInfo(
                     library_id=k,
+                    library_description=v['lib_description'],
                     sampleinfo=SampleInfo.objects.get(
                         sample_index=v['sampleinfo']),
                     experiment_index=v['experiment_index'],
@@ -616,7 +618,7 @@ def LibrariesCreateView(request):
             LibraryInfo.objects.bulk_create(tosave_list)
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
-            displayorder = ['sampleinfo', 'team_member_initails', 'experiment_index', 'date_started',
+            displayorder = ['sampleinfo','lib_description','team_member_initails', 'experiment_index', 'date_started',
                             'date_completed', 'experiment_type', 'protocal_name', 'reference_to_notebook_and_page_number',
                             'notes']
             if pseudorequired == 1:
@@ -933,7 +935,7 @@ def SampleDataView(request):
 
 def LibDataView(request):
     Libs_list = LibraryInfo.objects.all().select_related('sampleinfo__group').values(
-        'pk', 'library_id', 'sampleinfo__id', 'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
+        'pk', 'library_id', 'library_description','sampleinfo__id', 'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
         'sampleinfo__species', 'sampleinfo__group__name', 'date_started', 'experiment_type')
     data = list(Libs_list)
 
@@ -942,7 +944,7 @@ def LibDataView(request):
 
 def SeqDataView(request):
     Seqs_list = SeqInfo.objects.all().select_related('libraryinfo__sampleinfo__group').values(
-        'pk', 'seq_id', 'libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
+        'pk', 'seq_id', 'libraryinfo__library_description','libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
         'libraryinfo__sampleinfo__description', 'libraryinfo__sampleinfo__group__name', \
         'date_submitted_for_sequencing','machine__sequencing_core',\
         'machine__machine_name','portion_of_lane','read_length', 'read_type')
@@ -968,7 +970,7 @@ def UserSampleDataView(request):
 def UserLibDataView(request):
     Libs_list = LibraryInfo.objects.filter(team_member_initails=request.user)\
         .select_related('sampleinfo__group').values(
-            'pk', 'library_id', 'sampleinfo__id',  'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
+            'pk', 'library_description','library_id', 'sampleinfo__id',  'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
         'sampleinfo__species', 'sampleinfo__group__name', 'date_started', 'experiment_type')
     data = list(Libs_list)
 
@@ -978,7 +980,7 @@ def UserLibDataView(request):
 def UserSeqDataView(request):
     Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user)\
         .select_related('libraryinfo__sampleinfo__group','machine').values(
-        'pk', 'seq_id', 'libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
+        'pk', 'seq_id','libraryinfo__library_description', 'libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
         'libraryinfo__sampleinfo__description', 'libraryinfo__sampleinfo__group__name',
         'date_submitted_for_sequencing','machine__sequencing_core',\
         'machine__machine_name','portion_of_lane','read_length', 'read_type')
@@ -1201,7 +1203,7 @@ def LibDetailView(request, pk):
     libinfo = get_object_or_404(LibraryInfo.objects.select_related('sampleinfo',
                                                                    'protocalinfo', 'team_member_initails'), pk=pk)
     sampleinfo = libinfo.sampleinfo
-    summaryfield = ['library_id', 'sampleinfo', 'date_started', 'date_completed',
+    summaryfield = ['library_id','library_description','sampleinfo', 'date_started', 'date_completed',
                     'team_member_initails', 'experiment_type', 'protocalinfo',
                     'reference_to_notebook_and_page_number', 'notes']
     seqfield = ['seq_id', 'default_label', 'machine',
