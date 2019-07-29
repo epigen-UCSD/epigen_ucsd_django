@@ -84,6 +84,38 @@ def IndexValidation(i7list, i5list):
     return duplicate
 
 
+def IndexValidation2(i7list, i5list):
+    # validate only on not complete match, allow part match
+    barcodes_dic = BarcodeDic()
+    duplicate = []
+
+    combinelist = [x for x in list(zip(i7list, i5list)) if x[1]]
+    print(combinelist)
+    combinelistseq = [(barcodes_dic[x[0]], barcodes_dic[x[1]])
+                      for x in combinelist]
+    for i in range(0, len(combinelistseq)):
+        for j in range(i+1, len(combinelistseq)):
+            if combinelistseq[i] == combinelistseq[j]:
+                duplicate.append(
+                    str(combinelist[i])+' vs '+str(combinelist[j]))
+
+    combinei7 = list(set([x[0] for x in list(zip(i7list, i5list)) if x[1]]))
+    combinei7seq = [barcodes_dic[x] for x in combinei7]
+    singlei7 = [x[0] for x in list(zip(i7list, i5list)) if not x[1] and x[0]]
+    singlei7seq = [barcodes_dic[x] for x in singlei7]
+
+    for i in range(0, len(singlei7seq)):
+        for j in range(i+1, len(singlei7seq)):
+            if singlei7seq[i] == singlei7seq[j] or singlei7seq[j] == singlei7seq[i]:
+                duplicate.append(singlei7[i]+' vs '+singlei7[j])
+
+    for i in range(0, len(combinei7seq)):
+        for j in range(0, len(singlei7seq)):
+            if combinei7seq[i] == singlei7seq[j] or singlei7seq[j] == combinei7seq[i]:
+                duplicate.append(combinei7[i]+' vs '+singlei7[j])
+
+    return duplicate
+
 def IndexView(request):
 
     RunInfo_list = RunInfo.objects.filter(
@@ -367,7 +399,10 @@ def RunCreateView6(request):
             return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
         for ke in i7index_list.keys():
-            duplicate = IndexValidation(i7index_list[ke], i5index_list[ke])
+            if runinfo.experiment_type == "TA":
+                duplicate = IndexValidation2(i7index_list[ke], i5index_list[ke])
+            else:
+                duplicate = IndexValidation(i7index_list[ke], i5index_list[ke])
             if len(duplicate) > 0:  
                 context = {
                     'run_form': run_form,
