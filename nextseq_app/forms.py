@@ -51,5 +51,5 @@ class SamplesToCreatForm(forms.Form):
     samplestocreat = forms.CharField(
         label='Libraries to Save:',
         widget=forms.Textarea(attrs={'cols': 60, 'rows': 20}),
-        initial='Sequencing_ID i7index i5index lane(separated by Tab)\n'
+        initial='Sequencing_ID i7index i5index lane(separated by Space or Tab)\n'
     )
