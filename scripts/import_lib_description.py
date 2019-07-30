@@ -29,15 +29,22 @@ def main():
 			if fields[10]:
 				fields[10] = fields[10].replace('-','_')
 				alllibs.append(fields[10].strip()+':'+fields[12].strip())
-				lib_desc = 
+				if fields[1].strip() not in ['NA']:
+					lib_desc = fields[1].strip()
+				else:
+					lib_desc = ''
 				try:
-					thislib = LibraryInfo.get(library_id=fields[10],experiment_index=fields[12].strip())
-					thislib.library_description = 
+					if fields[10] not in ['JYH_164','XH_100','XH_101','XH_102','XH_103','XH_105','XH_44','XH_70','XH_71','XH_72','XH_86','XH_87','XH_88','XH_89','XH_90','XH_98','XH_99','XW2']:
+						thislib = LibraryInfo.objects.get(library_id=fields[10],experiment_index=fields[12].strip())
+					else:
+						thislib = LibraryInfo.objects.get(experiment_index=fields[12].strip())
+					thislib.library_description = lib_desc
+					thislib.save()
 				except:
 					print(fields[10].strip()+':'+fields[12].strip())
 					writeline.append(fields[10].strip()+':'+fields[12].strip())
 
-	with open(file_active,'r') as f:
+	with open(file_archived,'r') as f:
 		next(f)
 		next(f)
 		next(f)
@@ -47,8 +54,17 @@ def main():
 				fields[10] = fields[10].replace('-','_')
 				if fields[10].strip()+':'+fields[12].strip() not in alllibs:
 					alllibs.append(fields[10].strip()+':'+fields[12].strip())
+					if fields[1].strip() not in ['NA']:
+						lib_desc = fields[1].strip()
+					else:
+						lib_desc = ''
 					try:
-						thislib = LibraryInfo.get(library_id=fields[10],experiment_index=fields[12].strip())
+						if fields[10] not in ['JYH_164','XH_100','XH_101','XH_102','XH_103','XH_105','XH_44','XH_70','XH_71','XH_72','XH_86','XH_87','XH_88','XH_89','XH_90','XH_98','XH_99','XW2']:
+							thislib = LibraryInfo.objects.get(library_id=fields[10],experiment_index=fields[12].strip())
+						else:
+							thislib = LibraryInfo.objects.get(experiment_index=fields[12].strip())
+						thislib.library_description = lib_desc
+						thislib.save()
 					except:
 						print(fields[10].strip()+':'+fields[12].strip())
 						writeline.append(fields[10].strip()+':'+fields[12].strip())
