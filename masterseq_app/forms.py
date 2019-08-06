@@ -70,11 +70,12 @@ class LibraryCreationForm(forms.ModelForm):
 
     class Meta:
         model = LibraryInfo
-        fields = ['library_id', 'sampleinfo', 'date_started', 'date_completed', 'experiment_type', 'protocalinfo',
+        fields = ['library_id', 'sampleinfo', 'library_description','date_started', 'date_completed', 'experiment_type', 'protocalinfo',
                   'reference_to_notebook_and_page_number', 'notes']
         widgets = {
             'date_started': forms.DateInput(),
             'date_completed': forms.DateInput(),
+            'library_description': forms.Textarea(attrs={'cols': 60, 'rows': 2}),
             'notes': forms.Textarea(attrs={'cols': 60, 'rows': 3}),
 
         }

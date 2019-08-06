@@ -643,6 +643,36 @@ def LibrariesCreateView(request):
                 }
 
                 return render(request, 'masterseq_app/libsadd.html', context)
+
+        if 'PreviewfromWarning' in request.POST:
+            displayorder = ['sampleinfo','lib_description','team_member_initails', 'experiment_index', 'date_started',
+                            'date_completed', 'experiment_type', 'protocal_name', 'reference_to_notebook_and_page_number',
+                            'notes']
+            displayorder2 = ['sample_index',
+                             'sample_id', 'team_member_initails']
+            context = {
+                'library_form': library_form,
+                'modalshowplusfromwarning': 1,
+                'displayorder': displayorder,
+                'displayorder2': displayorder2,
+                'data': data,
+            }
+
+            return render(request, 'masterseq_app/libsadd.html', context)
+
+
+
+        if 'Warning' in request.POST:
+            displayorder3 = ['sample_id']
+            context = {
+                'library_form': library_form,
+                'warningmodalshow': 1,
+                'displayorder3': displayorder3,
+                'data': data,
+            }
+
+            return render(request, 'masterseq_app/libsadd.html', context)
+
     context = {
         'library_form': library_form,
     }
@@ -837,6 +867,43 @@ def SeqsCreateView(request):
             }
 
             return render(request, 'masterseq_app/seqsadd.html', context)
+        if 'PreviewfromWarning' in request.POST:
+            displayorder = ['libraryinfo', 'default_label', 'date_submitted', 'team_member_initails', 'read_length',
+                            'read_type', 'portion_of_lane', 'seqcore', 'machine', 'i7index', 'i5index', 'notes']
+            displayorder2 = ['sample_index', 'sample_id',
+                             'species', 'team_member_initails']
+            displayorder3 = ['library_id', 'sampleinfo',
+                             'experiment_index', 'experiment_type', 'team_member_initails']
+            context = {
+                'updatesamprequired': updatesamprequired,
+                'pseudosamprequired': pseudosamprequired,
+                'pseudolibrequired': pseudolibrequired,
+                'seqs_form': seqs_form,
+                'modalshowplusfromwarning': 1,
+                'displayorder': displayorder,
+                'displayorder2': displayorder2,
+                'displayorder3': displayorder3,
+                'data': data,
+            }
+
+            return render(request, 'masterseq_app/seqsadd.html', context)
+
+        if 'Warning' in request.POST:
+            displayorder4 = ['library_id']
+            displayorder5 = ['sample_id']
+            context = {
+                'pseudosamprequired': pseudosamprequired,
+                'seqs_form': seqs_form,
+                'warningmodalshow': 1,
+                'displayorder4': displayorder4,
+                'displayorder5': displayorder5,
+                'data': data,
+            }
+
+            return render(request, 'masterseq_app/seqsadd.html', context)
+
+
+
     context = {
         'seqs_form': seqs_form,
     }

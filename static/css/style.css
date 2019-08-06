@@ -111,6 +111,10 @@ div.detailnotes {
   background-color: #FF6A39;
   color: white;
 }
+.confirm-btn-orange2 {
+  background-color: orange;
+  color: white;
+}
 .borderline {
   border-bottom: "3px solid";
 }
