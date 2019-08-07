@@ -225,7 +225,6 @@ class SamplesCreationForm(forms.Form):
 		flagdate_received = 0
 		flagspecies = 0
 		flagtype = 0
-		flagindex = 0
 		flagunit = 0
 		flagfixation = 0
 		flaguser = 0
@@ -244,7 +243,6 @@ class SamplesCreationForm(forms.Form):
 		invaliddate_received = []
 		invalidspecies = []
 		invalidtype = []
-		invalidindex = []
 		invalidunit = []
 		invalidfixation = []
 		invaliduserlist = []
@@ -294,7 +292,7 @@ class SamplesCreationForm(forms.Form):
 					invalidfixation.append(fields[13])
 					flagfixation = 1
 				try:
-					membername = fields[25].strip()
+					membername = fields[23].strip()
 				except:
 					membername = ''
 				if membername and not User.objects.filter(username=membername).exists():
@@ -367,11 +365,6 @@ class SamplesCreationForm(forms.Form):
 				# 	invalidprep.append(samprep)
 				# 	flagprep = 1
 				samnotes = fields[20].strip()
-				
-				samindex = fields[21].strip()
-				if SampleInfo.objects.filter(sample_index=samindex).exists():
-					invalidindex.append(samindex)
-					flagindex = 1
 					
 				cleaneddata.append(lineitem)
 		if flagdate == 1:
@@ -383,8 +376,7 @@ class SamplesCreationForm(forms.Form):
 			raise forms.ValidationError('Invalid species:'+','.join(invalidspecies))
 		if flagtype == 1:
 			raise forms.ValidationError('Invalid sample type:'+','.join(invalidtype))
-		if flagindex  == 1:
-			raise forms.ValidationError(','.join(invalidindex)+' is already existed in database')
+
 		if flagunit == 1:
 			raise forms.ValidationError('Invalid unit:'+','.join(invalidunit)+\
 				'.  Should be one of ('+','.join([x[0] for x in\
@@ -467,15 +459,11 @@ class LibsCreationForm(forms.Form):
     def clean_libsinfo(self):
         data = self.cleaned_data['libsinfo']
         cleaneddata = []
-        flagsam = 0
-        flagsamid_dup = 0
         flagdate = 0
         flagexp = 0
         flaglibid = 0
         flaguser = 0
         flagref = 0
-        invalidsam = []
-        invalidsampid_dup = []
         invaliddate = []
         invalidexp = []
         selflibs = []
@@ -487,16 +475,9 @@ class LibsCreationForm(forms.Form):
                 cleaneddata.append(lineitem)
                 # print(lineitem)
                 fields = lineitem.split('\t')
-                samindex = fields[0].strip()
-                if not SampleInfo.objects.filter(sample_index=samindex).exists() and not samindex.strip().lower() in ['na', 'other', 'n/a']:
-                    invalidsam.append(samindex)
-                    flagsam = 1
-                if samindex.strip().lower() in ['na','other','n/a']:
-                    samid = fields[1].strip()
+                samid = fields[0].strip()
+                if not SampleInfo.objects.filter(sample_id=samid).exists():
                     selfsamps.append(samid)
-                    if SampleInfo.objects.filter(sample_id=samid).exists():
-                        invalidsampid_dup.append(samid)
-                        flagsamid_dup = 1
                 try:
                     datestart = datetransform(fields[3].strip())
                 except:
@@ -511,7 +492,7 @@ class LibsCreationForm(forms.Form):
                 if libexp not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
                     invalidexp.append(libexp)
                     flagexp = 1
-                libid = fields[10].strip()
+                libid = fields[8].strip()
                 if LibraryInfo.objects.filter(library_id=libid).exists():
                     invalidlibid.append(libid)
                     flaglibid = 1
@@ -524,10 +505,6 @@ class LibsCreationForm(forms.Form):
 
                 selflibs.append(libid)
 
-        if flagsam == 1:
-            raise forms.ValidationError(
-                'Invalid sample info:'+','.join(invalidsam))+'. If the sample is not stored in TS1,\
-                 please set the first column as na. n/a or other.'
         if flagdate == 1:
             raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
         if flagexp == 1:
@@ -546,9 +523,6 @@ class LibsCreationForm(forms.Form):
         if flagref == 1:
             raise forms.ValidationError('Please do not leave Reference_to_notebook_and_page_number as blank')        	
         
-        if flagsamid_dup == 1:
-            raise forms.ValidationError(
-                ','.join(invalidsampid_dup)+' is already existed in database')
         sampselfduplicate = SelfUniqueValidation(selfsamps)
         if len(sampselfduplicate) > 0:
             raise forms.ValidationError(
@@ -598,8 +572,8 @@ class SeqsCreationForm(forms.Form):
             if lineitem != '\r':
                 cleaneddata.append(lineitem)
                 fields = lineitem.split('\t')
-                libraryid = fields[7].strip()
-                exptype = fields[9].strip()
+                libraryid = fields[5].strip()
+                exptype = fields[7].strip()
                 expindex = fields[4].strip()
                 samindex = fields[0].strip()
                 if not SampleInfo.objects.filter(sample_index=samindex).exists() and not samindex.strip().lower() in ['na', 'other', 'n/a']:

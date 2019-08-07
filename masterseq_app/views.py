@@ -152,11 +152,12 @@ def SamplesCreateView(request):
     alreadynewuser = []
     if sample_form.is_valid():
         sampleinfo = sample_form.cleaned_data['samplesinfo']
-        # print(sequencinginfo)
+        all_index = list(SampleInfo.objects.values_list('sample_index', flat=True))
+        max_index = max([int(x.split('-')[1]) for x in all_index if x.startswith('SAMP-')])
         for lineitem in sampleinfo.strip().split('\n'):
             fields = lineitem.strip('\n').split('\t')
-            samindex = fields[21].strip()
-            
+            samindex = 'SAMP-'+str(max_index +1)
+            max_index = max_index +1            
             newresuserflag = 0
             newresinfoflag = 0
             user_first_name = ''
@@ -301,17 +302,17 @@ def SamplesCreateView(request):
 
             try:
                 samnotes = ';'.join(
-                    [fields[20].strip(), fields[28].strip()]).strip(';')
+                    [fields[20].strip(), fields[25].strip()]).strip(';')
             except:
                 samnotes = fields[20].strip()
             try:
-                membername = fields[25].strip()
+                membername = fields[23].strip()
                 if membername == '':
                     membername = request.user.username
             except:
                 membername = request.user.username
             try:
-                storage_tm = fields[26].strip()
+                storage_tm = fields[24].strip()
             except:
                 storage_tm = ''
             service_requested_tm = fields[16].strip()
@@ -343,7 +344,7 @@ def SamplesCreateView(request):
             samid = fields[8].strip()
             samdate = datetransform(fields[0].strip())
             try:
-                date_received = datetransform(fields[23].strip())
+                date_received = datetransform(fields[22].strip())
             except:
                 date_received = None
             data[samid] = {}
@@ -546,11 +547,17 @@ def LibrariesCreateView(request):
             'sample_index', flat=True))
         existingmaxindex = max([int(x.split('-')[1])
                                 for x in samp_indexes if x.startswith('SAMPNA')])
+
+        exp_indexes = list(LibraryInfo.objects.values_list(
+            'experiment_index', flat=True))
+        existingexpmaxindex = max([int(x.split('-')[1])
+                                for x in exp_indexes if x.startswith('EXP-')])
+
         for lineitem in libsinfo.strip().split('\n'):
             fields = lineitem.strip('\n').split('\t')
-            libid = fields[10].strip()
-            sampid = fields[1].strip()
-            if fields[0].strip().lower() in ['na', 'other', 'n/a']:
+            libid = fields[8].strip()
+            sampid = fields[0].strip()
+            if not SampleInfo.objects.filter(sample_id=samid).exists():
                 pseudorequired = 1
                 pseudoflag = 1
                 sampindex = 'SAMPNA-'+str(existingmaxindex+1)
@@ -560,9 +567,11 @@ def LibrariesCreateView(request):
 
             else:
                 pseudoflag = 0
-                sampindex = fields[0].strip()
+                samtm = SampleInfo.objects.filter(sample_id=samid)
+                sampindex = samtm.sample_index
                 #saminfo = SampleInfo.objects.get(sample_index=fields[0].strip())
-
+            expindex = 'EXP-'+str(existingexpmaxindex+1)
+            existingexpmaxindex = existingexpmaxindex+1
             data[libid] = {}
             datestart = datetransform(fields[3].strip())
             dateend = datetransform(fields[4].strip())
@@ -571,16 +580,16 @@ def LibrariesCreateView(request):
             # experiment_type=libexp, protocal_name='other (please explain in notes)')
             refnotebook = fields[7].strip()
             libnote = ';'.join(
-                [fields[11].strip(), 'Protocol used(recorded in Tracking Sheet 2):', fields[6].strip()]).strip(';')
+                [fields[9].strip(), 'Protocol used(recorded in Tracking Sheet 2):', fields[6].strip()]).strip(';')
             #memebername = User.objects.get(username=fields[2].strip())
             data[libid] = {
                 'pseudoflag': pseudoflag,
                 'sampleinfo': sampindex,
                 'sample_index': sampindex,
                 'sample_id': sampid,
-                'lib_description': sampid,
+                'lib_description': fields[1].strip(),
                 'team_member_initails': fields[2].strip(),
-                'experiment_index': fields[12].strip(),
+                'experiment_index': expindex,
                 'date_started': datestart,
                 'date_completed': dateend,
                 'experiment_type': libexp,
