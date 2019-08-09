@@ -2,7 +2,7 @@
 flowcell=$1; rundir=$2; useremail=$3;exptype=$4;
 
 ## expand 10x barcode
-samplesheets=($(find $rundir -name "SampleSheet.csv" ))
+samplesheets=($(find ${rundir}/ -name "SampleSheet.csv" ))
 barcodefile=/home/zhc268/epigen_ucsd_django/data/nextseq_app/barcodes/chromium-shared-sample-indexes-plate.csv
 for s in ${samplesheets[@]}
 do
