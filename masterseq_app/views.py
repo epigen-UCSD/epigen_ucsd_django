@@ -714,20 +714,20 @@ def SeqsCreateView(request):
             updatesampflag = 0
             pseudolibflag = 0
             pseudosamflag = 0
-            samindex = fields[0].strip()
-            sampid = fields[1].strip()
-            sampspecies = fields[3].strip().lower()
-            seqid = fields[8].strip()
-            expindex = fields[4].strip()
-            libraryid = fields[7].strip()
-            exptype = fields[9].strip()
+            #samindex = fields[0].strip()
+            sampid = fields[0].strip()
+            sampspecies = fields[2].strip().lower()
+            seqid = fields[6].strip()
+            #expindex = fields[4].strip()
+            libraryid = fields[5].strip()
+            exptype = fields[7].strip()
             data[seqid] = {}
-            if not LibraryInfo.objects.filter(library_id=fields[7]).exists() and expindex.strip().lower() in ['', 'na', 'other', 'n/a']:
+            if not LibraryInfo.objects.filter(library_id=fields[5]).exists():
                 pseudolibrequired = 1
                 pseudolibflag = 1
                 expindex = 'EXPNA-'+str(existingmaxlibindex+1)
                 existingmaxlibindex += 1
-                if not SampleInfo.objects.filter(sample_index=samindex).exists() and samindex.strip().lower() in ['na', 'other', 'n/a']:
+                if not SampleInfo.objects.filter(sample_id=sampid).exists():
                     pseudosamprequired = 1
                     pseudosamflag = 1
                     sampindex = 'SAMPNA-'+str(existingmaxsampindex+1)
@@ -735,13 +735,13 @@ def SeqsCreateView(request):
                     if sampid.strip().lower() in ['', 'na', 'other', 'n/a']:
                         sampid = sampindex
                 else:
-                    sampinfo = SampleInfo.objects.get(sample_index=samindex)
+                    sampinfo = SampleInfo.objects.get(sample_id=sampid)
                     if not sampinfo.species and sampspecies:
                         updatesampflag = 1
                         updatesamprequired = 1
             else:
                 libinfo = LibraryInfo.objects.select_related(
-                    'sampleinfo').get(library_id=fields[7].strip())
+                    'sampleinfo').get(library_id=fields[5].strip())
                 sampinfo = libinfo.sampleinfo
                 sampindex = sampinfo.sample_index
                 sampid = sampinfo.sample_id
@@ -750,29 +750,29 @@ def SeqsCreateView(request):
                     updatesampflag = 1
                     updatesamprequired = 1
 
-            if '-' in fields[6].strip():
-                datesub = fields[6].strip()
+            if '-' in fields[4].strip():
+                datesub = fields[4].strip()
             else:
-                datesub = datetransform(fields[6].strip())
-            memebername = User.objects.get(username=fields[5].strip())
-            indexname = fields[15].strip()
+                datesub = datetransform(fields[4].strip())
+            memebername = User.objects.get(username=fields[3].strip())
+            indexname = fields[13].strip()
             if indexname and indexname not in ['NA', 'Other (please explain in notes)', 'N/A']:
                 i7index = Barcode.objects.get(indexid=indexname)
             else:
                 i7index = None
-            indexname2 = fields[16].strip()
+            indexname2 = fields[14].strip()
             if indexname2 and indexname2 not in ['NA', 'Other (please explain in notes)', 'N/A']:
                 i5index = Barcode.objects.get(indexid=indexname2)
             else:
                 i5index = None
-            polane = fields[14].strip()
+            polane = fields[12].strip()
             if polane and polane not in ['NA', 'Other (please explain in notes)', 'N/A']:
                 polane = float(polane)
             else:
                 polane = None
-            seqid = fields[8].strip()
-            seqcore = fields[10].split('(')[0].strip()
-            seqmachine = fields[11].split('(')[0].strip()
+            seqid = fields[6].strip()
+            seqcore = fields[8].split('(')[0].strip()
+            seqmachine = fields[9].split('(')[0].strip()
             machineused = SeqMachineInfo.objects.get(
                 sequencing_core=seqcore, machine_name=seqmachine)
             data[seqid] = {
