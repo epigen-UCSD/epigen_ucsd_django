@@ -214,7 +214,7 @@ class SeqCreationForm2(forms.Form):
 
 class SamplesCreationForm(forms.Form):
 	samplesinfo = forms.CharField(
-			label='SampleInfo(Please copy and paste all of the columns from TrackingSheet 1)',
+			label='SampleInfo(Please copy and paste all of the columns in sheet \'samples\' from Template)',
 			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
 			required=True,
 					)
@@ -451,7 +451,7 @@ class SamplesCreationForm(forms.Form):
 
 class LibsCreationForm(forms.Form):
     libsinfo = forms.CharField(
-        label='LibsInfo(Please copy and paste all of the columns from TrackingSheet 2):',
+        label='LibsInfo(Please copy and paste all of the columns in sheet \'libraries\' from Template):',
         widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
         required=True,
     )
@@ -532,7 +532,7 @@ class LibsCreationForm(forms.Form):
 
 class SeqsCreationForm(forms.Form):
     seqsinfo = forms.CharField(
-        label='SeqsInfo(Please copy and paste all of the columns from TrackingSheet 3):',
+        label='SeqsInfo(Please copy and paste all of the columns in sheet \'sequencings\' from Template):',
         widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
         required=True,
     )

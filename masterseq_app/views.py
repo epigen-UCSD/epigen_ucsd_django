@@ -18,6 +18,8 @@ from django.db.models import Prefetch
 import re
 import secrets,string
 from random import randint
+from django.conf import settings
+import os
 
 def nonetolist(inputthing):
     if not inputthing:
@@ -153,7 +155,7 @@ def SamplesCreateView(request):
     if sample_form.is_valid():
         sampleinfo = sample_form.cleaned_data['samplesinfo']
         all_index = list(SampleInfo.objects.values_list('sample_index', flat=True))
-        max_index = max([int(x.split('-')[1]) for x in all_index if x.startswith('SAMP-')])
+        max_index = max([int(x.split('-')[1]) for x in all_index if x.startswith('SAMP-') and '&' not in x])
         for lineitem in sampleinfo.strip().split('\n'):
             fields = lineitem.strip('\n').split('\t')
             samindex = 'SAMP-'+str(max_index +1)
@@ -557,7 +559,7 @@ def LibrariesCreateView(request):
             fields = lineitem.strip('\n').split('\t')
             libid = fields[8].strip()
             sampid = fields[0].strip()
-            if not SampleInfo.objects.filter(sample_id=samid).exists():
+            if not SampleInfo.objects.filter(sample_id=sampid).exists():
                 pseudorequired = 1
                 pseudoflag = 1
                 sampindex = 'SAMPNA-'+str(existingmaxindex+1)
@@ -567,7 +569,7 @@ def LibrariesCreateView(request):
 
             else:
                 pseudoflag = 0
-                samtm = SampleInfo.objects.filter(sample_id=samid)
+                samtm = SampleInfo.objects.get(sample_id=sampid)
                 sampindex = samtm.sample_index
                 #saminfo = SampleInfo.objects.get(sample_index=fields[0].strip())
             expindex = 'EXP-'+str(existingexpmaxindex+1)
@@ -584,7 +586,7 @@ def LibrariesCreateView(request):
             #memebername = User.objects.get(username=fields[2].strip())
             data[libid] = {
                 'pseudoflag': pseudoflag,
-                'sampleinfo': sampindex,
+                'sampleinfo': sampid,
                 'sample_index': sampindex,
                 'sample_id': sampid,
                 'lib_description': fields[1].strip(),
@@ -611,7 +613,7 @@ def LibrariesCreateView(request):
                     library_id=k,
                     library_description=v['lib_description'],
                     sampleinfo=SampleInfo.objects.get(
-                        sample_index=v['sampleinfo']),
+                        sample_id=v['sampleinfo']),
                     experiment_index=v['experiment_index'],
                     experiment_type=v['experiment_type'],
                     protocalinfo=ProtocalInfo.objects.get(
@@ -736,6 +738,7 @@ def SeqsCreateView(request):
                         sampid = sampindex
                 else:
                     sampinfo = SampleInfo.objects.get(sample_id=sampid)
+                    sampindex = sampinfo.sample_index
                     if not sampinfo.species and sampspecies:
                         updatesampflag = 1
                         updatesamprequired = 1
@@ -780,26 +783,26 @@ def SeqsCreateView(request):
                 'pseudolibflag': pseudolibflag,
                 'pseudosamflag': pseudosamflag,
                 'sample_index': sampindex,
-                'sampleinfo': sampindex,
+                'sampleinfo': sampid,
                 'sample_id': sampid,
                 'species': sampspecies,
                 'experiment_index': expindex,
                 'experiment_type': exptype,
-                'libraryinfo': fields[7].strip(),
+                'libraryinfo': fields[5].strip(),
                 'library_id': libraryid,
-                'default_label': fields[2].strip(),
-                'team_member_initails': fields[5].strip(),
-                'read_length': fields[12].strip(),
-                'read_type': fields[13].strip(),
+                'default_label': fields[1].strip(),
+                'team_member_initails': fields[3].strip(),
+                'read_length': fields[10].strip(),
+                'read_type': fields[11].strip(),
                 'portion_of_lane': polane,
-                'seqcore': fields[10].split('(')[0].strip(),
+                'seqcore': fields[8].split('(')[0].strip(),
                 'machine': seqmachine,
                 'i7index': indexname,
                 'i5index': indexname2,
                 'indexname': indexname,
                 'indexname2': indexname2,
                 'date_submitted': datesub,
-                'notes': fields[17].strip(),
+                'notes': fields[15].strip(),
             }
         if 'Save' in request.POST:
 
@@ -1584,4 +1587,14 @@ def load_researchcontact(request):
 #     fiscalindex = Person_Index.objects.\
 #     filter(person__person_id__groups__name__in=[groupname]).prefetch_related(Prefetch('person__person_id__groups'))
 #     return render(request, 'masterseq_app/fiscalindex_dropdown_list_options.html', {'fiscalindex': fiscalindex})
-#  
+
+def download(request, path):
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
+
+

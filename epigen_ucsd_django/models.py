@@ -40,4 +40,4 @@ class CollaboratorPersonInfo(models.Model):
 class Group_Institution(models.Model):
     group = models.ForeignKey(
         Group, on_delete=models.CASCADE, blank=True, null=True)
-    institution = models.CharField(max_length=50)
+    institution = models.CharField('institute',max_length=50)
