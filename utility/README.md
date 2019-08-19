@@ -63,4 +63,15 @@ python manage.py migrate
 python import_masterseq_data_inial.py
 ```
 
+## launch updated LIMS without the old sample index and etc:
+
+1. pull tm branch.
+2. makemigrations and migrate:
+```shell
+python manage.py makemigrations
+python manage.py migrate
+```
+3. run script import_lib_description.py in scripts/ folder.
+4. add MEDIA_ROOT in deploy.ini
+5. good to go
 

@@ -645,7 +645,17 @@ $(document).ready( function () {
     $('#myModal').modal('show')
     $('#confirmtosave').on('click',function() {
       $( "#bindtomodalok" ).trigger( "click" );
-    });   
+    });  
+    $('#confirmtopreview').on('click',function() {
+      $( "#previewfromwarningmodal" ).trigger( "click" );
+    }); 
+    $(document).ready(function(){
+        $('#cancel-auto').click();
+    });
+
+    $('#cancel-auto').on('click',function() {
+      $( "#warningmodal" ).trigger( "click" );
+    });     
     // $('#review-tab').on('click',function(e) {
     //   location.reload();
     //   $( "#previewsub" ).trigger( "click" );

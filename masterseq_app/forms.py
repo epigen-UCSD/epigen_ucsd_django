@@ -70,11 +70,12 @@ class LibraryCreationForm(forms.ModelForm):
 
     class Meta:
         model = LibraryInfo
-        fields = ['library_id', 'sampleinfo', 'date_started', 'date_completed', 'experiment_type', 'protocalinfo',
+        fields = ['library_id', 'sampleinfo', 'library_description','date_started', 'date_completed', 'experiment_type', 'protocalinfo',
                   'reference_to_notebook_and_page_number', 'notes']
         widgets = {
             'date_started': forms.DateInput(),
             'date_completed': forms.DateInput(),
+            'library_description': forms.Textarea(attrs={'cols': 60, 'rows': 2}),
             'notes': forms.Textarea(attrs={'cols': 60, 'rows': 3}),
 
         }
@@ -213,7 +214,7 @@ class SeqCreationForm2(forms.Form):
 
 class SamplesCreationForm(forms.Form):
 	samplesinfo = forms.CharField(
-			label='SampleInfo(Please copy and paste all of the columns from TrackingSheet 1)',
+			label='SampleInfo(Please copy and paste all of the columns in sheet \'samples\' from Template)',
 			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
 			required=True,
 					)
@@ -224,7 +225,6 @@ class SamplesCreationForm(forms.Form):
 		flagdate_received = 0
 		flagspecies = 0
 		flagtype = 0
-		flagindex = 0
 		flagunit = 0
 		flagfixation = 0
 		flaguser = 0
@@ -243,7 +243,6 @@ class SamplesCreationForm(forms.Form):
 		invaliddate_received = []
 		invalidspecies = []
 		invalidtype = []
-		invalidindex = []
 		invalidunit = []
 		invalidfixation = []
 		invaliduserlist = []
@@ -293,7 +292,7 @@ class SamplesCreationForm(forms.Form):
 					invalidfixation.append(fields[13])
 					flagfixation = 1
 				try:
-					membername = fields[25].strip()
+					membername = fields[23].strip()
 				except:
 					membername = ''
 				if membername and not User.objects.filter(username=membername).exists():
@@ -366,11 +365,6 @@ class SamplesCreationForm(forms.Form):
 				# 	invalidprep.append(samprep)
 				# 	flagprep = 1
 				samnotes = fields[20].strip()
-				
-				samindex = fields[21].strip()
-				if SampleInfo.objects.filter(sample_index=samindex).exists():
-					invalidindex.append(samindex)
-					flagindex = 1
 					
 				cleaneddata.append(lineitem)
 		if flagdate == 1:
@@ -382,8 +376,7 @@ class SamplesCreationForm(forms.Form):
 			raise forms.ValidationError('Invalid species:'+','.join(invalidspecies))
 		if flagtype == 1:
 			raise forms.ValidationError('Invalid sample type:'+','.join(invalidtype))
-		if flagindex  == 1:
-			raise forms.ValidationError(','.join(invalidindex)+' is already existed in database')
+
 		if flagunit == 1:
 			raise forms.ValidationError('Invalid unit:'+','.join(invalidunit)+\
 				'.  Should be one of ('+','.join([x[0] for x in\
@@ -458,7 +451,7 @@ class SamplesCreationForm(forms.Form):
 
 class LibsCreationForm(forms.Form):
     libsinfo = forms.CharField(
-        label='LibsInfo(Please copy and paste all of the columns from TrackingSheet 2):',
+        label='LibsInfo(Please copy and paste all of the columns in sheet \'libraries\' from Template):',
         widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
         required=True,
     )
@@ -466,15 +459,11 @@ class LibsCreationForm(forms.Form):
     def clean_libsinfo(self):
         data = self.cleaned_data['libsinfo']
         cleaneddata = []
-        flagsam = 0
-        flagsamid_dup = 0
         flagdate = 0
         flagexp = 0
         flaglibid = 0
         flaguser = 0
         flagref = 0
-        invalidsam = []
-        invalidsampid_dup = []
         invaliddate = []
         invalidexp = []
         selflibs = []
@@ -486,16 +475,9 @@ class LibsCreationForm(forms.Form):
                 cleaneddata.append(lineitem)
                 # print(lineitem)
                 fields = lineitem.split('\t')
-                samindex = fields[0].strip()
-                if not SampleInfo.objects.filter(sample_index=samindex).exists() and not samindex.strip().lower() in ['na', 'other', 'n/a']:
-                    invalidsam.append(samindex)
-                    flagsam = 1
-                if samindex.strip().lower() in ['na','other','n/a']:
-                    samid = fields[1].strip()
+                samid = fields[0].strip()
+                if not SampleInfo.objects.filter(sample_id=samid).exists():
                     selfsamps.append(samid)
-                    if SampleInfo.objects.filter(sample_id=samid).exists():
-                        invalidsampid_dup.append(samid)
-                        flagsamid_dup = 1
                 try:
                     datestart = datetransform(fields[3].strip())
                 except:
@@ -510,7 +492,7 @@ class LibsCreationForm(forms.Form):
                 if libexp not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
                     invalidexp.append(libexp)
                     flagexp = 1
-                libid = fields[10].strip()
+                libid = fields[8].strip()
                 if LibraryInfo.objects.filter(library_id=libid).exists():
                     invalidlibid.append(libid)
                     flaglibid = 1
@@ -523,10 +505,6 @@ class LibsCreationForm(forms.Form):
 
                 selflibs.append(libid)
 
-        if flagsam == 1:
-            raise forms.ValidationError(
-                'Invalid sample info:'+','.join(invalidsam))+'. If the sample is not stored in TS1,\
-                 please set the first column as na. n/a or other.'
         if flagdate == 1:
             raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
         if flagexp == 1:
@@ -545,9 +523,6 @@ class LibsCreationForm(forms.Form):
         if flagref == 1:
             raise forms.ValidationError('Please do not leave Reference_to_notebook_and_page_number as blank')        	
         
-        if flagsamid_dup == 1:
-            raise forms.ValidationError(
-                ','.join(invalidsampid_dup)+' is already existed in database')
         sampselfduplicate = SelfUniqueValidation(selfsamps)
         if len(sampselfduplicate) > 0:
             raise forms.ValidationError(
@@ -557,7 +532,7 @@ class LibsCreationForm(forms.Form):
 
 class SeqsCreationForm(forms.Form):
     seqsinfo = forms.CharField(
-        label='SeqsInfo(Please copy and paste all of the columns from TrackingSheet 3):',
+        label='SeqsInfo(Please copy and paste all of the columns in sheet \'sequencings\' from Template):',
         widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
         required=True,
     )
@@ -565,8 +540,6 @@ class SeqsCreationForm(forms.Form):
     def clean_seqsinfo(self):
         data = self.cleaned_data['seqsinfo']
         cleaneddata = []
-        flagsam = 0
-        flagsamid_dup = 0
         flaglib = 0
         flagdate = 0
         flaguser = 0
@@ -577,8 +550,6 @@ class SeqsCreationForm(forms.Form):
         flagtype = 0
         flagpolane = 0
         flagexp = 0
-        invalidsam = []
-        invalidsampid_dup = []
         invalidlib = []
         invaliddate = []
         invaliduserlist = []
@@ -597,78 +568,63 @@ class SeqsCreationForm(forms.Form):
             if lineitem != '\r':
                 cleaneddata.append(lineitem)
                 fields = lineitem.split('\t')
-                libraryid = fields[7].strip()
-                exptype = fields[9].strip()
-                expindex = fields[4].strip()
-                samindex = fields[0].strip()
-                if not SampleInfo.objects.filter(sample_index=samindex).exists() and not samindex.strip().lower() in ['na', 'other', 'n/a']:
-                    invalidsam.append(samindex)
-                    flagsam = 1
+                libraryid = fields[5].strip()
+                exptype = fields[7].strip()
+                samid = fields[0].strip()
+ 
 
                 if not LibraryInfo.objects.filter(library_id=libraryid).exists():
-                    if not expindex.strip().lower() in ['', 'na', 'other', 'n/a']:
-                        invalidlib.append(libraryid)
-                        flaglib = 1
-                    else:
-                        if exptype not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
-                            invalidexp.append(exptype)
-                            flagexp = 1
-                        if samindex.strip().lower() in ['na','other','n/a']:
-                            samid = fields[1].strip()
-                            selfsamps.append(samid)
-                            selflibs.append(libraryid)
-                            if SampleInfo.objects.filter(sample_id=samid).exists():
-                                invalidsampid_dup.append(samid)
-                                flagsamid_dup = 1
+                    if exptype not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
+                        invalidexp.append(exptype)
+                        flagexp = 1                
+                        selfsamps.append(samid)
+                        selflibs.append(libraryid)
 
-                if '-' in fields[6].strip():
-                    datesub = fields[6].strip()
+
+                if '-' in fields[4].strip():
+                    datesub = fields[4].strip()
                 else:
                     try:
-                        datesub = datetransform(fields[6].strip())
+                        datesub = datetransform(fields[4].strip())
                     except:
-                        invaliddate.append(fields[6].strip())
+                        invaliddate.append(fields[4].strip())
                         flagdate = 1
-                membername = fields[5].strip()
+                membername = fields[3].strip()
                 if not User.objects.filter(username=membername).exists():
                     invaliduserlist.append(membername)
                     flaguser = 1
 
-                indexname = fields[15].strip()
+                indexname = fields[13].strip()
                 if indexname and indexname not in ['NA', 'Other (please explain in notes)', 'N/A']:
                     if not Barcode.objects.filter(indexid=indexname).exists():
                         invalidbarcodelist.append(indexname)
                         flagbarcode = 1
-                indexname2 = fields[16].strip()
+                indexname2 = fields[14].strip()
                 if indexname2 and indexname2 not in ['NA', 'Other (please explain in notes)', 'N/A']:
                     if not Barcode.objects.filter(indexid=indexname2).exists():
                         invalidbarcodelist2.append(indexname2)
                         flagbarcode2 = 1
-                polane = fields[14].strip()
+                polane = fields[12].strip()
                 if polane and polane not in ['NA', 'Other (please explain in notes)', 'N/A']:
                     try:
                         float(polane)
                     except:
                         invalidpolane.append(polane)
                         flagpolane = 1
-                seqid = fields[8].strip()
+                seqid = fields[6].strip()
                 if SeqInfo.objects.filter(seq_id=seqid).exists():
                     invalidseqid.append(seqid)
                     flagseqid = 1
                 selfseqs.append(seqid)
-                seqcore = fields[10].split('(')[0].strip()
-                seqmachine = fields[11].split('(')[0].strip()
+                seqcore = fields[8].split('(')[0].strip()
+                seqmachine = fields[9].split('(')[0].strip()
                 if not SeqMachineInfo.objects.filter(sequencing_core=seqcore, machine_name=seqmachine).exists():
                     invalidmachine.append(seqcore+'_'+seqmachine)
                     flagmachine = 1
-                seqtype = fields[13].strip()
+                seqtype = fields[11].strip()
                 if seqtype not in [x[0].split('(')[0].strip() for x in choice_for_read_type]:
                     invalidtype.append(seqtype)
                     flagtype = 1
-        if flagsam == 1:
-            raise forms.ValidationError(
-                'Invalid sample info:'+','.join(invalidsam)+'. If the sample is not stored in TS1,\
-                 please set the first column as na, n/a or other.')
 
         if flaglib == 1:
             raise forms.ValidationError(
@@ -704,9 +660,6 @@ class SeqsCreationForm(forms.Form):
         if flagexp == 1:
             raise forms.ValidationError(
                 'Invalid experiment type:'+','.join(invalidexp))
-        if flagsamid_dup == 1:
-            raise forms.ValidationError(
-                ','.join(invalidsampid_dup)+' is already existed in database')
         libraryselfduplicate = SelfUniqueValidation(selflibs)
         if len(libraryselfduplicate) > 0:
             raise forms.ValidationError(mark_safe(

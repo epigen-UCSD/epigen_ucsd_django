@@ -39,7 +39,11 @@
         </div>
         {% endfor %}   
         <input id="bindtomodalok" type="submit" value="Save" name='Save' hidden='hidden'/>
-        <input type="submit" value="Save" name='Preview'/>
+        <input id="previewmodal" type="submit" value="Save" name='Preview' />
+        <input id="previewfromwarningmodal" type="submit" value="Save" name='PreviewfromWarning' hidden='hidden'//>
+        <input id="warningmodal" type="submit" value="Save" name='Warning' hidden='hidden'/>
+
+
         
       </form>
     </div><!-- /.card-body -->              
@@ -198,6 +202,131 @@
       </table>  
       </div>
       <div class="modal-footer">
+        {% if pseudolibrequired == 1 %}
+        <button id="cancel-auto" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        {% else %}
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        {% endif %}
+        <button id="confirmtosave" type="button" class="btn confirm-btn-orange">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+
+
+{% if modalshowplusfromwarning %}
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Preview</h5>
+
+      </div>
+      <div class="modal-body">
+        {% if updatesamprequired %}
+        <p>In this request, species will be stored into the following samples:</p>
+
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            {% for field in displayorder2 %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for key,value in data.items%}
+          {% if value.updatesampflag %}
+          <tr>
+            {% for field in displayorder2 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table> 
+      {% endif %}
+
+        {% if pseudosamprequired %}
+        <p>In this request, the following new samples will be created:</p>
+
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            {% for field in displayorder2 %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for key,value in data.items%}
+          {% if value.pseudosamflag %}
+          <tr>
+            {% for field in displayorder2 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table> 
+      {% endif %}
+
+        {% if pseudolibrequired %}
+        <p>In this request, the following new libraries will be created:</p>
+
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            {% for field in displayorder3 %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for key,value in data.items%}
+          {% if value.pseudolibflag %}
+          <tr>
+            {% for field in displayorder3 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table> 
+      {% endif %}
+
+
+      <p>The following new sequencings will be created:</p>
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            <th scope="col" >seq_id</th>
+            {% for field in displayorder %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for key,value in data.items%}
+          <tr>
+            <td>{{ key }}</td>
+            {% for field in displayorder %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>  
+      </div>
+      <div class="modal-footer">
+
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <button id="confirmtosave" type="button" class="btn confirm-btn-orange">Confirm</button>
       </div>
@@ -205,6 +334,75 @@
   </div>
 </div>
 
+{% endif %}
+
+
+{% if warningmodalshow %}
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:orange;" >
+        <h5 class="col-12 modal-title text-center" id="exampleModalLongTitle"><i class="fa fa-exclamation-triangle fa-3x" style="color:white;" aria-hidden="true"></i></h5>
+
+      </div>
+      <div class="modal-body">
+        <p>The following samples and libraries are not in LIMS, we will create pseudo samples and pseudo libraries for them, are you sure? If not, please use the library id and sample id that could match:</p>
+
+      {% if pseudosamprequired %}
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            {% for field in displayorder5 %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for key,value in data.items%}
+          {% if value.pseudosamflag %}
+          <tr>
+            {% for field in displayorder5 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table> 
+      {% endif %}
+
+
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            {% for field in displayorder4 %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for key,value in data.items%}
+          {% if value.pseudolibflag %}
+          <tr>
+            {% for field in displayorder4 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table> 
+      <p style="background-color: orange; color:white">Note:please check whether the sample and library have been in LIMS carefully whenever you input a sequencing!</p> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Exit</button>
+        <button id="confirmtopreview" type="button" class="btn confirm-btn-orange2">Continue to Preview</button>
+
+      </div>
+    </div>
+  </div>
+</div>
 {% endif %}
 
 
