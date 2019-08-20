@@ -748,6 +748,7 @@ def SeqsCreateView(request):
                 sampinfo = libinfo.sampleinfo
                 sampindex = sampinfo.sample_index
                 sampid = sampinfo.sample_id
+                expindex = libinfo.experiment_index
 
                 if not sampinfo.species and sampspecies:
                     updatesampflag = 1
