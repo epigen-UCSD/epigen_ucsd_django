@@ -1590,7 +1590,9 @@ def load_researchcontact(request):
 #     return render(request, 'masterseq_app/fiscalindex_dropdown_list_options.html', {'fiscalindex': fiscalindex})
 
 def download(request, path):
-    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    #file_path = os.path.join(settings.MEDIA_ROOT, path)
+    dbfolder = os.path.join(os.path.dirname(os.path.dirname(__file__)),'db')
+    file_path = os.path.join(dbfolder,path)
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
