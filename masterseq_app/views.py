@@ -581,8 +581,8 @@ def LibrariesCreateView(request):
             # libprotocal = ProtocalInfo.objects.get(
             # experiment_type=libexp, protocal_name='other (please explain in notes)')
             refnotebook = fields[7].strip()
-            libnote = ';'.join(
-                [fields[9].strip(), 'Protocol used(recorded in Tracking Sheet 2):', fields[6].strip()]).strip(';')
+            #libnote = ';'.join([fields[9].strip(), 'Protocol used(recorded in Tracking Sheet 2):', fields[6].strip()]).strip(';')
+            libnote = fields[9].strip()
             #memebername = User.objects.get(username=fields[2].strip())
             data[libid] = {
                 'pseudoflag': pseudoflag,
@@ -595,7 +595,7 @@ def LibrariesCreateView(request):
                 'date_started': datestart,
                 'date_completed': dateend,
                 'experiment_type': libexp,
-                'protocal_name': 'other (please explain in notes)',
+                'protocal_name': fields[6].strip(),
                 'reference_to_notebook_and_page_number': fields[7].strip(),
                 'notes': libnote
             }
@@ -616,8 +616,7 @@ def LibrariesCreateView(request):
                         sample_id=v['sampleinfo']),
                     experiment_index=v['experiment_index'],
                     experiment_type=v['experiment_type'],
-                    protocalinfo=ProtocalInfo.objects.get(
-                        experiment_type=v['experiment_type'], protocal_name='other (please explain in notes)'),
+                    protocal_used=v['protocal_name'],
                     reference_to_notebook_and_page_number=v['reference_to_notebook_and_page_number'],
                     date_started=v['date_started'],
                     date_completed=v['date_completed'],
@@ -1284,7 +1283,7 @@ def LibDetailView(request, pk):
                                                                    'protocalinfo', 'team_member_initails'), pk=pk)
     sampleinfo = libinfo.sampleinfo
     summaryfield = ['library_id','library_description','sampleinfo', 'date_started', 'date_completed',
-                    'team_member_initails', 'experiment_type', 'protocalinfo',
+                    'team_member_initails', 'experiment_type', 'protocal_used',
                     'reference_to_notebook_and_page_number', 'notes']
     seqfield = ['seq_id', 'default_label', 'machine',
                 'read_length', 'read_type', 'total_reads']
@@ -1381,11 +1380,11 @@ def SaveMyMetaDataExcel(request):
     row_num = 0 
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['Date','Group','Research contact name','Research contact e-mail',\
+    columns = ['Date','PI','Research contact name','Research contact e-mail',\
     'Research contact phone','Fiscal contact name','Fiscal conact e-mail','Index for payment',\
     'Sample ID','Sample description','Species','Sample type','Preperation',\
     'Fixation?','Sample amount','Units','Service requested','Sequencing depth to target',\
-    'Sequencing length requested','Sequencing type requested', 'Notes','Sample Index',\
+    'Sequencing length requested','Sequencing type requested', 'Notes','Sample ID((copied from column I)',\
     'Date sample received','team member','Storage location','status'] 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
@@ -1394,7 +1393,7 @@ def SaveMyMetaDataExcel(request):
         'research_name','research_email','research_phone','fiscal_name','fiscal_email','fiscal_index',\
         'sample_id','description','species','sample_type',\
         'preparation','fixation','sample_amount','unit','service_requested','seq_depth_to_target',\
-        'seq_length_requested','seq_type_requested','notes','sample_index','date_received',\
+        'seq_length_requested','seq_type_requested','notes','sample_id','date_received',\
         'team_member__username','storage','status'
         )
     #print(list(Samples_list))
@@ -1410,16 +1409,15 @@ def SaveMyMetaDataExcel(request):
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['Sample Index','Sample id','team member','date_started','date_completed',\
+    columns = ['Sample id','Library description','team member','date_started','date_completed',\
     'experiment_type','protocal used','reference_to_notebook_and_page_number','library_id',
-    'notes','experiment_index'] 
+    'notes'] 
     for col_num in range(len(columns)):
         wl.write(row_num, col_num, columns[col_num], font_style)
-    Libraries_list = LibraryInfo.objects.filter(team_member_initails=request.user).order_by('pk').select_related('protocalinfo',\
-        'team_member_initails','sampleinfo').values_list('sampleinfo__sample_index',\
-        'sampleinfo__sample_id','team_member_initails__username','date_started',\
-        'date_completed','experiment_type','protocalinfo__protocal_name',\
-        'reference_to_notebook_and_page_number','library_id','notes','experiment_index')
+    Libraries_list = LibraryInfo.objects.filter(team_member_initails=request.user).order_by('pk').select_related(\
+        'team_member_initails','sampleinfo').values_list('sampleinfo__sample_id','library_description','team_member_initails__username','date_started',\
+        'date_completed','experiment_type','protocal_used',\
+        'reference_to_notebook_and_page_number','library_id','notes')
     #print(list(Libraries_list))
     #print(len(Libraries_list))
     rows = Libraries_list
@@ -1433,9 +1431,9 @@ def SaveMyMetaDataExcel(request):
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['Sample Index','Sample id','Label','Species','Experiment Index',\
+    columns = ['Sample id','Label (for QC report)','Species',\
     'Team Member','date_submitted_for_sequencing','library_id','seq_id','experiment_type',\
-    'sequencing_core','machine','read_length','read_type','portion_of_lane',\
+    'sequencing_core','machine','Sequening length','read_type','portion_of_lane',\
     'i7index','i5index','notes','pipeline_version','Genome','total_reads',\
     'final_reads','final_yield','mito_frac','tss_enrichment','frop'] 
     for col_num in range(len(columns)):
@@ -1443,8 +1441,8 @@ def SaveMyMetaDataExcel(request):
     Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user).order_by('pk').select_related('libraryinfo',\
         'libraryinfo__sampleinfo','team_member_initails','machine','i7index','i5index').\
     prefetch_related(Prefetch('seqbioinfo_set__genome')).values_list(\
-        'libraryinfo__sampleinfo__sample_index','libraryinfo__sampleinfo__sample_id',\
-        'default_label','libraryinfo__sampleinfo__species','libraryinfo__experiment_index',\
+        'libraryinfo__sampleinfo__sample_id',\
+        'default_label','libraryinfo__sampleinfo__species',\
         'team_member_initails__username','date_submitted_for_sequencing',\
         'libraryinfo__library_id','seq_id','libraryinfo__experiment_type',\
         'machine__sequencing_core','machine__machine_name','read_length','read_type',\
@@ -1471,20 +1469,27 @@ def SaveAllMetaDataExcel(request):
     row_num = 0 
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['Date','Group','Research contact name','Research contact e-mail',\
+    #pattern = xlwt.Pattern()
+    #pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+    #pattern.pattern_fore_colour = xlwt.Style.colour_map['ivory']
+    #font_style.pattern = pattern
+    columns = ['Date','PI','Research contact name','Research contact e-mail',\
     'Research contact phone','Fiscal contact name','Fiscal conact e-mail','Index for payment',\
     'Sample ID','Sample description','Species','Sample type','Preperation',\
     'Fixation?','Sample amount','Units','Service requested','Sequencing depth to target',\
-    'Sequencing length requested','Sequencing type requested', 'Notes','Sample Index',\
+    'Sequencing length requested','Sequencing type requested', 'Notes','Sample ID((copied from column I)',\
     'Date sample received','team member','Storage location','status'] 
+    #ws.row(0).height_mismatch = True
+    #ws.row(0).height = 256*2
     for col_num in range(len(columns)):
+        #ws.col(col_num).width = 256*20
         ws.write(row_num, col_num, columns[col_num], font_style)
     Samples_list = SampleInfo.objects.all().order_by('pk').select_related('group',\
         'team_member').values_list('date','group__name',\
         'research_name','research_email','research_phone','fiscal_name','fiscal_email','fiscal_index',\
         'sample_id','description','species','sample_type',\
         'preparation','fixation','sample_amount','unit','service_requested','seq_depth_to_target',\
-        'seq_length_requested','seq_type_requested','notes','sample_index','date_received',\
+        'seq_length_requested','seq_type_requested','notes','sample_id','date_received',\
         'team_member__username','storage','status'
         )
     #print(list(Samples_list))
@@ -1500,16 +1505,16 @@ def SaveAllMetaDataExcel(request):
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['Sample Index','Sample id','team member','date_started','date_completed',\
+    columns = ['Sample id','Library description','team member','date_started','date_completed',\
     'experiment_type','protocal used','reference_to_notebook_and_page_number','library_id',
-    'notes','experiment_index'] 
+    'notes'] 
     for col_num in range(len(columns)):
         wl.write(row_num, col_num, columns[col_num], font_style)
-    Libraries_list = LibraryInfo.objects.all().order_by('pk').select_related('protocalinfo',\
-        'team_member_initails','sampleinfo').values_list('sampleinfo__sample_index',\
-        'sampleinfo__sample_id','team_member_initails__username','date_started',\
-        'date_completed','experiment_type','protocalinfo__protocal_name',\
-        'reference_to_notebook_and_page_number','library_id','notes','experiment_index')
+    Libraries_list = LibraryInfo.objects.all().order_by('pk').select_related(\
+        'team_member_initails','sampleinfo').values_list('sampleinfo__sample_id',\
+        'library_description','team_member_initails__username','date_started',\
+        'date_completed','experiment_type','protocal_used',\
+        'reference_to_notebook_and_page_number','library_id','notes')
     #print(list(Libraries_list))
     #print(len(Libraries_list))
     rows = Libraries_list
@@ -1523,9 +1528,9 @@ def SaveAllMetaDataExcel(request):
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['Sample Index','Sample id','Label','Species','Experiment Index',\
+    columns = ['Sample id','Label','Species',\
     'Team Member','date_submitted_for_sequencing','library_id','seq_id','experiment_type',\
-    'sequencing_core','machine','read_length','read_type','portion_of_lane',\
+    'sequencing_core','machine','Sequening length','read_type','portion_of_lane',\
     'i7index','i5index','notes','pipeline_version','Genome','total_reads',\
     'final_reads','final_yield','mito_frac','tss_enrichment','frop'] 
     for col_num in range(len(columns)):
@@ -1533,8 +1538,8 @@ def SaveAllMetaDataExcel(request):
     Seqs_list = SeqInfo.objects.all().order_by('pk').select_related('libraryinfo',\
         'libraryinfo__sampleinfo','team_member_initails','machine','i7index','i5index').\
     prefetch_related(Prefetch('seqbioinfo_set__genome')).values_list(\
-        'libraryinfo__sampleinfo__sample_index','libraryinfo__sampleinfo__sample_id',\
-        'default_label','libraryinfo__sampleinfo__species','libraryinfo__experiment_index',\
+        'libraryinfo__sampleinfo__sample_id',\
+        'default_label','libraryinfo__sampleinfo__species',\
         'team_member_initails__username','date_submitted_for_sequencing',\
         'libraryinfo__library_id','seq_id','libraryinfo__experiment_type',\
         'machine__sequencing_core','machine__machine_name','read_length','read_type',\

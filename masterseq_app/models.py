@@ -145,6 +145,7 @@ class LibraryInfo(models.Model):
         max_length=50, choices=experiment_type_choice, null=True)
     protocalinfo = models.ForeignKey(
         ProtocalInfo, on_delete=models.CASCADE, null=True)
+    protocal_used = models.CharField(max_length=200,blank=True,null=True)
     reference_to_notebook_and_page_number = models.CharField(
         max_length=50, null=True)
     date_started = models.DateField(
