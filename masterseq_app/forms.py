@@ -70,7 +70,7 @@ class LibraryCreationForm(forms.ModelForm):
 
     class Meta:
         model = LibraryInfo
-        fields = ['library_id', 'sampleinfo', 'library_description','date_started', 'date_completed', 'experiment_type', 'protocalinfo',
+        fields = ['library_id', 'sampleinfo', 'library_description','date_started', 'date_completed', 'experiment_type', 'protocal_used',
                   'reference_to_notebook_and_page_number', 'notes']
         widgets = {
             'date_started': forms.DateInput(),
