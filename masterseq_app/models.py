@@ -102,6 +102,7 @@ class SampleInfo(models.Model):
     fixation = models.CharField(
         max_length=50, choices=choice_for_fixation, null=True)
     notes = models.TextField(blank=True)
+    internal_notes = models.TextField('Internal Notes',blank=True)
     sample_amount = models.CharField(max_length=100, blank=True, null=True)
     unit_choice = choice_for_unit
     unit = models.CharField(max_length=50, choices=unit_choice, null=True)

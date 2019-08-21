@@ -26,11 +26,11 @@ class SampleCreationForm(forms.ModelForm):
 
     class Meta:
         model = SampleInfo
-        fields = ['sample_id','date','date_received','group','research_name',\
+        fields = ['sample_id','description','date','group','research_name',\
         'research_email','research_phone','fiscal_name','fiscal_email','fiscal_index',\
         'species','sample_type','preparation',\
-        'fixation','sample_amount','unit','storage','service_requested',\
-        'seq_depth_to_target','seq_length_requested','seq_type_requested','description','notes','status']
+        'fixation','sample_amount','unit','service_requested',\
+        'seq_depth_to_target','seq_length_requested','seq_type_requested','notes','date_received','storage','internal_notes','status']
         widgets ={
             'date': forms.DateInput(),
             'description':forms.Textarea(attrs={'cols': 60, 'rows': 3}),
@@ -267,11 +267,11 @@ class SamplesCreationForm(forms.Form):
 					invaliddate.append(fields[0].strip())
 					flagdate = 1
 				try:
-					samdate_received = datetransform(fields[23].strip())
+					samdate_received = datetransform(fields[21].strip())
 				except IndexError:
 					pass
 				except:
-					invaliddate_received.append(fields[23].strip())
+					invaliddate_received.append(fields[21].strip())
 					flagdate_received = 1
 				samid = fields[8].strip()
 				samdescript = fields[9].strip()
@@ -292,7 +292,7 @@ class SamplesCreationForm(forms.Form):
 					invalidfixation.append(fields[13])
 					flagfixation = 1
 				try:
-					membername = fields[23].strip()
+					membername = fields[22].strip()
 				except:
 					membername = ''
 				if membername and not User.objects.filter(username=membername).exists():
@@ -529,6 +529,87 @@ class LibsCreationForm(forms.Form):
                 'Duplicate Sample Name within this bulk entry:'+','.join(sampselfduplicate))
         return '\n'.join(cleaneddata)
 
+class LibsCreationForm_wetlab(forms.Form):
+    libsinfo = forms.CharField(
+        label='LibsInfo(Please copy and paste all of the columns in sheet \'libraries\' from Template):',
+        widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
+        required=True,
+    )
+
+    def clean_libsinfo(self):
+        data = self.cleaned_data['libsinfo']
+        cleaneddata = []
+        flagdate = 0
+        flagexp = 0
+        flaglibid = 0
+        flaguser = 0
+        flagref = 0
+        flagsamp = 0
+        invaliddate = []
+        invalidexp = []
+        selflibs = []
+        invalidlibid = []
+        invaliduserlist = []
+        invalidsamps = []
+        for lineitem in data.strip().split('\n'):
+            if lineitem != '\r':
+                cleaneddata.append(lineitem)
+                # print(lineitem)
+                fields = lineitem.split('\t')
+                samid = fields[0].strip()
+                if not SampleInfo.objects.filter(sample_id=samid).exists():
+                    invalidsamps.append(samid)
+                    flagsamp = 1
+                try:
+                    datestart = datetransform(fields[3].strip())
+                except:
+                    invaliddate.append(fields[3].strip())
+                    flagdate = 1
+                try:
+                    dateend = datetransform(fields[4].strip())
+                except:
+                    invaliddate.append(fields[4].strip())
+                    flagdate = 1
+                libexp = fields[5].strip()
+                if libexp not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
+                    invalidexp.append(libexp)
+                    flagexp = 1
+                libid = fields[8].strip()
+                if LibraryInfo.objects.filter(library_id=libid).exists():
+                    invalidlibid.append(libid)
+                    flaglibid = 1
+                membername = fields[2].strip()
+                if not User.objects.filter(username=membername).exists():
+                    invaliduserlist.append(membername)
+                    flaguser = 1
+                if fields[7].strip().lower() in ['','na','other','n/a']:
+                    flagref = 1
+
+                selflibs.append(libid)
+
+        if flagdate == 1:
+            raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
+        if flagexp == 1:
+            raise forms.ValidationError(
+                'Invalid experiment type:'+','.join(invalidexp))
+        if flaglibid == 1:
+            raise forms.ValidationError(
+                ','.join(invalidlibid)+' is already existed in database')
+        libraryselfduplicate = SelfUniqueValidation(selflibs)
+        if len(libraryselfduplicate) > 0:
+            raise forms.ValidationError(
+                'Duplicate Library within this bulk entry:'+','.join(libraryselfduplicate))
+        if flaguser == 1:
+            raise forms.ValidationError(
+                'Invalid Member Name:'+','.join(invaliduserlist))
+        if flagref == 1:
+            raise forms.ValidationError('Please do not leave Reference_to_notebook_and_page_number as blank')        	
+        
+        if flagsamp == 1:
+            raise forms.ValidationError(
+                'Invalid Sample ID:'+','.join(invalidsamps)+'. Please make sure the samples have already in LIMS.')
+        return '\n'.join(cleaneddata)
+
 
 class SeqsCreationForm(forms.Form):
     seqsinfo = forms.CharField(
@@ -674,8 +755,6 @@ class SeqsCreationForm(forms.Form):
                 'Duplicate Sample Name within this bulk entry:'+','.join(sampselfduplicate))
 
         return '\n'.join(cleaneddata)
-
-
 # class SamplesCollabsCreateForm(forms.Form):
 #     samplesinfo = forms.CharField(
 #         label='Samples:',
@@ -772,6 +851,141 @@ class SeqsCreationForm(forms.Form):
             
 #             except (ValueError, TypeError):
 #                 pass 
+
+    def clean_group(self):
+        gname = self.cleaned_data['group']
+        if not Group.objects.filter(name=gname).exists():
+            raise forms.ValidationError('Invalid Group Name!')
+        return gname
+
+class SeqsCreationForm_wetlab(forms.Form):
+    seqsinfo = forms.CharField(
+        label='SeqsInfo(Please copy and paste all of the columns in sheet \'sequencings\' from Template):',
+        widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
+        required=True,
+    )
+
+    def clean_seqsinfo(self):
+        data = self.cleaned_data['seqsinfo']
+        cleaneddata = []
+        flaglib = 0
+        flagdate = 0
+        flaguser = 0
+        flagbarcode = 0
+        flagbarcode2 = 0
+        flagseqid = 0
+        flagmachine = 0
+        flagtype = 0
+        flagpolane = 0
+        flagexp = 0
+
+        invalidlib = []
+        invaliddate = []
+        invaliduserlist = []
+        invalidbarcodelist = []
+        invalidbarcodelist2 = []
+        invalidseqid = []
+        selfseqs = []
+        invalidmachine = []
+        invalidtype = []
+        invalidpolane = []
+        invalidexp = []
+
+        for lineitem in data.strip().split('\n'):
+            if lineitem != '\r':
+                cleaneddata.append(lineitem)
+                fields = lineitem.split('\t')
+                libraryid = fields[5].strip()
+                exptype = fields[7].strip()
+                samid = fields[0].strip()
+ 
+
+                if not LibraryInfo.objects.filter(library_id=libraryid).exists():
+                	invalidlib.append(libraryid)
+                	flaglib = 1
+
+
+                if '-' in fields[4].strip():
+                    datesub = fields[4].strip()
+                else:
+                    try:
+                        datesub = datetransform(fields[4].strip())
+                    except:
+                        invaliddate.append(fields[4].strip())
+                        flagdate = 1
+                membername = fields[3].strip()
+                if not User.objects.filter(username=membername).exists():
+                    invaliduserlist.append(membername)
+                    flaguser = 1
+
+                indexname = fields[13].strip()
+                if indexname and indexname not in ['NA', 'Other (please explain in notes)', 'N/A']:
+                    if not Barcode.objects.filter(indexid=indexname).exists():
+                        invalidbarcodelist.append(indexname)
+                        flagbarcode = 1
+                indexname2 = fields[14].strip()
+                if indexname2 and indexname2 not in ['NA', 'Other (please explain in notes)', 'N/A']:
+                    if not Barcode.objects.filter(indexid=indexname2).exists():
+                        invalidbarcodelist2.append(indexname2)
+                        flagbarcode2 = 1
+                polane = fields[12].strip()
+                if polane and polane not in ['NA', 'Other (please explain in notes)', 'N/A']:
+                    try:
+                        float(polane)
+                    except:
+                        invalidpolane.append(polane)
+                        flagpolane = 1
+                seqid = fields[6].strip()
+                if SeqInfo.objects.filter(seq_id=seqid).exists():
+                    invalidseqid.append(seqid)
+                    flagseqid = 1
+                selfseqs.append(seqid)
+                seqcore = fields[8].split('(')[0].strip()
+                seqmachine = fields[9].split('(')[0].strip()
+                if not SeqMachineInfo.objects.filter(sequencing_core=seqcore, machine_name=seqmachine).exists():
+                    invalidmachine.append(seqcore+'_'+seqmachine)
+                    flagmachine = 1
+                seqtype = fields[11].strip()
+                if seqtype not in [x[0].split('(')[0].strip() for x in choice_for_read_type]:
+                    invalidtype.append(seqtype)
+                    flagtype = 1
+
+        if flaglib == 1:
+            raise forms.ValidationError(
+                'Invalid library info:'+','.join(invalidlib)+'. Please make sure these libraries are already in LIMS')
+        if flagdate == 1:
+            raise forms.ValidationError('Invalid date:'+','.join(invaliddate))
+        if flaguser == 1:
+            raise forms.ValidationError(
+                'Invalid Member Name:'+','.join(invaliduserlist))
+        if flagbarcode == 1:
+            raise forms.ValidationError(
+                'Invalid i7 Barcode:'+','.join(invalidbarcodelist))
+        if flagbarcode2 == 1:
+            raise forms.ValidationError(
+                'Invalid i5 Barcode:'+','.join(invalidbarcodelist2))
+        if flagpolane == 1:
+            raise forms.ValidationError(
+                'Invalid portion of lane:'+','.join(invalidpolane))
+        if flagseqid == 1:
+            raise forms.ValidationError(
+                ','.join(invalidseqid)+' is already existed in database')
+        seqselfduplicate = SelfUniqueValidation(selfseqs)
+        if len(seqselfduplicate) > 0:
+            raise forms.ValidationError(
+                'Duplicate Seq within this bulk entry:'+','.join(seqselfduplicate))
+        if flagmachine == 1:
+            raise forms.ValidationError(
+                'Invalid seqmachine:'+','.join(invalidmachine))
+        if flagtype == 1:
+            raise forms.ValidationError(
+                'Invalid read type:'+','.join(invalidtype))
+        if flagexp == 1:
+            raise forms.ValidationError(
+                'Invalid experiment type:'+','.join(invalidexp))
+
+        return '\n'.join(cleaneddata)
+
 
     def clean_group(self):
         gname = self.cleaned_data['group']
