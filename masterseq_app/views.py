@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm, LibraryCreationForm, SeqCreationForm,\
-    SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm
+    SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm,\
+    LibsCreationForm_wetlab,SeqsCreationForm_wetlab
 from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
     SeqMachineInfo, SeqBioInfo, choice_for_preparation, choice_for_fixation,\
     choice_for_unit, choice_for_sample_type
@@ -302,19 +303,20 @@ def SamplesCreateView(request):
                         if User.objects.filter(username=fisuser_username).exists():
                             fisuser_username = fisuser_first_name[0]+str(randint(0, 9))+fisuser_last_name.lower()                                    
 
+
+            samnotes = fields[20].strip()
             try:
-                samnotes = ';'.join(
-                    [fields[20].strip(), fields[25].strip()]).strip(';')
+                saminternalnotes = fields[24].strip()
             except:
-                samnotes = fields[20].strip()
+                saminternalnotes = ''
             try:
-                membername = fields[23].strip()
+                membername = fields[22].strip()
                 if membername == '':
                     membername = request.user.username
             except:
                 membername = request.user.username
             try:
-                storage_tm = fields[24].strip()
+                storage_tm = fields[23].strip()
             except:
                 storage_tm = ''
             service_requested_tm = fields[16].strip()
@@ -346,7 +348,7 @@ def SamplesCreateView(request):
             samid = fields[8].strip()
             samdate = datetransform(fields[0].strip())
             try:
-                date_received = datetransform(fields[22].strip())
+                date_received = datetransform(fields[21].strip())
             except:
                 date_received = None
             data[samid] = {}
@@ -373,6 +375,7 @@ def SamplesCreateView(request):
                 'description': samdescript,
                 'storage': storage_tm,
                 'notes': samnotes,
+                'internal_notes':saminternalnotes,
                 'service_requested':service_requested_tm,
                 'seq_depth_to_target':seq_depth_to_target_tm,
                 'seq_length_requested':seq_length_requested_tm,
@@ -487,6 +490,7 @@ def SamplesCreateView(request):
                     sample_amount=v['sample_amount'],
                     fixation=v['fixation'],
                     notes=v['notes'],
+                    internal_notes=v['internal_notes'],
                     team_member=User.objects.get(username=v['team_member']),
                     date=v['date'],
                     date_received=v['date_received'],
@@ -502,10 +506,10 @@ def SamplesCreateView(request):
         if 'Preview' in request.POST:
             displayorder = ['sample_index','group','research_name','research_email',\
             'research_phone','fiscal_name', 'fiscal_email','fiscal_index','description', \
-            'team_member', 'date','date_received','species', 'sample_type',
+             'date','species', 'sample_type',
                             'preparation', 'fixation','sample_amount','unit',
-                             'notes','storage','service_requested','seq_depth_to_target',
-                            'seq_length_requested','seq_type_requested']
+                             'notes','service_requested','seq_depth_to_target',
+                            'seq_length_requested','seq_type_requested','date_received','team_member','storage','internal_notes']
             displayorder2 = ['user_username','user_first_name','user_last_name',\
             'user_email','user_phone','user_index']
             displayorder3 = ['fisuser_username','fisuser_first_name','fisuser_last_name',\
@@ -537,7 +541,10 @@ def SamplesCreateView(request):
 
 @transaction.atomic
 def LibrariesCreateView(request):
-    library_form = LibsCreationForm(request.POST or None)
+    if request.user.groups.filter(name='bioinformatics').exists():
+        library_form = LibsCreationForm(request.POST or None)
+    else:
+        library_form = LibsCreationForm_wetlab(request.POST or None)
     tosave_list = []
     data = {}
     pseudorequired = 0
@@ -692,7 +699,10 @@ def LibrariesCreateView(request):
 
 @transaction.atomic
 def SeqsCreateView(request):
-    seqs_form = SeqsCreationForm(request.POST or None)
+    if request.user.groups.filter(name='bioinformatics').exists():
+        seqs_form = SeqsCreationForm(request.POST or None)
+    else:
+        seqs_form = SeqsCreationForm_wetlab(request.POST or None)
     tosave_list = []
     data = {}
     updatesamprequired = 0
@@ -1230,8 +1240,8 @@ def SeqUpdateView(request, pk):
 def SampleDetailView(request, pk):
     sampleinfo = get_object_or_404(SampleInfo.objects.select_related(
         'team_member', 'research_person__person_id', 'fiscal_person__person_id'), pk=pk)
-    summaryfield = ['status', 'sample_index', 'sample_id', 'description', 'date', 'date_received', 'team_member', 'species',
-                    'sample_type', 'preparation', 'fixation', 'sample_amount', 'unit', 'storage', 'notes']
+    summaryfield = ['status', 'sample_index', 'sample_id', 'description', 'date', 'species',
+                    'sample_type', 'preparation', 'fixation', 'sample_amount', 'unit', 'notes','date_received','team_member','storage', 'internal_notes']
     requestedfield = ['date', 'service_requested', 'seq_depth_to_target',
                       'seq_length_requested', 'seq_type_requested']
     libfield = ['library_id', 'experiment_type',
@@ -1378,23 +1388,99 @@ def SaveMyMetaDataExcel(request):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('Samples')
     row_num = 0 
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
+    style = xlwt.XFStyle()
+    style.font.bold = True
+    style.alignment.wrap = 1
+    pattern = xlwt.Pattern()
+    pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['turquoise']
+    style.pattern = pattern
+    borders = xlwt.Borders()
+    borders.left = 1
+    borders.right = 1
+    borders.top = 1
+    borders.bottom = 1
+    style.borders = borders
+
+    row_num = 0 
+    ws.row(row_num).height_mismatch = True
+    ws.row(row_num).height = 256*1
+    ws.write_merge(0, 0, 0, 20, 'From sample submission form', style)
+    style = xlwt.XFStyle()
+    style.font.bold = True
+    style.alignment.wrap = 1
+    pattern = xlwt.Pattern()
+    pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['light_greens']
+    style.pattern = pattern
+    borders = xlwt.Borders()
+    borders.left = 1
+    borders.right = 1
+    borders.top = 1
+    borders.bottom = 1
+    style.borders = borders
+
+    row_num = 0 
+    ws.row(row_num).height_mismatch = True
+    ws.row(row_num).height = 256*1
+    ws.write_merge(0, 0, 21, 24, 'To be entered upon reciept', style)
+    row_num = 1
+    columns_width = [15,15,15,21,15,15,21,15,25,30,12,15,15,11,12,12,12,12,12,12,30,15,15,15,25]
     columns = ['Date','PI','Research contact name','Research contact e-mail',\
     'Research contact phone','Fiscal contact name','Fiscal conact e-mail','Index for payment',\
     'Sample ID','Sample description','Species','Sample type','Preperation',\
     'Fixation?','Sample amount','Units','Service requested','Sequencing depth to target',\
-    'Sequencing length requested','Sequencing type requested', 'Notes','Sample ID((copied from column I)',\
-    'Date sample received','team member','Storage location','status'] 
+    'Sequencing length requested','Sequencing type requested', 'Notes',\
+    'Date sample received','team member','Storage location','Internal_Notes'] 
+
     for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], font_style)
+        ws.col(col_num).width = 256*columns_width[col_num]
+        if col_num == 8:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            ws.row(row_num).height_mismatch = True
+            ws.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 5
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+            ws.write(row_num, col_num, columns[col_num], style)
+
+        else:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            ws.row(row_num).height_mismatch = True
+            ws.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 22
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+            ws.write(row_num, col_num, columns[col_num], style)
     Samples_list = SampleInfo.objects.filter(team_member=request.user).order_by('pk').select_related('group',\
         'team_member').values_list('date','group__name',\
         'research_name','research_email','research_phone','fiscal_name','fiscal_email','fiscal_index',\
         'sample_id','description','species','sample_type',\
         'preparation','fixation','sample_amount','unit','service_requested','seq_depth_to_target',\
-        'seq_length_requested','seq_type_requested','notes','sample_id','date_received',\
-        'team_member__username','storage','status'
+        'seq_length_requested','seq_type_requested','notes','date_received',\
+        'team_member__username','storage','internal_notes'
         )
     #print(list(Samples_list))
     #print(len(Samples_list))
@@ -1407,19 +1493,57 @@ def SaveMyMetaDataExcel(request):
             ws.write(row_num, col_num, str((row[col_num] or '')), font_style)
     wl = wb.add_sheet('Libraries')
     row_num = 0
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-    columns = ['Sample id','Library description','team member','date_started','date_completed',\
-    'experiment_type','protocal used','reference_to_notebook_and_page_number','library_id',
+
+    columns_width = [30,25,12,15,15,15,20,20,15,30]
+    columns = ['Sample ID (Must Match Column I in Sample Sheet)','Library description','Team member intials','Date experiment started','Date experiment completed',\
+    'Experiment type','Protocol used','Reference to notebook and page number','library_id',
     'notes'] 
+
     for col_num in range(len(columns)):
-        wl.write(row_num, col_num, columns[col_num], font_style)
+        wl.col(col_num).width = 256*columns_width[col_num]
+        if col_num == 0:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            wl.row(row_num).height_mismatch = True
+            wl.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 5
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+
+        else:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            wl.row(row_num).height_mismatch = True
+            wl.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 22
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+        wl.write(row_num, col_num, columns[col_num], style)
     Libraries_list = LibraryInfo.objects.filter(team_member_initails=request.user).order_by('pk').select_related(\
         'team_member_initails','sampleinfo').values_list('sampleinfo__sample_id','library_description','team_member_initails__username','date_started',\
         'date_completed','experiment_type','protocal_used',\
         'reference_to_notebook_and_page_number','library_id','notes')
-    #print(list(Libraries_list))
-    #print(len(Libraries_list))
+
     rows = Libraries_list
     font_style = xlwt.XFStyle()
     for row in rows:
@@ -1429,15 +1553,53 @@ def SaveMyMetaDataExcel(request):
 
     we = wb.add_sheet('Sequencings')
     row_num = 0
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-    columns = ['Sample id','Label (for QC report)','Species',\
-    'Team Member','date_submitted_for_sequencing','library_id','seq_id','experiment_type',\
-    'sequencing_core','machine','Sequening length','read_type','portion_of_lane',\
-    'i7index','i5index','notes','pipeline_version','Genome','total_reads',\
+
+    columns_width = [30,25,12,12,20,15,15,15,15,15,15,12,10,12,12,30,15,15,15,15,15,15,15,15]
+    columns = ['Sample ID (Must Match Column I in Sample Sheet)','Label (for QC report)','Species',\
+    'Team member intials','Date submitted for sequencing','Library ID','Sequencing ID','Experiment type',\
+    'Sequening core','Machine','Sequening length','Read type','Portion of lane',\
+    'i7 index (if applicable)','i5 Index (or single index','Notes','pipeline_version','Genome','total_reads',\
     'final_reads','final_yield','mito_frac','tss_enrichment','frop'] 
     for col_num in range(len(columns)):
-        we.write(row_num, col_num, columns[col_num], font_style)
+        we.col(col_num).width = 256*columns_width[col_num]
+        if col_num == 0:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            we.row(row_num).height_mismatch = True
+            we.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 5
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+
+        else:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            we.row(row_num).height_mismatch = True
+            we.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 22
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+        we.write(row_num, col_num, columns[col_num], style)
     Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user).order_by('pk').select_related('libraryinfo',\
         'libraryinfo__sampleinfo','team_member_initails','machine','i7index','i5index').\
     prefetch_related(Prefetch('seqbioinfo_set__genome')).values_list(\
@@ -1467,30 +1629,100 @@ def SaveAllMetaDataExcel(request):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('Samples')
     row_num = 0 
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-    #pattern = xlwt.Pattern()
-    #pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-    #pattern.pattern_fore_colour = xlwt.Style.colour_map['ivory']
-    #font_style.pattern = pattern
+    style = xlwt.XFStyle()
+    style.font.bold = True
+    style.alignment.wrap = 1
+    pattern = xlwt.Pattern()
+    pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['turquoise']
+    style.pattern = pattern
+    borders = xlwt.Borders()
+    borders.left = 1
+    borders.right = 1
+    borders.top = 1
+    borders.bottom = 1
+    style.borders = borders
+
+    row_num = 0 
+    ws.row(row_num).height_mismatch = True
+    ws.row(row_num).height = 256*1
+    ws.write_merge(0, 0, 0, 20, 'From sample submission form', style)
+    style = xlwt.XFStyle()
+    style.font.bold = True
+    style.alignment.wrap = 1
+    pattern = xlwt.Pattern()
+    pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['light_green']
+    style.pattern = pattern
+    borders = xlwt.Borders()
+    borders.left = 1
+    borders.right = 1
+    borders.top = 1
+    borders.bottom = 1
+    style.borders = borders
+
+    row_num = 0 
+    ws.row(row_num).height_mismatch = True
+    ws.row(row_num).height = 256*1
+    ws.write_merge(0, 0, 21, 24, 'To be entered upon reciept', style)
+    row_num = 1
+    columns_width = [15,15,15,21,15,15,21,15,25,30,12,15,15,11,12,12,12,12,12,12,30,15,15,15,25]
     columns = ['Date','PI','Research contact name','Research contact e-mail',\
     'Research contact phone','Fiscal contact name','Fiscal conact e-mail','Index for payment',\
     'Sample ID','Sample description','Species','Sample type','Preperation',\
     'Fixation?','Sample amount','Units','Service requested','Sequencing depth to target',\
-    'Sequencing length requested','Sequencing type requested', 'Notes','Sample ID((copied from column I)',\
-    'Date sample received','team member','Storage location','status'] 
-    #ws.row(0).height_mismatch = True
-    #ws.row(0).height = 256*2
+    'Sequencing length requested','Sequencing type requested', 'Notes',\
+    'Date sample received','team member','Storage location','Internal Notes'] 
+
     for col_num in range(len(columns)):
-        #ws.col(col_num).width = 256*20
-        ws.write(row_num, col_num, columns[col_num], font_style)
+        ws.col(col_num).width = 256*columns_width[col_num]
+        if col_num == 8:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            ws.row(row_num).height_mismatch = True
+            ws.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 5
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+            ws.write(row_num, col_num, columns[col_num], style)
+
+        else:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            ws.row(row_num).height_mismatch = True
+            ws.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 22
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+            ws.write(row_num, col_num, columns[col_num], style)
+
     Samples_list = SampleInfo.objects.all().order_by('pk').select_related('group',\
         'team_member').values_list('date','group__name',\
         'research_name','research_email','research_phone','fiscal_name','fiscal_email','fiscal_index',\
         'sample_id','description','species','sample_type',\
         'preparation','fixation','sample_amount','unit','service_requested','seq_depth_to_target',\
-        'seq_length_requested','seq_type_requested','notes','sample_id','date_received',\
-        'team_member__username','storage','status'
+        'seq_length_requested','seq_type_requested','notes','date_received',\
+        'team_member__username','storage','internal_notes'
         )
     #print(list(Samples_list))
     #print(len(Samples_list))
@@ -1503,13 +1735,51 @@ def SaveAllMetaDataExcel(request):
             ws.write(row_num, col_num, str((row[col_num] or '')), font_style)
     wl = wb.add_sheet('Libraries')
     row_num = 0
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-    columns = ['Sample id','Library description','team member','date_started','date_completed',\
-    'experiment_type','protocal used','reference_to_notebook_and_page_number','library_id',
+
+    columns_width = [30,25,12,15,15,15,20,20,15,30]
+    columns = ['Sample ID (Must Match Column I in Sample Sheet)','Library description','Team member intials','Date experiment started','Date experiment completed',\
+    'Experiment type','Protocol used','Reference to notebook and page number','library_id',
     'notes'] 
     for col_num in range(len(columns)):
-        wl.write(row_num, col_num, columns[col_num], font_style)
+        wl.col(col_num).width = 256*columns_width[col_num]
+        if col_num == 0:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            wl.row(row_num).height_mismatch = True
+            wl.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 5
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+
+        else:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            wl.row(row_num).height_mismatch = True
+            wl.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 22
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+        wl.write(row_num, col_num, columns[col_num], style)
     Libraries_list = LibraryInfo.objects.all().order_by('pk').select_related(\
         'team_member_initails','sampleinfo').values_list('sampleinfo__sample_id',\
         'library_description','team_member_initails__username','date_started',\
@@ -1526,15 +1796,53 @@ def SaveAllMetaDataExcel(request):
 
     we = wb.add_sheet('Sequencings')
     row_num = 0
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-    columns = ['Sample id','Label','Species',\
-    'Team Member','date_submitted_for_sequencing','library_id','seq_id','experiment_type',\
-    'sequencing_core','machine','Sequening length','read_type','portion_of_lane',\
-    'i7index','i5index','notes','pipeline_version','Genome','total_reads',\
+
+    columns_width = [30,25,12,12,20,15,15,15,15,15,15,12,10,12,12,30,15,15,15,15,15,15,15,15]
+    columns = ['Sample ID (Must Match Column I in Sample Sheet)','Label (for QC report)','Species',\
+    'Team member intials','Date submitted for sequencing','Library ID','Sequencing ID','Experiment type',\
+    'Sequening core','Machine','Sequening length','Read type','Portion of lane',\
+    'i7 index (if applicable)','i5 Index (or single index','Notes','pipeline_version','Genome','total_reads',\
     'final_reads','final_yield','mito_frac','tss_enrichment','frop'] 
     for col_num in range(len(columns)):
-        we.write(row_num, col_num, columns[col_num], font_style)
+        we.col(col_num).width = 256*columns_width[col_num]
+        if col_num == 0:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            we.row(row_num).height_mismatch = True
+            we.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 5
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+
+        else:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            we.row(row_num).height_mismatch = True
+            we.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 22
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+        we.write(row_num, col_num, columns[col_num], style)
     Seqs_list = SeqInfo.objects.all().order_by('pk').select_related('libraryinfo',\
         'libraryinfo__sampleinfo','team_member_initails','machine','i7index','i5index').\
     prefetch_related(Prefetch('seqbioinfo_set__genome')).values_list(\
