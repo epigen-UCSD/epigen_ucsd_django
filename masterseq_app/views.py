@@ -1378,16 +1378,75 @@ def SaveMyMetaDataExcel(request):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('Samples')
     row_num = 0 
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
+    style = xlwt.XFStyle()
+    style.font.bold = True
+    style.alignment.wrap = 1
+    pattern = xlwt.Pattern()
+    pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['turquoise']
+    style.pattern = pattern
+    borders = xlwt.Borders()
+    borders.left = 1
+    borders.right = 1
+    borders.top = 1
+    borders.bottom = 1
+    style.borders = borders
+
+    row_num = 0 
+    ws.row(row_num).height_mismatch = True
+    ws.row(row_num).height = 256*1
+    ws.write_merge(0, 0, 0, 20, 'From sample submission form', style)
+    ws.write_merge(0, 0, 22, 25, 'To be entered upon reciept', style)
+    row_num = 1
+    columns_width = [15,15,15,21,15,15,21,15,25,30,12,15,15,11,12,12,12,12,12,12,30,15,15,15,15,25]
     columns = ['Date','PI','Research contact name','Research contact e-mail',\
     'Research contact phone','Fiscal contact name','Fiscal conact e-mail','Index for payment',\
     'Sample ID','Sample description','Species','Sample type','Preperation',\
     'Fixation?','Sample amount','Units','Service requested','Sequencing depth to target',\
     'Sequencing length requested','Sequencing type requested', 'Notes','Sample ID((copied from column I)',\
     'Date sample received','team member','Storage location','status'] 
+
     for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], font_style)
+        ws.col(col_num).width = 256*columns_width[col_num]
+        if col_num == 21:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            ws.row(row_num).height_mismatch = True
+            ws.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 5
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+            ws.write_merge(0,1, col_num,col_num, columns[col_num], style)
+
+        else:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            ws.row(row_num).height_mismatch = True
+            ws.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 22
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+            ws.write(row_num, col_num, columns[col_num], style)
     Samples_list = SampleInfo.objects.filter(team_member=request.user).order_by('pk').select_related('group',\
         'team_member').values_list('date','group__name',\
         'research_name','research_email','research_phone','fiscal_name','fiscal_email','fiscal_index',\
@@ -1407,19 +1466,57 @@ def SaveMyMetaDataExcel(request):
             ws.write(row_num, col_num, str((row[col_num] or '')), font_style)
     wl = wb.add_sheet('Libraries')
     row_num = 0
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-    columns = ['Sample id','Library description','team member','date_started','date_completed',\
-    'experiment_type','protocal used','reference_to_notebook_and_page_number','library_id',
+
+    columns_width = [20,25,12,15,15,15,20,20,15,30]
+    columns = ['Sample ID','Library description','Team member intials','Date experiment started','Date experiment completed',\
+    'Experiment type','Protocol used','Reference to notebook and page number','library_id',
     'notes'] 
+
     for col_num in range(len(columns)):
-        wl.write(row_num, col_num, columns[col_num], font_style)
+        wl.col(col_num).width = 256*columns_width[col_num]
+        if col_num == 0:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            wl.row(row_num).height_mismatch = True
+            wl.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 5
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+
+        else:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            wl.row(row_num).height_mismatch = True
+            wl.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 22
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+        wl.write(row_num, col_num, columns[col_num], style)
     Libraries_list = LibraryInfo.objects.filter(team_member_initails=request.user).order_by('pk').select_related(\
         'team_member_initails','sampleinfo').values_list('sampleinfo__sample_id','library_description','team_member_initails__username','date_started',\
         'date_completed','experiment_type','protocal_used',\
         'reference_to_notebook_and_page_number','library_id','notes')
-    #print(list(Libraries_list))
-    #print(len(Libraries_list))
+
     rows = Libraries_list
     font_style = xlwt.XFStyle()
     for row in rows:
@@ -1429,15 +1526,53 @@ def SaveMyMetaDataExcel(request):
 
     we = wb.add_sheet('Sequencings')
     row_num = 0
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-    columns = ['Sample id','Label (for QC report)','Species',\
-    'Team Member','date_submitted_for_sequencing','library_id','seq_id','experiment_type',\
-    'sequencing_core','machine','Sequening length','read_type','portion_of_lane',\
-    'i7index','i5index','notes','pipeline_version','Genome','total_reads',\
+
+    columns_width = [20,25,12,12,20,15,15,15,15,15,15,12,10,12,12,30,15,15,15,15,15,15,15,15]
+    columns = ['Sample ID','Label (for QC report)','Species',\
+    'Team member intials','Date submitted for sequencing','Library ID','Sequencing ID','Experiment type',\
+    'Sequening core','Machine','Sequening length','Read type','Portion of lane',\
+    'i7 index (if applicable)','i5 Index (or single index','Notes','pipeline_version','Genome','total_reads',\
     'final_reads','final_yield','mito_frac','tss_enrichment','frop'] 
     for col_num in range(len(columns)):
-        we.write(row_num, col_num, columns[col_num], font_style)
+        we.col(col_num).width = 256*columns_width[col_num]
+        if col_num == 0:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            we.row(row_num).height_mismatch = True
+            we.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 5
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+
+        else:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            we.row(row_num).height_mismatch = True
+            we.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 22
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+        we.write(row_num, col_num, columns[col_num], style)
     Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user).order_by('pk').select_related('libraryinfo',\
         'libraryinfo__sampleinfo','team_member_initails','machine','i7index','i5index').\
     prefetch_related(Prefetch('seqbioinfo_set__genome')).values_list(\
@@ -1467,23 +1602,76 @@ def SaveAllMetaDataExcel(request):
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('Samples')
     row_num = 0 
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-    #pattern = xlwt.Pattern()
-    #pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-    #pattern.pattern_fore_colour = xlwt.Style.colour_map['ivory']
-    #font_style.pattern = pattern
+    style = xlwt.XFStyle()
+    style.font.bold = True
+    style.alignment.wrap = 1
+    pattern = xlwt.Pattern()
+    pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['turquoise']
+    style.pattern = pattern
+    borders = xlwt.Borders()
+    borders.left = 1
+    borders.right = 1
+    borders.top = 1
+    borders.bottom = 1
+    style.borders = borders
+
+    row_num = 0 
+    ws.row(row_num).height_mismatch = True
+    ws.row(row_num).height = 256*1
+    ws.write_merge(0, 0, 0, 20, 'From sample submission form', style)
+    ws.write_merge(0, 0, 22, 25, 'To be entered upon reciept', style)
+    row_num = 1
+    columns_width = [15,15,15,21,15,15,21,15,25,30,12,15,15,11,12,12,12,12,12,12,30,15,15,15,15,25]
     columns = ['Date','PI','Research contact name','Research contact e-mail',\
     'Research contact phone','Fiscal contact name','Fiscal conact e-mail','Index for payment',\
     'Sample ID','Sample description','Species','Sample type','Preperation',\
     'Fixation?','Sample amount','Units','Service requested','Sequencing depth to target',\
     'Sequencing length requested','Sequencing type requested', 'Notes','Sample ID((copied from column I)',\
     'Date sample received','team member','Storage location','status'] 
-    #ws.row(0).height_mismatch = True
-    #ws.row(0).height = 256*2
+
     for col_num in range(len(columns)):
-        #ws.col(col_num).width = 256*20
-        ws.write(row_num, col_num, columns[col_num], font_style)
+        ws.col(col_num).width = 256*columns_width[col_num]
+        if col_num == 21:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            ws.row(row_num).height_mismatch = True
+            ws.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 5
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+            ws.write_merge(0,1, col_num,col_num, columns[col_num], style)
+
+        else:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            ws.row(row_num).height_mismatch = True
+            ws.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 22
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+            ws.write(row_num, col_num, columns[col_num], style)
+
     Samples_list = SampleInfo.objects.all().order_by('pk').select_related('group',\
         'team_member').values_list('date','group__name',\
         'research_name','research_email','research_phone','fiscal_name','fiscal_email','fiscal_index',\
@@ -1503,13 +1691,51 @@ def SaveAllMetaDataExcel(request):
             ws.write(row_num, col_num, str((row[col_num] or '')), font_style)
     wl = wb.add_sheet('Libraries')
     row_num = 0
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-    columns = ['Sample id','Library description','team member','date_started','date_completed',\
-    'experiment_type','protocal used','reference_to_notebook_and_page_number','library_id',
+
+    columns_width = [20,25,12,15,15,15,20,20,15,30]
+    columns = ['Sample ID','Library description','Team member intials','Date experiment started','Date experiment completed',\
+    'Experiment type','Protocol used','Reference to notebook and page number','library_id',
     'notes'] 
     for col_num in range(len(columns)):
-        wl.write(row_num, col_num, columns[col_num], font_style)
+        wl.col(col_num).width = 256*columns_width[col_num]
+        if col_num == 0:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            wl.row(row_num).height_mismatch = True
+            wl.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 5
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+
+        else:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            wl.row(row_num).height_mismatch = True
+            wl.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 22
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+        wl.write(row_num, col_num, columns[col_num], style)
     Libraries_list = LibraryInfo.objects.all().order_by('pk').select_related(\
         'team_member_initails','sampleinfo').values_list('sampleinfo__sample_id',\
         'library_description','team_member_initails__username','date_started',\
@@ -1526,15 +1752,53 @@ def SaveAllMetaDataExcel(request):
 
     we = wb.add_sheet('Sequencings')
     row_num = 0
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-    columns = ['Sample id','Label','Species',\
-    'Team Member','date_submitted_for_sequencing','library_id','seq_id','experiment_type',\
-    'sequencing_core','machine','Sequening length','read_type','portion_of_lane',\
-    'i7index','i5index','notes','pipeline_version','Genome','total_reads',\
+
+    columns_width = [20,25,12,12,20,15,15,15,15,15,15,12,10,12,12,30,15,15,15,15,15,15,15,15]
+    columns = ['Sample ID','Label (for QC report)','Species',\
+    'Team member intials','Date submitted for sequencing','Library ID','Sequencing ID','Experiment type',\
+    'Sequening core','Machine','Sequening length','Read type','Portion of lane',\
+    'i7 index (if applicable)','i5 Index (or single index','Notes','pipeline_version','Genome','total_reads',\
     'final_reads','final_yield','mito_frac','tss_enrichment','frop'] 
     for col_num in range(len(columns)):
-        we.write(row_num, col_num, columns[col_num], font_style)
+        we.col(col_num).width = 256*columns_width[col_num]
+        if col_num == 0:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            we.row(row_num).height_mismatch = True
+            we.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 5
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+
+        else:
+            style = xlwt.XFStyle()
+            style.alignment.wrap = 1
+            style.font.bold = True
+            #first_col = ws.col(0)
+            #first_col.width = 256 * 6
+            we.row(row_num).height_mismatch = True
+            we.row(row_num).height = 256*3
+            pattern = xlwt.Pattern()
+            pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
+            pattern.pattern_fore_colour = 22
+            style.pattern = pattern
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
+            style.borders = borders
+        we.write(row_num, col_num, columns[col_num], style)
     Seqs_list = SeqInfo.objects.all().order_by('pk').select_related('libraryinfo',\
         'libraryinfo__sampleinfo','team_member_initails','machine','i7index','i5index').\
     prefetch_related(Prefetch('seqbioinfo_set__genome')).values_list(\
