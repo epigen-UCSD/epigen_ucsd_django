@@ -171,6 +171,7 @@ class SeqCreationForm2(forms.Form):
                     invalidliblist.append(libid)
                     flaglib = 1
                 membername = lineitem.split('\t')[3]
+                
                 if not User.objects.filter(username=membername).exists():
                     invaliduserlist.append(membername)
                     flaguser = 1
@@ -648,7 +649,7 @@ class SeqsCreationForm(forms.Form):
         for lineitem in data.strip().split('\n'):
             if lineitem != '\r':
                 cleaneddata.append(lineitem)
-                fields = lineitem.split('\t')
+                fields = (lineitem+'\t'*20).split('\t')
                 libraryid = fields[5].strip()
                 exptype = fields[7].strip()
                 samid = fields[0].strip()
@@ -894,7 +895,7 @@ class SeqsCreationForm_wetlab(forms.Form):
         for lineitem in data.strip().split('\n'):
             if lineitem != '\r':
                 cleaneddata.append(lineitem)
-                fields = lineitem.split('\t')
+                fields = (lineitem+'\t'*20).split('\t')
                 libraryid = fields[5].strip()
                 exptype = fields[7].strip()
                 samid = fields[0].strip()

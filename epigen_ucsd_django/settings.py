@@ -12,15 +12,20 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import configparser
 import os
 
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
+config = configparser.ConfigParser()
+config.read('deploy.ini')
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '$omp0lc+c$5b&)e+c7xyk_zsddr#a4x4y+196bre5+f6pl2hlg'
+SECRET_KEY =  config['django']['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,8 +34,6 @@ ALLOWED_HOSTS = ['epigenomics.sdsc.edu', '127.0.0.1']
 INTERNAL_IPS = ['127.0.0.1']
 
 
-config = configparser.ConfigParser()
-config.read('deploy.ini')
 # Application definition
 
 INSTALLED_APPS = [

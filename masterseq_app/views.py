@@ -563,6 +563,7 @@ def LibrariesCreateView(request):
                                 for x in exp_indexes if x.startswith('EXP-')])
 
         for lineitem in libsinfo.strip().split('\n'):
+            lineitem = lineitem+'\t\t\t\t\t\t'
             fields = lineitem.strip('\n').split('\t')
             libid = fields[8].strip()
             sampid = fields[0].strip()
@@ -1411,7 +1412,7 @@ def SaveMyMetaDataExcel(request):
     style.alignment.wrap = 1
     pattern = xlwt.Pattern()
     pattern.pattern = xlwt.Pattern.SOLID_PATTERN    
-    pattern.pattern_fore_colour = xlwt.Style.colour_map['light_greens']
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['light_green']
     style.pattern = pattern
     borders = xlwt.Borders()
     borders.left = 1
