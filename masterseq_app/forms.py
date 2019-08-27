@@ -261,7 +261,8 @@ class SamplesCreationForm(forms.Form):
 		#invalidprep = []
 		for lineitem in data.strip().split('\n'):
 			if lineitem != '\r':
-				fields = lineitem.split('\t')
+				#fields = lineitem.split('\t')
+				fields = (lineitem+'\t'*20).split('\t')
 				try:
 					samdate = datetransform(fields[0].strip())
 				except:
@@ -475,7 +476,8 @@ class LibsCreationForm(forms.Form):
             if lineitem != '\r':
                 cleaneddata.append(lineitem)
                 # print(lineitem)
-                fields = lineitem.split('\t')
+                #fields = lineitem.split('\t')
+                fields = (lineitem+'\t'*10).split('\t')
                 samid = fields[0].strip()
                 if not SampleInfo.objects.filter(sample_id=samid).exists():
                     selfsamps.append(samid)
@@ -556,7 +558,8 @@ class LibsCreationForm_wetlab(forms.Form):
             if lineitem != '\r':
                 cleaneddata.append(lineitem)
                 # print(lineitem)
-                fields = lineitem.split('\t')
+                #fields = lineitem.split('\t')
+                fields = (lineitem+'\t'*10).split('\t')
                 samid = fields[0].strip()
                 if not SampleInfo.objects.filter(sample_id=samid).exists():
                     invalidsamps.append(samid)
