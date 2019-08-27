@@ -158,6 +158,7 @@ def SamplesCreateView(request):
         all_index = list(SampleInfo.objects.values_list('sample_index', flat=True))
         max_index = max([int(x.split('-')[1]) for x in all_index if x.startswith('SAMP-') and '&' not in x])
         for lineitem in sampleinfo.strip().split('\n'):
+            lineitem = lineitem+'\t'*20
             fields = lineitem.strip('\n').split('\t')
             samindex = 'SAMP-'+str(max_index +1)
             max_index = max_index +1            
@@ -323,7 +324,7 @@ def SamplesCreateView(request):
             seq_depth_to_target_tm = fields[17].strip()
             seq_length_requested_tm = fields[18].strip()
             seq_type_requested_tm = fields[19].strip()
-            samprep = fields[12].strip().replace(
+            samprep = fields[12].strip().lower().replace(
                 'crypreserant', 'cryopreservant')
             if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:
                 if samprep.lower().startswith('other'):
@@ -563,7 +564,7 @@ def LibrariesCreateView(request):
                                 for x in exp_indexes if x.startswith('EXP-')])
 
         for lineitem in libsinfo.strip().split('\n'):
-            lineitem = lineitem+'\t\t\t\t\t\t'
+            lineitem = lineitem+'\t'*10
             fields = lineitem.strip('\n').split('\t')
             libid = fields[8].strip()
             sampid = fields[0].strip()
@@ -721,7 +722,7 @@ def SeqsCreateView(request):
                                    for x in lib_indexes if x.startswith('EXPNA')])
 
         for lineitem in seqsinfo.strip().split('\n'):
-            lineitem = lineitem+'\t\t\t\t\t\t'
+            lineitem = lineitem+'\t'*20
             fields = lineitem.split('\t')
             updatesampflag = 0
             pseudolibflag = 0
@@ -734,7 +735,7 @@ def SeqsCreateView(request):
             libraryid = fields[5].strip()
             exptype = fields[7].strip()
             data[seqid] = {}
-            if not LibraryInfo.objects.filter(library_id=fields[5]).exists():
+            if not LibraryInfo.objects.filter(library_id=libraryid).exists():
                 pseudolibrequired = 1
                 pseudolibflag = 1
                 expindex = 'EXPNA-'+str(existingmaxlibindex+1)
@@ -754,7 +755,7 @@ def SeqsCreateView(request):
                         updatesamprequired = 1
             else:
                 libinfo = LibraryInfo.objects.select_related(
-                    'sampleinfo').get(library_id=fields[5].strip())
+                    'sampleinfo').get(library_id=libraryid)
                 sampinfo = libinfo.sampleinfo
                 sampindex = sampinfo.sample_index
                 sampid = sampinfo.sample_id
@@ -1905,7 +1906,7 @@ def load_researchcontact(request):
 
 def download(request, path):
     #file_path = os.path.join(settings.MEDIA_ROOT, path)
-    dbfolder = os.path.join(os.path.dirname(os.path.dirname(__file__)),'db')
+    dbfolder = os.path.join(os.path.dirname(os.path.dirname(__file__)),'data/masterseq_app')
     file_path = os.path.join(dbfolder,path)
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
