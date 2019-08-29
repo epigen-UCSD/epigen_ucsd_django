@@ -686,13 +686,17 @@ def RunSetQC(request, setqc_pk):
         #1. check if library passed has been process in cell ranger by looking for html output
         #2. for libraries of same sample not processed with cell ranger-> create sample sheet for said libs 
         
-        #will hold set that needs to be processed in cell ranger,
-        #need to seperate brandon_210_1_2_3 -> brandon_210,brandon_210_2,brandon_210_3
+        #to process will hold seqs to populate tsv file if not already done
         to_process = {}
+
+        #output_names will hold seqs that needs to be processed in cell ranger,
         output_names = []
+
+        tenXPresent = False
 
         for sequence in outinfo:
             if sequence['seqinfo__libraryinfo__experiment_type'] == '10xATAC':
+                tenXPresent = True
                 x = sequence['seqinfo__seq_id']
                 print(f'seqinfo id: {x}')
                 reps = []
@@ -778,20 +782,32 @@ def RunSetQC(request, setqc_pk):
                     f.write(tsv_writecontent)
             except Exception as e:
                 data['writeseterror'] = 'Unexpected writing to Set_samplesheet.tsv Error!'
-        
+        #dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 1oxATAC
+        tenXProcessed = {}
+        to_process_keys = list(to_process.keys())
+        for x in outinfo:
+            if x['seqinfo__seq_id'] not in output_names and \
+            x['seqinfo__seq_id'] in to_process_keys:
+                tenXProcessed[x['seqinfo__seq_id']] = 'Yes'
+            else:                    
+                tenXProcessed[x['seqinfo__seq_id']] = 'No'
+        print(tenXProcessed)
+
 
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
-                                             x['label'], seqstatus[x['seqinfo__seq_id']
-                                                                   ], x['seqinfo__read_type'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']],
+                                             x['seqinfo__read_type'],
                                              x['seqinfo__libraryinfo__sampleinfo__sample_id'],
                                              x['seqinfo__libraryinfo__sampleinfo__species'],
                                              x['seqinfo__libraryinfo__experiment_type'],
-                                             x['seqinfo__machine__machine_name'], setinfo.set_name]) for x in outinfo])
+                                             x['seqinfo__machine__machine_name'], setinfo.set_name,
+                                              tenXProcessed[ x['seqinfo__seq_id']] ]) for x in outinfo])
         featureheader = ['Library ID', 'Genome',
                          'Library Name', 'Processed Or Not', 'Read Type', 'Sample Name', 'Species',
-                         'Experiment Type', 'Machine', 'Set Name']
-        
-        
+                         'Experiment Type', 'Machine', 'Set Name', '10xProcessed']
+       
+       
+       
         '''cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
             ' ' + request.user.email + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
@@ -819,15 +835,6 @@ def RunSetQC(request, setqc_pk):
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     data['writesetdone'] = 1
     return JsonResponse(data)
-
-def write10xContent(outinfo, processed, setinfo):
-    writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
-                                             x['label'], seqstatus[x['seqinfo__seq_id']
-                                                                   ], x['seqinfo__read_type'],
-                                             x['seqinfo__libraryinfo__sampleinfo__sample_id'],
-                                             x['seqinfo__libraryinfo__sampleinfo__species'],
-                                             x['seqinfo__libraryinfo__experiment_type'],
-                                             x['seqinfo__machine__machine_name'], setinfo.set_name]) for x in outinfo])
 
 @transaction.atomic
 def RunSetQC2(request, setqc_pk):
