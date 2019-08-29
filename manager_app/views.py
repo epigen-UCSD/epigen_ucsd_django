@@ -24,6 +24,7 @@ def CollaboratorListView(request):
     context = {
         'collab_list':collabs_list,
     }
+    print(context)
     if is_member(request.user,'manager'):
         return render(request, 'manager_app/manageronly_collaboratorlist.html', context)
     else:

@@ -1,8 +1,8 @@
 from django import template
 from django.contrib.auth.models import Group
-
+from epigen_ucsd_django.settings import DEBUG
 register = template.Library()
-
+print(f'debug status: {DEBUG}')
 
 @register.filter
 def key(d, key_name):
@@ -13,6 +13,7 @@ def key(d, key_name):
 
 @register.filter(name='has_group')
 def has_group(user, group_name):
+	if(DEBUG):print(group_name)
 	group = Group.objects.get(name=group_name)
 	return True if group in user.groups.all() else False
 
