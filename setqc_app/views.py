@@ -617,6 +617,7 @@ def RunSetQC(request, setqc_pk):
         reps = reps + item.split('_')[2:]
         print(f'reps:{reps}')
         mainname = '_'.join(item.split('_')[0:2])
+        print(f'mainname: {mainname}')
         if seqstatus[item] == 'No':
             if list_readtype[i] == 'PE':
                 r1 = item+'_R1.fastq.gz'
@@ -680,101 +681,90 @@ def RunSetQC(request, setqc_pk):
             setinfo.set_id + ' ' + request.user.email + \
             ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
     else:
-        #check if expirement is of type 10xATAC to: 
+        
+        #check if expirement is of type 10xATAC of each library: 
         #1. check if library passed has been process in cell ranger by looking for html output
         #2. for libraries of same sample not processed with cell ranger-> create sample sheet for said libs 
-        if setinfo.experiment_type == '10xATAC':
-            #sample sheet will be named: .Set_XXX_samplesheet.tsv
-            #sample sheet will be located in SETQC_DIR
-            
-            #will hold set that needs to be processed in cell ranger
-            to_process = {}
-            output_names = []
-            for x in list1:
-                reps = ['1']
-                reps = reps + x.split('_')[2:]
+        
+        #will hold set that needs to be processed in cell ranger,
+        #need to seperate brandon_210_1_2_3 -> brandon_210,brandon_210_2,brandon_210_3
+        to_process = {}
+        output_names = []
 
+        for sequence in outinfo:
+            if sequence['seqinfo__libraryinfo__experiment_type'] == '10xATAC':
+                x = sequence['seqinfo__seq_id']
+                print(f'seqinfo id: {x}')
+                reps = []
+                reps = reps + x.split('_')[2: ]
+                print(f'reps: {reps}')
+
+                #check if seq being processed is original eg: bg_210<tab>bg_210<tab>genome
+                if( len(reps) == 0):
+                    to_process[x] = [x]
+                
                 #new lib to process 
-                if reps == 1:
-                    if x in to_process.keys():
-                        to_process[x].append(x) 
+                for rep in reps:
+                    
+                    if rep == '1':
+                        to_insert = '_'.join( x.split('_')[ :2] )
+                        if x in to_process.keys():
+                            to_process[x].append(to_insert) 
+                        else:                           
+                            to_process[x] = [to_insert]                 
+                    #new sequencing from same lib 
                     else:
-                        to_process[x] = [x]                 
-                #new sequencing from same lib 
-                else:
-                    base_x = '_'.join( x.split('_')[ :2])
-                    if base_x in to_process.keys():
-                        to_process[ base_x ].append(x)
-                    else:
-                        to_process[ base_x ] = [x]
+                        to_insert = '_'.join(x.split('_')[ :2]) + '_' + rep
+                        if x in to_process.keys():
+                            to_process[x].append(to_insert)
+                        else:
+                            to_process[x] = [to_insert] 
+        print(to_process)
                 
-            #now for each entry in to process, make a new name containing each library present
-            #eg: {bg_100 : bg_100,bg_100_2} -> bg_100_1_2 
-              
-            for key in to_process.keys():
-                libs = to_process[key]
-                libs.sort()
-                
-                #make a new name for 10x
-                new_name = ''
-                
-                for lib in libs:
-                    if new_name == '':
-                        new_name = lib
-                        #check if lib is base name such as bg_200, should add 
-                        #'_1' to not not lose this information when adding a _2, _3 etc
-                        if len( lib.split('_') ) == 2:
-                            new_name += '_1'
-                    else:
-                        additional = ( lib.split('_') )[2]
-                        new_name += ('_' + additional)
-                
-                #now check if the new name is only _1 then discard the _1. Default: bg_200_1 is bg_200
-                new_name_split =  new_name.split('_')
-                if len( new_name_split ) == 3 and new_name_split[2] == '1':
-                    new_name = '_'.join( (new_name.split('_'))[ :2] )
-                               
-                print(new_name)
-                output_names.append(new_name)
-            
-            #check if name in output_names has been processed, if so strike it from list and
-            #put processed flag
+        #check if name in output_names has been processed, if so strike it from list and
+        #put processed flag
+        if len(to_process) > 0:
+            output_names = list(to_process.keys())
+            #check if output_names libs have been processed
             for name in output_names:
                 tenx_output_folder = 'outs'
                 tenx_target_outfile = 'web_summary.html'
-                
+                    
                 if not os.path.isdir(os.path.join(tenxdir, name)):
                     print("not found: ")
                     print( os.path.join( tenxdir, name ) )                    
-                
                 else:
                     if not os.path.isfile( os.path.join( tenxdir, name, \
-                        tenx_output_folder, tenx_target_outfile ) ):
+                            tenx_output_folder, tenx_target_outfile ) ):
 
                         print("not found: ") 
                         print(os.path.join( tenxdir, name, \
-                                tenx_output_folder, tenx_target_outfile )) 
+                            tenx_output_folder, tenx_target_outfile )) 
+
                     else:
                         print('found: ', os.path.join(tenxdir, name) )
                         output_names.remove(name)
+
             print( 'outputnames: ',output_names )
             print( 'to_process dict:', to_process )
-            
-            
-            #find genome used for samples
+                
+                
+        #find genome used for samples
             genome_dict = {}
-            for x in outinfo:
-                seqid = '_'.join( x['seqinfo__seq_id'].split('_')[:2] )
+            for x in outinfo: 
+                seqid = x['seqinfo__seq_id']
                 genome_dict[ seqid ] = x['genome__genome_name']
             print(genome_dict)
 
         #make tsv file to be use as input for run10xPipeline script
-            tsv_writecontent = '\n'.join( [ '\t'.join([ name, ','.join(
-                to_process[ '_'.join((name.split('_'))[:2])]), genome_dict[ 
-                '_'.join( (name.split('_') )[:2])] ] ) for name in output_names])
-            
+            tsv_writecontent = '\n'.join( 
+            [ '\t'.join( [ name, ','.join(to_process[name]), genome_dict[name] ] ) 
+                for name in output_names] )
+                
             print(tsv_writecontent)
-            
+                
+        #sample sheet will be named: .Set_XXX_samplesheet.tsv
+        #sample sheet will be located in SETQC_DIR    
         # write .Set_XXX_samplesheet.tsv to setqcoutdir
             set_10x_input_file = os.path.join(setqcoutdir, '.'+setinfo.set_id+'_samplesheet.tsv')
             print('input 10xfile:', set_10x_input_file)
@@ -788,8 +778,7 @@ def RunSetQC(request, setqc_pk):
                     f.write(tsv_writecontent)
             except Exception as e:
                 data['writeseterror'] = 'Unexpected writing to Set_samplesheet.tsv Error!'
-            setinfo.status = 'JobSubmitted'
-            setinfo.save()
+        
 
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
                                              x['label'], seqstatus[x['seqinfo__seq_id']
@@ -801,6 +790,7 @@ def RunSetQC(request, setqc_pk):
         featureheader = ['Library ID', 'Genome',
                          'Library Name', 'Processed Or Not', 'Read Type', 'Sample Name', 'Species',
                          'Experiment Type', 'Machine', 'Set Name']
+        
         
         '''cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
             ' ' + request.user.email + ' ' + \
@@ -830,6 +820,14 @@ def RunSetQC(request, setqc_pk):
     data['writesetdone'] = 1
     return JsonResponse(data)
 
+def write10xContent(outinfo, processed, setinfo):
+    writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']
+                                                                   ], x['seqinfo__read_type'],
+                                             x['seqinfo__libraryinfo__sampleinfo__sample_id'],
+                                             x['seqinfo__libraryinfo__sampleinfo__species'],
+                                             x['seqinfo__libraryinfo__experiment_type'],
+                                             x['seqinfo__machine__machine_name'], setinfo.set_name]) for x in outinfo])
 
 @transaction.atomic
 def RunSetQC2(request, setqc_pk):

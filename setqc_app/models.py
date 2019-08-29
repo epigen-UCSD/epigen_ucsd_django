@@ -13,7 +13,7 @@ class LibrariesSetQC(models.Model):
     requestor = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='requestor')
     experiment_type_choice = (
-        ('ATAC-seq', 'ATAC-seq'),  ('10xATAC', '10xATAC'),  ('Bulk 10xATAC', 'Bulk 10xATAC'), ('ChIP-seq', 'ChIP-seq'), ('HiC', 'HiC'), ('CUT&RUN', 'CUT&RUN'), ('Other (please explain in notes)', 'Other (please explain in notes)'))
+        ('ATAC-seq', 'ATAC-seq'), ('ChIP-seq', 'ChIP-seq'), ('HiC', 'HiC'), ('CUT&RUN', 'CUT&RUN'), ('Other (please explain in notes)', 'Other (please explain in notes)'))
     experiment_type = models.CharField(
         max_length=50, choices=experiment_type_choice, default='ATAC-seq')
     libraries_to_include = models.ManyToManyField(

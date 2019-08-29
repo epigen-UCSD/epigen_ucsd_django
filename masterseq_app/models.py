@@ -8,7 +8,6 @@ from epigen_ucsd_django.models import CollaboratorPersonInfo
 choice_for_experiment_type = (
     ('ATAC-seq', 'ATAC-seq'),
     ('10xATAC', '10xATAC'),
-    ('Bulk 10xATAC', 'Bulk 10xATAC'),
     ('ChIP-seq', 'ChIP-seq'),
     ('Hi-C', 'Hi-C'),
     ('scATAC-seq', 'scATAC-seq'),
