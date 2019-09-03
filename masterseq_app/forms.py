@@ -212,6 +212,27 @@ class SeqCreationForm2(forms.Form):
                 'Invalid portion of lane:'+','.join(invalidpolane))
         return '\n'.join(cleadata)
 
+        
+class BulkUpdateForm(forms.Form):
+	updateinfo = forms.CharField(
+			label='Please list the info that need to be updated below and make sure each column has a title exactly match the titles supplied in Template',
+			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
+			required=True,
+					)
+	def clean_updateinfo(self):
+		data = self.cleaned_data['updateinfo']
+		cleaneddata = []
+
+		for lineitem in data.strip().split('\n'):
+			if lineitem != '\r':
+				fields = lineitem.split('\t')
+				i = i+1
+
+				cleaneddata.append(lineitem)
+		if flagdate == 1:
+			raise forms.ValidationError('Invalid date:'+','.join(invaliddate)+'. Please enter like this: 10/30/2018 or 10/30/18')
+
+		return '\n'.join(cleaneddata)
 
 class SamplesCreationForm(forms.Form):
 	samplesinfo = forms.CharField(
