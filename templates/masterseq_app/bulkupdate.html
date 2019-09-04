@@ -1,0 +1,47 @@
+{% extends 'masterseq_app/base.html' %}
+
+{% block content %}
+{% load nextseq_app_tags %}
+<div id="content" class="col-sm-10 col-md-10 col-lg-10">
+  <div class="card">
+    <div class="card-header fortable">
+      Bulk Update
+    </div><!-- /.card-header -->
+    <div class="card-body">
+      {% if error_message %}
+          <p class="error-message">{{ error_message }}</strong></p>
+      {% endif %}
+      <form id="changeble_librariesform" action="" method="post">{% csrf_token %}  
+        {% for field in update_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error |safe }}
+            </li>
+            {% endfor %}
+            </ul>
+            {% if field.field.widget|get_class == "Textarea" %}
+            <p class="textarea">
+            {% with tagtex=field.label_tag %}
+            {{ tagtex | linktrackingsheet |safe }}
+            {% endwith %}
+            </p>
+               {{ field }}
+            {% else %}
+              {{ field.label_tag }} {{ field }}
+            {% endif %}
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %}   
+        <input id="bindtomodalok" type="submit" value="Save" name='Save' hidden='hidden'/>
+        <input type="submit" value="Save" name='Preview'/>
+      </form>
+    </div><!-- /.card-body -->              
+  </div><!-- /.card -->      
+</div><!-- /#content --> 
+{% endblock %}

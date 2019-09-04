@@ -4,7 +4,7 @@ from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm, LibraryCreationForm, SeqCreationForm,\
     SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm,\
-    LibsCreationForm_wetlab,SeqsCreationForm_wetlab
+    LibsCreationForm_wetlab,SeqsCreationForm_wetlab,BulkUpdateForm
 from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
     SeqMachineInfo, SeqBioInfo, choice_for_preparation, choice_for_fixation,\
     choice_for_unit, choice_for_sample_type
@@ -143,6 +143,15 @@ def load_protocals(request):
         experiment_type=exptype).order_by('protocal_name')
     print(protocals)
     return render(request, 'masterseq_app/protocal_dropdown_list_options.html', {'protocals': protocals})
+
+def BulkUpdateView(request):
+    update_form = BulkUpdateForm(request.POST or None)
+    context = {
+        'update_form': update_form,
+    }
+
+    return render(request, 'masterseq_app/bulkupdate.html', context)
+
 
 
 @transaction.atomic

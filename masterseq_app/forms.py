@@ -227,6 +227,7 @@ class BulkUpdateForm(forms.Form):
 			if lineitem != '\r':
 				fields = lineitem.split('\t')
 				i = i+1
+				
 
 				cleaneddata.append(lineitem)
 		if flagdate == 1:
