@@ -61,8 +61,6 @@ def change_password(request):
         'form': form
     })
 
-
-
 class UserRegisterView(FormView):
     form_class = UserRegisterForm
     template_name = 'common/registration.html'

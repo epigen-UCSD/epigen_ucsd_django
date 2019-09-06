@@ -36,8 +36,6 @@ urlpatterns = [
     path('changepassword/', views.change_password, name='change_password'),
     path('register/', views.UserRegisterView.as_view(), name='register'),
 
-
-
 ]
 
 if 'debug_toolbar' in settings.INSTALLED_APPS:

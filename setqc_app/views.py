@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import LibrariesSetQC, LibraryInSet
-from masterseq_app.models import SeqInfo, GenomeInfo, SampleInfo
+from masterseq_app.models import SeqInfo, GenomeInfo, SampleInfo, LibraryInfo
 from django.db import transaction
 from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm,\
     ChIPLibrariesToIncludeCreatForm, SeqLabelGenomeCreationForm, BaseSeqLabelGenomeCreationFormSet
@@ -16,6 +16,7 @@ import os
 import subprocess
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
+from django.http import HttpResponse
 import re
 
 # Create your views here.
@@ -39,7 +40,7 @@ def groupnumber(datalist):
 def grouplibraries(librarieslist):
     groupedlibraries = []
     presuffix_number = {}
-    for item in librarieslist:
+    for item in librarieslist:  
         splititem = item.split('_', 2)
         if len(splititem) == 1:
             groupedlibraries.append(item)
@@ -686,10 +687,10 @@ def RunSetQC(request, setqc_pk):
         #1. check if library passed has been process in cell ranger by looking for html output
         #2. for libraries of same sample not processed with cell ranger-> create sample sheet for said libs 
         
-        #to process will hold seqs to populate tsv file if not already done
+        #to process will hold 10x seqs
         to_process = {}
 
-        #output_names will hold seqs that needs to be processed in cell ranger,
+        #output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
         output_names = []
 
         tenXPresent = False
@@ -793,7 +794,6 @@ def RunSetQC(request, setqc_pk):
                 tenXProcessed[x['seqinfo__seq_id']] = 'No'
         print(tenXProcessed)
 
-
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
                                              x['label'], seqstatus[x['seqinfo__seq_id']],
                                              x['seqinfo__read_type'],
@@ -808,10 +808,10 @@ def RunSetQC(request, setqc_pk):
        
        
        
-        '''cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
+        cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
             ' ' + request.user.email + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
-        '''
+        
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
     if os.path.isfile(setStatusFile):
@@ -829,8 +829,8 @@ def RunSetQC(request, setqc_pk):
     setinfo.save()
 
     # run setQC script
-    cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
-    print(cmd1)
+    #cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
+    #print(cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     data['writesetdone'] = 1
@@ -984,7 +984,7 @@ def SetQCDetailView(request, setqc_pk):
     #     librariesetqc=setinfo).order_by('group_number', '-is_input')
     librariesset = LibraryInSet.objects.filter(
         librariesetqc=setinfo).order_by('pk')
-    list1tem = list(librariesset.values_list('seqinfo', flat=True))
+    list1tem = list(librariesset.values_list('seqinfo', flat=True))    
     list1 = [SeqInfo.objects.values_list(
         'seq_id', flat=True).get(id=x) for x in list1tem]
 
@@ -995,6 +995,16 @@ def SetQCDetailView(request, setqc_pk):
     list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
         id=x) for x in list(librariesset.values_list('genome', flat=True))]
     list5 = list(librariesset.values_list('label', flat=True))
+    
+    #need list of experiment types
+    liblist = [SeqInfo.objects.values_list(
+        'libraryinfo', flat=True).get(id=x) for x in list1tem]
+    
+    exp_type_list = [LibraryInfo.objects.values_list('experiment_type', 
+    flat=True).get(id=x) for x in liblist] 
+    print("explist: ",exp_type_list)
+    link_list = []
+    
     if setinfo.collaborator != None:
         collab = setinfo.collaborator.first_name+' ' + \
             setinfo.collaborator.last_name+'('+setinfo.group.name+')'
@@ -1002,8 +1012,27 @@ def SetQCDetailView(request, setqc_pk):
         collab = ''
     i = 0
     for item in list1:
-        if item not in allfolder:
+        link_list.append('')
+        #check if 10x experiment processed by checking summary.HTML file
+        if exp_type_list[i] == '10xATAC':
+                seq = item
+                tenx_output_folder = 'outs'
+                tenx_target_outfile = 'web_summary.html'
+                    
+                if not os.path.isdir(os.path.join(tenxdir, seq)):
+                    seqstatus.append('No')
+     
+                else:
+                    if not os.path.isfile( os.path.join( tenxdir, seq, \
+                            tenx_output_folder, tenx_target_outfile ) ):
+                        seqstatus.append('No') 
+                    else:
+                        seqstatus.append('Yes')
+                        link_list[i] = os.path.join(seq, tenx_target_outfile)
+                        print(link_list[i])
+        elif item not in allfolder:
             seqstatus.append('No')
+
         else:
             if not os.path.isfile(os.path.join(libdir, item, '.finished.txt')):
                 seqstatus.append('No')
@@ -1043,7 +1072,7 @@ def SetQCDetailView(request, setqc_pk):
                          'Is Input',  'Genome', 'Library Name', 'Has fastq', 'Processed']
     else:
         featureinfo = list(zip(list1, list_readtype, list4,
-                               list5, fastqstatus, seqstatus))
+                               list5, fastqstatus, seqstatus, exp_type_list, link_list))
         featureheader = ['Library ID', 'Read Type',
                          'Genome', 'Library Name', 'Has fastq', 'Processed']
     context = {
@@ -1051,7 +1080,7 @@ def SetQCDetailView(request, setqc_pk):
         'summaryfield': summaryfield,
         'featureinfo': featureinfo,
         'featureheader': featureheader,
-        'collab': collab
+        'collab': collab,
     }
     return render(request, 'setqc_app/details.html', context=context)
 
@@ -1074,3 +1103,16 @@ def load_users(request):
             u.last_name+'('+u.groups.all().first().name+')'
         results.append(uu)
     return JsonResponse(results, safe=False)
+
+###   
+#TODO: do some error checking and exception raising
+###
+'''
+This function opens and returns html webpage created by 10x ATAC pipeline for SETQC
+@Requirements: the 10x webpage requested is softlinked in the BASE_DIR/data/websummary directory
+'''
+def tenx_output(request, setqc_pk, outputname):
+    outputname = os.path.join(settings.BASE_DIR,('data/websummary/'+outputname+'_web_summary.html'))
+    file = open(outputname)
+    data = file.read()
+    return HttpResponse( data )

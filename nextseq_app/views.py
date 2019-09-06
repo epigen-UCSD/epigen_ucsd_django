@@ -966,3 +966,4 @@ def DownloadingfromIGM(request, run_pk):
     p = subprocess.Popen(cmd,
                          shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return JsonResponse(data)
+
