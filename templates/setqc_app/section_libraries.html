@@ -69,7 +69,7 @@
               {% elif x.5 == 'No' or x.5 == 'Error!' and x.6 == '10xATAC' %}
               <td><span style="color:red;">{{ x.5 | default_if_none:"" }}</span></td>
               {% else %}
-              <td><span style="color:olive;">{{ x.5 | default_if_none:"" }}</span></td>
+              <td><span style="color:#3CB371;">{{ x.5 | default_if_none:"" }}</span></td>
               {% endif %}
             </tr>
             {% endfor %}
