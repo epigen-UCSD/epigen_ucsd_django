@@ -61,12 +61,15 @@
               {% else %}
               <td><span style="color:#3CB371;">{{ x.4 | default_if_none:"" }}</span></td>
               {% endif %}
-              {% if x.5 != 'Yes' %}
+              {% if x.5 != 'Yes' and x.6 != '10xATAC' %}
               <td><span style="color:red;">{{ x.5 }}</span></td>
               {% elif x.5 == 'Yes' and x.6 == '10xATAC' %}
               <td><span style="color:blue;"><a href={{x.7}}>{{ x.5 | default_if_none:"" }}</a></span>
-                {% else %}
-              <td><span style="color:#3CB371;">{{ x.5 | default_if_none:"" }}</span></td>
+              </td>
+              {% elif x.5 == 'No' or x.5 == 'Error!' and x.6 == '10xATAC' %}
+              <td><span style="color:red;">{{ x.5 | default_if_none:"" }}</span></td>
+              {% else %}
+              <td><span style="color:olive;">{{ x.5 | default_if_none:"" }}</span></td>
               {% endif %}
             </tr>
             {% endfor %}

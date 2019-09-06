@@ -32,15 +32,17 @@ then
     #`mv ${TENXFILE} ${LOG_DIR}`
     #`rm ${TENXFILE}`
     #TENXFILE=${LOG_DIR}"/."${SET_ID}"_samplesheet.tsv"
-    echo "in tenx if block!" >> ~/output
+    
     n_libs=$(wc -l $TENXFILE | awk '{print $1}')
-    cmd1="qsub -t 0-$[n_libs-1] -v samples=${TENXFILE} -M $USER_EMAIL -q hotel -l walltime=24:00:00 \$(which run10xPipelineBG.pbs)"
-    echo ${cmd1}
-    job1=$(ssh brg029@tscc-login.sdsc.edu $cmd1)
+    cmd1="qsub -t 0-$[n_libs-1] -v samples=${TENXFILE} -M $USER_EMAIL -q hotel -l walltime=24:00:00 \$(which run10xPipeline.pbs)"
+    echo "${cmd1}"
+    #job1=$(ssh brg029@tscc-login.sdsc.edu $cmd1)
     #TODO feedback that job was submitted for 10x
-    python updateLibrariesSetQC.py -s '1' -id $SET_ID #process libs
+
+    #python updateLibrariesSetQC.py -s '1' -id $SET_ID #process libs
     cmd2="qsub -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,set_name='$SET_NAME',type=$TYPE2  \$(which runSetQC.pbs)"
-    ssh brg029@tscc-login.sdsc.edu $cmd2
+    
+    #ssh brg029@tscc-login.sdsc.edu $cmd2
 
 fi
 ##################################################

@@ -158,6 +158,8 @@ STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
 
+TENX_WEBSUMMARIES = 'data/websummary/'
+
 LOGIN_EXEMPT_URLS = (
 
     r'register/',
