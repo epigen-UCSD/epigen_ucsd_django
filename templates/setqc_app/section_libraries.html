@@ -61,16 +61,24 @@
               {% else %}
               <td><span style="color:#3CB371;">{{ x.4 | default_if_none:"" }}</span></td>
               {% endif %}
-              {% if x.5 != 'Yes' and x.6 != '10xATAC' %}
+
+              {% if x.5 != 'Yes' %}
               <td><span style="color:red;">{{ x.5 }}</span></td>
-              {% elif x.5 == 'Yes' and x.6 == '10xATAC' %}
-              <td><span style="color:blue;"><a href={{x.7}}>{{ x.5 | default_if_none:"" }}</a></span>
-              </td>
-              {% elif x.5 == 'No' or x.5 == 'Error!' and x.6 == '10xATAC' %}
-              <td><span style="color:red;">{{ x.5 | default_if_none:"" }}</span></td>
               {% else %}
               <td><span style="color:#3CB371;">{{ x.5 | default_if_none:"" }}</span></td>
               {% endif %}
+
+              {% if x.6 != '10xATAC' %}
+              <td><span>{{ x.7 }}</span></td>
+              {% elif x.7 == 'Yes' and x.6 == '10xATAC' %}
+              <td><span style="color:blue;"><a href='{{x.0}}/web_summary.html'>{{ x.7 | default_if_none:"" }}</a></span>
+              </td>
+              {% elif x.7 == 'No' or x.7 == 'Error!' and x.6 == '10xATAC' %}
+              <td><span style="color:red;">{{ x.7 | default_if_none:"" }}</span></td>
+              {% else %}
+              <td><span style="color:#3CB371;">{{ x.7 | default_if_none:"" }}</span></td>
+              {% endif %}
+              <td>{{ x.3 | default_if_none:"" }}</td>
             </tr>
             {% endfor %}
             {% endif %}

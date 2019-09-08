@@ -741,7 +741,6 @@ def RunSetQC(request, setqc_pk):
                 else:
                     if not os.path.isfile( os.path.join( tenxdir, name, \
                             tenx_output_folder, tenx_target_outfile ) ):
-
                         print("not found: ") 
                         print(os.path.join( tenxdir, name, \
                             tenx_output_folder, tenx_target_outfile )) 
@@ -783,7 +782,7 @@ def RunSetQC(request, setqc_pk):
                     f.write(tsv_writecontent)
             except Exception as e:
                 data['writeseterror'] = 'Unexpected writing to Set_samplesheet.tsv Error!'
-        #dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 1oxATAC
+        #dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 10xATAC
         tenXProcessed = {}
         to_process_keys = list(to_process.keys())
         for x in outinfo:
@@ -973,16 +972,16 @@ def RunSetQC2(request, setqc_pk):
 '''
 This function will check what stage the pipeline is in and return it
 '''
-def TenXPipelineCheck(setname):
+def TenXPipelineCheck(lib):
     seqstatus = ''
     tenx_output_folder = 'outs'
     tenx_target_outfile = 'web_summary.html'
     tenxdir = settings.TENX_DIR
-    print(setname)
-    path = os.path.join(tenxdir, setname)
+    print(lib)
+    path = os.path.join(tenxdir, lib)
     #first check if there is an .inqueue then an .inprocess 
     print('path: ',path)
-    if not os.path.isdir(os.path.join(tenxdir, setname)):
+    if not os.path.isdir(path):
         seqstatus = 'No'
     elif os.path.isfile(path + '/.inqueue'):
         seqstatus = 'In Queue'
@@ -990,13 +989,11 @@ def TenXPipelineCheck(setname):
         seqstatus = 'In Process'
     elif os.path.isfile( path + '/_errors' ):
         seqstatus = 'Error!'
-    elif not os.path.isdir(os.path.join(tenxdir, setname)):
-        seqstatus = 'No'
     else:
-        if not os.path.isfile( os.path.join( tenxdir, setname, \
+        if not os.path.isfile( os.path.join( path,
                 tenx_output_folder, tenx_target_outfile ) ):
                 seqstatus = 'No' 
-        elif os.path.isfile(os.path.join(tenxdir, settings.TENX_DIR,setname,'outs/web_summary.html' )):
+        elif os.path.isfile(os.path.join( path, tenx_output_folder, tenx_target_outfile ) ):
             seqstatus = 'Yes'
         else:
             seqstatus = 'No'
@@ -1035,6 +1032,9 @@ def SetQCDetailView(request, setqc_pk):
     exp_type_list = [LibraryInfo.objects.values_list('experiment_type', 
     flat=True).get(id=x) for x in liblist] 
     print("explist: ",exp_type_list)
+    #need list for status of 10x expirments
+    tenx_status = []
+    #hold links to tenxdir web summary
     link_list = []
     
     if setinfo.collaborator != None:
@@ -1044,25 +1044,22 @@ def SetQCDetailView(request, setqc_pk):
         collab = ''
     i = 0
     for item in list1:
-        link_list.append('')
         #check if 10x experiment processed by checking summary.HTML file
         if exp_type_list[i] == '10xATAC':
-                seq = item
-                tenx_target_outfile = 'web_summary.html'
-                status = TenXPipelineCheck(seq)
-                seqstatus.append(status)
-                if status == 'Yes':
-                    link_list[i] = (seq+'/'+tenx_target_outfile)
-                else:
-                    link_list[i] = ''
+                lib = item
+                status = TenXPipelineCheck(lib)
+                tenx_status.append(status)
         else:
-            if item not in allfolder:
+            link_list.append('')
+            tenx_status.append('')
+        
+        if item not in allfolder:
+            seqstatus.append('No')
+        else:
+            if not os.path.isfile(os.path.join(libdir, item, '.finished.txt')):
                 seqstatus.append('No')
             else:
-                if not os.path.isfile(os.path.join(libdir, item, '.finished.txt')):
-                    seqstatus.append('No')
-                else:
-                    seqstatus.append('Yes')
+                seqstatus.append('Yes')
 
         if list_readtype[i] == 'PE':
             r1 = item+'_R1.fastq.gz'
@@ -1098,9 +1095,9 @@ def SetQCDetailView(request, setqc_pk):
                          'Is Input',  'Genome', 'Library Name', 'Has fastq', 'Processed']
     else:
         featureinfo = list(zip(list1, list_readtype, list4,
-                               list5, fastqstatus, seqstatus, exp_type_list, link_list))
+                               list5, fastqstatus, seqstatus, exp_type_list, tenx_status))
         featureheader = ['Library ID', 'Read Type',
-                         'Genome', 'Library Name', 'Has fastq', 'Processed']
+                         'Genome', 'Library Name', 'Has fastq', 'Processed', 'TenX Processed']
         print(link_list)
     context = {
         'setinfo': setinfo,
@@ -1109,6 +1106,7 @@ def SetQCDetailView(request, setqc_pk):
         'featureheader': featureheader,
         'collab': collab,
     }
+    print(tenx_status, link_list)
     return render(request, 'setqc_app/details.html', context=context)
 
 
@@ -1139,8 +1137,8 @@ This function opens and returns html webpage created by 10x ATAC pipeline for SE
 @Requirements: the 10x webpage requested is softlinked in the BASE_DIR/data/websummary directory
 '''
 def tenx_output(request, setqc_pk, outputname):
-    TENXDIR = settings.TENX_WEBSUMMARIES
-    outputname = os.path.join(settings.BASE_DIR,(TENXDIR+outputname+'_web_summary.html'))
-    file = open(outputname)
+    html=('/'+outputname+settings.TENX_WEBSUMMARY) 
+    tenxdir = settings.TENX_DIR
+    file = open(tenxdir+html)
     data = file.read()
     return HttpResponse( data )
