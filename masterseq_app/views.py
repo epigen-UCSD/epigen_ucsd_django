@@ -18,7 +18,6 @@ from django.db.models import Prefetch
 import re
 import secrets,string
 from random import randint
-from epigen_ucsd_django.settings import DEBUG 
 def nonetolist(inputthing):
     if not inputthing:
         return []
@@ -541,13 +540,11 @@ def LibrariesCreateView(request):
     pseudorequired = 0
     if library_form.is_valid():
         libsinfo = library_form.cleaned_data['libsinfo']
-        if(DEBUG==True): print(libsinfo)
         sampid = {}
         samp_indexes = list(SampleInfo.objects.values_list(
             'sample_index', flat=True))
-        if(DEBUG):print(samp_indexes)
         existingmaxindex = max([int(x.split('-')[1])
-                                for x in samp_indexes if x.startswith('SAMP')])
+                                for x in samp_indexes if x.startswith('SAMPNA')])
         for lineitem in libsinfo.strip().split('\n'):
             fields = lineitem.strip('\n').split('\t')
             libid = fields[10].strip()
@@ -663,16 +660,16 @@ def SeqsCreateView(request):
     if seqs_form.is_valid():
         seqsinfo = seqs_form.cleaned_data['seqsinfo']
         samp_indexes = list(SampleInfo.objects.values_list(
-            'sample_index', flat=True))
+            'sample_index', fdebuglat=True))
         
         existingmaxsampindex = max( [ int( x.split( '-' )[1] ) 
-            for x in samp_indexes if x.startswith( 'SAMP' ) ] )
+            for x in samp_indexes if x.startswith( 'SAMPNA' ) ] )
         
         lib_indexes = list(LibraryInfo.objects.values_list(
             'experiment_index', flat=True))
         
         existingmaxlibindex = max([int(x.split('-')[1]) 
-            for x in lib_indexes if x.startswith('EXP')])
+            for x in lib_indexes if x.startswith('EXPNA')])
 
         for lineitem in seqsinfo.strip().split('\n'):
             lineitem = lineitem+'\t\t\t\t\t\t'
