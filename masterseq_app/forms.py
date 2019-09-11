@@ -276,13 +276,13 @@ class BulkUpdateForm(forms.Form):
 						flagkeytitle = 1
 					if fields[0].strip().lower() == 'sequencing id':
 						for k in range(len(fields)-1):
-							if fields[k+1].strip().lower() not in ['sample id (must match column i in sample sheet)','label (for qc report)','species',\
-							'team member intials','date submitted for sequencing','library id','experiment type','sequening core',\
+							if fields[k+1].strip().lower() not in ['label (for qc report)',\
+							'team member intials','date submitted for sequencing','library id','sequening core',\
 							'machine','sequening length','read type','portion of lane','i7 index (if applicable)','i5 index (or single index)','notes',\
-							'sample id','i7 index','i5 index','label','sequencing core','sequencing length','team member initials']:
+							'i7 index','i5 index','label','sequencing core','sequencing length','team member initials','date']:
 								flagseqtitle = 1
 								invalidseqtitle.append(fields[k+1].strip())
-							elif fields[k+1].strip().lower() == 'sequening core':
+							elif fields[k+1].strip().lower() in ['sequening core','sequencing core']:
 								flagcore = 1
 							elif fields[k+1].strip().lower() == 'machine':
 								flagmachine = 1
@@ -297,7 +297,7 @@ class BulkUpdateForm(forms.Form):
 					elif fields[0].strip().lower() == 'sample id':
 						for k in range(len(fields)-1):
 							if fields[k+1].strip().lower() not in ['date','sample description','species','sample type','preperation','fixation?',\
-							'sample amount','units','service requested','sequencing depth to target','sequencing length requested',\
+							'sample amount','units','unit','service requested','sequencing depth to target','sequencing length requested',\
 							'sequencing type requested','notes','date sample received','initials of reciever','storage location','internal notes']:
 								flagsamtitle = 1
 								invalidsamtitle.append(fields[k+1].strip())
@@ -348,7 +348,7 @@ class BulkUpdateForm(forms.Form):
 						invalidfixation.append(item)
 						flagfixation = 1
 
-			elif titleinfo[k] == 'units':
+			elif titleinfo[k] in ['units','unit']:
 				for item in colinfo[k]:
 					if item.split('(')[0].lower().strip() not in [x[0].split('(')[0].strip() for x in choice_for_unit]:
 						invalidunit.append(item)
@@ -393,28 +393,26 @@ class BulkUpdateForm(forms.Form):
 				seqcore = colinfo[k]
 			elif titleinfo[k] == 'machine':
 				seqmachine = colinfo[k]
+			elif titleinfo[k] == 'sequencing id':
+				for item in colinfo[k]:
+					if SeqInfo.objects.filter(seq_id=item).exists():
+						invalidseqid.append(item)
+						flagseqid = 1
+			elif titleinfo[k] in ['library id (if library generated)','library id']:
+				for item in colinfo[k]:
+					if LibraryInfo.objects.filter(library_id=item).exists():
+						invalidlibid.append(item)
+						flaglibid = 1
+			elif titleinfo[k] == 'sample id':
+				for item in colinfo[k]:
+					if SampleInfo.objects.filter(sample_id=item).exists():
+						invalidsamid.append(item)
+						flagsamid = 1
 
 		for item in zip(seqcore,seqmachine):
 			if not SeqMachineInfo.objects.filter(sequencing_core=item[0], machine_name=item[1]).exists():
 				invalidmachine.append(seqcore+'_'+seqmachine)
 				flagmachine = 1
-
-
-                # seqid = fields[6].strip()
-                # if SeqInfo.objects.filter(seq_id=seqid).exists():
-                #     invalidseqid.append(seqid)
-                #     flagseqid = 1
-                # selfseqs.append(seqid)
-                # seqcore = fields[8].split('(')[0].strip()
-                # seqmachine = fields[9].split('(')[0].strip()
-                # if not SeqMachineInfo.objects.filter(sequencing_core=seqcore, machine_name=seqmachine).exists():
-                #     invalidmachine.append(seqcore+'_'+seqmachine)
-                #     flagmachine = 1
-
-
-
-		
-
 
 		if flagdate == 1:
 			raise forms.ValidationError('Invalid date:'+','.join(invaliddate)+'. Please enter like this: 10/30/2018 or 10/30/18')
@@ -456,6 +454,15 @@ class BulkUpdateForm(forms.Form):
 		if flagmachine == 1:
 			raise forms.ValidationError(
 				'Invalid seqmachine:'+','.join(invalidmachine))
+		if flagseqid == 1:
+			raise forms.ValidationError('These sequencings are not in database:'+','.join(invalidseqid))
+		if flaglibid == 1:
+			raise forms.ValidationError('These libraries are not in database:'+','.join(invalidlibid))
+
+		if flagsamid == 1:
+			raise forms.ValidationError('These samples are not in database:'+','.join(invalidsamid))
+
+
 
 		return '\n'.join(cleaneddata)
 
