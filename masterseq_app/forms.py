@@ -16,7 +16,7 @@ import re
 
 
 class SampleCreationForm(forms.ModelForm):
-    group = forms.CharField(\
+    group = forms.CharField(
         label='Group Name',
         required=False,
         widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),

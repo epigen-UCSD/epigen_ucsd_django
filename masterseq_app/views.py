@@ -188,6 +188,7 @@ def SamplesCreateView(request):
             resname = fields[2].strip() if fields[2].strip() not in ['NA','N/A'] else ''
             resemail = fields[3].strip().lower() if fields[3].strip() not in ['NA','N/A'] else ''
             resphone = re.sub('-| |\.|\(|\)|ext', '', fields[4].strip()) if fields[4].strip() not in ['NA','N/A'] else ''
+            print(f'{gname}, {resname}, {resemail}, {resphone}')
             if resemail:
                 thisgroup = Group.objects.get(name=gname)
                 if thisgroup.collaboratorpersoninfo_set.all().filter(email__contains=[resemail]).exists():
@@ -551,7 +552,6 @@ def LibrariesCreateView(request):
     pseudorequired = 0
     if library_form.is_valid():
         libsinfo = library_form.cleaned_data['libsinfo']
-        # print(sequencinginfo)
         sampid = {}
         samp_indexes = list(SampleInfo.objects.values_list(
             'sample_index', flat=True))
@@ -714,12 +714,15 @@ def SeqsCreateView(request):
         seqsinfo = seqs_form.cleaned_data['seqsinfo']
         samp_indexes = list(SampleInfo.objects.values_list(
             'sample_index', flat=True))
-        existingmaxsampindex = max([int(x.split('-')[1])
-                                    for x in samp_indexes if x.startswith('SAMPNA')])
+        
+        existingmaxsampindex = max( [ int( x.split( '-' )[1] ) 
+            for x in samp_indexes if x.startswith( 'SAMPNA' ) ] )
+        
         lib_indexes = list(LibraryInfo.objects.values_list(
             'experiment_index', flat=True))
-        existingmaxlibindex = max([int(x.split('-')[1])
-                                   for x in lib_indexes if x.startswith('EXPNA')])
+        
+        existingmaxlibindex = max([int(x.split('-')[1]) 
+            for x in lib_indexes if x.startswith('EXPNA')])
 
         for lineitem in seqsinfo.strip().split('\n'):
             lineitem = lineitem+'\t'*20
