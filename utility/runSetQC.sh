@@ -27,7 +27,6 @@ TENXFILE=${SETQC_DIR}"/."${SET_ID}"_samplesheet.tsv"
 if [ -f "${TENXFILE}" ]
 then
     TYPE2='10xATAC'
-    
     #future funcitonality where we want TENXFILE in log dir instead of setqcdir
     #`mv ${TENXFILE} ${LOG_DIR}`
     #`rm ${TENXFILE}`
@@ -36,6 +35,9 @@ then
     n_libs=$(wc -l $TENXFILE | awk '{print $1}')
     cmd1="qsub -t 0-$[n_libs-1] -v samples=${TENXFILE} -M $USER_EMAIL -q hotel -l walltime=24:00:00 \$(which run10xPipeline.pbs)"
     echo "${cmd1}"
+
+    #touch .inqueue for each lib submitted
+    awk -v FS='\t' '{ if( (NR>1) && ($7 == "10xATAC) ) {touch .inprocess}"'
     #job1=$(ssh brg029@tscc-login.sdsc.edu $cmd1)
     #TODO feedback that job was submitted for 10x
 
@@ -48,7 +50,7 @@ fi
 ##################################################
 ## Step 2.1 process unprocessed libs
 ##################################################
-awk -v FS='\t' '{ if( (NR>1) && ($8 != "10xATAC") && ($4 == "No")){print $1,$2,$5}' $STATUS_FILE > $RUN_LOG_PIP
+awk -v FS='\t' '{ if( (NR>1) && ($4 == "No")){print $1,$2,$5}' $STATUS_FILE > $RUN_LOG_PIP
 n_libs=$(wc -l $RUN_LOG_PIP | awk '{print $1}')
 if [ $n_libs -gt 0 ]
 then

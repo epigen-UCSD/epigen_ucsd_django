@@ -660,7 +660,7 @@ def SeqsCreateView(request):
     if seqs_form.is_valid():
         seqsinfo = seqs_form.cleaned_data['seqsinfo']
         samp_indexes = list(SampleInfo.objects.values_list(
-            'sample_index', fdebuglat=True))
+            'sample_index', flat=True))
         
         existingmaxsampindex = max( [ int( x.split( '-' )[1] ) 
             for x in samp_indexes if x.startswith( 'SAMPNA' ) ] )

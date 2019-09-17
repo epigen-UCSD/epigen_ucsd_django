@@ -1032,7 +1032,6 @@ def TenXPipelineCheck(lib):
     tenx_output_folder = 'outs'
     tenx_target_outfile = 'web_summary.html'
     tenxdir = settings.TENX_DIR
-    print(lib)
     path = os.path.join(tenxdir, lib)
     #first check if there is an .inqueue then an .inprocess 
     print('path: ',path)
@@ -1155,7 +1154,7 @@ def SetQCDetailView(request, setqc_pk):
         'summaryfield': summaryfield,
         'featureinfo': featureinfo,
         'featureheader': featureheader,
-        'collab': collab,
+        'collab': collab
     }
     return render(request, 'setqc_app/details.html', context=context)
 
@@ -1190,5 +1189,8 @@ def tenx_output(request, setqc_pk, outputname):
     html=('/'+outputname+settings.TENX_WEBSUMMARY) 
     tenxdir = settings.TENX_DIR
     file = open(tenxdir+html)
+    
     data = file.read()
+    if(data == None):
+        print('No data read in 10x Web_Summary.html File!')
     return HttpResponse( data )
