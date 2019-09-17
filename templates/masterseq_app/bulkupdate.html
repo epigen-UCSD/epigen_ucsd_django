@@ -28,7 +28,124 @@
             {{ tagtex | linktrackingsheet |safe }}
             {% endwith %}
             </p>
-               {{ field }}
+              <div class="row">
+                <div class="col-5">
+                  {{ field }}
+                </div>
+                <div class="col-7" style="padding-left: 5px">
+                  <div class="row">
+                    <a id="showorhideexamples" class="btn btn-outline-success btn-customesm" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Show examples<span style="margin-left: 5px"><i class="fas fa-angle-double-right"></i></span></a>
+                  </div>
+                  <div class="row collapse" style="padding-top: 10px" id="collapseExample">
+                    <div class="card" style="border-color: #28a745;width: 90%">
+                      <div class="card-body" style="font-size: 11px;color: #28a745">
+                        <div class="row">
+                        <div class="col-3">
+                          <div class="row" style="padding-left: 10px;padding-bottom: 10px">
+                            <span>&#9312;</span>
+                          </div>
+                          <div class="row" style="padding-left: 20px">
+                            <table class="summarytable">            
+                              <tbody>                          
+                                <tr>
+                                  <th>Sample ID</th> 
+                                  <td>Species</td>
+                                </tr>                                 
+                                <tr>
+                                  <th>CEMBA180723_4G</th> 
+                                  <td>human</td>
+                                </tr>   
+                                <tr>
+                                  <th>CEMBA180724_4H</th> 
+                                  <td>human</td>
+                                </tr>   
+                                <tr>
+                                  <th>CEMBA180730_4H</th> 
+                                  <td>human</td>
+                                </tr>   
+                                <tr>
+                                  <th>CEMBA180731_5A</th> 
+                                  <td>human</td>
+                                </tr>    
+                              </tbody>
+                            </table>                            
+                          </div>
+                        </div>
+
+                        <div class="col-4">
+                          <div class="row" style="padding-left: 10px;padding-bottom: 10px">
+                            <span>&#9313;</span>
+                          </div>
+                          <div class="row" style="padding-left: 20px">
+                            <table class="summarytable">            
+                              <tbody>                          
+                                <tr>
+                                  <th>Library ID</th> 
+                                  <td>Reference to notebook and page number</td>
+                                </tr>                                 
+                                <tr>
+                                  <th>JYH_517</th> 
+                                  <td>nb1_p232</td>
+                                </tr>   
+                                <tr>
+                                  <th>JYH_518</th> 
+                                  <td>nb1_p232</td>
+                                </tr>   
+                                <tr>
+                                  <th>JYH_519</th> 
+                                  <td>nb1_p232</td>
+                                </tr>   
+                                <tr>
+                                  <th>JYH_705</th> 
+                                  <td>nb1_p271</td>
+                                </tr>    
+                              </tbody>
+                            </table> 
+                          </div>
+                        </div>
+
+                        <div class="col-5">
+                          <div class="row" style="padding-left: 10px;padding-bottom: 10px">
+                            <span>&#9314;</span>
+                          </div>
+                          <div class="row" style="padding-left: 20px">
+                            <table class="summarytable">            
+                              <tbody>                          
+                                <tr>
+                                  <th>Sequencing ID</th> 
+                                  <td>Read type</td>
+                                  <td>i5 Index (or single index)</td>
+                                </tr>                                 
+                                <tr>
+                                  <th>JYH_21</th> 
+                                  <td>SE</td>
+                                  <td>N701</td>
+                                </tr>   
+                                <tr>
+                                  <th>JYH_22</th> 
+                                  <td>SE</td>
+                                  <td>N702</td>
+                                </tr>   
+                                <tr>
+                                  <th>JYH_23</th> 
+                                  <td>SE</td>
+                                  <td>N703</td>
+                                </tr>   
+                                <tr>
+                                  <th>JYH_24</th> 
+                                  <td>SE</td>
+                                  <td>N704</td>
+                                </tr>    
+                              </tbody>
+                            </table> 
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             {% else %}
               {{ field.label_tag }} {{ field }}
             {% endif %}

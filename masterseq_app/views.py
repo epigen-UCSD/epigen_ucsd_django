@@ -148,6 +148,8 @@ def load_protocals(request):
 def BulkUpdateView(request):
     update_form = BulkUpdateForm(request.POST or None)
     i = 0
+    titleinfo = {}
+    colinfo = {}
     title2field_seq = {
     'label (for qc report)':'default_label',
     'team member intials':'team_member_initails',
@@ -246,7 +248,7 @@ def BulkUpdateView(request):
                         else:
                             current_seq.i7index = None
                         current_seq.save()
-                elif titleinfo[k+1] in ['i5 index (if applicable)','i5 index']:
+                elif titleinfo[k+1] in ['i5 index (or single index)','i5 index']:
                     for item in zip(colinfo[0],colinfo[k+1]):
                         current_seq = SeqInfo.objects.get(seq_id=item[0])
                         if item[1].strip():
@@ -290,16 +292,34 @@ def BulkUpdateView(request):
                         current_lib = LibraryInfo.objects.get(library_id=item[0])
                         current_lib.date_completed = datetransform(item[1].strip())
                         current_lib.save()
-
-
-
-
-
-
-
-
-
-
+                else:
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_lib = LibraryInfo.objects.get(library_id=item[0])
+                        setattr(current_lib,title2field_lib[titleinfo[k+1]],item[1].strip())
+                        current_lib.save()
+        elif keytitle == 'sample id':
+            for k in range(len(titleinfo)-1):
+                if titleinfo[k+1] == 'date':
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_sam = SampleInfo.objects.get(sample_id=item[0])
+                        current_sam.date = datetransform(item[1].strip())
+                        current_sam.save()
+                elif titleinfo[k+1] == 'date sample received':
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_sam = SampleInfo.objects.get(sample_id=item[0])
+                        current_sam.date_received = datetransform(item[1].strip())
+                        current_sam.save()
+                elif titleinfo[k+1] == 'initials of reciever':
+                    for item in zip(colinfo[0],colinfo[k+1]):                       
+                        current_sam = SampleInfo.objects.get(sample_id=item[0])
+                        current_sam.team_member = User.objects.get(username=item[1].strip())
+                        current_sam.save()
+                else:
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_sam = SampleInfo.objects.get(sample_id=item[0])
+                        setattr(current_sam,title2field_sam[titleinfo[k+1]],item[1].strip())
+                        current_sam.save()
+        return redirect('masterseq_app:index')                    
 
     context = {
         'update_form': update_form,

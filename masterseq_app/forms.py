@@ -215,8 +215,8 @@ class SeqCreationForm2(forms.Form):
         
 class BulkUpdateForm(forms.Form):
 	updateinfo = forms.CharField(
-			label='Please list the info that need to be updated below and make sure each column has a title exactly match the titles supplied in Template',
-			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
+			label='Please list the info that need to be updated below and make sure each column has a title exactly match the titles supplied in Template. The first column should be one of Sample ID, Library ID and Sequencing ID',
+			widget=forms.Textarea(attrs={'style':'width:100%','rows': 11}),
 			required=True,
 					)
 	def clean_updateinfo(self):
@@ -312,7 +312,7 @@ class BulkUpdateForm(forms.Form):
 				cleaneddata.append(lineitem)
 
 		if flagkeytitle == 1:
-			raise forms.ValidationError('The first column should be \'sample id\', \'library id\' or \'sequencing id\'.')
+			raise forms.ValidationError('The first column should be \'Sample ID\', \'Library ID\' or \'Sequencing ID\'.')
 		if flagseqtitle == 1:
 			raise forms.ValidationError('Invalid titles for sequencings:'+','.join(invalidseqtitle))
 		if flaglibtitle == 1:
@@ -395,17 +395,17 @@ class BulkUpdateForm(forms.Form):
 				seqmachine = colinfo[k]
 			elif titleinfo[k] == 'sequencing id':
 				for item in colinfo[k]:
-					if SeqInfo.objects.filter(seq_id=item).exists():
+					if not SeqInfo.objects.filter(seq_id=item).exists():
 						invalidseqid.append(item)
 						flagseqid = 1
 			elif titleinfo[k] in ['library id (if library generated)','library id']:
 				for item in colinfo[k]:
-					if LibraryInfo.objects.filter(library_id=item).exists():
+					if not LibraryInfo.objects.filter(library_id=item).exists():
 						invalidlibid.append(item)
 						flaglibid = 1
 			elif titleinfo[k] == 'sample id':
 				for item in colinfo[k]:
-					if SampleInfo.objects.filter(sample_id=item).exists():
+					if not SampleInfo.objects.filter(sample_id=item).exists():
 						invalidsamid.append(item)
 						flagsamid = 1
 
