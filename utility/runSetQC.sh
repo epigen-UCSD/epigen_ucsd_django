@@ -7,10 +7,10 @@ SET_ID=$1
 USER_EMAIL=$2
 SET_NAME=$3
 
-SETQC_DIR="~/github/epigen_app/SETQC_dir/"
+SETQC_DIR="/projects/ps-epigen/outputs/setQCs/"
 STATUS_FILE=${SETQC_DIR}"."${SET_ID}.txt
 SETQC_FILE=${SETQC_DIR}${SET_ID}.txt
-LOG_DIR="~/github/epigen_app/logs/app/"
+LOG_DIR="/projects/ps-epigen/logs/app/"
 RUN_LOG_PIP=${LOG_DIR}$(date +%Y%m%d)"_"${SET_ID}".txt"
 TYPE="atac"
 
