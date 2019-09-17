@@ -103,6 +103,7 @@ class SampleInfo(models.Model):
     fixation = models.CharField(
         max_length=50, choices=choice_for_fixation, null=True)
     notes = models.TextField(blank=True)
+    internal_notes = models.TextField('Internal Notes',blank=True)
     sample_amount = models.CharField(max_length=100, blank=True, null=True)
     unit_choice = choice_for_unit
     unit = models.CharField(max_length=50, choices=unit_choice, null=True)
@@ -146,6 +147,7 @@ class LibraryInfo(models.Model):
         max_length=50, choices=experiment_type_choice, null=True)
     protocalinfo = models.ForeignKey(
         ProtocalInfo, on_delete=models.CASCADE, null=True)
+    protocal_used = models.CharField(max_length=200,blank=True,null=True)
     reference_to_notebook_and_page_number = models.CharField(
         max_length=50, null=True)
     date_started = models.DateField(
