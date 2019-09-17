@@ -27,25 +27,15 @@ TENXFILE=${SETQC_DIR}"/."${SET_ID}"_samplesheet.tsv"
 if [ -f "${TENXFILE}" ]
 then
     TYPE2='10xATAC'
-    #future funcitonality where we want TENXFILE in log dir instead of setqcdir
-    #`mv ${TENXFILE} ${LOG_DIR}`
-    #`rm ${TENXFILE}`
-    #TENXFILE=${LOG_DIR}"/."${SET_ID}"_samplesheet.tsv"
     
     n_libs=$(wc -l $TENXFILE | awk '{print $1}')
     cmd1="qsub -t 0-$[n_libs-1] -v samples=${TENXFILE} -M $USER_EMAIL -q hotel -l walltime=24:00:00 \$(which run10xPipeline.pbs)"
     echo "${cmd1}"
-
-    #touch .inqueue for each lib submitted
-    awk -v FS='\t' '{ if( (NR>1) && ($7 == "10xATAC) ) {touch .inprocess}"'
-    #job1=$(ssh brg029@tscc-login.sdsc.edu $cmd1)
-    #TODO feedback that job was submitted for 10x
-
-    #python updateLibrariesSetQC.py -s '1' -id $SET_ID #process libs
-    cmd2="qsub -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,set_name='$SET_NAME',type=$TYPE2  \$(which runSetQC.pbs)"
+    job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
     
-    #ssh brg029@tscc-login.sdsc.edu $cmd2
-
+    #touch .inqueue for each lib submitted inside pbs
+    #TODO feedback that job was submitted for 10x
+    
 fi
 ##################################################
 ## Step 2.1 process unprocessed libs
@@ -55,7 +45,7 @@ n_libs=$(wc -l $RUN_LOG_PIP | awk '{print $1}')
 if [ $n_libs -gt 0 ]
 then
     cmd1="qsub -v samples=${RUN_LOG_PIP} -t 0-$[n_libs-1] -M $USER_EMAIL -q hotel -l walltime=24:00:00 \$(which runBulkATAC_fastq.pbs)"
-    job1=$(ssh brg029@tscc-login.sdsc.edu $cmd1)
+    job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
     python updateLibrariesSetQC.py -s '1' -id $SET_ID # process libs
     cmd2="qsub -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,set_name='$SET_NAME',type=$TYPE  \$(which runSetQC.pbs)"
 else
@@ -66,7 +56,7 @@ fi
 ##  Step 3. run setQC
 ##################################################
 
-ssh brg029@tscc-login.sdsc.edu $cmd2
+ssh zhc268@tscc-login.sdsc.edu $cmd2
 
 
 # update to db (included in runSetQC.pbs)
