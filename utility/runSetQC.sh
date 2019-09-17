@@ -33,9 +33,10 @@ then
     echo "${cmd1}"
     job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
     
-    #touch .inqueue for each lib submitted inside pbs
-    #TODO feedback that job was submitted for 10x
+    #touch .inqueue for each lib here
     
+    #TODO feedback that job was submitted for 10x
+    awk '{print $1}' $TENXFILE | while read l; do touch /projects/ps-epigen/outputs/10xATAC/${l}/.inqueue;done 
 fi
 ##################################################
 ## Step 2.1 process unprocessed libs
