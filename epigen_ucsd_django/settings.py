@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'manager_app',
     'collaborator_app',
+    'singlecell_app',
 ]
 
 if 'extra_app' in dict(config.items('database')).keys():
