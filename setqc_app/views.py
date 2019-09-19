@@ -673,9 +673,9 @@ def RunSetQC(request, setqc_pk):
         # to process will hold 10x seqs
         to_process = {}
 
+
         # output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
         output_names = []
-
         to_process = Process10xRepsAndProcessList(outinfo, to_process)
         print(to_process)
 
@@ -716,6 +716,7 @@ def RunSetQC(request, setqc_pk):
                     f.write(tsv_writecontent)
             except Exception as e:
                 data['writeseterror'] = 'Unexpected writing to Set_samplesheet.tsv Error!'
+
         # dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 10xATAC
         tenXProcessed = {}
         to_process_keys = list(to_process.keys())
@@ -742,6 +743,10 @@ def RunSetQC(request, setqc_pk):
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
             ' ' + request.user.email + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
+    print('fc:')
+    print(featureheader)
+    print('body: ')
+    print(writecontent)
 
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
@@ -943,7 +948,6 @@ def RunSetQC2(request, setqc_pk):
 
         # to process will hold 10x seqs
         to_process = {}
-
         # output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
         output_names = []
 
@@ -977,11 +981,6 @@ def RunSetQC2(request, setqc_pk):
             set_10x_input_file = os.path.join(
                 setqcoutdir, '.'+setinfo.set_id+'_samplesheet.tsv')
             print('input 10xfile:', set_10x_input_file)
-            if os.path.isfile(set_10x_input_file):
-                data['setidexisterror'] = '.'+setinfo.set_id + \
-                    ' \'s samplesheet is already existed. Do you want to override it and continue to run the pipeline and SetQC script?'
-                print(data['setidexisterror'])
-                return JsonResponse(data)
             try:
                 with open(set_10x_input_file, 'w') as f:
                     f.write(tsv_writecontent)
@@ -996,7 +995,7 @@ def RunSetQC2(request, setqc_pk):
                 tenXProcessed[x['seqinfo__seq_id']] = 'Yes'
             else:
                 tenXProcessed[x['seqinfo__seq_id']] = 'No'
-        print(tenXProcessed)
+        #print(tenXProcessed)
 
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
                                              x['label'], seqstatus[x['seqinfo__seq_id']],
@@ -1014,6 +1013,8 @@ def RunSetQC2(request, setqc_pk):
             ' ' + request.user.email + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
 
+    print('wc: ',writecontent)
+    print('fh: ',featureheader)
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
     try:
