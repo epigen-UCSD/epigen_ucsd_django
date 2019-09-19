@@ -676,7 +676,7 @@ def RunSetQC(request, setqc_pk):
         #output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
         
 
-        to_process = Process10xRepsAndProcessList(outinfo, to_process) 
+        to_process = Process10xRepsAndProcessList(outinfo) 
         print(to_process)
         
         #check if name in output_names has been processed, if so strike it from list and
@@ -775,7 +775,8 @@ def RunSetQC(request, setqc_pk):
 This function will read each lib in set and check if 10xATAC exp. to process set up list for TSV sample sheet
 Returns dict 
 '''
-def Process10xRepsAndProcessList(outinfo, to_process ):
+def Process10xRepsAndProcessList( outinfo ):
+    to_process = {}
     for sequence in outinfo:
             if sequence['seqinfo__libraryinfo__experiment_type'] == '10xATAC':
                 x = sequence['seqinfo__seq_id']
@@ -934,8 +935,7 @@ def RunSetQC2(request, setqc_pk):
         #2. for libraries of same sample not processed with cell ranger-> create sample sheet for said libs 
         
         #to process will hold 10x seqs
-        to_process = {}
-        to_process = Process10xRepsAndProcessList(outinfo, to_process) 
+        to_process = Process10xRepsAndProcessList(outinfo) 
         
         #check if name in output_names has been processed, if so strike it from list and
         #put processed flag
