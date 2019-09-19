@@ -11,3 +11,4 @@ logfile
 !**/migrations/__init__.py
 *.cfg
 scripts/collaboratorpassword.tsv
+data/web*
