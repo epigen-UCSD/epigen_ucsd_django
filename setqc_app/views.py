@@ -674,7 +674,7 @@ def RunSetQC(request, setqc_pk):
         to_process = {}
 
         #output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
-        output_names = []
+        
 
         to_process = Process10xRepsAndProcessList(outinfo, to_process) 
         print(to_process)
@@ -682,9 +682,7 @@ def RunSetQC(request, setqc_pk):
         #check if name in output_names has been processed, if so strike it from list and
         #put processed flag
         if len(to_process) > 0:
-            out_putnames = strikeOutputNames( to_process, output_names )
-            print( 'outputnames: ', output_names )
-            print( 'to_process dict:', to_process )
+            output_names = StrikeOutputNames( to_process )
                 
         #find genome used for samples
             genome_dict = {}
@@ -715,6 +713,7 @@ def RunSetQC(request, setqc_pk):
                     f.write(tsv_writecontent)
             except Exception as e:
                 data['writeseterror'] = 'Unexpected writing to Set_samplesheet.tsv Error!'
+            print('error checked')    
         #dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 10xATAC
         tenXProcessed = {}
         to_process_keys = list(to_process.keys())
@@ -743,7 +742,11 @@ def RunSetQC(request, setqc_pk):
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
             ' ' + request.user.email + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
-        
+    print('fc:')
+    print(featureheader)
+    print('body: ')
+    print(writecontent)
+
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
     if os.path.isfile(setStatusFile):
@@ -779,7 +782,6 @@ def Process10xRepsAndProcessList(outinfo, to_process ):
                 print(f'seqinfo id: {x}')
                 reps = []
                 reps = reps + x.split('_')[2: ]
-                print(f'reps: {reps}')
 
                 #check if seq being processed is original eg: bg_210<tab>bg_210<tab>genome
                 if( len(reps) == 0):
@@ -806,7 +808,7 @@ def Process10xRepsAndProcessList(outinfo, to_process ):
 This function will check the libs present in output_names and of already processd then will strike it from 
 list. If not already procesed will be kept 
 '''
-def StrikeOutputNames(to_process, output_names):
+def StrikeOutputNames(to_process):
     tenxdir = settings.TENX_DIR
     output_names = list(to_process.keys())
     #check if output_names libs have been processed
@@ -826,8 +828,6 @@ def StrikeOutputNames(to_process, output_names):
             else:
                 print('found: ', os.path.join(tenxdir, name) )
                 output_names.remove(name)
-        print( 'outputnames: ',output_names )
-        print( 'to_process dict:', to_process )
     return output_names
 
 @transaction.atomic
@@ -935,44 +935,33 @@ def RunSetQC2(request, setqc_pk):
         
         #to process will hold 10x seqs
         to_process = {}
-
-        #output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
-        output_names = []
-
         to_process = Process10xRepsAndProcessList(outinfo, to_process) 
-        print(to_process)
         
         #check if name in output_names has been processed, if so strike it from list and
         #put processed flag
         if len(to_process) > 0:
-            out_putnames = strikeOutputNames( to_process, output_names )
-            print( 'outputnames: ', output_names )
-            print( 'to_process dict:', to_process )
-                
+            #output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
+            output_names = StrikeOutputNames( to_process )
+            print(output_names)
         #find genome used for samples
             genome_dict = {}
             for x in outinfo: 
                 seqid = x['seqinfo__seq_id']
                 genome_dict[ seqid ] = x['genome__genome_name']
-            print(genome_dict)
+            #print(genome_dict)
 
         #make tsv file to be use as input for run10xPipeline script
             tsv_writecontent = '\n'.join( 
             [ '\t'.join( [ name, ','.join(to_process[name]), genome_dict[name] ] ) 
                 for name in output_names] )
                 
-            print(tsv_writecontent)
+            print('TSV CONTENT*****: ',tsv_writecontent)
                 
         #sample sheet will be named: .Set_XXX_samplesheet.tsv
         #sample sheet will be located in SETQC_DIR    
         # write .Set_XXX_samplesheet.tsv to setqcoutdir
             set_10x_input_file = os.path.join(setqcoutdir, '.'+setinfo.set_id+'_samplesheet.tsv')
             print('input 10xfile:', set_10x_input_file)
-            if os.path.isfile(set_10x_input_file):
-                data['setidexisterror'] = '.'+setinfo.set_id + \
-                ' \'s samplesheet is already existed. Do you want to override it and continue to run the pipeline and SetQC script?'
-                print(data['setidexisterror'])
-                return JsonResponse(data)
             try:
                 with open(set_10x_input_file, 'w') as f:
                     f.write(tsv_writecontent)
@@ -987,7 +976,7 @@ def RunSetQC2(request, setqc_pk):
                 tenXProcessed[x['seqinfo__seq_id']] = 'Yes'
             else:                    
                 tenXProcessed[x['seqinfo__seq_id']] = 'No'
-        print(tenXProcessed)
+        #print(tenXProcessed)
 
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
                                              x['label'], seqstatus[x['seqinfo__seq_id']],
@@ -1005,6 +994,8 @@ def RunSetQC2(request, setqc_pk):
             ' ' + request.user.email + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
 
+    print('wc: ',writecontent)
+    print('fh: ',featureheader)
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
     try:
