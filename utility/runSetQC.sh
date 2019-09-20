@@ -46,7 +46,7 @@ n_libs=$(wc -l $RUN_LOG_PIP | awk '{print $1}')
 if [ $n_libs -gt 0 ]
 then
     cmd1="qsub -v samples=${RUN_LOG_PIP} -t 0-$[n_libs-1] -M $USER_EMAIL -q hotel -l walltime=24:00:00 \$(which runBulkATAC_fastq.pbs)"
-    #job1=$(ssh brg029@tscc-login.sdsc.edu $cmd1)
+    job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
     python updateLibrariesSetQC.py -s '1' -id $SET_ID # process libs
     cmd2="qsub -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,set_name='$SET_NAME',type=$TYPE  \$(which runSetQC.pbs)"
 else
