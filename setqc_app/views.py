@@ -584,7 +584,6 @@ def RunSetQC(request, setqc_pk):
 
     list1 = [x['seqinfo__seq_id'] for x in outinfo]
     list_readtype = [x['seqinfo__read_type'] for x in outinfo]
-
     seqstatus = {}
     i = 0
     for item in list1:
@@ -599,9 +598,7 @@ def RunSetQC(request, setqc_pk):
 
         reps = ['1']
         reps = reps + item.split('_')[2:]
-        print(f'reps:{reps}')
         mainname = '_'.join(item.split('_')[0:2])
-        print(f'mainname: {mainname}')
         if seqstatus[item] == 'No':
             if list_readtype[i] == 'PE':
                 r1 = item+'_R1.fastq.gz'
@@ -650,8 +647,8 @@ def RunSetQC(request, setqc_pk):
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['group_number'],
                                              str(x['is_input']
                                                  ), x['genome__genome_name'],
-                                             x['label'], seqstatus[x['seqinfo__seq_id']
-                                                                   ], x['seqinfo__read_type'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']],
+                                             x['seqinfo__read_type'],
                                              x['seqinfo__libraryinfo__sampleinfo__sample_id'],
                                              x['seqinfo__libraryinfo__sampleinfo__species'],
                                              x['seqinfo__libraryinfo__experiment_type'],
@@ -666,55 +663,47 @@ def RunSetQC(request, setqc_pk):
             ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
     else:
         
-        #check if expirement is of type 10xATAC of each library: 
-        #1. check if library passed has been process in cell ranger by looking for html output
-        #2. for libraries of same sample not processed with cell ranger-> create sample sheet for said libs 
-        
+        #check if expirement is of type 10xATAC of each library
         #to process will hold 10x seqs
-        to_process = {}
-
-        #output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
-        
-
         to_process = Process10xRepsAndProcessList(outinfo) 
-        print(to_process)
+        print('to process: ',to_process)
         
-        #check if name in output_names has been processed, if so strike it from list and
-        #put processed flag
         if len(to_process) > 0:
+            #output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
             output_names = StrikeOutputNames( to_process )
-                
+            print('outputname: ', output_names)
+
         #find genome used for samples
             genome_dict = {}
             for x in outinfo: 
                 seqid = x['seqinfo__seq_id']
                 genome_dict[ seqid ] = x['genome__genome_name']
-            print(genome_dict)
-
-        #make tsv file to be use as input for run10xPipeline script
-            tsv_writecontent = '\n'.join( 
-            [ '\t'.join( [ name, ','.join(to_process[name]), genome_dict[name] ] ) 
-                for name in output_names] )
-                
-            print(tsv_writecontent)
-                
-        #sample sheet will be named: .Set_XXX_samplesheet.tsv
-        #sample sheet will be located in SETQC_DIR    
-        # write .Set_XXX_samplesheet.tsv to setqcoutdir
-            set_10x_input_file = os.path.join(setqcoutdir, '.'+setinfo.set_id+'_samplesheet.tsv')
-            print('input 10xfile:', set_10x_input_file)
-            if os.path.isfile(set_10x_input_file):
-                data['setidexisterror'] = '.'+setinfo.set_id + \
-                ' \'s samplesheet is already existed. Do you want to override it and continue to run the pipeline and SetQC script?'
-                print(data['setidexisterror'])
-                return JsonResponse(data)
-            try:
-                with open(set_10x_input_file, 'w') as f:
-                    f.write(tsv_writecontent)
-            except Exception as e:
-                data['writeseterror'] = 'Unexpected writing to Set_samplesheet.tsv Error!'
-            print('error checked')    
-        #dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 10xATAC
+            
+            if len(output_names) > 0: 
+            #make tsv file to be use as input for run10xPipeline script
+                tsv_writecontent = '\n'.join( 
+                [ '\t'.join( [ name, ','.join(to_process[name]), genome_dict[name] ] ) 
+                    for name in output_names] )
+                    
+                print('tsv write content: ',tsv_writecontent)
+                    
+            #sample sheet will be named: . Set_XXX_samplesheet.tsv
+            #sample sheet will be located in SETQC_DIR    
+            # write .Set_XXX_samplesheet.tsv to setqcoutdir
+                set_10x_input_file = os.path.join(setqcoutdir, '.'+setinfo.set_id+'_samplesheet.tsv')
+                print('input 10xfile:', set_10x_input_file)
+                if os.path.isfile(set_10x_input_file) and len(output_names) > 0:
+                    data['setidexisterror'] = '.'+setinfo.set_id + \
+                    ' \'s samplesheet is already existed. Do you want to override it and continue to run the pipeline and SetQC script?'
+                    print(data['setidexisterror'])
+                    return JsonResponse(data)
+                try:
+                    with open(set_10x_input_file, 'w') as f:
+                        f.write(tsv_writecontent)
+                except Exception as e:
+                    data['writeseterror'] = 'Unexpected writing to Set_samplesheet.tsv Error!'
+                print('error checked')    
+            #dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 10xATAC
         tenXProcessed = {}
         to_process_keys = list(to_process.keys())
         for x in outinfo:
@@ -723,7 +712,7 @@ def RunSetQC(request, setqc_pk):
                 tenXProcessed[x['seqinfo__seq_id']] = 'Yes'
             else:                    
                 tenXProcessed[x['seqinfo__seq_id']] = 'No'
-        print(tenXProcessed)
+        print('tenXProcessed: ',tenXProcessed)
 
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
                                              x['label'], seqstatus[x['seqinfo__seq_id']],
@@ -931,42 +920,40 @@ def RunSetQC2(request, setqc_pk):
             ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
     else:
         #check if expirement is of type 10xATAC of each library: 
-        #1. check if library passed has been process in cell ranger by looking for html output
-        #2. for libraries of same sample not processed with cell ranger-> create sample sheet for said libs 
-        
         #to process will hold 10x seqs
         to_process = Process10xRepsAndProcessList(outinfo) 
-        
+        print('to process: ',to_process)
+
         #check if name in output_names has been processed, if so strike it from list and
         #put processed flag
         if len(to_process) > 0:
             #output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
             output_names = StrikeOutputNames( to_process )
-            print(output_names)
+            print('setqc2: outputname: ',output_names)
         #find genome used for samples
             genome_dict = {}
             for x in outinfo: 
                 seqid = x['seqinfo__seq_id']
                 genome_dict[ seqid ] = x['genome__genome_name']
             #print(genome_dict)
-
-        #make tsv file to be use as input for run10xPipeline script
-            tsv_writecontent = '\n'.join( 
-            [ '\t'.join( [ name, ','.join(to_process[name]), genome_dict[name] ] ) 
-                for name in output_names] )
-                
-            print('TSV CONTENT*****: ',tsv_writecontent)
-                
-        #sample sheet will be named: .Set_XXX_samplesheet.tsv
-        #sample sheet will be located in SETQC_DIR    
-        # write .Set_XXX_samplesheet.tsv to setqcoutdir
-            set_10x_input_file = os.path.join(setqcoutdir, '.'+setinfo.set_id+'_samplesheet.tsv')
-            print('input 10xfile:', set_10x_input_file)
-            try:
-                with open(set_10x_input_file, 'w') as f:
-                    f.write(tsv_writecontent)
-            except Exception as e:
-                data['writeseterror'] = 'Unexpected writing to Set_samplesheet.tsv Error!'
+        if len(output_names) > 0:
+            #make tsv file to be use as input for run10xPipeline script
+                tsv_writecontent = '\n'.join( 
+                [ '\t'.join( [ name, ','.join(to_process[name]), genome_dict[name] ] ) 
+                    for name in output_names] )
+                    
+                print('setqc2: TSV CONTENT: ',tsv_writecontent)
+                    
+            #sample sheet will be named: .Set_XXX_samplesheet.tsv
+            #sample sheet will be located in SETQC_DIR    
+            # write .Set_XXX_samplesheet.tsv to setqcoutdir
+                set_10x_input_file = os.path.join(setqcoutdir, '.'+setinfo.set_id+'_samplesheet.tsv')
+                print('input 10xfile:', set_10x_input_file)
+                try:
+                    with open(set_10x_input_file, 'w') as f:
+                        f.write(tsv_writecontent)
+                except Exception as e:
+                    data['writeseterror'] = 'Unexpected writing to Set_samplesheet.tsv Error!'
         #dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 10xATAC
         tenXProcessed = {}
         to_process_keys = list(to_process.keys())
