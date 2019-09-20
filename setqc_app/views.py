@@ -664,13 +664,13 @@ def RunSetQC(request, setqc_pk):
     else:
         
         #check if expirement is of type 10xATAC of each library
-        #to process will hold 10x seqs
-        to_process = Process10xRepsAndProcessList(outinfo) 
-        print('to process: ',to_process)
+        #tenx seqs will hold 10x seqs
+        tenx_seqs = Process10xRepsAndProcessList(outinfo) 
+        print('to process: ',tenx_seqs)
         
-        if len(to_process) > 0:
+        if len(tenx_seqs) > 0:
             #output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
-            output_names = StrikeOutputNames( to_process )
+            output_names = StrikeOutputNames( tenx_seqs )
             print('outputname: ', output_names)
 
         #find genome used for samples
@@ -682,7 +682,7 @@ def RunSetQC(request, setqc_pk):
             if len(output_names) > 0: 
             #make tsv file to be use as input for run10xPipeline script
                 tsv_writecontent = '\n'.join( 
-                [ '\t'.join( [ name, ','.join(to_process[name]), genome_dict[name] ] ) 
+                [ '\t'.join( [ name, ','.join(tenx_seqs[name]), genome_dict[name] ] ) 
                     for name in output_names] )
                     
                 print('tsv write content: ',tsv_writecontent)
@@ -705,10 +705,10 @@ def RunSetQC(request, setqc_pk):
                 print('error checked')    
             #dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 10xATAC
         tenXProcessed = {}
-        to_process_keys = list(to_process.keys())
+        tenx_seqs_keys = list(tenx_seqs.keys())
         for x in outinfo:
             if x['seqinfo__seq_id'] not in output_names and \
-            x['seqinfo__seq_id'] in to_process_keys:
+            x['seqinfo__seq_id'] in tenx_seqs_keys:
                 tenXProcessed[x['seqinfo__seq_id']] = 'Yes'
             else:                    
                 tenXProcessed[x['seqinfo__seq_id']] = 'No'
@@ -942,7 +942,7 @@ def RunSetQC2(request, setqc_pk):
                 [ '\t'.join( [ name, ','.join(to_process[name]), genome_dict[name] ] ) 
                     for name in output_names] )
                     
-                print('setqc2: TSV CONTENT: ',tsv_writecontent)
+                print('setqc2: TSV COrunNTENT: ',tsv_writecontent)
                     
             #sample sheet will be named: .Set_XXX_samplesheet.tsv
             #sample sheet will be located in SETQC_DIR    
