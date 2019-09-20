@@ -13,7 +13,6 @@ SETQC_FILE=${SETQC_DIR}${SET_ID}.txt
 LOG_DIR="/projects/ps-epigen/logs/app/"
 RUN_LOG_PIP=${LOG_DIR}$(date +%Y%m%d)"_"${SET_ID}".txt"
 TYPE="atac"
-
 ##################################################
 ## Step 1. construct set_xxx.txt
 ##################################################
@@ -23,11 +22,12 @@ awk '(NR>1){print $1}' $STATUS_FILE > $SETQC_FILE
 ## Step 2. process unprocessed 10x libs
 ##################################################
 #check if .Set_XXX_samplesheet.tsv exists, if so then it means we have some 10x libs to run
-TENXFILE=${SETQC_DIR}"/."${SET_ID}"_samplesheet.tsv"
+TENXFILE=${SETQC_DIR}"."${SET_ID}"_samplesheet.tsv"
+
 if [ -f "${TENXFILE}" ]
 then
     TYPE2='10xATAC'
-    
+    #echo "$TENXFILE" > "$output_filename"
     n_libs=$(wc -l $TENXFILE | awk '{print $1}')
     cmd1="qsub -t 0-$[n_libs-1] -v samples=${TENXFILE} -M $USER_EMAIL -q hotel -l walltime=24:00:00 \$(which run10xPipeline.pbs)"
     echo "${cmd1}"

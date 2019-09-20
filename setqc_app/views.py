@@ -584,11 +584,9 @@ def RunSetQC(request, setqc_pk):
 
     list1 = [x['seqinfo__seq_id'] for x in outinfo]
     list_readtype = [x['seqinfo__read_type'] for x in outinfo]
-
     seqstatus = {}
     i = 0
     for item in list1:
-        print(f'item: {item}')
         if item not in allfolder:
             seqstatus[item] = 'No'
         else:
@@ -599,9 +597,7 @@ def RunSetQC(request, setqc_pk):
 
         reps = ['1']
         reps = reps + item.split('_')[2:]
-        print(f'reps:{reps}')
         mainname = '_'.join(item.split('_')[0:2])
-        print(f'mainname: {mainname}')
         if seqstatus[item] == 'No':
             if list_readtype[i] == 'PE':
                 r1 = item+'_R1.fastq.gz'
@@ -650,8 +646,8 @@ def RunSetQC(request, setqc_pk):
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['group_number'],
                                              str(x['is_input']
                                                  ), x['genome__genome_name'],
-                                             x['label'], seqstatus[x['seqinfo__seq_id']
-                                                                   ], x['seqinfo__read_type'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']],
+                                             x['seqinfo__read_type'],
                                              x['seqinfo__libraryinfo__sampleinfo__sample_id'],
                                              x['seqinfo__libraryinfo__sampleinfo__species'],
                                              x['seqinfo__libraryinfo__experiment_type'],
@@ -665,7 +661,6 @@ def RunSetQC(request, setqc_pk):
             setinfo.set_id + ' ' + request.user.email + \
             ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
     else:
-
         # check if expirement is of type 10xATAC of each library:
         # 1. check if library passed has been process in cell ranger by looking for html output
         # 2. for libraries of same sample not processed with cell ranger-> create sample sheet for said libs
@@ -719,14 +714,14 @@ def RunSetQC(request, setqc_pk):
 
         # dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 10xATAC
         tenXProcessed = {}
-        to_process_keys = list(to_process.keys())
+        tenx_seqs_keys = list(tenx_seqs.keys())
         for x in outinfo:
             if x['seqinfo__seq_id'] not in output_names and \
                     x['seqinfo__seq_id'] in to_process_keys:
                 tenXProcessed[x['seqinfo__seq_id']] = 'Yes'
             else:
                 tenXProcessed[x['seqinfo__seq_id']] = 'No'
-        print(tenXProcessed)
+        print('tenXProcessed: ',tenXProcessed)
 
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
                                              x['label'], seqstatus[x['seqinfo__seq_id']],
@@ -778,8 +773,6 @@ def RunSetQC(request, setqc_pk):
 This function will read each lib in set and check if 10xATAC exp. to process set up list for TSV sample sheet
 Returns dict 
 '''
-
-
 def Process10xRepsAndProcessList(outinfo, to_process):
     for sequence in outinfo:
         if sequence['seqinfo__libraryinfo__experiment_type'] == '10xATAC':
