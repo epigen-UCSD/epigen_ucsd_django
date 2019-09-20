@@ -27,9 +27,9 @@ TENXFILE=${SETQC_DIR}"."${SET_ID}"_samplesheet.tsv"
 if [ -f "${TENXFILE}" ]
 then
     TYPE2='10xATAC'
-    #echo "$TENXFILE" > "$output_filename"
-    n_libs=$(wc -l $TENXFILE | awk '{print $1}')
-    cmd1="qsub -t 0-$[n_libs] -v samples=${TENXFILE} -M $USER_EMAIL -q hotel -l walltime=24:00:00 \$(which run10xPipeline.pbs)"
+    n_libs=$( awk '{print $1}'  $TENXFILE | wc -l )
+    awk '{print $1}'  $TENXFILE|while read l; do mkdir -p /projects/ps-epigen/outputs/10xATAC/$l; touch /projects/ps-epigen/outputs/10xATAC/${l}/.inqueue;done
+    cmd1="qsub -t 0-$[n_libs-1] -v samples=${TENXFILE} -M $USER_EMAIL -q hotel -l walltime=24:00:00 \$(which run10xPipeline.pbs)"
     echo "${cmd1}"
     job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
     
