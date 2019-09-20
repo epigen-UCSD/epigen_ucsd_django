@@ -587,7 +587,6 @@ def RunSetQC(request, setqc_pk):
     seqstatus = {}
     i = 0
     for item in list1:
-        print(f'item: {item}')
         if item not in allfolder:
             seqstatus[item] = 'No'
         else:
@@ -684,9 +683,7 @@ def RunSetQC(request, setqc_pk):
                 tsv_writecontent = '\n'.join( 
                 [ '\t'.join( [ name, ','.join(tenx_seqs[name]), genome_dict[name] ] ) 
                     for name in output_names] )
-                    
-                print('tsv write content: ',tsv_writecontent)
-                    
+                                        
             #sample sheet will be named: . Set_XXX_samplesheet.tsv
             #sample sheet will be located in SETQC_DIR    
             # write .Set_XXX_samplesheet.tsv to setqcoutdir
@@ -772,7 +769,6 @@ def Process10xRepsAndProcessList( outinfo ):
                 print(f'seqinfo id: {x}')
                 reps = []
                 reps = reps + x.split('_')[2: ]
-
                 #check if seq being processed is original eg: bg_210<tab>bg_210<tab>genome
                 if( len(reps) == 0):
                     to_process[x] = [x]
@@ -809,15 +805,15 @@ def StrikeOutputNames(to_process):
             print("not found: ")
             print( os.path.join( tenxdir, name ) )                    
         else:
-            if not os.path.isfile( os.path.join( tenxdir, name, \
+            if os.path.isfile( os.path.join( tenxdir, name, \
                     tenx_output_folder, tenx_target_outfile ) ):
-                print("not found: ") 
+                print("found: ") 
                 print(os.path.join( tenxdir, name, \
-                    tenx_output_folder, tenx_target_outfile )) 
+                    tenx_output_folder, tenx_target_outfile ))
+                output_names.remove(name)
 
             else:
-                print('found: ', os.path.join(tenxdir, name) )
-                output_names.remove(name)
+                print('not found: ', os.path.join(tenxdir, name) )
     return output_names
 
 @transaction.atomic
@@ -941,9 +937,7 @@ def RunSetQC2(request, setqc_pk):
                 tsv_writecontent = '\n'.join( 
                 [ '\t'.join( [ name, ','.join(to_process[name]), genome_dict[name] ] ) 
                     for name in output_names] )
-                    
-                print('setqc2: TSV COrunNTENT: ',tsv_writecontent)
-                    
+                                        
             #sample sheet will be named: .Set_XXX_samplesheet.tsv
             #sample sheet will be located in SETQC_DIR    
             # write .Set_XXX_samplesheet.tsv to setqcoutdir
