@@ -116,6 +116,7 @@ def IndexValidation2(i7list, i5list):
 
     return duplicate
 
+
 def IndexView(request):
 
     RunInfo_list = RunInfo.objects.filter(
@@ -299,8 +300,8 @@ def RunCreateView6(request):
                         return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
                     if lane_tm not in i7index_list.keys():
-                        i7index_list[lane_tm]=[]
-                        i5index_list[lane_tm]=[]
+                        i7index_list[lane_tm] = []
+                        i5index_list[lane_tm] = []
                     i7index_list[lane_tm].append(samples_info[1])
                     i5index_list[lane_tm].append(samples_info[2])
                     libraryid_list.append(samples_info[0])
@@ -319,7 +320,7 @@ def RunCreateView6(request):
             # handle bulk barcodes
             if runinfo.experiment_type != 'S2' and samples != '\r' and samples_info[0] != 'Sequencing_ID':
                 try:
-                    #print(':'.join(samples_info))
+                    # print(':'.join(samples_info))
                     if samples_info[3]:
                         lane_tm = samples_info[3]
                     else:
@@ -356,8 +357,8 @@ def RunCreateView6(request):
                             lane=lane_tm,
                         )
                     if lane_tm not in i7index_list.keys():
-                        i7index_list[lane_tm]=[]
-                        i5index_list[lane_tm]=[]
+                        i7index_list[lane_tm] = []
+                        i5index_list[lane_tm] = []
                     i7index_list[lane_tm].append(samples_info[1])
                     i5index_list[lane_tm].append(samples_info[2])
                     libraryid_list.append(samples_info[0])
@@ -400,14 +401,15 @@ def RunCreateView6(request):
 
         for ke in i7index_list.keys():
             if runinfo.experiment_type == "TA":
-                duplicate = IndexValidation2(i7index_list[ke], i5index_list[ke])
+                duplicate = IndexValidation2(
+                    i7index_list[ke], i5index_list[ke])
             else:
                 duplicate = IndexValidation(i7index_list[ke], i5index_list[ke])
-            if len(duplicate) > 0:  
+            if len(duplicate) > 0:
                 context = {
                     'run_form': run_form,
                     'form': form,
-                    'error_message': 'Duplicates:\t' + str(duplicate)   
+                    'error_message': 'Duplicates:\t' + str(duplicate)
 
                 }
                 return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
@@ -966,4 +968,3 @@ def DownloadingfromIGM(request, run_pk):
     p = subprocess.Popen(cmd,
                          shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return JsonResponse(data)
-

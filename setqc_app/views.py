@@ -668,7 +668,6 @@ def RunSetQC(request, setqc_pk):
         # to process will hold 10x seqs
         to_process = {}
 
-
         # output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
         output_names = []
         to_process = Process10xRepsAndProcessList(outinfo, to_process)
@@ -677,7 +676,7 @@ def RunSetQC(request, setqc_pk):
         # check if name in output_names has been processed, if so strike it from list and
         # put processed flag
         if len(to_process) > 0:
-            out_putnames = StrikeOutputNames(to_process, output_names)
+            output_names = StrikeOutputNames(to_process, output_names)
             print('outputnames: ', output_names)
             print('to_process dict:', to_process)
 
@@ -721,7 +720,7 @@ def RunSetQC(request, setqc_pk):
                 tenXProcessed[x['seqinfo__seq_id']] = 'Yes'
             else:
                 tenXProcessed[x['seqinfo__seq_id']] = 'No'
-        print('tenXProcessed: ',tenXProcessed)
+        print('tenXProcessed: ', tenXProcessed)
 
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
                                              x['label'], seqstatus[x['seqinfo__seq_id']],
@@ -773,6 +772,8 @@ def RunSetQC(request, setqc_pk):
 This function will read each lib in set and check if 10xATAC exp. to process set up list for TSV sample sheet
 Returns dict 
 '''
+
+
 def Process10xRepsAndProcessList(outinfo, to_process):
     for sequence in outinfo:
         if sequence['seqinfo__libraryinfo__experiment_type'] == '10xATAC':
@@ -950,7 +951,7 @@ def RunSetQC2(request, setqc_pk):
         # check if name in output_names has been processed, if so strike it from list and
         # put processed flag
         if len(to_process) > 0:
-            out_putnames = StrikeOutputNames(to_process, output_names)
+            output_names = StrikeOutputNames(to_process, output_names)
             print('outputnames: ', output_names)
             print('to_process dict:', to_process)
 
@@ -988,7 +989,7 @@ def RunSetQC2(request, setqc_pk):
                 tenXProcessed[x['seqinfo__seq_id']] = 'Yes'
             else:
                 tenXProcessed[x['seqinfo__seq_id']] = 'No'
-        #print(tenXProcessed)
+        # print(tenXProcessed)
 
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
                                              x['label'], seqstatus[x['seqinfo__seq_id']],
@@ -1006,8 +1007,8 @@ def RunSetQC2(request, setqc_pk):
             ' ' + request.user.email + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
 
-    print('wc: ',writecontent)
-    print('fh: ',featureheader)
+    print('wc: ', writecontent)
+    print('fh: ', featureheader)
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
     try:
