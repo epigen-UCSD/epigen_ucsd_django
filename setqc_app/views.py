@@ -713,7 +713,7 @@ def RunSetQC(request, setqc_pk):
 
         # dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 10xATAC
         tenXProcessed = {}
-        tenx_seqs_keys = list(tenx_seqs.keys())
+        to_process_keys = list(to_process.keys())
         for x in outinfo:
             if x['seqinfo__seq_id'] not in output_names and \
                     x['seqinfo__seq_id'] in to_process_keys:
