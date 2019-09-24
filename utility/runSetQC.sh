@@ -41,7 +41,7 @@ fi
 ##################################################
 ## Step 2.1 process unprocessed libs
 ##################################################
-awk -v FS='\t' '{ if( (NR>1) && ($4 == "No")){print $1,$2,$5}' $STATUS_FILE > $RUN_LOG_PIP
+awk -v FS='\t' '{ if( (NR>1) && ($4 == "No")) print $1,$2,$5}' $STATUS_FILE > $RUN_LOG_PIP
 n_libs=$(wc -l $RUN_LOG_PIP | awk '{print $1}')
 if [ $n_libs -gt 0 ]
 then
