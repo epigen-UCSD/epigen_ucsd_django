@@ -215,7 +215,7 @@ class SeqCreationForm2(forms.Form):
         
 class BulkUpdateForm(forms.Form):
 	updateinfo = forms.CharField(
-			label='Please list the info that need to be updated below and make sure each column has a title exactly match the titles supplied in Template. The first column should be one of Sample ID, Library ID and Sequencing ID',
+			label='Please list the info that need to be updated below and make sure each column has a title exactly match the titles supplied in Template(currently not support the group, research and fiscal person updating). \nThe first column should be Sample ID, Library ID or Sequencing ID',
 			widget=forms.Textarea(attrs={'style':'width:100%','rows': 11}),
 			required=True,
 					)
