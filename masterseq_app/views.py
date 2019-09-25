@@ -21,7 +21,7 @@ import secrets,string
 from random import randint
 from django.conf import settings
 import os
-
+from setqc_app.models import LibrariesSetQC
 def nonetolist(inputthing):
     if not inputthing:
         return []
@@ -1506,13 +1506,17 @@ def SeqDetailView(request, pk):
     bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
                     'tss_enrichment', 'frop']
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
+    setqcfield = ['set_id','set_name','experiment_type','url','date_requested']
+    setqcs = LibrariesSetQC.objects.filter(libraries_to_include=seqinfo)
     context = {
         'libinfo': libinfo,
         'saminfo': saminfo,
         'seqinfo': seqinfo,
         'summaryfield': summaryfield,
         'seqbioinfos': seqbioinfos,
-        'bioinfofield': bioinfofield
+        'bioinfofield': bioinfofield,
+        'setqcs':setqcs,
+        'setqcfield':setqcfield
 
     }
     return render(request, 'masterseq_app/seqdetail.html', context=context)
@@ -1529,13 +1533,17 @@ def SeqDetail2View(request, seqid):
     bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
                     'tss_enrichment', 'frop']
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
+    setqcfield = ['set_id','set_name','experiment_type','url','date_requested']
+    setqcs = LibrariesSetQC.objects.filter(libraries_to_include=seqinfo)
     context = {
         'libinfo': libinfo,
         'saminfo': saminfo,
         'seqinfo': seqinfo,
         'summaryfield': summaryfield,
         'seqbioinfos': seqbioinfos,
-        'bioinfofield': bioinfofield
+        'bioinfofield': bioinfofield,
+        'setqcs':setqcs,
+        'setqcfield':setqcfield
 
     }
     return render(request, 'masterseq_app/seqdetail.html', context=context)
