@@ -1,5 +1,4 @@
 {% extends 'common/base.html' %}
-
 {% block title %}
 <title>Single Cell App</title>
 {% endblock %}
@@ -14,6 +13,12 @@
         <a href="{% url 'singlecell_app:allsclibs' %}"
             class="list-group-item list-group-item-action-custom-darkblue">All
             Libraries</a>
+        <a href="{% url 'singlecell_app:myseqs' %}" class="list-group-item list-group-item-action-custom-darkblue">
+            My Sequences
+        </a>
+        <a href="{% url 'singlecell_app:allseqs' %}" class="list-group-item list-group-item-action-custom-darkblue">
+            All Sequences
+        </a>
     </div>
 </div>
 {% endblock %}
