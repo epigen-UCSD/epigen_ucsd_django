@@ -1,6 +1,7 @@
 {% extends 'nextseq_app/base.html' %}
 
 {% block content %}
+{% load nextseq_app_tags %}
 <div id="content" class="col-sm-10 col-md-10 col-lg-10">
   <div class="card">
     <div class="card-header fortable">
@@ -21,10 +22,16 @@
             </li>
             {% endfor %}
             </ul>
+            {% if field.field.widget|get_class == "Textarea" %}
+            <p class="textarea">{{ field.label_tag }}</p>
+            {{ field }}
+            {% else %}
             {{ field.label_tag }} {{ field }}
+            {% endif %}           
             {% if field.help_text %}
             <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
             {% endif %}
+            
           </p>              
         </div>
         {% endfor %}   
