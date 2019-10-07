@@ -13,37 +13,103 @@
                 <thead>
                     <tr>
                         {% for head in header %}
-                        <th> {{ head.0 }}</th>
+                        <th> {{ head }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
                 {% if seqs_info %}
                 {% for seq in seqs_info %}
                 <tr>
-                    {% for head in header  %}
                     <td>
-                        {% if head.1 == 'CoolAdmin'%}
+                        {{ seq.0 }}
+                    </td>
+                    <td>
+                        <a href="{% url 'masterseq_app:lib_detail' seq.1 %}">{{ seq.1 }}</a>
+                    </td>
+                    <td>
+                        {{ seq.2 }}
+                    </td>
+                    <td>
+                        {{seq.3}}
+                    </td>
+                    <td>
+                        {{seq.4}}
+                    </td>
 
-                        {% if seq|tuple_do:head == 'No' %}
-                        <button type="button" class="btn btn-primary btn-sm">
-                            Submit to CoolAdmin SC
+
+                    {# comment seq.5: 10xProcessed#}
+                    {%if seq.2 == '10xATAC' %}
+                    {% if seq.5 == 'No' and seq.4 == 'Yes' and seq.7 == True %}
+                    <td>
+                        <form action="#" method="post">{% csrf_token %}
+                            <button type="submit" class="btn btn-primary btn-sm" name="buttonTenX" value={{seq.0}}>
+                                Submit to Process
+                            </button>
+                        </form>
+                    </td>
+                    {% elif seq.5 == 'No' and seq.4 == 'No' %}
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top"
+                            title="No FASTQ files available" name="buttonTenX NotOwner" disabled>
+                            Submit
                         </button>
+                    </td>
+                    {%elif seq.5 == 'In Queue' or seq.5 == 'In Process' %}
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm" disabled name="buttonTenX">
+                            {{ seq.5 }}
+                        </button>
+                    </td>
+                    {%elif seq.5 == 'Yes' %}
+                    <td>
+                        {% url 'setqc_app:10xATACoutput2' seq.0 as the_url %}
+                        <a href="{{the_url}}" class="btn btn-outline-primary btn-sm" role="button" name="buttonTenX">
+                            Results
+                        </a>
+                    </td>
+                    {%else%}
+                    <td>
+                        <button type=" button" class="btn btn-danger btn-sm" disabled name="buttonTenX">
+                            {{ seq.5 }}
+                        </button>
+                    </td>
+                    {%endif%}
+                    {%else%}
+                    <td>
+                        <button type="button" data-toggle="tooltip" data-placement="top" title="Not A 10x Experiment"
+                            disabled name="buttonTenX">
+                            {{ seq.5 }}
+                        </button>
+                    </td>
+                    {% endif %}
 
-                        {%elif seq|tuple_do:head == 'Submitted' %}
-                        <button type="button" class="btn btn-secondary btn-sm" disabled>
+                    {# comment seq.6: snapatac/cooladmin#}
+                    {%if seq.6 == 'No' and seq.4 == 'Yes' and seq.7 == True %}
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm">
+                            Submit to SC
+                        </button>
+                    </td>
+                    {% elif seq.6 == 'Submitted'%}
+                    <td>
+                        <button type="button" disabled class="btn btn-info btn-sm">
                             Submitted
                         </button>
-
-                        {%else%}
-                        <button type="button" class="btn btn-outline-primary btn-sm">
-                            Link to URL
-                        </button>
-                        {% endif %}
-                        {%else%}
-                        {{ seq|tuple_do:head }}
-                        {% endif %}
                     </td>
-                    {% endfor %}
+                    {%elif seq.6 == 'Yes' %}
+                    <td>
+                        <a href="#" role="button" class="btn btn-outline-primary btn-sm">
+                            Results
+                        </a>
+                    </td>
+                    {% else %}
+                    <td>
+                        <button type="button" disabled class="btn btn-primary btn-sm">
+                            Submit to SC
+                        </button>
+                    </td>
+                    {% endif %}
+
                 </tr>
                 {% endfor %}
                 {%else%}

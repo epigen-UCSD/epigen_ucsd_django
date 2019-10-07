@@ -1194,3 +1194,13 @@ def tenx_output(request, setqc_pk, outputname):
     if(data == None):
         print('No data read in 10x Web_Summary.html File!')
     return HttpResponse( data )
+
+def tenx_output2(request, outputname):
+    html=('/'+outputname+settings.TENX_WEBSUMMARY) 
+    tenxdir = settings.TENX_DIR
+    file = open(tenxdir+html)
+    
+    data = file.read()
+    if(data == None):
+        print('No data read in 10x Web_Summary.html File!')
+    return HttpResponse( data )
