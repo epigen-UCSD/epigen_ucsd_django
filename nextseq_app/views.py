@@ -184,7 +184,7 @@ class RunDetailView2(DetailView):
     model = RunInfo
     template_name = 'nextseq_app/details.html'
     summaryfield = ['jobstatus', 'date', 'operator', 'machine', 'experiment_type', 'read_type', 'total_libraries', 'total_reads',
-                    'percent_of_reads_demultiplexed', 'read_length', 'nextseqdir','extra_parameters']
+                    'percent_of_reads_demultiplexed', 'read_length', 'nextseqdir', 'extra_parameters']
     # object = FooForm(data=model_to_dict(Foo.objects.get(pk=object_id)))
 
     def get_context_data(self, **kwargs):
@@ -756,7 +756,7 @@ def DemultiplexingView(request, run_pk):
                 ' ' + basedirname + ' ' + request.user.email
         elif runinfo.experiment_type == 'TA':
             cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email
+                ' ' + basedirname + ' ' + request.user.email + runinfo.extra_parameters
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
@@ -908,7 +908,7 @@ def DemultiplexingView2(request, run_pk):
                 ' ' + basedirname + ' ' + request.user.email
         elif runinfo.experiment_type == 'TA':
             cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email
+                ' ' + basedirname + ' ' + request.user.email + runinfo.extra_parameters
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
