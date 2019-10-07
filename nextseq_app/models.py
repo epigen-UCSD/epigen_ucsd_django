@@ -48,6 +48,7 @@ class RunInfo(models.Model):
     # machine = models.ForeignKey('masterseq_app.SeqMachineInfo', on_delete=models.CASCADE, null=True)
     machine = models.CharField(
         max_length=50, choices=choice_for_machine, default='EPIGEN_NextSeq550', null=True)
+    extra_parameters = models.TextField(blank=True,help_text='You could leave it blank if you use the default parameters') 
     jobstatus = models.CharField(
         max_length=200, blank=True, null=True, default='ClickToSubmit')
 
