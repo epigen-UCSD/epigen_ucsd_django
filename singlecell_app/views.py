@@ -115,7 +115,7 @@ def findSeqStatus(seq_ids):
         #reps are [_2] in brandon_210_2 or [_1,_2,_3] in brandon_210_1_2_3
         if len(reps) == 0:
             if seq.read_type == 'PE':
-                r1 = mainname + 'R1_fastq.gz'
+                r1 = mainname + '_R1.fastq.gz'
                 r2 = mainname +'_R2.fastq.gz'
                 if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
                     seqsStatus.append('No')
@@ -136,16 +136,13 @@ def findSeqStatus(seq_ids):
                         r2 = mainname +'_R2.fastq.gz'
                         if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
                             seqsStatus.append('No')
-                        else:
-                            seqsStatus.append('Yes')
+                            break
                     else:
                         r1 = mainname+'.fastq.gz'
                         r1op = mainname+'_R1.fastq.gz'
                         if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
                             seqsStatus.append('No')
-                        else: 
-                            seqsStatus.append('Yes')
-
+                            break
                 else:
                     #find mainname_rep
                     repname = mainname + '_' + rep
@@ -154,15 +151,14 @@ def findSeqStatus(seq_ids):
                         r2 = repname +'_R2.fastq.gz'
                         if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
                             seqsStatus.append('No')
-                        else:
-                            seqsStatus.append('Yes')
+                            break
                     else:
                         r1 = repname+'.fastq.gz'
                         r1op = repname+'_R1.fastq.gz'
                         if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
                             seqsStatus.append('No')
-                        else:                    
-                            seqsStatus.append('Yes')
+                            break
+            seqsStatus.append('Yes')
     print(f'seqstatus: {seqsStatus}')
     return seqsStatus
 
@@ -223,8 +219,9 @@ def AllSeqs(request):
 def MySeqs(request):
     if request.method == 'POST':
         seq = str(request.POST.get("buttonTenX"))
-        print("seq posted: ", seq)
-        SubmitToTenX(seq, request.user.email)
+        status = SubmitToTenX(seq, request.user.email)
+        print("seq posted: ", seq, status)
+
     header = [
         'Sequence ID', 'Library ID', 'Experiment Type', 'Date Submitted for Sequencing',
         'Sequence Status', '10xProcessed', 'CoolAdmin'
@@ -245,7 +242,7 @@ def SubmitToTenX(seq, email):
         'libraryinfo__sampleinfo').values('seq_id',
         'libraryinfo__sampleinfo__species','read_type',
         'libraryinfo__experiment_type'))
-    seqs = SplitSeqs(seq_info[0]['seq_id'])    
+    seqs = SplitSeqs(seq_info[0]['seq_id'])
     genome =  seq_info[0]['libraryinfo__sampleinfo__species'] 
     
     #TODO check if this is a correct idea
@@ -259,12 +256,16 @@ def SubmitToTenX(seq, email):
     seqDir = os.path.join(tenxdir,seq)
     if not os.path.exists(seqDir):
         os.mkdir(seqDir)
+    inqueue = os.path.join(seqDir, '.inqueue')
+    with open(inqueue, 'w') as f:
+        f.write('')
     tsv_file = os.path.join(seqDir, filename)
     with open(tsv_file, 'w') as f:
         f.write(tsv_writecontent)
     cmd1 = './utility/run10xOnly_local.sh ' + seq +' ' + tenxdir + ' ' + email
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return(True)
 
 
 def SplitSeqs(seq):
