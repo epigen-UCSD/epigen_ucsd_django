@@ -41,12 +41,14 @@
                     {%if seq.2 == '10xATAC' %}
                     {% if seq.5 == 'No' and seq.4 == 'Yes' and seq.7 == True %}
                     <td>
-                        <form action="#" method="post">{% csrf_token %}
-                            <button type="submit" class="btn btn-primary btn-sm" name="buttonTenX" value={{seq.0}}>
+                        <form method="post">{%csrf_token%}
+                            <button type="submit" class="btn btn-primary btn-sm runsinglecell" email={{email}}
+                                name="buttonTenX" value="{{seq.0}}">
                                 Submit to Process
                             </button>
                         </form>
                     </td>
+
                     {% elif seq.5 == 'No' and seq.4 == 'No' %}
                     <td>
                         <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top"

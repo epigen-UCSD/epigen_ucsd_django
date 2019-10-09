@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 from masterseq_app.models import LibraryInfo, SeqInfo
 from django.conf import settings
 import os
@@ -58,6 +59,40 @@ def AllScLibs(request):
         'library_lists': library_lists,
     }
     return render(request, 'singlecell_app/scIndex.html', context)
+
+
+def AllSeqs(request):
+
+    seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo')
+    header = [
+        'Sequence ID', 'Library ID', 'Experiment Type', 'Date Submitted for Sequencing',
+        'Sequence Status', '10xProcessed', 'CoolAdmin'
+    ]
+    seqs_info = BuildSeqList(seqs_list, request)
+    context = {
+        'type':'All Sequences',
+        'header': header,
+        'seqs_info': seqs_info,
+        'email':  request.user.email,
+    }
+    return render(request,'singlecell_app/seqs.html',context)
+
+
+def MySeqs(request):
+
+    header = [
+        'Sequence ID', 'Library ID', 'Experiment Type', 'Date Submitted for Sequencing',
+        'Sequence Status', '10xProcessed', 'CoolAdmin'
+    ]
+    seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).select_related('libraryinfo')
+    seqs_info = BuildSeqList(seqs_list, request)
+    context = {
+        'type':'My Sequences',
+        'header': header,
+        'seqs_info': seqs_info,
+        'email':  request.user.email,
+    }
+    return render(request,'singlecell_app/seqs.html',context)
 
 
 '''Use to build library lists
@@ -196,45 +231,21 @@ def FindCoolAdminStatus(seq):
         return 'Submitted'
 
 
-def AllSeqs(request):
-    if request.method == 'POST':
-        seq = str(request.POST.get("buttonTenX"))
-        print("seq posted: ", seq)
-        SubmitToTenX(seq, request.user.email)
-    
-    seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo')
-    header = [
-        'Sequence ID', 'Library ID', 'Experiment Type', 'Date Submitted for Sequencing',
-        'Sequence Status', '10xProcessed', 'CoolAdmin'
-    ]
-    seqs_info = BuildSeqList(seqs_list, request)
-    context = {
-        'type':'All Sequences',
-        'header': header,
-        'seqs_info': seqs_info,
-    }
-    return render(request,'singlecell_app/seqs.html',context)
-
-
-def MySeqs(request):
-    if request.method == 'POST':
-        seq = str(request.POST.get("buttonTenX"))
-        status = SubmitToTenX(seq, request.user.email)
-        print("seq posted: ", seq, status)
-
-    header = [
-        'Sequence ID', 'Library ID', 'Experiment Type', 'Date Submitted for Sequencing',
-        'Sequence Status', '10xProcessed', 'CoolAdmin'
-    ]
-    seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).select_related('libraryinfo')
-    seqs_info = BuildSeqList(seqs_list, request)
-    context = {
-        'type':'My Sequences',
-        'header': header,
-        'seqs_info': seqs_info,
-    }
-    return render(request,'singlecell_app/seqs.html',context)
-
+def SubmitSingleCell(request):
+    print(request)
+    email = request.POST.get('email')
+    seq = request.POST.get('seq') 
+    print(email, seq)
+    status = SubmitToTenX(seq, email)
+    if status:
+        data = {
+            'is_submitted' : True
+        }
+    else:
+        data = {
+            'is_submitted' : False
+        }
+    return JsonResponse(data)
 
 def SubmitToTenX(seq, email):
     tenxdir = settings.TENX_DIR
@@ -265,7 +276,7 @@ def SubmitToTenX(seq, email):
     cmd1 = './utility/run10xOnly_local.sh ' + seq +' ' + tenxdir + ' ' + email
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    return(True)
+    return True
 
 
 def SplitSeqs(seq):

@@ -8,5 +8,5 @@ urlpatterns = [
     path('AllSeqs', views.AllSeqs, name='allseqs'),
     path('MySeqs', views.MySeqs, name='myseqs'),
     path('libs',include('masterseq_app.urls')),
-    path('Submit', views.SubmitToTenX, name='submittotenx')
+    path('Ajax/submit/', views.SubmitSingleCell, name='submit10xsinglecell'),
 ]
