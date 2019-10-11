@@ -7,6 +7,6 @@ urlpatterns = [
     path('allsclibs', views.AllScLibs, name='allsclibs'),
     path('AllSeqs', views.AllSeqs, name='allseqs'),
     path('MySeqs', views.MySeqs, name='myseqs'),
+    path('Ajax/submit/', views.SubmitSingleCell, name='submitsinglecell'),
     path('libs',include('masterseq_app.urls')),
-    path('Ajax/submit/', views.SubmitSingleCell, name='submit10xsinglecell'),
 ]

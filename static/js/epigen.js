@@ -951,7 +951,7 @@ $(document).ready(function () {
         button = $(this)
         $.ajax({
             type: "POST",
-            url: 'Ajax/submit/',
+            url: $(this).attr('singlecell-submission-url'),
             data: {
                 'seq': $(this).val(),
                 'email': $(this).attr("email")

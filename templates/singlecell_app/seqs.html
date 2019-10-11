@@ -42,7 +42,8 @@
                     {% if seq.5 == 'No' and seq.4 == 'Yes' and seq.7 == True %}
                     <td>
                         <form method="post">{%csrf_token%}
-                            <button type="submit" class="btn btn-primary btn-sm runsinglecell" email={{email}}
+                            <button type="submit" class="btn btn-primary btn-sm runsinglecell"
+                                singlecell-submission-url="{% url 'singlecell_app:submitsinglecell'%}" email={{email}}
                                 name="buttonTenX" value="{{seq.0}}">
                                 Submit to Process
                             </button>
