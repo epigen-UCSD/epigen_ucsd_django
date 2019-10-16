@@ -968,4 +968,21 @@ $(document).ready(function () {
 
         })
     })
+
+    $(".cooladmin").on("click", function (e) {
+        document.getElementById("popup-overlay").style.display = "block";
+        console.log("submitting: ", $(this).val());
+
+    })
+
+    $(".close-popup").on("click", function (e) {
+        document.getElementById("popup-overlay").style.display = "none";
+
+    });
+    $(".submit-popup").on("click", function (e) {
+        console.log('Submitting cooladmin job')
+        document.getElementById("popup-overlay").style.display = "none";
+
+    });
+
 });

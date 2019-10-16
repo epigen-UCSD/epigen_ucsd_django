@@ -4,6 +4,27 @@
 {% load singlecell_extras %}
 
 <div id="content" class="col-sm-10 col-md-10 col-lg-10">
+
+    <div class="card popup-overlay text-light" id="popup-overlay">
+        <div class="card-body popup-content">
+            <button class="close-popup btn btn-dark">X</button>
+            <div class="card-body">
+                <h3 class="popup-title">CoolAdmin Submit</h3>
+                <p> Settings </p>
+                <div class="submission-form">
+                    <ul>
+                        <li> Setting</li>
+                        <li> Setting</li>
+                        <li> Setting</li>
+                </div>
+            </div>
+            <!--will need a form here to show available options-->
+            <!--popup's close button-->
+            <button class="submit-popup btn btn-dark">Submit</button>
+
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-header fortable">
             {{ type }}
@@ -89,8 +110,10 @@
                     {# comment seq.6: snapatac/cooladmin#}
                     {%if seq.6 == 'No' and seq.4 == 'Yes' and seq.7 == True %}
                     <td>
-                        <button type="button" class="btn btn-primary btn-sm">
-                            Submit to SC
+                        <button type="button" disabled class="btn btn-primary btn-sm cooladmin"
+                            cooladmin-submission-url="% url 'singlecell_app:submitcooladmin' %" value="{{seq.0}}"
+                            email="{{email}}">
+                            Submit
                         </button>
                     </td>
                     {% elif seq.6 == 'Submitted'%}
