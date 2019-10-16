@@ -675,12 +675,15 @@ def RunSetQC(request, setqc_pk):
 
         # check if name in output_names has been processed, if so strike it from list and
         # put processed flag
-        if len(to_process) > 0:
+               
+        #find genome used for samples
+
             output_names = StrikeOutputNames(to_process, output_names)
             print('outputnames: ', output_names)
             print('to_process dict:', to_process)
 
         # find genome used for samples
+
             genome_dict = {}
             for x in outinfo:
                 seqid = x['seqinfo__seq_id']
@@ -1204,4 +1207,15 @@ def tenx_output(request, setqc_pk, outputname):
     data = file.read()
     if(data == None):
         print('No data read in 10x Web_Summary.html File!')
-    return HttpResponse(data)
+    return HttpResponse( data )
+
+def tenx_output2(request, outputname):
+    html=('/'+outputname+settings.TENX_WEBSUMMARY) 
+    tenxdir = settings.TENX_DIR
+    file = open(tenxdir+html)
+    
+    data = file.read()
+    if(data == None):
+        print('No data read in 10x Web_Summary.html File!')
+    return HttpResponse( data )
+
