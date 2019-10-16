@@ -48,6 +48,8 @@ class RunInfo(models.Model):
     # machine = models.ForeignKey('masterseq_app.SeqMachineInfo', on_delete=models.CASCADE, null=True)
     machine = models.CharField(
         max_length=50, choices=choice_for_machine, default='EPIGEN_NextSeq550', null=True)
+    extra_parameters = models.TextField(
+        blank=True, help_text='Default: blank; or like "--use-bases-mask Y50,I8n*,Y16,Y50"')
     jobstatus = models.CharField(
         max_length=200, blank=True, null=True, default='ClickToSubmit')
 
@@ -69,7 +71,7 @@ class LibrariesInRun(models.Model):
     i5index = models.ForeignKey(Barcode, related_name='i5_index',
                                 on_delete=models.CASCADE, blank=True, null=True)
     numberofreads = models.IntegerField(blank=True, null=True)
-    lane = models.CharField(max_length=20,blank=True, null=True)
+    lane = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
         return self.Library_ID
