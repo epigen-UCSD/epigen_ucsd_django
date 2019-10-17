@@ -93,15 +93,15 @@
                     </td>
                     {%else%}
                     <td>
-                        <button type=" button" class="btn btn-danger btn-sm" disabled name="buttonTenX">
+                        <button type="btn btn-primary btn-sm" class="btn btn-danger btn-sm" disabled name="buttonTenX">
                             {{ seq.5 }}
                         </button>
                     </td>
                     {%endif%}
                     {%else%}
                     <td>
-                        <button type="button" data-toggle="tooltip" data-placement="top" title="Not A 10x Experiment"
-                            disabled name="buttonTenX">
+                        <button class="btn btn-secondary btn-sm" type="button" data-toggle="tooltip"
+                            data-placement="top" title="Not A 10x Experiment" disabled name="buttonTenX">
                             {{ seq.5 }}
                         </button>
                     </td>
