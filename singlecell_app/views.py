@@ -5,6 +5,7 @@ from django.conf import settings
 import os
 import random
 import subprocess
+from epigen_ucsd_django.shared import *
 
 # Create your views here.
 
@@ -68,7 +69,7 @@ def AllSeqs(request):
         'Sequence ID', 'Library ID', 'Experiment Type', 'Date Submitted for Sequencing',
         'Sequence Status', '10xProcessed', 'CoolAdmin'
     ]
-    seqs_info = BuildSeqList(seqs_list, request)
+    seqs_info = BuildSeqList(seqs_list, request, False)
     context = {
         'type':'All Sequences',
         'header': header,
@@ -200,7 +201,7 @@ def findSeqStatus(seq_ids):
 
 '''Use to build seq lists
 '''
-def BuildSeqList(seqs_list, request):
+def BuildSeqList(seqs_list, request, owner=True):
     seq_ids = [seq.seq_id for seq in seqs_list]
     libraryinfoIds = [ seq.libraryinfo_id for seq in seqs_list]
     experiment_types = [seq.libraryinfo.experiment_type for seq in seqs_list]
@@ -209,10 +210,15 @@ def BuildSeqList(seqs_list, request):
     seqs10xStatus = [ TenXPipelineCheck(seq) for seq in seqs_list ] 
     coolAdmin = [FindCoolAdminStatus(seq) for seq in seqs_list]
     
-    if request.user.is_staff == True:
+    if is_member(request.user,['bioinformatics']) or owner == True:
         ownerList = [True for seq in seqs_list ]
     else:
-        ownerList = [ 'NotOwner' for seq in seqs_list]
+        ownerList = []
+        for seq in seqs_list:
+            if(request.user == seq.team_member_initails):
+                ownerList.append(True)
+            else:
+                ownerList.append('NotOwner')
 
     print(ownerList)
     seqs_info = zip(seq_ids, libraryinfoIds, experiment_types, submitted_dates, 
@@ -246,6 +252,24 @@ def SubmitSingleCell(request):
             'is_submitted' : False
         }
     return JsonResponse(data)
+
+
+def SubmitToCoolAdmin(request):
+    print(request)
+    email = request.POST.get('email')
+    seq = request.POST.get('seq')
+    settings = request.POST.get('settings')
+    print(settings)
+    status = True
+    if status:
+        data = {
+            'is_submitted' : True
+        }
+    else:
+        data = {
+            'is_submitted' : False
+        }
+    return JsonResponse(data) 
 
 def SubmitToTenX(seq, email):
     tenxdir = settings.TENX_DIR
