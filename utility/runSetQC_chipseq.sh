@@ -31,14 +31,27 @@ else
     # more than one groups (assume with input)
     setqc_type="chip"
     job_array=()
-    for g in ${groups[@]} # for each group 
-    do
-	RUN_LOG_PIP=${LOG_DIR}$(date +%Y%m%d)"_"${SET_ID}"_${g}.txt"
-	awk -v FS='\t' -v gr=$g '(NR>1&&$2==gr){print $1,$4,$7,$3}' $STATUS_FILE > $RUN_LOG_PIP
-	nrow=$(cat $RUN_LOG_PIP|wc -l )
-	cmd1="qsub -v samples=${RUN_LOG_PIP},chipseq=true -t 0-$[nrow-1] -M $USER_EMAIL -q home-epigen -l walltime=16:00:00  \$(which runBulkCHIP_fastq.pbs)"
-	job_array+=($(ssh zhc268@tscc-login.sdsc.edu $cmd1))
-    done
+    if [[ $n_libs -gt 0 ]]
+    then
+        for g in ${groups[@]} # for each group 
+        do
+        ## check if any lib is not processed in this group $g   
+
+        ## if not processed, need find input    
+
+        ## if input is not processed, need process the whole group  
+
+        ## if input is processed, need add input + the libs not process 
+
+        ## if all processed, continue
+        
+        RUN_LOG_PIP=${LOG_DIR}$(date +%Y%m%d)"_"${SET_ID}"_${g}.txt"
+        awk -v FS='\t' -v gr=$g '(NR>1&&$2==gr){print $1,$4,$7,$3}' $STATUS_FILE > $RUN_LOG_PIP
+        nrow=$(cat $RUN_LOG_PIP|wc -l )
+        cmd1="qsub -v samples=${RUN_LOG_PIP},chipseq=true -t 0-$[nrow-1] -M $USER_EMAIL -q home-epigen -l walltime=16:00:00  \$(which runBulkCHIP_fastq.pbs)"
+        job_array+=($(ssh zhc268@tscc-login.sdsc.edu $cmd1))
+        done
+    fi
     awk '(NR>1){print $1,$2,$3}' $STATUS_FILE > $SETQC_FILE # id,groupid,input
     
 fi
