@@ -12,3 +12,5 @@ logfile
 *.cfg
 scripts/collaboratorpassword.tsv
 data/web*
+*_local.sh
+.gitignore
