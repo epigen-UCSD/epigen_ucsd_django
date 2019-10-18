@@ -44,7 +44,7 @@
             {% if Run.jobstatus == 'Done'%}
             <td><span class="badge badge-success badge-status-green">Done</span></td>
             {% elif Run.jobstatus == 'ClickToSubmit' %}
-              {% if Run.machine == 'IGM_HiSeq4000' %}
+              {% if Run.machine == 'IGM_HiSeq4000' or Run.machine == 'IGM_Novaseq' %}
               <td><a class="btn btn-danger btn-sm btn-status-orange downloadajax" href="" data-toggle="modal" data-target="#downloadModal" data-href="{% url 'nextseq_app:downloadingfromigm' Run.id %}"
                 id={{Run.Flowcell_ID}}>ClickToTransfer</a></td>
               {% else %}

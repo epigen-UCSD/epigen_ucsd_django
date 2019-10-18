@@ -5,6 +5,7 @@ from django.urls import reverse
 choice_for_machine = (
     ('EPIGEN_NextSeq550', 'EPIGEN_NextSeq550'),
     ('IGM_HiSeq4000', 'IGM_HiSeq4000'),
+    ('IGM_Novaseq', 'IGM_Novaseq'),
 )
 
 
