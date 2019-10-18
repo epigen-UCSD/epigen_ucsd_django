@@ -1,5 +1,5 @@
 from django.shortcuts import redirect,render,get_object_or_404
-from epigen_ucsd_django.models import CollaboratorPersonInfo
+from epigen_ucsd_django.models import CollaboratorPersonInfo,Group_Institution
 from django.db import transaction
 from .forms import UserForm,CollaboratorPersonForm,GroupForm,\
 GroupCreateForm,CollabInfoAddForm,\
@@ -20,9 +20,14 @@ def CollaboratorListView(request):
         'group__name','person_id__username',\
         'person_id__first_name','person_id__last_name',\
         'phone','email','role','index','initial_password')
-
+    group_institute_list = Group_Institution.objects.all().select_related('group').values('group__name','institution')
+    group_institute_dict = {}
+    for item in group_institute_list:
+        group_institute_dict[item['group__name']]=item['institution']
+ 
     context = {
         'collab_list':collabs_list,
+        'group_institute_dict':group_institute_dict,
     }
     print(context)
     if is_member(request.user,'manager'):
