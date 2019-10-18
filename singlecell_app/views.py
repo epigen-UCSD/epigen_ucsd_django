@@ -18,53 +18,9 @@ list, eg ('Title of column', 'field_name')
 #hold all single cell experiment values
 SINGLE_CELL_EXPS = ['10xATAC','scRNA-seq','snRNA-seq', 'scATAC-seq']
 
-
-def scIndex(request):    
-    #library_list = LibraryInfo.objects.filter(experiment_type='10xATAC').order_by('-date_started')
-    library_list = LibraryInfo.objects.filter(experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).values().order_by('-date_started')
-    ids = [lib['id'] for lib in library_list]
-    header = [
-        ('Library ID', 'library_id'),
-        ('Library Description', 'library_description'),
-        ('Sample Info', 'sampleinfo_id'),
-        ('Experiment Type','experiment_type'),
-        ('Date Started' ,'date_started'),
-        ('Date Completed' ,'date_completed'),
-    ]
-    library_lists = BuildList(library_list, header)
-    context = {
-        'type' : 'My Single Cell Libraries',
-        'header' : header,
-        'library_lists': library_lists,
-        'ids': ids
-    }
-    print(ids)
-    return render(request, 'singlecell_app/scIndex.html', context)
-
-
-def AllScLibs(request):
-    #library_list = LibraryInfo.objects.filter(experiment_type='10xATAC').order_by('-date_started')
-    library_list = LibraryInfo.objects.select_related('User').filter(experiment_type__in=SINGLE_CELL_EXPS).values().order_by('-date_started')
-    header = [
-        ('Library ID', 'library_id'),
-        ('Library Description', 'library_description') ,
-        ('Sample Info', 'sampleinfo_id'),
-        ('Experiment Type','experiment_type'),
-        ('Date Started' ,'date_started'),
-        ('Date Completed' ,'date_completed'),
-    ]
-    library_lists = BuildList(library_list, header)
-    context = {
-        'type' : 'All Single Cell Libraries',
-        'header' : header,
-        'library_lists': library_lists,
-    }
-    return render(request, 'singlecell_app/scIndex.html', context)
-
-
 def AllSeqs(request):
 
-    seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo')
+    seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo').order_by('date_submitted_for_sequencing')
     header = [
         'Sequence ID', 'Library ID', 'Experiment Type', 'Date Submitted for Sequencing',
         'Sequence Status', '10xProcessed', 'CoolAdmin'
@@ -85,7 +41,7 @@ def MySeqs(request):
         'Sequence ID', 'Library ID', 'Experiment Type', 'Date Submitted for Sequencing',
         'Sequence Status', '10xProcessed', 'CoolAdmin'
     ]
-    seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).select_related('libraryinfo')
+    seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).select_related('libraryinfo').order_by('date_submitted_for_sequencing')
     seqs_info = BuildSeqList(seqs_list, request)
     context = {
         'type':'My Sequences',
@@ -136,7 +92,7 @@ def TenXPipelineCheck(seq):
             seqstatus = 'Yes'
         else:
             seqstatus = 'No'
-    print(f'seq: {seq}, 10xstatus: {seqstatus}')
+    #print(f'seq: {seq}, 10xstatus: {seqstatus}')
     return seqstatus
 
 
@@ -144,7 +100,7 @@ def findSeqStatus(seq_ids):
     fastqdir = settings.FASTQ_DIR
     seqsStatus=[]
     for seq in seq_ids:
-        print(f'seq: {seq}, seqid: {seq.seq_id}, readtype: {seq.read_type}')
+        #print(f'seq: {seq}, seqid: {seq.seq_id}, readtype: {seq.read_type}')
         seq_id = seq.seq_id
         reps =  seq_id.split('_')[2:]
         mainname = '_'.join(seq_id.split('_')[0:2])
@@ -195,7 +151,7 @@ def findSeqStatus(seq_ids):
                             seqsStatus.append('No')
                             break
             seqsStatus.append('Yes')
-    print(f'seqstatus: {seqsStatus}')
+    #print(f'seqstatus: {seqsStatus}')
     return seqsStatus
 
 
@@ -203,7 +159,8 @@ def findSeqStatus(seq_ids):
 '''
 def BuildSeqList(seqs_list, request, owner=True):
     seq_ids = [seq.seq_id for seq in seqs_list]
-    libraryinfoIds = [ seq.libraryinfo_id for seq in seqs_list]
+    libraryinfoIds = [ seq.libraryinfo.library_id for seq in seqs_list]
+    libraryIds = [ seq.libraryinfo_id for seq in seqs_list]
     experiment_types = [seq.libraryinfo.experiment_type for seq in seqs_list]
     submitted_dates = [seq.date_submitted_for_sequencing for seq in seqs_list ]
     seq_statuses = findSeqStatus(seqs_list)
@@ -220,8 +177,7 @@ def BuildSeqList(seqs_list, request, owner=True):
             else:
                 ownerList.append('NotOwner')
 
-    print(ownerList)
-    seqs_info = zip(seq_ids, libraryinfoIds, experiment_types, submitted_dates, 
+    seqs_info = zip(seq_ids, libraryinfoIds, libraryIds, experiment_types, submitted_dates, 
                     seq_statuses, seqs10xStatus, coolAdmin, ownerList)
     return seqs_info
 
@@ -238,10 +194,9 @@ def FindCoolAdminStatus(seq):
 
 
 def SubmitSingleCell(request):
-    print(request)
+    #print(request)
     email = request.POST.get('email')
     seq = request.POST.get('seq') 
-    print(email, seq)
     status = SubmitToTenX(seq, email)
     if status:
         data = {
@@ -259,7 +214,6 @@ def SubmitToCoolAdmin(request):
     email = request.POST.get('email')
     seq = request.POST.get('seq')
     settings = request.POST.get('settings')
-    print(settings)
     status = True
     if status:
         data = {
