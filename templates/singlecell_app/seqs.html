@@ -59,8 +59,8 @@
 
 
                     {# comment seq.6: 10xProcessed#}
-                    {%if seq.3 == '10xATAC' %}
-                    {% if seq.6 == 'No' and seq.5 == 'Yes' and seq.8 == True %}
+                    {% if seq.3 == '10xATAC' or seq.3 == 'scATAC-seq'  and seq.8 == True %}
+                    {% if seq.6 == 'No' and seq.5 == 'Yes' %}
                     <td>
                         <form method="post">{%csrf_token%}
                             <button type="submit" class="btn btn-primary btn-sm runsinglecell"
@@ -73,8 +73,8 @@
 
                     {% elif seq.6 == 'No' and seq.5 == 'No' %}
                     <td>
-                        <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top"
-                            title="No FASTQ files available" name="buttonTenX NotOwner" disabled>
+                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip"
+                            data-placement="top" title="No FASTQ files available" name="buttonTenX">
                             Submit
                         </button>
                     </td>
@@ -100,8 +100,7 @@
                     {%endif%}
                     {%else%}
                     <td>
-                        <button class="btn btn-secondary btn-sm" type="button" data-toggle="tooltip"
-                            data-placement="top" title="Not A 10x Experiment" disabled name="buttonTenX">
+                        <button class="btn btn-secondary btn-sm" type="button" disabled name="buttonTenX">
                             {{ seq.6 }}
                         </button>
                     </td>
