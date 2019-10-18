@@ -24,8 +24,7 @@ def CollaboratorListView(request):
     group_institute_dict = {}
     for item in group_institute_list:
         group_institute_dict[item['group__name']]=item['institution']
-    print(group_institute_dict)
-
+ 
     context = {
         'collab_list':collabs_list,
         'group_institute_dict':group_institute_dict,

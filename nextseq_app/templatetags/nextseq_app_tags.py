@@ -65,7 +65,12 @@ def linktrackingsheet(stringtext):
 		'TrackingSheet 2':'<a href="https://docs.google.com/spreadsheets/d/19Qjv05LZo6pazNIvGrfj9GDzmK6riOwF3eriW7Ufj1o/edit" target=”_blank”>TrackingSheet 2</a>',
 		'TrackingSheet 3':'<a href="https://docs.google.com/spreadsheets/d/1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y/edit" target=”_blank”>TrackingSheet 3</a>',
 		'Template':'<a href="/metadata/download/template.xlsx/"> template.xlsx </a>',
-
+		'Column 1':'<b style="color: #F67E56;"> Column 1 </b>',
+		'Column 2':'<b style="color: #F67E56;"> Column 2 </b>',
+		'Sample ID': '<b style="color: #F67E56;"> Sample ID </b>',
+		'Library ID': '<b style="color: #F67E56;"> Library ID </b>',
+		'Sequencing ID': '<b style="color: #F67E56;"> Sequencing ID </b>',
+		'show examples':'<b style="color: #3CB371;"> show examples </b>',
 	}
 	for k,v in linktrans.items():
 		stringtext = stringtext.replace(k,v)
