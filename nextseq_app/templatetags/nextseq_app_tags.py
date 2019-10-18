@@ -7,7 +7,10 @@ register = template.Library()
 @register.filter
 def key(d, key_name):
 	if key_name:
-		return d[str(key_name)]
+		try:
+			return d[str(key_name)]
+		except:
+			return ''
 	else:
 		return ''
 

@@ -215,7 +215,7 @@ class SeqCreationForm2(forms.Form):
         
 class BulkUpdateForm(forms.Form):
 	updateinfo = forms.CharField(
-			label='Please list the info that need to be updated below and make sure each column has a title exactly match the titles supplied in Template(currently not support the group, research and fiscal person updating). \nThe first column should be Sample ID, Library ID or Sequencing ID',
+			label='To update metadata for multiple entries at the same time, please paste the following information below:\nColumn 1: The Sample ID, Library ID or Sequencing ID of each entry that you want to update (one row per entry). Note that these IDs must already be entered in the metadata app, and should be listed here exactly as they already are.\nColumn 2: The metadata field (i.e. column from the template) that you would like to update for each entry. You do not have to enter all columns from the template here. It is only necessary to enter the columns that you want to update.\nColumns 3+ (optional): You can update as many additional columns as you would like.\n\nNotes:\n(1) The first row that you paste must be the column titles so that the LIMS knows which columns to update. Make sure that each column has a title that exactly matches the corresponding titles in Template\n(2) This function currently does not support updating group, research contact, or fiscal contact.\n(3) Please click on the "show examples" tab to the right to see an example.\n\nThe first column should be Sample ID, Library ID or Sequencing ID',
 			widget=forms.Textarea(attrs={'style':'width:100%','rows': 11}),
 			required=True,
 					)
