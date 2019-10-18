@@ -4,10 +4,12 @@
   <div class="col-sm-12 col-md-12 col-lg-12">
     <div class="card bottom15">
       <div class="card-header fortable collapseheader">
-        <a data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapse2"><i class="fa fas fa-caret-right collapseheader fa-lg fa-fw"></i><i class="fa fa-caret-down collapseheader fa-lg fa-fw"></i></a>
+        <a data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapse2"><i
+            class="fa fas fa-caret-right collapseheader fa-lg fa-fw"></i><i
+            class="fa fa-caret-down collapseheader fa-lg fa-fw"></i></a>
         Libraries
         <button type="button" class="close" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true">&times;</span>
         </button>
       </div><!-- /.card-header -->
       <div class="collapse show" id="collapse2">
@@ -15,19 +17,19 @@
           <br />
           <table class="table table-sm table-striped text-center table-responsive-xl">
 
-            
+
             <thead>
-            <tr>
-              {% for x in featureheader %}
-              <th>{{ x }}</th>
-              {% endfor %} 
-            </tr>
+              <tr>
+                {% for x in featureheader %}
+                <th>{{ x }}</th>
+                {% endfor %}
+              </tr>
             </thead>
 
-            {% if setinfo.experiment_type == 'ChIP-seq' %}                  
+            {% if setinfo.experiment_type == 'ChIP-seq' %}
             {% for x in featureinfo %}
             <tr>
-              <td><a href="{% url 'masterseq_app:seq_detail_fromseqid' x.0 %}">{{ x.0 }}</a></td>                 
+              <td><a href="{% url 'masterseq_app:seq_detail_fromseqid' x.0 %}">{{ x.0 }}</a></td>
               <td>{{ x.1 }}</td>
               <td>{{ x.2 | default_if_none:"" }}</td>
               <td>{{ x.3 | default_if_none:"" }}</td>
@@ -42,15 +44,15 @@
               <td><span style="color:red;">{{ x.7 }}</span></td>
               {% else %}
               <td><span style="color:#3CB371;">{{ x.7 | default_if_none:"" }}</span></td>
-              {% endif %}      
+              {% endif %}
             </tr>
-            {% endfor %} 
+            {% endfor %}
 
 
-            {% else %}                 
+            {% else %}
             {% for x in featureinfo  %}
-            <tr>                  
-              <td><a href="{% url 'masterseq_app:seq_detail_fromseqid' x.0 %}">{{ x.0 }}</a></td>                 
+            <tr>
+              <td><a href="{% url 'masterseq_app:seq_detail_fromseqid' x.0 %}">{{ x.0 }}</a></td>
               <td>{{ x.1 | default_if_none:""}}</td>
               <td>{{ x.2 | default_if_none:"" }}</td>
               <td>{{ x.3 | default_if_none:"" }}</td>
@@ -59,19 +61,30 @@
               {% else %}
               <td><span style="color:#3CB371;">{{ x.4 | default_if_none:"" }}</span></td>
               {% endif %}
+
               {% if x.5 != 'Yes' %}
               <td><span style="color:red;">{{ x.5 }}</span></td>
               {% else %}
               <td><span style="color:#3CB371;">{{ x.5 | default_if_none:"" }}</span></td>
-              {% endif %}     
-            </tr>
-            {% endfor %} 
+              {% endif %}
 
-            {% endif %}                 
+              {% if x.6 != '10xATAC' %}
+              <td><span>NA</span></td>
+              {% elif x.7 == 'Yes' and x.6 == '10xATAC' %}
+              <td><span style="color:blue;"><a href='{{x.0}}/web_summary.html'>{{ x.7 | default_if_none:"" }}</a></span>
+              </td>
+              {% elif x.7 == 'No' or x.7 == 'Error!' and x.6 == '10xATAC' %}
+              <td><span style="color:red;">{{ x.7 | default_if_none:"" }}</span></td>
+              {% else %}
+              <td><span style="color:#3CB371;">{{ x.7 | default_if_none:"" }}</span></td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+            {% endif %}
           </table>
-        </div><!-- /.card-body --> 
-      </div><!-- /.collapse -->             
+        </div><!-- /.card-body -->
+      </div><!-- /.collapse -->
     </div><!-- /.card -->
-  
+
   </div>
 </div>

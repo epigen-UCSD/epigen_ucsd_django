@@ -35,9 +35,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('changepassword/', views.change_password, name='change_password'),
     path('register/', views.UserRegisterView.as_view(), name='register'),
-
-
-
+    path('singlecell/', include('singlecell_app.urls')),
 ]
 
 if 'debug_toolbar' in settings.INSTALLED_APPS:

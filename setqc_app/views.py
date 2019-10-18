@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import LibrariesSetQC, LibraryInSet
-from masterseq_app.models import SeqInfo, GenomeInfo
+from masterseq_app.models import SeqInfo, GenomeInfo, SampleInfo, LibraryInfo
 from django.db import transaction
 from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm,\
     ChIPLibrariesToIncludeCreatForm, SeqLabelGenomeCreationForm, BaseSeqLabelGenomeCreationFormSet
@@ -16,6 +16,7 @@ import os
 import subprocess
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
+from django.http import HttpResponse
 import re
 
 # Create your views here.
@@ -211,6 +212,7 @@ def SetQCCreateView(request):
                                 seqinfo=SeqInfo.objects.get(seq_id=item),
                             )
                             tosave_list.append(tosave_item)
+
                     LibraryInSet.objects.bulk_create(tosave_list)
                     # return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
                     return redirect('setqc_app:libraylabelgenome_add', setqc_pk=setinfo.id)
@@ -291,6 +293,7 @@ def SetQCgenomelabelCreateView(request, setqc_pk):
             temdic['lableinthisset'] = x.seqinfo.default_label
         else:
             temdic['lableinthisset'] = x.seqinfo.seq_id
+
         initaldic.append(temdic)
     librarieslabelgenomeFormSet = formset_factory(SeqLabelGenomeCreationForm,
                                                   can_delete=False,
@@ -562,12 +565,16 @@ def RunSetQC(request, setqc_pk):
     libdir = settings.LIBQC_DIR
     fastqdir = settings.FASTQ_DIR
     setqcoutdir = settings.SETQC_DIR
+    tenxdir = settings.TENX_DIR
     data = {}
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
+
+    # Only add folders in libdir that are directories
     allfolder = [fname for fname in os.listdir(
         libdir) if os.path.isdir(os.path.join(libdir, fname))]
+
     outinfo = list(LibraryInSet.objects.filter(librariesetqc=setinfo).
                    select_related('seqinfo__libraryinfo__sampleinfo', 'seqinfo__machine', 'genome').
                    values('seqinfo__seq_id', 'group_number', 'is_input', 'genome__genome_name',
@@ -577,7 +584,6 @@ def RunSetQC(request, setqc_pk):
 
     list1 = [x['seqinfo__seq_id'] for x in outinfo]
     list_readtype = [x['seqinfo__read_type'] for x in outinfo]
-
     seqstatus = {}
     i = 0
     for item in list1:
@@ -592,7 +598,6 @@ def RunSetQC(request, setqc_pk):
         reps = ['1']
         reps = reps + item.split('_')[2:]
         mainname = '_'.join(item.split('_')[0:2])
-
         if seqstatus[item] == 'No':
             if list_readtype[i] == 'PE':
                 r1 = item+'_R1.fastq.gz'
@@ -641,8 +646,8 @@ def RunSetQC(request, setqc_pk):
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['group_number'],
                                              str(x['is_input']
                                                  ), x['genome__genome_name'],
-                                             x['label'], seqstatus[x['seqinfo__seq_id']
-                                                                   ], x['seqinfo__read_type'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']],
+                                             x['seqinfo__read_type'],
                                              x['seqinfo__libraryinfo__sampleinfo__sample_id'],
                                              x['seqinfo__libraryinfo__sampleinfo__species'],
                                              x['seqinfo__libraryinfo__experiment_type'],
@@ -656,19 +661,88 @@ def RunSetQC(request, setqc_pk):
             setinfo.set_id + ' ' + request.user.email + \
             ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
     else:
+        # check if expirement is of type 10xATAC of each library:
+        # 1. check if library passed has been process in cell ranger by looking for html output
+        # 2. for libraries of same sample not processed with cell ranger-> create sample sheet for said libs
+
+        # to process will hold 10x seqs
+        to_process = {}
+
+        # output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
+        output_names = []
+        to_process = Process10xRepsAndProcessList(outinfo, to_process)
+        print(to_process)
+
+        # check if name in output_names has been processed, if so strike it from list and
+        # put processed flag
+        
+        #find genome used for samples
+        if len(to_process) > 0:
+            output_names = StrikeOutputNames(to_process, output_names)
+            print('outputnames: ', output_names)
+            print('to_process dict:', to_process)
+
+        # find genome used for samples
+            genome_dict = {}
+            for x in outinfo:
+                seqid = x['seqinfo__seq_id']
+                genome_dict[seqid] = x['genome__genome_name']
+            print(genome_dict)
+
+        # make tsv file to be use as input for run10xPipeline script
+            tsv_writecontent = '\n'.join(
+                ['\t'.join([name, ','.join(to_process[name]), genome_dict[name]])
+                 for name in output_names])
+
+            print(tsv_writecontent)
+
+        # sample sheet will be named: .Set_XXX_samplesheet.tsv
+        # sample sheet will be located in SETQC_DIR
+        # write .Set_XXX_samplesheet.tsv to setqcoutdir
+            set_10x_input_file = os.path.join(
+                setqcoutdir, '.'+setinfo.set_id+'_samplesheet.tsv')
+            print('input 10xfile:', set_10x_input_file)
+            if os.path.isfile(set_10x_input_file):
+                data['setidexisterror'] = '.'+setinfo.set_id + \
+                    ' \'s samplesheet is already existed. Do you want to override it and continue to run the pipeline and SetQC script?'
+                print(data['setidexisterror'])
+                return JsonResponse(data)
+            try:
+                with open(set_10x_input_file, 'w') as f:
+                    f.write(tsv_writecontent)
+            except Exception as e:
+                data['writeseterror'] = 'Unexpected writing to Set_samplesheet.tsv Error!'
+
+        # dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 10xATAC
+        tenXProcessed = {}
+        to_process_keys = list(to_process.keys())
+        for x in outinfo:
+            if x['seqinfo__seq_id'] not in output_names and \
+                    x['seqinfo__seq_id'] in to_process_keys:
+                tenXProcessed[x['seqinfo__seq_id']] = 'Yes'
+            else:
+                tenXProcessed[x['seqinfo__seq_id']] = 'No'
+        print('tenXProcessed: ', tenXProcessed)
+
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
-                                             x['label'], seqstatus[x['seqinfo__seq_id']
-                                                                   ], x['seqinfo__read_type'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']],
+                                             x['seqinfo__read_type'],
                                              x['seqinfo__libraryinfo__sampleinfo__sample_id'],
                                              x['seqinfo__libraryinfo__sampleinfo__species'],
                                              x['seqinfo__libraryinfo__experiment_type'],
-                                             x['seqinfo__machine__machine_name'], setinfo.set_name]) for x in outinfo])
+                                             x['seqinfo__machine__machine_name'], setinfo.set_name,
+                                             tenXProcessed[x['seqinfo__seq_id']]]) for x in outinfo])
         featureheader = ['Library ID', 'Genome',
                          'Library Name', 'Processed Or Not', 'Read Type', 'Sample Name', 'Species',
-                         'Experiment Type', 'Machine', 'Set Name']
+                         'Experiment Type', 'Machine', 'Set Name', '10xProcessed']
+
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
             ' ' + request.user.email + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
+    print('fc:')
+    print(featureheader)
+    print('body: ')
+    print(writecontent)
 
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
@@ -688,11 +762,81 @@ def RunSetQC(request, setqc_pk):
 
     # run setQC script
     #cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
-    print(cmd1)
+    # print(cmd1)
+    print('running subprocess')
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     data['writesetdone'] = 1
     return JsonResponse(data)
+
+
+'''
+This function will read each lib in set and check if 10xATAC exp. to process set up list for TSV sample sheet
+Returns dict 
+'''
+
+
+def Process10xRepsAndProcessList(outinfo, to_process):
+    for sequence in outinfo:
+        if sequence['seqinfo__libraryinfo__experiment_type'] == '10xATAC':
+            x = sequence['seqinfo__seq_id']
+            print(f'seqinfo id: {x}')
+            reps = []
+            reps = reps + x.split('_')[2:]
+            print(f'reps: {reps}')
+
+            # check if seq being processed is original eg: bg_210<tab>bg_210<tab>genome
+            if(len(reps) == 0):
+                to_process[x] = [x]
+
+            # new lib to process
+            for rep in reps:
+
+                if rep == '1':
+                    to_insert = '_'.join(x.split('_')[:2])
+                    if x in to_process.keys():
+                        to_process[x].append(to_insert)
+                    else:
+                        to_process[x] = [to_insert]
+                # new sequencing from same lib
+                else:
+                    to_insert = '_'.join(x.split('_')[:2]) + '_' + rep
+                    if x in to_process.keys():
+                        to_process[x].append(to_insert)
+                    else:
+                        to_process[x] = [to_insert]
+    return(to_process)
+
+
+'''
+This function will check the libs present in output_names and of already processd then will strike it from 
+list. If not already procesed will be kept 
+'''
+
+
+def StrikeOutputNames(to_process, output_names):
+    tenxdir = settings.TENX_DIR
+    output_names = list(to_process.keys())
+    # check if output_names libs have been processed
+    for name in output_names:
+        tenx_output_folder = 'outs'
+        tenx_target_outfile = 'web_summary.html'
+        if not os.path.isdir(os.path.join(tenxdir, name)):
+            print("not found: ")
+            print(os.path.join(tenxdir, name))
+        else:
+            if not os.path.isfile(os.path.join(tenxdir, name,
+                                               tenx_output_folder, tenx_target_outfile)):
+                print("not found: ")
+                print(os.path.join(tenxdir, name,
+                                   tenx_output_folder, tenx_target_outfile))
+
+            else:
+                print('found: ', os.path.join(tenxdir, name))
+                output_names.remove(name)
+        print('outputnames: ', output_names)
+        print('to_process dict:', to_process)
+    return output_names
 
 
 @transaction.atomic
@@ -700,6 +844,7 @@ def RunSetQC2(request, setqc_pk):
     libdir = settings.LIBQC_DIR
     fastqdir = settings.FASTQ_DIR
     setqcoutdir = settings.SETQC_DIR
+    tenxdir = settings.TENX_DIR
     data = {}
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
@@ -792,23 +937,80 @@ def RunSetQC2(request, setqc_pk):
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
             setinfo.set_id + ' ' + request.user.email + \
             ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
-
     else:
+        # check if expirement is of type 10xATAC of each library:
+        # 1. check if library passed has been process in cell ranger by looking for html output
+        # 2. for libraries of same sample not processed with cell ranger-> create sample sheet for said libs
+
+        # to process will hold 10x seqs
+        to_process = {}
+        # output_names will hold seqs that needs to be processed in cell ranger, will populate tsv file
+        output_names = []
+
+        to_process = Process10xRepsAndProcessList(outinfo, to_process)
+        print(to_process)
+
+        # check if name in output_names has been processed, if so strike it from list and
+        # put processed flag
+        if len(to_process) > 0:
+            output_names = StrikeOutputNames(to_process, output_names)
+            print('outputnames: ', output_names)
+            print('to_process dict:', to_process)
+
+        # find genome used for samples
+            genome_dict = {}
+            for x in outinfo:
+                seqid = x['seqinfo__seq_id']
+                genome_dict[seqid] = x['genome__genome_name']
+            print(genome_dict)
+
+        # make tsv file to be use as input for run10xPipeline script
+            tsv_writecontent = '\n'.join(
+                ['\t'.join([name, ','.join(to_process[name]), genome_dict[name]])
+                 for name in output_names])
+
+            print(tsv_writecontent)
+
+        # sample sheet will be named: .Set_XXX_samplesheet.tsv
+        # sample sheet will be located in SETQC_DIR
+        # write .Set_XXX_samplesheet.tsv to setqcoutdir
+            set_10x_input_file = os.path.join(
+                setqcoutdir, '.'+setinfo.set_id+'_samplesheet.tsv')
+            print('input 10xfile:', set_10x_input_file)
+            try:
+                with open(set_10x_input_file, 'w') as f:
+                    f.write(tsv_writecontent)
+            except Exception as e:
+                data['writeseterror'] = 'Unexpected writing to Set_samplesheet.tsv Error!'
+        # dict will map seq_info_id to if it has been 10xProcessed or not, even if not of 10xATAC
+        tenXProcessed = {}
+        to_process_keys = list(to_process.keys())
+        for x in outinfo:
+            if x['seqinfo__seq_id'] not in output_names and \
+                    x['seqinfo__seq_id'] in to_process_keys:
+                tenXProcessed[x['seqinfo__seq_id']] = 'Yes'
+            else:
+                tenXProcessed[x['seqinfo__seq_id']] = 'No'
+        # print(tenXProcessed)
+
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
-                                             x['label'], seqstatus[x['seqinfo__seq_id']
-                                                                   ], x['seqinfo__read_type'],
+                                             x['label'], seqstatus[x['seqinfo__seq_id']],
+                                             x['seqinfo__read_type'],
                                              x['seqinfo__libraryinfo__sampleinfo__sample_id'],
                                              x['seqinfo__libraryinfo__sampleinfo__species'],
                                              x['seqinfo__libraryinfo__experiment_type'],
-                                             x['seqinfo__machine__machine_name'], setinfo.set_name]) for x in outinfo])
+                                             x['seqinfo__machine__machine_name'], setinfo.set_name,
+                                             tenXProcessed[x['seqinfo__seq_id']]]) for x in outinfo])
         featureheader = ['Library ID', 'Genome',
                          'Library Name', 'Processed Or Not', 'Read Type', 'Sample Name', 'Species',
-                         'Experiment Type', 'Machine', 'Set Name']
+                         'Experiment Type', 'Machine', 'Set Name', '10xProcessed']
 
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
             ' ' + request.user.email + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
 
+    print('wc: ', writecontent)
+    print('fh: ', featureheader)
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
     try:
@@ -822,17 +1024,50 @@ def RunSetQC2(request, setqc_pk):
 
     # run setQC script
     #cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
-    print(cmd1)
+    # print(cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     data['writesetdone'] = 1
     return JsonResponse(data)
 
 
+'''
+This function will check what stage the pipeline is in and return it
+'''
+
+
+def TenXPipelineCheck(lib):
+    seqstatus = ''
+    tenx_output_folder = 'outs'
+    tenx_target_outfile = 'web_summary.html'
+    tenxdir = settings.TENX_DIR
+    path = os.path.join(tenxdir, lib)
+    # first check if there is an .inqueue then an .inprocess
+    print('path: ', path)
+    if not os.path.isdir(path):
+        seqstatus = 'No'
+    elif os.path.isfile(path + '/.inqueue'):
+        seqstatus = 'In Queue'
+    elif os.path.isfile(path + '/.inprocess'):
+        seqstatus = 'In Process'
+    elif os.path.isfile(path + '/_errors'):
+        seqstatus = 'Error!'
+    else:
+        if not os.path.isfile(os.path.join(path,
+                                           tenx_output_folder, tenx_target_outfile)):
+            seqstatus = 'No'
+        elif os.path.isfile(os.path.join(path, tenx_output_folder, tenx_target_outfile)):
+            seqstatus = 'Yes'
+        else:
+            seqstatus = 'No'
+    return seqstatus
+
+
 def SetQCDetailView(request, setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     libdir = settings.LIBQC_DIR
     fastqdir = settings.FASTQ_DIR
+    tenxdir = settings.TENX_DIR
     allfolder = [fname for fname in os.listdir(
         libdir) if os.path.isdir(os.path.join(libdir, fname))]
     summaryfield = ['status', 'set_id', 'set_name', 'date_requested',
@@ -853,6 +1088,17 @@ def SetQCDetailView(request, setqc_pk):
     list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
         id=x) for x in list(librariesset.values_list('genome', flat=True))]
     list5 = list(librariesset.values_list('label', flat=True))
+
+    # need list of experiment types
+    liblist = [SeqInfo.objects.values_list(
+        'libraryinfo', flat=True).get(id=x) for x in list1tem]
+
+    exp_type_list = [LibraryInfo.objects.values_list('experiment_type',
+                                                     flat=True).get(id=x) for x in liblist]
+    print("explist: ", exp_type_list)
+    # need list for status of 10x expirments
+    tenx_status = []
+
     if setinfo.collaborator != None:
         collab = setinfo.collaborator.first_name+' ' + \
             setinfo.collaborator.last_name+'('+setinfo.group.name+')'
@@ -860,6 +1106,14 @@ def SetQCDetailView(request, setqc_pk):
         collab = ''
     i = 0
     for item in list1:
+        # check if 10x experiment processed by checking summary.HTML file
+        if exp_type_list[i] == '10xATAC':
+            lib = item
+            status = TenXPipelineCheck(lib)
+            tenx_status.append(status)
+        else:
+            tenx_status.append('')
+
         if item not in allfolder:
             seqstatus.append('No')
         else:
@@ -867,6 +1121,7 @@ def SetQCDetailView(request, setqc_pk):
                 seqstatus.append('No')
             else:
                 seqstatus.append('Yes')
+
         if list_readtype[i] == 'PE':
             r1 = item+'_R1.fastq.gz'
             r2 = item+'_R2.fastq.gz'
@@ -901,9 +1156,9 @@ def SetQCDetailView(request, setqc_pk):
                          'Is Input',  'Genome', 'Library Name', 'Has fastq', 'Processed']
     else:
         featureinfo = list(zip(list1, list_readtype, list4,
-                               list5, fastqstatus, seqstatus))
+                               list5, fastqstatus, seqstatus, exp_type_list, tenx_status))
         featureheader = ['Library ID', 'Read Type',
-                         'Genome', 'Library Name', 'Has fastq', 'Processed']
+                         'Genome', 'Library Name', 'Has fastq', 'Processed', 'TenX Processed']
     context = {
         'setinfo': setinfo,
         'summaryfield': summaryfield,
@@ -932,3 +1187,34 @@ def load_users(request):
             u.last_name+'('+u.groups.all().first().name+')'
         results.append(uu)
     return JsonResponse(results, safe=False)
+
+
+###
+# TODO: do some error checking and exception raising
+###
+'''
+This function opens and returns html webpage created by 10x ATAC pipeline for SETQC
+@Requirements: the 10x webpage requested is softlinked in the BASE_DIR/data/websummary directory
+'''
+
+
+def tenx_output(request, setqc_pk, outputname):
+    html = ('/'+outputname+"/outs/web_summary.html")
+    tenxdir = settings.TENX_DIR
+    file = open(tenxdir+html)
+
+    data = file.read()
+    if(data == None):
+        print('No data read in 10x Web_Summary.html File!')
+    return HttpResponse( data )
+
+def tenx_output2(request, outputname):
+    html=('/'+outputname+settings.TENX_WEBSUMMARY) 
+    tenxdir = settings.TENX_DIR
+    file = open(tenxdir+html)
+    
+    data = file.read()
+    if(data == None):
+        print('No data read in 10x Web_Summary.html File!')
+    return HttpResponse( data )
+

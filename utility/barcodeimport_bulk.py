@@ -18,7 +18,7 @@ def getArgs():
     import argparse
     parser = argparse.ArgumentParser(description='Import barcodes script.')
     parser.add_argument('-b', '--barcode_file', dest='barcode_file',
-                        help='input barcode file  (csv format, basedir is ../utility)')
+                        help='input barcode file  (csv format, basedir is ../data/nextseq_app/barcodes)')
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
@@ -27,14 +27,14 @@ def getArgs():
 
 
 def main():
-    fl = basedir+'/utility/'+getArgs()
+    fl = basedir+'/data/nextseq_app/barcodes/'+getArgs()
     with io.open(fl, 'r', encoding='utf-8') as f:
         lines = f.read().splitlines()
     indexes = {l.replace(u'\ufeff', '').split(',')[0]: l.replace(
         u'\ufeff', '').split(',')[1]for l in lines}
     for k, v in indexes.items():
         print(k+':'+v)
-        obj, created = Barcode.objects.get_or_create(indexid=k, indexseq=v)
+        obj, created = Barcode.objects.get_or_create(indexid=k, indexseq=v,kit='BK')
 
 
 if __name__ == '__main__':

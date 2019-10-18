@@ -13,7 +13,6 @@ import configparser
 import os
 
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,7 +24,7 @@ config.read('deploy.ini')
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY =  config['django']['SECRET_KEY']
+SECRET_KEY = config['django']['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -43,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'nextseq_app',
     'setqc_app',
     'masterseq_app',
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'manager_app',
     'collaborator_app',
+    'singlecell_app',
 ]
 
 if 'extra_app' in dict(config.items('database')).keys():
@@ -183,4 +184,6 @@ NEXTSEQAPP_DMPDIR = config['database']['NEXTSEQAPP_DMPDIR']
 LIBQC_DIR = config['database']['LIBQC_DIR']
 SETQC_DIR = config['database']['SETQC_DIR']
 FASTQ_DIR = config['database']['FASTQ_DIR']
+TENX_DIR = config['database']['TENX_DIR']
 MEDIA_ROOT = config['database']['MEDIA_ROOT']
+TENX_WEBSUMMARY = config['snapp']['TENX_WEBSUMMARY']

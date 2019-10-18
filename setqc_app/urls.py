@@ -18,5 +18,7 @@ urlpatterns = [
     path('<int:setqc_pk>/runsetqc2/',views.RunSetQC2, name='runsetqc2'),
     path('<int:setqc_pk>/',views.SetQCDetailView, name='setqc_detail'),
     path('ajax/load-users/', views.load_users, name='ajax_load_users'),
+    path('<int:setqc_pk>/<str:outputname>/web_summary.html', views.tenx_output, name='10xATACoutput'),
+    path('<str:outputname>/web_summary.html', views.tenx_output2, name='10xATACoutput2'),
 
 ]

@@ -1,0 +1,150 @@
+{% extends 'singlecell_app/base.html' %}
+{% block content %}
+{% load nextseq_app_tags %}
+{% load singlecell_extras %}
+
+<div id="content" class="col-sm-10 col-md-10 col-lg-10">
+
+    <div class="card popup-overlay text-light" id="popup-overlay">
+        <div class="card-body popup-content">
+            <button class="close-popup btn btn-dark">X</button>
+            <div class="card-body">
+                <h3 class="popup-title">CoolAdmin Submit</h3>
+                <p> Settings </p>
+                <div class="submission-form">
+                    <ul>
+                        <li> Setting</li>
+                        <li> Setting</li>
+                        <li> Setting</li>
+                </div>
+            </div>
+            <!--will need a form here to show available options-->
+            <!--popup's close button-->
+            <button class="submit-popup btn btn-dark">Submit</button>
+
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header fortable">
+            {{ type }}
+        </div><!-- /.card-header -->
+        <div class="card-body">
+            <table id="datatabledetailnotes" class="table table-striped table-sm text-center table-responsive-xl">
+                <thead>
+                    <tr>
+                        {% for head in header %}
+                        <th> {{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                {% if seqs_info %}
+                {% for seq in seqs_info %}
+                <tr>
+                    <td>
+                        {{ seq.0 }}
+                    </td>
+                    <td>
+                        <a href="{% url 'masterseq_app:lib_detail' seq.1 %}">{{ seq.1 }}</a>
+                    </td>
+                    <td>
+                        {{ seq.2 }}
+                    </td>
+                    <td>
+                        {{seq.3}}
+                    </td>
+                    <td>
+                        {{seq.4}}
+                    </td>
+
+
+                    {# comment seq.5: 10xProcessed#}
+                    {%if seq.2 == '10xATAC' %}
+                    {% if seq.5 == 'No' and seq.4 == 'Yes' and seq.7 == True %}
+                    <td>
+                        <form method="post">{%csrf_token%}
+                            <button type="submit" class="btn btn-primary btn-sm runsinglecell"
+                                singlecell-submission-url="{% url 'singlecell_app:submitsinglecell'%}" email={{email}}
+                                name="buttonTenX" value="{{seq.0}}">
+                                Submit to Process
+                            </button>
+                        </form>
+                    </td>
+
+                    {% elif seq.5 == 'No' and seq.4 == 'No' %}
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top"
+                            title="No FASTQ files available" name="buttonTenX NotOwner" disabled>
+                            Submit
+                        </button>
+                    </td>
+                    {%elif seq.5 == 'In Queue' or seq.5 == 'In Process' %}
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm" disabled name="buttonTenX">
+                            {{ seq.5 }}
+                        </button>
+                    </td>
+                    {%elif seq.5 == 'Yes' %}
+                    <td>
+                        {% url 'setqc_app:10xATACoutput2' seq.0 as the_url %}
+                        <a href="{{the_url}}" class="btn btn-outline-primary btn-sm" role="button" name="buttonTenX">
+                            Results
+                        </a>
+                    </td>
+                    {%else%}
+                    <td>
+                        <button type=" button" class="btn btn-danger btn-sm" disabled name="buttonTenX">
+                            {{ seq.5 }}
+                        </button>
+                    </td>
+                    {%endif%}
+                    {%else%}
+                    <td>
+                        <button type="button" data-toggle="tooltip" data-placement="top" title="Not A 10x Experiment"
+                            disabled name="buttonTenX">
+                            {{ seq.5 }}
+                        </button>
+                    </td>
+                    {% endif %}
+
+                    {# comment seq.6: snapatac/cooladmin#}
+                    {%if seq.6 == 'No' and seq.4 == 'Yes' and seq.7 == True %}
+                    <td>
+                        <button type="button" disabled class="btn btn-primary btn-sm cooladmin"
+                            cooladmin-submission-url="% url 'singlecell_app:submitcooladmin' %" value="{{seq.0}}"
+                            email="{{email}}">
+                            Submit
+                        </button>
+                    </td>
+                    {% elif seq.6 == 'Submitted'%}
+                    <td>
+                        <button type="button" disabled class="btn btn-info btn-sm">
+                            Submitted
+                        </button>
+                    </td>
+                    {%elif seq.6 == 'Yes' %}
+                    <td>
+                        <a href="#" role="button" class="btn btn-outline-primary btn-sm">
+                            Results
+                        </a>
+                    </td>
+                    {% else %}
+                    <td>
+                        <button type="button" disabled class="btn btn-primary btn-sm">
+                            Submit to SC
+                        </button>
+                    </td>
+                    {% endif %}
+
+                </tr>
+                {% endfor %}
+                {%else%}
+                No seqs
+                {% endif %}
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

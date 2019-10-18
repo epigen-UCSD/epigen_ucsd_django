@@ -1,8 +1,9 @@
 [database]
-DATABASE_USER: frank
-DATABASE_PASSWORD: 
+DATABASE_USER: test
+DATABASE_PASSWORD: 123456
 DATABASE_HOST: 127.0.0.1
 DATABASE_PORT: 5432
 DATABASE_ENGINE: django.db.backends.postgresql_psycopg2
 DATABASE_NAME: django_data
-NEXTSEQAPP_DMPDIR: /Users/frank/github/epigen_ucsd_django/test/
+NEXTSEQAPP_DMPDIR: /home/User/github/epigen_app/NEXTSEQAPPDMP_DIR
+
