@@ -78,18 +78,18 @@
                             Submit
                         </button>
                     </td>
-                    {%elif seq.6 == 'In Queue' or seq.6 == 'In Process' %}
-                    <td>
-                        <button type="button" class="btn btn-info btn-sm" disabled name="buttonTenX">
-                            {{ seq.6 }}
-                        </button>
-                    </td>
                     {%elif seq.6 == 'Yes' %}
                     <td>
                         {% url 'setqc_app:10xATACoutput2' seq.0 as the_url %}
                         <a href="{{the_url}}" class="btn btn-outline-primary btn-sm" role="button" name="buttonTenX">
                             Results
                         </a>
+                    </td>
+                    {%elif seq.6 == 'In Queue' or seq.6 == 'In Process' %}
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm" disabled name="buttonTenX">
+                            {{ seq.6 }}
+                        </button>
                     </td>
                     {%else%}
                     <td>
