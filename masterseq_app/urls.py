@@ -40,6 +40,7 @@ urlpatterns = [
     path('ajax/load-researchcontact/', views.load_researchcontact, name='ajax_load_researchcontact'),
     #path('ajax/load-fiscalindex/', views.load_fiscalindex, name='ajax_load_fiscalindex'),
     path('download/<path:path>/', views.download, name='download_from_db_folder'),
+    path('bulkedit/', views.BulkUpdateView, name='bulk_update'),
 
 
 

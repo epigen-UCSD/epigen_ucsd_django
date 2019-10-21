@@ -676,6 +676,12 @@ $(document).ready(function () {
     // $('#collapsecalendar').on('hide.bs.collapse', function() {
     //     $("#calendar-trigger" ).show();
     // });
+    $('#collapseExample').on('shown.bs.collapse', function () {
+        $('#showorhideexamples').html('Hide examples<span style="margin-left: 5px"><i class="fas fa-angle-double-right"></i></span>');
+    });
+    $('#collapseExample').on('hidden.bs.collapse', function () {
+        $('#showorhideexamples').html('Show examples<span style="margin-left: 5px"><i class="fas fa-angle-double-right"></i></span>');
+    });
 
     $("#id_date").datepicker();
     $("#id_date_requested").datepicker();

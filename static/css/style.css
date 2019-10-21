@@ -101,6 +101,12 @@ div.detailnotes {
   margin-bottom: 15px;
 }
 
+.btn-customesm {
+    padding: 2px 5px;
+    font-size: 10.5px;
+    border-radius: 5px;
+}
+
 .breadcrumb-item.active {
   color:#182B49;
   font-weight:bold;

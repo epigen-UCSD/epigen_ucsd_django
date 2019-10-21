@@ -212,6 +212,259 @@ class SeqCreationForm2(forms.Form):
                 'Invalid portion of lane:'+','.join(invalidpolane))
         return '\n'.join(cleadata)
 
+        
+class BulkUpdateForm(forms.Form):
+	updateinfo = forms.CharField(
+			label='To update metadata for multiple entries at the same time, please paste the following information below:\nColumn 1: The Sample ID, Library ID or Sequencing ID of each entry that you want to update (one row per entry). Note that these IDs must already be entered in the metadata app, and should be listed here exactly as they already are.\nColumn 2: The metadata field (i.e. column from the template) that you would like to update for each entry. You do not have to enter all columns from the template here. It is only necessary to enter the columns that you want to update.\nColumns 3+ (optional): You can update as many additional columns as you would like.\n\nNotes:\n(1) The first row that you paste must be the column titles so that the LIMS knows which columns to update. Make sure that each column has a title that exactly matches the corresponding titles in Template\n(2) This function currently does not support updating group, research contact, or fiscal contact.\n(3) Please click on the "show examples" tab to the right to see an example.\n\nThe first column should be Sample ID, Library ID or Sequencing ID',
+			widget=forms.Textarea(attrs={'style':'width:100%','rows': 11}),
+			required=True,
+					)
+	def clean_updateinfo(self):
+		data = self.cleaned_data['updateinfo']
+		cleaneddata = []
+		i = 0
+		colinfo = {}
+		titleinfo = {}
+		seqcore = []
+		seqmachine = []
+		flagkeytitle = 0
+		flagseqtitle = 0
+		flaglibtitle = 0
+		flagsamtitle = 0
+		flagdate = 0
+		flagspecies = 0
+		flagtype = 0
+		flagfixation = 0
+		flagunit = 0
+		flaguser = 0
+		flaggroup = 0
+		flagexp = 0
+		flagbarcode = 0
+		flagpolane = 0
+		flagtype = 0
+		flagcore = 0
+		flagmachine = 0
+		flagmachine = 0
+		flagsamid = 0
+		flaglibid = 0
+		flagseqid = 0
+		invalidseqtitle = []
+		invalidlibtitle = []
+		invalidsamtitle = []
+		invaliddate = []
+		invalidspecies = []
+		invalidtype = []
+		invalidfixation = []
+		invalidunit = []
+		invaliduserlist = []
+		invalidgroup = []
+		invalidexp = []
+		invalidbarcodelist = []
+		invalidpolane = []
+		invalidtype = []
+		invalidmachine = []
+		invalidsamid = []
+		invalidlibid = []
+		invalidseqid = []
+
+
+		for lineitem in data.strip().split('\n'):
+			if lineitem != '\r':
+				fields = lineitem.split('\t')
+				if i == 0:
+					if fields[0].strip().lower() not in ['sample id','library id (if library generated)','sequencing id','library id']:
+						flagkeytitle = 1
+					if fields[0].strip().lower() == 'sequencing id':
+						for k in range(len(fields)-1):
+							if fields[k+1].strip().lower() not in ['label (for qc report)',\
+							'team member intials','date submitted for sequencing','library id','sequening core',\
+							'machine','sequening length','read type','portion of lane','i7 index (if applicable)','i5 index (or single index)','notes',\
+							'i7 index','i5 index','label','sequencing core','sequencing length','team member initials','date']:
+								flagseqtitle = 1
+								invalidseqtitle.append(fields[k+1].strip())
+							elif fields[k+1].strip().lower() in ['sequening core','sequencing core']:
+								flagcore = 1
+							elif fields[k+1].strip().lower() == 'machine':
+								flagmachine = 1
+
+					elif fields[0].strip().lower() in ['library id (if library generated)','library id']:
+						for k in range(len(fields)-1):
+							if fields[k+1].strip().lower() not in ['sample id (must match column i in sample sheet)','library description',\
+							'team member intials','date experiment started','date experiment completed','experiment type','protocol used',\
+							'reference to notebook and page number','notes','sample id','team member initials']:
+								flaglibtitle = 1
+								invalidlibtitle.append(fields[k+1].strip())
+					elif fields[0].strip().lower() == 'sample id':
+						for k in range(len(fields)-1):
+							if fields[k+1].strip().lower() not in ['date','sample description','species','sample type','preperation','fixation?',\
+							'sample amount','units','unit','service requested','sequencing depth to target','sequencing length requested',\
+							'sequencing type requested','notes','date sample received','initials of reciever','storage location','internal notes']:
+								flagsamtitle = 1
+								invalidsamtitle.append(fields[k+1].strip())
+					for k in range(len(fields)):
+						titleinfo[k] = fields[k].strip().lower()
+						colinfo[k] = []
+
+				else:
+					for k in range(len(fields)):
+						colinfo[k].append(fields[k])
+				i = i+1
+				cleaneddata.append(lineitem)
+
+		if flagkeytitle == 1:
+			raise forms.ValidationError('The first column should be \'Sample ID\', \'Library ID\' or \'Sequencing ID\'.')
+		if flagseqtitle == 1:
+			raise forms.ValidationError('Invalid titles for sequencings:'+','.join(invalidseqtitle))
+		if flaglibtitle == 1:
+			raise forms.ValidationError('Invalid titles for libraries:'+','.join(invalidlibtitle))		
+		if flagsamtitle == 1:
+			raise forms.ValidationError('Invalid titles for samples:'+','.join(invalidsamtitle))
+		if flagcore != flagmachine:
+			raise forms.ValidationError('Sequencing core and Machine should show up together.')
+
+
+
+		for k in titleinfo.keys():
+			if titleinfo[k] in ['date','date sample received','date experiment started','date experiment completed','date submitted for sequencing']:
+				for item in colinfo[k]:
+					try:
+						anydate = datetransform(item)
+					except:
+						invaliddate.append(item)
+						flagdate = 1
+			elif titleinfo[k] == 'species':
+				for item in colinfo[k]:
+					if item.split('(')[0].lower().strip() not in [x[0].split('(')[0].strip() for x in choice_for_species]:
+						invalidspecies.append(item)
+						flagspecies = 1
+			elif titleinfo[k] == 'sample type':
+				for item in colinfo[k]:
+					if item.split('(')[0].lower().strip() not in [x[0].split('(')[0].strip() for x in choice_for_sample_type]:
+						invalidtype.append(item)
+						flagtype = 1
+			elif titleinfo[k] == 'fixation?':
+				for item in colinfo[k]:
+					if item.strip().lower() not in [x[0].lower() for x in choice_for_fixation]:
+						invalidfixation.append(item)
+						flagfixation = 1
+
+			elif titleinfo[k] in ['units','unit']:
+				for item in colinfo[k]:
+					if item.split('(')[0].lower().strip() not in [x[0].split('(')[0].strip() for x in choice_for_unit]:
+						invalidunit.append(item)
+						flagunit = 1
+			elif titleinfo[k] in ['team member intials','team member initials','initials of reciever']:
+				for item in colinfo[k]:
+					if item and not User.objects.filter(username=item).exists():
+						invaliduserlist.append(item)
+						flaguser = 1
+			elif titleinfo[k] == 'pi':
+				for item in colinfo[k]:
+					gname = item.strip() if item.strip() not in ['NA','N/A'] else ''
+					if gname:
+						if not Group.objects.filter(name=gname).exists():
+							invalidgroup.append(item)
+							flaggroup = 1
+			elif titleinfo[k] == 'experiment type':
+				for item in colinfo[k]:
+					if item.strip() not in [x[0].split('(')[0].strip() for x in choice_for_experiment_type]:
+						invalidexp.append(item)
+						flagexp = 1
+			elif titleinfo[k] in ['i7 index (if applicable)','i5 index (or single index)','i7 index','i5 index']:
+				for item in colinfo[k]:
+					if item.strip() and item.strip() not in ['NA', 'Other (please explain in notes)', 'N/A']:
+						if not Barcode.objects.filter(indexid=item.strip()).exists():
+							invalidbarcodelist.append(item)
+							flagbarcode = 1
+			elif titleinfo[k] == 'portion of lane':
+				for item in colinfo[k]:
+					if item.strip() and item.strip() not in ['NA', 'Other (please explain in notes)', 'N/A']:
+						try:
+							float(polane)
+						except:
+							invalidpolane.append(polane)
+							flagpolane = 1
+			elif titleinfo[k] == 'read type':
+				for item in colinfo[k]:
+					if item.strip() and item.strip() not in [x[0].split('(')[0].strip() for x in choice_for_read_type]:
+						invalidtype.append(seqtype)
+						flagtype = 1
+			elif titleinfo[k] == 'sequening core':
+				seqcore = colinfo[k]
+			elif titleinfo[k] == 'machine':
+				seqmachine = colinfo[k]
+			elif titleinfo[k] == 'sequencing id':
+				for item in colinfo[k]:
+					if not SeqInfo.objects.filter(seq_id=item).exists():
+						invalidseqid.append(item)
+						flagseqid = 1
+			elif titleinfo[k] in ['library id (if library generated)','library id']:
+				for item in colinfo[k]:
+					if not LibraryInfo.objects.filter(library_id=item).exists():
+						invalidlibid.append(item)
+						flaglibid = 1
+			elif titleinfo[k] == 'sample id':
+				for item in colinfo[k]:
+					if not SampleInfo.objects.filter(sample_id=item).exists():
+						invalidsamid.append(item)
+						flagsamid = 1
+
+		for item in zip(seqcore,seqmachine):
+			if not SeqMachineInfo.objects.filter(sequencing_core=item[0], machine_name=item[1]).exists():
+				invalidmachine.append(seqcore+'_'+seqmachine)
+				flagmachine = 1
+
+		if flagdate == 1:
+			raise forms.ValidationError('Invalid date:'+','.join(invaliddate)+'. Please enter like this: 10/30/2018 or 10/30/18')
+
+		if flagspecies == 1:
+			raise forms.ValidationError('Invalid species:'+','.join(invalidspecies))
+
+		if flagtype == 1:
+			raise forms.ValidationError('Invalid sample type:'+','.join(invalidtype))
+
+		if flagfixation == 1:
+			raise forms.ValidationError('Invalid fixation:'+','.join(invalidfixation)+\
+				'.  Should be one of ('+','.join([x[0] for x in\
+				 choice_for_fixation])+')')
+
+		if flagunit == 1:
+			raise forms.ValidationError('Invalid unit:'+','.join(invalidunit)+\
+				'.  Should be one of ('+','.join([x[0] for x in\
+				 choice_for_unit])+')')
+		if flaguser == 1:
+			raise forms.ValidationError(
+				'Invalid Member Name:'+','.join(invaliduserlist))
+
+		if flaggroup == 1:
+			raise forms.ValidationError(
+				'Invalid groups:'+','.join(set(invalidgroup))+'.<p style="color:green;">\
+				Please check for accurary of the group name in <a href='+reverse('manager_app:collab_list')+'>Collaborators Table</a>. \
+				<br>If this is a new group please contact the manager to add in.</p>')
+		if flagexp == 1:
+			raise forms.ValidationError(
+				'Invalid experiment type:'+','.join(invalidexp))
+
+		if flagbarcode == 1:
+			raise forms.ValidationError(
+				'Invalid i7 or i5 Barcode:'+','.join(invalidbarcodelist))
+		if flagtype == 1:
+			raise forms.ValidationError(
+				'Invalid read type:'+','.join(invalidtype))
+		if flagmachine == 1:
+			raise forms.ValidationError(
+				'Invalid seqmachine:'+','.join(invalidmachine))
+		if flagseqid == 1:
+			raise forms.ValidationError('These sequencings are not in database:'+','.join(invalidseqid))
+		if flaglibid == 1:
+			raise forms.ValidationError('These libraries are not in database:'+','.join(invalidlibid))
+
+		if flagsamid == 1:
+			raise forms.ValidationError('These samples are not in database:'+','.join(invalidsamid))
+
+
+
+		return '\n'.join(cleaneddata)
 
 class SamplesCreationForm(forms.Form):
 	samplesinfo = forms.CharField(

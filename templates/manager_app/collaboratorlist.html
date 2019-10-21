@@ -10,8 +10,9 @@
           <div class="card-body">
             <table class="table table-striped table-sm text-left table-responsive-xl datatable">
               <thead>
-                <tr>
-                  <th scope="col">group</th>                  
+                <tr>                  
+                  <th scope="col">group</th>
+                  <th scope="col">institute</th>                  
                   <th scope="col">role</th>
                   <th scope="col">username</th>
                   <th scope="col">first_name</th>
@@ -23,8 +24,9 @@
               </thead>
               <tbody>
                 {% for collab in collab_list %}
-                <tr>
+                <tr>                
                   <td>{{ collab.group__name | default_if_none:"" }}</td>
+                  <td>{{ group_institute_dict | key:collab.group__name | default_if_none:"" }}</td>
                   <td>{{ collab.role | default_if_none:"" }}</td>
                   <td>{{ collab.person_id__username | default_if_none:""}}</td>
                   <td>{{ collab.person_id__first_name | default_if_none:"" }}</td>
