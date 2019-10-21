@@ -59,18 +59,27 @@
 
 
                     {# comment seq.6: 10xProcessed#}
-                    {% if seq.3 == '10xATAC' or seq.3 == 'scATAC-seq'  and seq.8 == True %}
-                    {% if seq.6 == 'No' and seq.5 == 'Yes' %}
+                    {% if seq.3 == '10xATAC' or seq.3 == 'scATAC-seq' and seq.8 == True %}
+                    {% if seq.6 == 'No' and seq.5 == 'Yes' and seq.3 == '10xATAC'  %}
                     <td>
                         <form method="post">{%csrf_token%}
                             <button type="submit" class="btn btn-primary btn-sm runsinglecell"
                                 singlecell-submission-url="{% url 'singlecell_app:submitsinglecell'%}" email={{email}}
                                 name="buttonTenX" value="{{seq.0}}">
-                                Submit to Process
+                                Submit
                             </button>
                         </form>
                     </td>
-
+                    {% elif seq.6 == 'No' and seq.5 == 'Yes' and seq.3 == 'scATAC-seq' %}
+                    <td>
+                        <form method="post">{%csrf_token%}
+                            <button type="submit" disabled class="btn btn-primary btn-sm runsinglecell"
+                                singlecell-submission-url="{% url 'singlecell_app:submitsinglecell'%}" email={{email}}
+                                name="buttonTenX" value="{{seq.0}}">
+                                Submit
+                            </button>
+                        </form>
+                    </td>
                     {% elif seq.6 == 'No' and seq.5 == 'No' %}
                     <td>
                         <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip"
@@ -130,7 +139,7 @@
                     {% else %}
                     <td>
                         <button type="button" disabled class="btn btn-primary btn-sm">
-                            Submit to SC
+                            Submit
                         </button>
                     </td>
                     {% endif %}

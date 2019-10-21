@@ -154,7 +154,6 @@ def findSeqStatus(seq_ids):
     #print(f'seqstatus: {seqsStatus}')
     return seqsStatus
 
-
 '''Use to build seq lists
 '''
 def BuildSeqList(seqs_list, request, owner=True):
@@ -162,11 +161,11 @@ def BuildSeqList(seqs_list, request, owner=True):
     libraryinfoIds = [ seq.libraryinfo.library_id for seq in seqs_list]
     libraryIds = [ seq.libraryinfo_id for seq in seqs_list]
     experiment_types = [seq.libraryinfo.experiment_type for seq in seqs_list]
-    submitted_dates = [seq.date_submitted_for_sequencing for seq in seqs_list ]
+    submitted_dates = [ str(seq.date_submitted_for_sequencing) for seq in seqs_list ]
     seq_statuses = findSeqStatus(seqs_list)
     seqs10xStatus = [ TenXPipelineCheck(seq) for seq in seqs_list ] 
     coolAdmin = [FindCoolAdminStatus(seq) for seq in seqs_list]
-    
+    print(submitted_dates)
     if is_member(request.user,['bioinformatics']) or owner == True:
         ownerList = [True for seq in seqs_list ]
     else:
