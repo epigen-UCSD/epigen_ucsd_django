@@ -30,7 +30,7 @@
             {{ type }}
         </div><!-- /.card-header -->
         <div class="card-body">
-            <table id="datatabledetailnotes" class="table table-striped table-sm text-center table-responsive-xl">
+            <table id="datatable-sc" class="table table-striped table-sm text-center table-responsive-xl">
                 <thead>
                     <tr>
                         {% for head in header %}
@@ -45,22 +45,22 @@
                         {{ seq.0 }}
                     </td>
                     <td>
-                        <a href="{% url 'masterseq_app:lib_detail' seq.1 %}">{{ seq.1 }}</a>
+                        <a href="{% url 'masterseq_app:lib_detail' seq.2 %}">{{ seq.1 }}</a>
                     </td>
                     <td>
-                        {{ seq.2 }}
-                    </td>
-                    <td>
-                        {{seq.3}}
+                        {{ seq.3 }}
                     </td>
                     <td>
                         {{seq.4}}
                     </td>
+                    <td>
+                        {{seq.5}}
+                    </td>
 
 
-                    {# comment seq.5: 10xProcessed#}
-                    {%if seq.2 == '10xATAC' %}
-                    {% if seq.5 == 'No' and seq.4 == 'Yes' and seq.7 == True %}
+                    {# comment seq.6: 10xProcessed#}
+                    {% if seq.3 == '10xATAC' or seq.3 == 'scATAC-seq'  and seq.8 == True %}
+                    {% if seq.6 == 'No' and seq.5 == 'Yes' %}
                     <td>
                         <form method="post">{%csrf_token%}
                             <button type="submit" class="btn btn-primary btn-sm runsinglecell"
@@ -71,44 +71,43 @@
                         </form>
                     </td>
 
-                    {% elif seq.5 == 'No' and seq.4 == 'No' %}
+                    {% elif seq.6 == 'No' and seq.5 == 'No' %}
                     <td>
-                        <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top"
-                            title="No FASTQ files available" name="buttonTenX NotOwner" disabled>
+                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip"
+                            data-placement="top" title="No FASTQ files available" name="buttonTenX">
                             Submit
                         </button>
                     </td>
-                    {%elif seq.5 == 'In Queue' or seq.5 == 'In Process' %}
-                    <td>
-                        <button type="button" class="btn btn-info btn-sm" disabled name="buttonTenX">
-                            {{ seq.5 }}
-                        </button>
-                    </td>
-                    {%elif seq.5 == 'Yes' %}
+                    {%elif seq.6 == 'Yes' %}
                     <td>
                         {% url 'setqc_app:10xATACoutput2' seq.0 as the_url %}
                         <a href="{{the_url}}" class="btn btn-outline-primary btn-sm" role="button" name="buttonTenX">
                             Results
                         </a>
                     </td>
+                    {%elif seq.6 == 'In Queue' or seq.6 == 'In Process' %}
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm" disabled name="buttonTenX">
+                            {{ seq.6 }}
+                        </button>
+                    </td>
                     {%else%}
                     <td>
-                        <button type=" button" class="btn btn-danger btn-sm" disabled name="buttonTenX">
-                            {{ seq.5 }}
+                        <button type="btn btn-primary btn-sm" class="btn btn-danger btn-sm" disabled name="buttonTenX">
+                            {{ seq.6 }}
                         </button>
                     </td>
                     {%endif%}
                     {%else%}
                     <td>
-                        <button type="button" data-toggle="tooltip" data-placement="top" title="Not A 10x Experiment"
-                            disabled name="buttonTenX">
-                            {{ seq.5 }}
+                        <button class="btn btn-secondary btn-sm" type="button" disabled name="buttonTenX">
+                            {{ seq.6 }}
                         </button>
                     </td>
                     {% endif %}
 
-                    {# comment seq.6: snapatac/cooladmin#}
-                    {%if seq.6 == 'No' and seq.4 == 'Yes' and seq.7 == True %}
+                    {# comment seq.7: snapatac/cooladmin#}
+                    {%if seq.7 == 'No' and seq.5 == 'Yes' and seq.8 == True %}
                     <td>
                         <button type="button" disabled class="btn btn-primary btn-sm cooladmin"
                             cooladmin-submission-url="% url 'singlecell_app:submitcooladmin' %" value="{{seq.0}}"
@@ -116,13 +115,13 @@
                             Submit
                         </button>
                     </td>
-                    {% elif seq.6 == 'Submitted'%}
+                    {% elif seq.7 == 'Submitted'%}
                     <td>
                         <button type="button" disabled class="btn btn-info btn-sm">
                             Submitted
                         </button>
                     </td>
-                    {%elif seq.6 == 'Yes' %}
+                    {%elif seq.7 == 'Yes' %}
                     <td>
                         <a href="#" role="button" class="btn btn-outline-primary btn-sm">
                             Results

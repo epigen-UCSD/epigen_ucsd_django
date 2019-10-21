@@ -69,6 +69,12 @@ $(document).ready(function () {
 
     });
 
+    $('#datatable-sc').DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[3, 'asc'], [0, 'desc']],
+    });
+
 
     $('#datatabledetailnotes2').DataTable({
         "order": [[2, "desc"]],
