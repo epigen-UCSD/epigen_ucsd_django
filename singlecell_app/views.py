@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from masterseq_app.models import LibraryInfo, SeqInfo
+from .forms import CoolAdminForm
 from django.conf import settings
 import os
 import random
 import subprocess
+
 from epigen_ucsd_django.shared import *
 
 # Create your views here.
@@ -17,9 +19,12 @@ list, eg ('Title of column', 'field_name')
 
 #hold all single cell experiment values
 SINGLE_CELL_EXPS = ['10xATAC','scRNA-seq','snRNA-seq', 'scATAC-seq']
-
+SPECIES_MAP = {
+    'human': 'hg38',
+    'mouse': 'mm10',
+}
 def AllSeqs(request):
-
+    form = CoolAdminForm()
     seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo').order_by('date_submitted_for_sequencing')
     header = [
         'Sequence ID', 'Library ID', 'Experiment Type', 'Date Submitted for Sequencing',
@@ -31,12 +36,13 @@ def AllSeqs(request):
         'header': header,
         'seqs_info': seqs_info,
         'email':  request.user.email,
+        'form' : form,
     }
     return render(request,'singlecell_app/seqs.html',context)
 
 
 def MySeqs(request):
-
+    form = CoolAdminForm()
     header = [
         'Sequence ID', 'Library ID', 'Experiment Type', 'Date Submitted for Sequencing',
         'Sequence Status', '10xProcessed', 'CoolAdmin'
@@ -48,6 +54,8 @@ def MySeqs(request):
         'header': header,
         'seqs_info': seqs_info,
         'email':  request.user.email,
+        'form' : form,
+
     }
     return render(request,'singlecell_app/seqs.html',context)
 
@@ -209,10 +217,20 @@ def SubmitSingleCell(request):
 
 
 def SubmitToCoolAdmin(request):
-    print(request)
     email = request.POST.get('email')
     seq = request.POST.get('seq')
-    settings = request.POST.get('settings')
+    pipeline = request.POST.get('pipeline')
+    info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seq)
+    print(info)
+    
+    species = SPECIES_MAP[ info.libraryinfo.sampleinfo.species.lower() ]
+    print(species)
+    
+    cmd1 = './utility/coolAdmin.sh'
+    
+    p = subprocess.Popen(
+        cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    
     status = True
     if status:
         data = {
@@ -254,7 +272,6 @@ def SubmitToTenX(seq, email):
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return True
-
 
 def SplitSeqs(seq):
     splt = seq.split('_')

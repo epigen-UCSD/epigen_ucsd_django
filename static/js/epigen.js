@@ -957,6 +957,7 @@ $(document).ready(function () {
         button = $(this)
         $.ajax({
             type: "POST",
+            cache: false,
             url: $(this).attr('singlecell-submission-url'),
             data: {
                 'seq': $(this).val(),
@@ -975,8 +976,44 @@ $(document).ready(function () {
         })
     })
 
+    $(".submit-cool-popup").on("click", function (e) {
+        e.preventDefault();
+        button = $(this)
+        url = $(this).attr('cool-submission-url')
+        submit_cooladmin(url);
+
+    });
+    // AJAX for posting cooladmin data
+    function submit_cooladmin(to_post) {
+        console.log("submit cooladmin ajax, url: ", to_post)
+        $.ajax({
+            type: "POST",
+            url: to_post,
+            cache: false,
+            data: {
+                pipeline: $('#id_pipeline_version').val(),
+                seq: $('#id_seqinfo').val(),
+            },
+            dataType: 'json',
+            error: function (json) {
+                alert(json['error'])
+                console.log('failed sc submit')
+            },
+            success: function (json) {
+                console.log('succesful sc submit')
+                document.getElementById("popup-overlay").style.display = "none";
+            }
+        });
+    };
+
+
+
     $(".cooladmin").on("click", function (e) {
+
         document.getElementById("popup-overlay").style.display = "block";
+        $('#id_seqinfo').val($(this).val());
+        $('#id_seqinfo').attr('readonly', true);
+
         console.log("submitting: ", $(this).val());
 
     })
@@ -991,4 +1028,7 @@ $(document).ready(function () {
 
     });
 
+    ("#other").click(function () {
+        $("#target").click();
+    });
 });

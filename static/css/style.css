@@ -656,7 +656,7 @@ a[aria-expanded=false] .fa-caret-down {
 }
 
 .popup-content{
-  background-color: #0a2a66;
+  background-color: #b2bec3;
   opacity:0.8;
   margin-top: 10%;
   margin-left: 20%;
@@ -669,3 +669,6 @@ a[aria-expanded=false] .fa-caret-down {
   float: right;
 }
 
+.submission-sc-form{
+  text-align: left;
+}

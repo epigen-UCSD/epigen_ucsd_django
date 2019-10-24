@@ -739,11 +739,7 @@ def RunSetQC(request, setqc_pk):
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
             ' ' + request.user.email + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
-    print('fc:')
-    print(featureheader)
-    print('body: ')
-    print(writecontent)
-
+   
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
     if os.path.isfile(setStatusFile):
