@@ -1020,15 +1020,78 @@ $(document).ready(function () {
 
     $(".close-popup").on("click", function (e) {
         document.getElementById("popup-overlay").style.display = "none";
+        caTableClose();
 
     });
     $(".submit-popup").on("click", function (e) {
-        console.log('Submitting cooladmin job')
+        console.log('Submitting cooladmin job');
         document.getElementById("popup-overlay").style.display = "none";
+        caTableClose();
 
     });
+    $(".ca-history").on("click", function (e) {
+        console.log("GET ca history");
+        seq = $('#id_seqinfo').val();
+        url = $(this).attr('cool-history-url')
+        get_history(url);
+    });
 
-    ("#other").click(function () {
+    $("#other").click(function (e) {
         $("#target").click();
     });
+
+
+    function caTableClose() {
+
+        if ($.fn.DataTable.isDataTable('#prev_submissions')) {
+            var datatable = $('#prev_submissions').DataTable();
+            datatable.clear();
+            datatable.draw();
+        }
+        document.getElementById("ca-submissions").style.display = "none";
+
+    };
+
+    // AJAX for posting cooladmin data
+    function get_history(to_get) {
+        console.log("get_history called, url: ", to_get);
+        $.ajax({
+            type: "GET",
+            url: to_get,
+            cache: false,
+            data: {
+                seq: $('#id_seqinfo').val(),
+            },
+            dataType: 'json',
+            error: function (json) {
+                alert(json['error'])
+                console.log('failed ca history GET')
+            },
+            success: function (json) {
+                console.log(json)
+                console.log('succesful ca history GET')
+                if ($.fn.DataTable.isDataTable('#prev_submissions')) {
+                    var datatable = $('#prev_submissions').DataTable();
+                    datatable.clear();
+                    datatable.rows.add(json);
+                    datatable.draw();
+                }
+                else {
+                    $('#prev_submissions').DataTable({
+                        data: json,
+                        columns: [
+                            { "data": "Submission ID" },
+                            { "data": "Pipeline Version" },
+                            { "data": "Genotype" },
+                            { "data": "Date Submitted" },
+                            { "data": "Status" },
+                        ]
+                    });
+                }
+                document.getElementById("ca-submissions").style.display = "block";
+            }
+
+        });
+    };
+
 });

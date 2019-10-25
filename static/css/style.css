@@ -656,8 +656,7 @@ a[aria-expanded=false] .fa-caret-down {
 }
 
 .popup-content{
-  background-color: #b2bec3;
-  opacity:0.8;
+  background-color: #dfe6e9;
   margin-top: 10%;
   margin-left: 20%;
   margin-right: 20%;
@@ -672,3 +671,22 @@ a[aria-expanded=false] .fa-caret-down {
 .submission-sc-form{
   text-align: left;
 }
+
+.submit-cool-popup {
+  background-color: #0a2a66;
+}
+.close-popup{
+  background-color: #0a2a66;
+}
+
+.popup-title-ca{
+  color: #0a2a66;
+}
+#ca-history{
+  float: right;
+}
+.ca-submissions {
+    display: none;
+    color:#000000;
+  }
+

@@ -9,7 +9,7 @@
         <div class="card-body popup-content">
             <button class="close-popup btn btn-dark">X</button>
             <div class="card-body form-group">
-                <h3 class="popup-title">CoolAdmin Submission</h3>
+                <h3 class="popup-title-ca">CoolAdmin Submission</h3>
 
                 <div class="submission-form form-control form-control-sm ">
                     <p class="font-weight-light"> Choose settings. Default settings already chosen. </p>
@@ -19,12 +19,19 @@
                     </form>
                 </div>
             </div>
-            <!--past options available options-->
+
             <!--popup's submit button-->
             <button cool-submission-url="{% url 'singlecell_app:submitcooladmin' %}"
                 class="submit-cool-popup btn btn-dark">Submit</button>
-            <div class="sc-submissions">
+            <!--past submissions available button-->
+            <button cool-history-url="{% url 'singlecell_app:previousCA' %}" class="btn btn-sm ca-history">
+                Show previous submissions
+            </button>
 
+            <div class="ca-submissions" id="ca-submissions">
+                <table class="table table-striped table-sm text-center" id="prev_submissions">
+
+                </table>
             </div>
         </div>
     </div>
@@ -122,12 +129,12 @@
                     {% endif %}
 
                     {# comment seq.7: snapatac/cooladmin#}
-                    {%if seq.7 == 'No' and seq.5 == 'Yes' and seq.8 == True %}
+                    {%if seq.7 == 'No' and seq.5 == 'Yes' and seq.8 == 'Owner' %}
                     <td>
                         <button type="button" class="btn btn-primary btn-sm cooladmin"
                             cooladmin-submission-url="% url 'singlecell_app:submitcooladmin' %" value="{{seq.0}}"
                             email="{{email}}">
-                            Submit
+                            Options
                         </button>
                     </td>
                     {% elif seq.7 == 'Submitted'%}

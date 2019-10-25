@@ -1,7 +1,9 @@
 from django.shortcuts import render
+from django.core import serializers
 from django.http import JsonResponse
 from masterseq_app.models import LibraryInfo, SeqInfo
 from .forms import CoolAdminForm
+from .models import CoolAdminSubmission
 from django.conf import settings
 import os
 import random
@@ -165,14 +167,14 @@ def findSeqStatus(seq_ids):
 '''Use to build seq lists
 '''
 def BuildSeqList(seqs_list, request, owner):
-    seq_ids = [seq.seq_id for seq in seqs_list]
-    libraryinfoIds = [ seq.libraryinfo.library_id for seq in seqs_list]
-    libraryIds = [ seq.libraryinfo_id for seq in seqs_list]
-    experiment_types = [seq.libraryinfo.experiment_type for seq in seqs_list]
-    submitted_dates = [ str(seq.date_submitted_for_sequencing) for seq in seqs_list ]
-    seq_statuses = findSeqStatus(seqs_list)
-    seqs10xStatus = [ TenXPipelineCheck(seq) for seq in seqs_list ] 
-    coolAdmin = [FindCoolAdminStatus(seq) for seq in seqs_list]
+    seq_ids = [seq.seq_id for seq in seqs_list] #0
+    libraryinfoIds = [ seq.libraryinfo.library_id for seq in seqs_list] #1
+    libraryIds = [ seq.libraryinfo_id for seq in seqs_list]#2
+    experiment_types = [seq.libraryinfo.experiment_type for seq in seqs_list]#3
+    submitted_dates = [ str(seq.date_submitted_for_sequencing) for seq in seqs_list ]#4
+    seq_statuses = findSeqStatus(seqs_list)#5
+    seqs10xStatus = [ TenXPipelineCheck(seq) for seq in seqs_list ] #6
+    coolAdmin = [FindCoolAdminStatus(seq) for seq in seqs_list] #7
     print(submitted_dates)
     if is_member(request.user,['bioinformatics']) or owner == True:
         ownerList = ['Owner' for seq in seqs_list ]
@@ -235,7 +237,8 @@ def SubmitToCoolAdmin(request):
     
     species = SPECIES_MAP[ info.libraryinfo.sampleinfo.species.lower() ]
     print(species)
-    
+    submission = CoolAdminSubmission(pipeline_version=pipeline, seqinfo=info,genotype=species)
+    submission.save()
     cmd1 = f'./utility/coolAdmin.sh {email} {seq} {pipeline} {species}'
     
     p = subprocess.Popen(
@@ -296,3 +299,20 @@ def SplitSeqs(seq):
             else:
                 addlseqs.append(basename+'_'+addlseq)
     return addlseqs
+
+def GetPreviousCA(request):
+    seq = request.GET.get('seq')
+    print(seq)
+    submissions = list(CoolAdminSubmission.objects.select_related('seqinfo').order_by('-date_submitted').filter(seqinfo__seq_id=seq).values())
+    data = []
+    for submission in submissions:
+        json={
+            'Submission ID':submission['id'],
+            'Pipeline Version': submission['pipeline_version'],
+            'Genotype': submission['genotype'],
+            'Date Submitted': (str(submission['date_submitted']).split(' '))[0],
+            'Status': FindCoolAdminStatus(seq)
+        }
+        data.append(json)
+    print(data)
+    return JsonResponse(data, safe=False)
