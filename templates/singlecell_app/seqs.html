@@ -64,7 +64,8 @@
 
 
                     {# comment seq.6: 10xProcessed#}
-                    {% if seq.3 == '10xATAC' or seq.3 == 'scATAC-seq' and seq.8 == True %}
+
+                    {% if seq.3 == '10xATAC' and seq.8 == 'Owner' or seq.3 == 'scATAC-seq' and seq.8 ==     'Owner' %}
                     {% if seq.6 == 'No' and seq.5 == 'Yes' and seq.3 == '10xATAC'  %}
                     <td>
                         <form method="post">{%csrf_token%}

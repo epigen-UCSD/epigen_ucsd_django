@@ -48,7 +48,7 @@ def MySeqs(request):
         'Sequence Status', '10xProcessed', 'CoolAdmin'
     ]
     seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).select_related('libraryinfo').order_by('date_submitted_for_sequencing')
-    seqs_info = BuildSeqList(seqs_list, request)
+    seqs_info = BuildSeqList(seqs_list, request, True)
     context = {
         'type':'My Sequences',
         'header': header,
@@ -164,7 +164,7 @@ def findSeqStatus(seq_ids):
 
 '''Use to build seq lists
 '''
-def BuildSeqList(seqs_list, request, owner=True):
+def BuildSeqList(seqs_list, request, owner):
     seq_ids = [seq.seq_id for seq in seqs_list]
     libraryinfoIds = [ seq.libraryinfo.library_id for seq in seqs_list]
     libraryIds = [ seq.libraryinfo_id for seq in seqs_list]
@@ -175,27 +175,37 @@ def BuildSeqList(seqs_list, request, owner=True):
     coolAdmin = [FindCoolAdminStatus(seq) for seq in seqs_list]
     print(submitted_dates)
     if is_member(request.user,['bioinformatics']) or owner == True:
-        ownerList = [True for seq in seqs_list ]
+        ownerList = ['Owner' for seq in seqs_list ]
     else:
         ownerList = []
         for seq in seqs_list:
             if(request.user == seq.team_member_initails):
-                ownerList.append(True)
+                ownerList.append('Owner')
             else:
                 ownerList.append('NotOwner')
-
+    print(f'ownerlist: {ownerList}')
     seqs_info = zip(seq_ids, libraryinfoIds, libraryIds, experiment_types, submitted_dates, 
                     seq_statuses, seqs10xStatus, coolAdmin, ownerList)
     return seqs_info
 
 
 def FindCoolAdminStatus(seq):
-    i = random.randint(1,10)
+    coolAdminDir = settings.COOLADMIN_DIR
+    
+    #first check if 10xATAC data is present
+
+    #check if folder exists in coolAdminDir
+    path = os.path.join(coolAdminDir, str(seq))
+    #if exists check which status file is present and return that
     #do something
-    if i > 7:
+    if not os.path.isdir(path):
         return 'No'
-    elif i > 4:
-        return 'Yes'
+    elif os.path.isfile(path + '/.status.success'):
+        return '.status.success'
+    elif os.path.isfile(path + '/.status.processing'):
+        return '.status.processing'
+    elif os.path.isfile(path + '/.status.fail'):
+        return '.status.fail'
     else: 
         return 'Submitted'
 
@@ -226,19 +236,18 @@ def SubmitToCoolAdmin(request):
     species = SPECIES_MAP[ info.libraryinfo.sampleinfo.species.lower() ]
     print(species)
     
-    cmd1 = './utility/coolAdmin.sh'
+    cmd1 = f'./utility/coolAdmin.sh {email} {seq} {pipeline} {species}'
     
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     
-    status = True
-    if status:
+    if p:
         data = {
             'is_submitted' : True
         }
     else:
         data = {
-            'is_submitted' : False
+            'error' : 'Failed job submission. please resubmit or contact bioinformatics group'
         }
     return JsonResponse(data) 
 
