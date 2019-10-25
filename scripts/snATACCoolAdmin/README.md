@@ -10,6 +10,11 @@
 * The script creates an output folder located here `/projects/ps-epigen/datasets/opoirion/output_LIMS/`
 * In addition, some part of the data are uploaded in the epigen remote server (plateform 2): `ns104190.ip-147-135-44.us`
 
+### Requirements
+* if using TSCC, the conda environment `/home/opoirion/prog/conda_env` should be activated. Otherwise, the requriements of the [snATAC package](https://gitlab.com/Grouumf/snATAC) should be fulfilled
+* If using TSCC, the following path: `/home/opoirion/go/local/bin` should be included in the global path. Otherwise, our [GO package](https://gitlab.com/Grouumf/ATACdemultiplex) to process snATAC-Seq file should be installed. 
+* Because the script is synchronising with the remote server `s104190.ip-147-135-44.us` under the user name `opoirion`, it is required to add the following SSH key: `ssh-add-key opoirion@ns104190.ip-147-135-44.us`
+
 
 ### Input variables
 * The script takes multiple meta variables as input:
