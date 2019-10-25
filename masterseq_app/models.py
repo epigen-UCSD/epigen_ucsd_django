@@ -37,11 +37,12 @@ choice_for_read_type = (
     ('other (please explain in notes)', 'other (please explain in notes)'),
 )
 choice_for_species = (
-    ('human', 'Human'),
-    ('mouse', 'Mouse'),
+    ('human', 'human'),
+    ('mouse', 'mouse'),
     ('rat', 'rat'),
     ('cattle','cattle'),
-    ('monkey','monkey'),
+    ('green monkey','green monkey'),
+    ('macaque','macaque'),
     ('other (please explain in notes)', 'other (please explain in notes)')
 )
 choice_for_unit = (
@@ -94,7 +95,7 @@ class SampleInfo(models.Model):
     team_member = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     sample_index = models.CharField(max_length=30, blank=True)
     species_choice = choice_for_species
-    species = models.CharField(max_length=10, choices=species_choice)
+    species = models.CharField(max_length=50, choices=species_choice)
     sample_type_choice = choice_for_sample_type
     sample_type = models.CharField(max_length=50, choices=sample_type_choice)
     preparation_choice = choice_for_preparation
