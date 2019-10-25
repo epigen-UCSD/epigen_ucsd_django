@@ -41,6 +41,7 @@ choice_for_species = (
     ('mouse', 'Mouse'),
     ('rat', 'rat'),
     ('cattle','cattle'),
+    ('monkey','monkey'),
     ('other (please explain in notes)', 'other (please explain in notes)')
 )
 choice_for_unit = (
