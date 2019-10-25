@@ -17,13 +17,15 @@ class UserLoginView(View):
     form_class = UserLoginForm
     template_name = 'common/login.html'
 
+
     def get(self, request):
         form = self.form_class(None)
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
         form = self.form_class(request.POST)
-
+        valuenext= request.POST.get('next')
+        #print('redirect to:'+valuenext)
         if form.is_valid():
             user = authenticate(
                 username=form.cleaned_data['username'], password=form.cleaned_data['password'])
@@ -33,7 +35,10 @@ class UserLoginView(View):
                     if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
                         return redirect('collaborator_app:collaboratorsetqcs')
                     else:
-                        return redirect('nextseq_app:userruns')
+                        if valuenext and valuenext!='/login/':
+                            return HttpResponseRedirect(request.POST.get('next'))
+                        else:
+                            return redirect('nextseq_app:userruns')
             else:
                 return render(request, self.template_name, {'form': form, 'error_message': 'Invalid login'})
 
