@@ -14,6 +14,7 @@
 * if using TSCC, the conda environment `/home/opoirion/prog/conda_env` should be activated. Otherwise, the requriements of the [snATAC package](https://gitlab.com/Grouumf/snATAC) should be fulfilled
 * If using TSCC, the following path: `/home/opoirion/go/local/bin` should be included in the global path. Otherwise, our [GO package](https://gitlab.com/Grouumf/ATACdemultiplex) to process snATAC-Seq file should be installed. 
 * Because the script is synchronising with the remote server `s104190.ip-147-135-44.us` under the user name `opoirion`, it is required to add the following SSH key: `ssh-add-key opoirion@ns104190.ip-147-135-44.us`
+* Because it might be possible to get conflicts when launching a Rscript from python, it might be required to configure this variable in the .bashrc file: `export NPY_MKL_FORCE_INTEL=true`
 
 
 ### Input variables
