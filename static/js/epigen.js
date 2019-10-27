@@ -976,13 +976,6 @@ $(document).ready(function () {
         })
     })
 
-    $(".submit-cool-popup").on("click", function (e) {
-        e.preventDefault();
-        button = $(this)
-        url = $(this).attr('cool-submission-url')
-        submit_cooladmin(url);
-
-    });
     // AJAX for posting cooladmin data
     function submit_cooladmin(to_post) {
         console.log("submit cooladmin ajax, url: ", to_post)
@@ -1001,15 +994,16 @@ $(document).ready(function () {
             },
             success: function (json) {
                 console.log('succesful sc submit')
-                document.getElementById("popup-overlay").style.display = "none";
             }
         });
+        //get history will update datatables of history
+        url = $(".ca-history").attr('cool-history-url')
+        get_history(url);
     };
 
 
-
-    $(".cooladmin").on("click", function (e) {
-
+    //function for xcool admin submission options button
+    $(".cooladmin-options").on("click", function (e) {
         document.getElementById("popup-overlay").style.display = "block";
         $('#id_seqinfo').val($(this).val());
         $('#id_seqinfo').attr('readonly', true);
@@ -1023,26 +1017,38 @@ $(document).ready(function () {
         caTableClose();
 
     });
-    $(".submit-popup").on("click", function (e) {
+
+    //button to submit a cool admin job 
+    $(".submit-cool-popup").on("click", function (e) {
         console.log('Submitting cooladmin job');
-        document.getElementById("popup-overlay").style.display = "none";
-        caTableClose();
+
+        e.preventDefault();
+        button = $(this)
+        url = $(this).attr('cool-submission-url')
+        submit_cooladmin(url);
 
     });
+
+    //display history of coolAdmin jobs in datatablesjs
     $(".ca-history").on("click", function (e) {
         console.log("GET ca history");
         seq = $('#id_seqinfo').val();
         url = $(this).attr('cool-history-url')
         get_history(url);
+        $("#ca-submissions").toggle();
     });
 
     $("#other").click(function (e) {
         $("#target").click();
     });
 
+    //button to show cooladmin submission parameter options 
+    $(".show-ca-params").click(function (e) {
+        $("#ca-options-form").toggle();
+    });
 
+    //funciton to close cooladmin table of submissions
     function caTableClose() {
-
         if ($.fn.DataTable.isDataTable('#prev_submissions')) {
             var datatable = $('#prev_submissions').DataTable();
             datatable.clear();
@@ -1052,7 +1058,7 @@ $(document).ready(function () {
 
     };
 
-    // AJAX for posting cooladmin data
+    // AJAX for posting cooladmin data and drawing datatablesjs
     function get_history(to_get) {
         console.log("get_history called, url: ", to_get);
         $.ajax({
@@ -1080,18 +1086,18 @@ $(document).ready(function () {
                     $('#prev_submissions').DataTable({
                         data: json,
                         columns: [
-                            { "data": "Submission ID" },
                             { "data": "Pipeline Version" },
                             { "data": "Genotype" },
                             { "data": "Date Submitted" },
                             { "data": "Status" },
-                        ]
+                        ],
+                        "order": [[2, "desc"]]
+
                     });
                 }
-                document.getElementById("ca-submissions").style.display = "block";
+
             }
 
         });
     };
-
 });

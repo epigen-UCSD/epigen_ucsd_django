@@ -12,9 +12,10 @@ class CoolAdminSubmission(models.Model):
     ]
     pipeline_version = models.CharField(max_length=2,choices=pipeline_versions_choices,default=V4)
     seqinfo = models.ForeignKey(
-        SeqInfo, on_delete=models.CASCADE, blank=False, null=True)
+        SeqInfo, on_delete=models.CASCADE, blank=False, null=False)
     genotype = models.CharField(max_length=6)
-    date_submitted = models.DateTimeField(auto_now=True)
+
+    date_submitted = models.DateTimeField(auto_now_add=True)
 
     ''' Optional Parameters to be included later
     # Size of the bin used for snap pipeline

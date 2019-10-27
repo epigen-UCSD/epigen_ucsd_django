@@ -653,15 +653,20 @@ a[aria-expanded=false] .fa-caret-down {
   z-index: 2;
   left: 0;
   top: 0;
+
 }
 
 .popup-content{
   background-color: #dfe6e9;
+  border-style: solid;
+  border-color: #0a2a66;
   margin-top: 10%;
   margin-left: 20%;
   margin-right: 20%;
   text-align: center; 
   padding:10px;
+  height: 60%;
+  overflow:auto;
 }
 
 .close-popup{
@@ -690,3 +695,15 @@ a[aria-expanded=false] .fa-caret-down {
     color:#000000;
   }
 
+#prev_submissions{
+    color:#000000;
+  }
+.ca-submission-form{
+  display: none;
+
+}
+
+.show-ca-options{
+  float: right;
+
+}

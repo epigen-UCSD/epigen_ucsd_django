@@ -201,7 +201,7 @@ def FindCoolAdminStatus(seq):
     #if exists check which status file is present and return that
     #do something
     if not os.path.isdir(path):
-        return 'No'
+        return 'Not submitted'
     elif os.path.isfile(path + '/.status.success'):
         return '.status.success'
     elif os.path.isfile(path + '/.status.processing'):
@@ -227,16 +227,16 @@ def SubmitSingleCell(request):
         }
     return JsonResponse(data)
 
-
+'''
+This function handles a cooladmin submission request from LIMS user.
+This function run a bash script ./utility/coolAdmin.sh
+'''
 def SubmitToCoolAdmin(request):
     email = request.POST.get('email')
     seq = request.POST.get('seq')
     pipeline = request.POST.get('pipeline')
     info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seq)
-    print(info)
-    
     species = SPECIES_MAP[ info.libraryinfo.sampleinfo.species.lower() ]
-    print(species)
     submission = CoolAdminSubmission(pipeline_version=pipeline, seqinfo=info,genotype=species)
     submission.save()
     cmd1 = f'./utility/coolAdmin.sh {email} {seq} {pipeline} {species}'
@@ -254,6 +254,8 @@ def SubmitToCoolAdmin(request):
         }
     return JsonResponse(data) 
 
+def GetCoolAdminLink(seq):
+    return 'as'
 def SubmitToTenX(seq, email):
     tenxdir = settings.TENX_DIR
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
@@ -306,12 +308,17 @@ def GetPreviousCA(request):
     submissions = list(CoolAdminSubmission.objects.select_related('seqinfo').order_by('-date_submitted').filter(seqinfo__seq_id=seq).values())
     data = []
     for submission in submissions:
+        status = FindCoolAdminStatus(seq)
+        link =''
+        if status == 'status.success':
+            link = getLink(submission['seq'])
         json={
-            'Submission ID':submission['id'],
             'Pipeline Version': submission['pipeline_version'],
             'Genotype': submission['genotype'],
             'Date Submitted': (str(submission['date_submitted']).split(' '))[0],
-            'Status': FindCoolAdminStatus(seq)
+            'Status': FindCoolAdminStatus(seq),
+            'Link': link,
+            "report_address": link,
         }
         data.append(json)
     print(data)

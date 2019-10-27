@@ -6,7 +6,7 @@ urlpatterns = [
     path('AllSeqs', views.AllSeqs, name='allseqs'),
     path('MySeqs', views.MySeqs, name='myseqs'),
     path('Ajax/GetPreviousCA', views.GetPreviousCA, name='previousCA'),
-    path('Ajax/SubmitSN/', views.SubmitToCoolAdmin, name='submitcooladmin'),
+    path('Ajax/SubmitCA/', views.SubmitToCoolAdmin, name='submitcooladmin'),
     path('Ajax/Submit/', views.SubmitSingleCell, name='submitsinglecell'),
     path('libs',include('masterseq_app.urls')),
 ]
