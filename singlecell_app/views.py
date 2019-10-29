@@ -8,7 +8,7 @@ from django.conf import settings
 import os
 import random
 import subprocess
-
+import json
 from epigen_ucsd_django.shared import *
 
 # Create your views here.
@@ -236,26 +236,46 @@ def SubmitToCoolAdmin(request):
     seq = request.POST.get('seq')
     pipeline = request.POST.get('pipeline')
     info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seq)
-    species = SPECIES_MAP[ info.libraryinfo.sampleinfo.species.lower() ]
-    submission = CoolAdminSubmission(pipeline_version=pipeline, seqinfo=info,genotype=species)
+    species = SPECIES_MAP[info.libraryinfo.sampleinfo.species.lower()]
+
+    submission, created = CoolAdminSubmission.objects.update_or_create(seqinfo=info,genotype=species,
+                            defaults={'pipeline_version':pipeline} )
     submission.save()
+
     cmd1 = f'./utility/coolAdmin.sh {email} {seq} {pipeline} {species}'
     
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     
     if p:
-        data = {
-            'is_submitted' : True
-        }
+        data = [{
+            'Pipeline Version': pipeline,
+            'Genotype': species,
+            'Date Submitted': (str(submission.date_submitted).split(' '))[0],
+            'Status': FindCoolAdminStatus(seq),
+            'Link': 'NA',
+        }]
     else:
         data = {
-            'error' : 'Failed job submission. please resubmit or contact bioinformatics group'
+            'error' : 'Failed job submission. Please resubmit or contact bioinformatics group'
         }
-    return JsonResponse(data) 
+    return JsonResponse(data, safe=False) 
 
-def GetCoolAdminLink(seq):
-    return 'as'
+def getCoolAdminLink(seq):
+    #cool_dir = f'/projects/ps-epigen/datasets/opoirion/output_LIMS/{seq}/repl1//repl1_{seq}_finals_logs.json'
+    cool_dir = settings.COOLADMIN_DIR
+    json_file = os.path.join(cool_dir, seq, f'repl1//repl1_{seq}_final_logs.json' )
+    
+    with open(json_file, 'r') as f:
+        cool_data = f.read()
+    cool_dict = json.loads(cool_data) 
+    
+    return (cool_dict['report_address'])
+
+'''
+This function should only be called by another fucntion that ensures the sequence is valid to be submitted
+This function submits a sequence to 10x cell ranger pipeline
+'''
 def SubmitToTenX(seq, email):
     tenxdir = settings.TENX_DIR
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
@@ -309,16 +329,17 @@ def GetPreviousCA(request):
     data = []
     for submission in submissions:
         status = FindCoolAdminStatus(seq)
-        link =''
-        if status == 'status.success':
-            link = getLink(submission['seq'])
+        link ='NA'
+        
+        if status == '.status.success':
+            link = getCoolAdminLink(seq)
+        
         json={
             'Pipeline Version': submission['pipeline_version'],
             'Genotype': submission['genotype'],
             'Date Submitted': (str(submission['date_submitted']).split(' '))[0],
-            'Status': FindCoolAdminStatus(seq),
+            'Status': status,
             'Link': link,
-            "report_address": link,
         }
         data.append(json)
     print(data)

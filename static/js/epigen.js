@@ -989,16 +989,22 @@ $(document).ready(function () {
             },
             dataType: 'json',
             error: function (json) {
-                alert(json['error'])
+                alert('failed sc submit')
                 console.log('failed sc submit')
             },
             success: function (json) {
                 console.log('succesful sc submit')
+                console.log(json)
+                //draw table
+                if ($.fn.DataTable.isDataTable('#prev_submissions')) {
+                    var datatable = $('#prev_submissions').DataTable();
+                    datatable.clear();
+                    datatable.rows.add(json);
+                    datatable.draw();
+                }
             }
         });
-        //get history will update datatables of history
-        url = $(".ca-history").attr('cool-history-url')
-        get_history(url);
+
     };
 
 
@@ -1061,43 +1067,69 @@ $(document).ready(function () {
     // AJAX for posting cooladmin data and drawing datatablesjs
     function get_history(to_get) {
         console.log("get_history called, url: ", to_get);
-        $.ajax({
-            type: "GET",
-            url: to_get,
-            cache: false,
-            data: {
-                seq: $('#id_seqinfo').val(),
-            },
-            dataType: 'json',
-            error: function (json) {
-                alert(json['error'])
-                console.log('failed ca history GET')
-            },
-            success: function (json) {
-                console.log(json)
-                console.log('succesful ca history GET')
-                if ($.fn.DataTable.isDataTable('#prev_submissions')) {
-                    var datatable = $('#prev_submissions').DataTable();
-                    datatable.clear();
-                    datatable.rows.add(json);
-                    datatable.draw();
+        seq_to_get = $('#id_seqinfo').val(),
+            $.ajax({
+                type: "GET",
+                url: to_get,
+                cache: false,
+                data: {
+                    seq: seq_to_get,
+                },
+                dataType: 'json',
+                error: function (json) {
+                    alert(json['error'])
+                    console.log('failed ca history GET')
+                },
+                success: function (json) {
+                    console.log(json)
+                    console.log('succesful ca history GET')
+                    if ($.fn.DataTable.isDataTable('#prev_submissions')) {
+                        var datatable = $('#prev_submissions').DataTable();
+                        datatable.clear();
+                        datatable.rows.add(json);
+                        datatable.draw();
+                    }
+                    else {
+                        $('#prev_submissions').DataTable({
+                            data: json,
+                            columns: [
+                                { "data": "Pipeline Version" },
+                                { "data": "Genotype" },
+                                { "data": "Date Submitted" },
+                                {
+                                    "data": "Status",
+                                    render: function (data, type, row) {
+                                        switch (data) {
+                                            case '.status.success':
+                                                return ('Success');
+                                            case 'status.processing':
+                                                return ('Processing')
+                                            case '.status.failed':
+                                                return ('Failed!');
+                                        }
+                                        return ('No')
+
+                                    }
+                                },
+                                {
+                                    "data": "Link",
+                                    render: function (data, type, row) {
+                                        if (data != 'NA') {
+                                            return ('<a href=' + data + '>Link</a>');
+                                        }
+                                        else {
+                                            return (data);
+                                        }
+                                    }
+                                },
+                            ],
+                            "order": [[2, "desc"]]
+
+                        });
+                    }
+
                 }
-                else {
-                    $('#prev_submissions').DataTable({
-                        data: json,
-                        columns: [
-                            { "data": "Pipeline Version" },
-                            { "data": "Genotype" },
-                            { "data": "Date Submitted" },
-                            { "data": "Status" },
-                        ],
-                        "order": [[2, "desc"]]
 
-                    });
-                }
-
-            }
-
-        });
+            });
     };
 });

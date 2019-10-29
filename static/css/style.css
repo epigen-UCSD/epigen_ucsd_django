@@ -657,7 +657,7 @@ a[aria-expanded=false] .fa-caret-down {
 }
 
 .popup-content{
-  background-color: #dfe6e9;
+  background-color: #ffffff;
   border-style: solid;
   border-color: #0a2a66;
   margin-top: 10%;
@@ -685,7 +685,7 @@ a[aria-expanded=false] .fa-caret-down {
 }
 
 .popup-title-ca{
-  color: #0a2a66;
+  color: #000000 ;
 }
 #ca-history{
   float: right;
