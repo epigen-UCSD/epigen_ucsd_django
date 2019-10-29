@@ -129,6 +129,67 @@ fi
 echo "Additional arguments to be used: ${OPTIONALARGS}"
 
 
+if [  ! -z "$USEHARMONY" ]
+then
+    OPTIONALARGS+=" -snap_do_harmony_on_dataset True "
+fi
+
+echo "Additional arguments to be used: -snap_do_harmony_on_dataset"
+
+if [  ! -z "$SNAPUSEPEAK" ]
+then
+    OPTIONALARGS+=" -snap_use_peak True "
+fi
+
+echo "Additional arguments to be used: -snap_use_peak"
+
+
+if [  ! -z "$SNAPSUBSET" ]
+then
+    OPTIONALARGS+=" -snap_subset_diffusion_map ${SNAPSUBSET} "
+fi
+
+echo "Additional arguments to be used: -snap_subset_diffusion_map ${SNAPSUBSET} "
+
+if [  ! -z "$DOCHROMVAR" ]
+then
+    OPTIONALARGS+=" -perform_chromVAR_analysis True "
+fi
+
+echo "Additional arguments to be used: -perform_chromVAR_analysis True "
+
+if [  ! -z "$DOCICERO" ]
+then
+    OPTIONALARGS+=" -perform_cicero_analysis True "
+fi
+
+echo "Additional arguments to be used: -perform_cicero_analysis True "
+
+
+if [  ! -z "$READINPEAK" ]
+then
+    OPTIONALARGS+=" -fraction_of_reads_in_peak ${READINPEAK} "
+fi
+
+echo "Additional arguments to be used: -fraction_of_reads_in_peak ${READINPEAK} "
+
+
+if [  ! -z "$TSSPERCELL" ]
+then
+    OPTIONALARGS+=" -TSS_per_cell ${TSSPERCELL} "
+fi
+
+echo "Additional arguments to be used: -TSS_per_cell ${TSSPERCELL} "
+
+
+if [  ! -z "$MINNBREADPERCELL" ]
+then
+    OPTIONALARGS+=" -min_number_of_reads_per_cell ${MINNBREADPERCELL} "
+fi
+
+echo "Additional arguments to be used: -min_number_of_reads_per_cell ${MINNBREADPERCELL} "
+
+
 
 python2 ~/code/snATAC/snATAC_pipeline/clustering_pipeline.py \
 	-output_name ${OUTPUTNAME} \
@@ -153,3 +214,4 @@ python2 ~/code/snATAC/snATAC_pipeline/clustering_pipeline.py \
 	-min_number_of_reads_per_cell 0 \
 	-fraction_of_reads_in_peak 0.0 \
 	-path_to_remote_server "opoirion@ns104190.ip-147-135-44.us:data/data_ALL/output_LIMS" \
+        ${OPTIONALARGS}
