@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from datetime import datetime
+from django.forms.models import model_to_dict
 from django.core import serializers
 from django.http import JsonResponse
 from masterseq_app.models import LibraryInfo, SeqInfo
@@ -185,7 +187,6 @@ def BuildSeqList(seqs_list, request, owner):
                 ownerList.append('Owner')
             else:
                 ownerList.append('NotOwner')
-    print(f'ownerlist: {ownerList}')
     seqs_info = zip(seq_ids, libraryinfoIds, libraryIds, experiment_types, submitted_dates, 
                     seq_statuses, seqs10xStatus, coolAdmin, ownerList)
     return seqs_info
@@ -194,14 +195,14 @@ def BuildSeqList(seqs_list, request, owner):
 def FindCoolAdminStatus(seq):
     coolAdminDir = settings.COOLADMIN_DIR
     
-    #first check if 10xATAC data is present
+    subExists = CoolAdminSubmission.objects.filter(seqName=seq, status='ClickToSubmit').exists()
 
     #check if folder exists in coolAdminDir
     path = os.path.join(coolAdminDir, str(seq))
     #if exists check which status file is present and return that
     #do something
-    if not os.path.isdir(path):
-        return 'Not submitted'
+    if not os.path.isdir(path) or subExists == True:
+        return 'ClickToSubmit'
     elif os.path.isfile(path + '/.status.success'):
         return '.status.success'
     elif os.path.isfile(path + '/.status.processing'):
@@ -232,34 +233,100 @@ This function handles a cooladmin submission request from LIMS user.
 This function run a bash script ./utility/coolAdmin.sh
 '''
 def SubmitToCoolAdmin(request):
+    print('submitting cool admin job')
     email = request.POST.get('email')
     seq = request.POST.get('seq')
-    pipeline = request.POST.get('pipeline')
     info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seq)
     species = SPECIES_MAP[info.libraryinfo.sampleinfo.species.lower()]
-
-    submission, created = CoolAdminSubmission.objects.update_or_create(seqinfo=info,genotype=species,
-                            defaults={'pipeline_version':pipeline} )
-    submission.save()
-
-    cmd1 = f'./utility/coolAdmin.sh {email} {seq} {pipeline} {species}'
+    submission, created = CoolAdminSubmission.objects.update_or_create(seqName=seq,
+                        defaults={
+                            'seqName':seq,
+                            'species':species,
+                            'status':'inProcess',
+                            'seqinfo':info, 
+                            'date_submitted':datetime.now()
+                            })
     
-    p = subprocess.Popen(
-        cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    print(model_to_dict(submission))
+    cmd1 = f'./utility/coolAdmin.sh {email} {seq} {species}'
     
-    if p:
-        data = [{
-            'Pipeline Version': pipeline,
-            'Genotype': species,
-            'Date Submitted': (str(submission.date_submitted).split(' '))[0],
-            'Status': FindCoolAdminStatus(seq),
-            'Link': 'NA',
-        }]
-    else:
-        data = {
-            'error' : 'Failed job submission. Please resubmit or contact bioinformatics group'
-        }
-    return JsonResponse(data, safe=False) 
+   # p = subprocess.Popen(
+    #    cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    data ={
+        'success':'submitted'
+    }
+    return JsonResponse(data, safe=False)
+
+def EditCoolAdminSubmission(request, seqinfo):
+    seqinfo_id = get_object_or_404(SeqInfo, seq_id=seqinfo)
+    
+    if not seqinfo_id or (not request.user.groups.filter(name='bioinformatics').exists() or request.user != seqinfo_id.team_member_initails):
+        raise PermissionDenied
+    
+    info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seqinfo_id)
+    species = SPECIES_MAP[info.libraryinfo.sampleinfo.species.lower()]
+
+    #starter_data for initialization values of CoolAdminSubmissionForm 
+    starter_data = {
+            'seqName': seqinfo,
+            'species': species,
+            'seqinfo': seqinfo_id,
+            }
+    
+    submission = False
+  
+    #get previous cool admin submission if exists
+    if CoolAdminSubmission.objects.filter(seqinfo=seqinfo_id).exists():
+        submission = CoolAdminSubmission.objects.get(seqinfo=seqinfo_id)
+        form = CoolAdminForm(initial=model_to_dict(submission))
+        print(f'previous submission:{model_to_dict(submission)} ')
+    else:#create a form with starter data if no previous submission form
+        form = CoolAdminForm(initial=starter_data)
+   
+    #handle submission of new submission form
+    if request.method == 'POST':
+        post = request.POST.copy()
+        post['seqinfo'] = seqinfo_id
+        post['species'] = species
+        post['seqName'] = seqinfo
+        #there has been a previous submission
+        if(submission != False):
+            form = CoolAdminForm(post, initial=model_to_dict(submission))
+            print('from: ',form.is_valid(), form.has_changed(),form.cleaned_data)
+            if form.is_valid():
+                if(form.has_changed()):
+                    data = form.cleaned_data
+                    data['status'] = 'ClickToSubmit'
+                    print('changed data: ',form.changed_data)
+                    CoolAdminSubmission.objects.filter(seqinfo=seqinfo_id).update(**data)
+                else:
+                    print('no changes to submission!')
+            else:
+                print('not valid!')
+        else:
+            #there was no previous submission but new data was posted: save these parameters if they are different from the defaults
+            form = CoolAdminForm(post)
+            if form.is_valid():
+                data = form.cleaned_data
+                data['seqinfo'] = seqinfo_id
+                data['species'] = species 
+                data['seqName'] = seqinfo
+                obj = CoolAdminSubmission(**data)
+                obj.save()
+                print('new submission: ',model_to_dict(obj))
+            
+        return redirect('singlecell_app:myseqs')
+
+    context = {
+        'form' : form,
+        'seq': seqinfo,
+    }
+
+    return render(request,'singlecell_app/editCoolAdmin.html', context)
+
+def createCoolAdminSubmission(dict):
+    submission = CoolAdminSubmission.objects.create_submission(dict)
+    return submission
 
 def getCoolAdminLink(seq):
     #cool_dir = f'/projects/ps-epigen/datasets/opoirion/output_LIMS/{seq}/repl1//repl1_{seq}_finals_logs.json'
@@ -322,25 +389,3 @@ def SplitSeqs(seq):
                 addlseqs.append(basename+'_'+addlseq)
     return addlseqs
 
-def GetPreviousCA(request):
-    seq = request.GET.get('seq')
-    print(seq)
-    submissions = list(CoolAdminSubmission.objects.select_related('seqinfo').order_by('-date_submitted').filter(seqinfo__seq_id=seq).values())
-    data = []
-    for submission in submissions:
-        status = FindCoolAdminStatus(seq)
-        link ='NA'
-        
-        if status == '.status.success':
-            link = getCoolAdminLink(seq)
-        
-        json={
-            'Pipeline Version': submission['pipeline_version'],
-            'Genotype': submission['genotype'],
-            'Date Submitted': (str(submission['date_submitted']).split(' '))[0],
-            'Status': status,
-            'Link': link,
-        }
-        data.append(json)
-    print(data)
-    return JsonResponse(data, safe=False)

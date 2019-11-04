@@ -4,14 +4,10 @@ from django.forms import ModelForm, Textarea
 from .models import CoolAdminSubmission
 
 class CoolAdminForm(ModelForm):
-    seqinfo = forms.CharField(
-        label='Sequence',
-        required=True,
-        widget= forms.TextInput(attrs={
-            'size':30,
-            }),
-        )
     class Meta:
         model = CoolAdminSubmission
-        fields = ['pipeline_version',]
+        fields = ['pipeline_version','useHarmony','snapUsePeak','snapSubset',
+                    'doChromVar','readInPeak','tssPerCell','minReadPerCell',
+                    'snapBinSize','snapNDims','date_submitted']
+        exclude = ['seqinfo','status']
     

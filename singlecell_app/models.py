@@ -10,13 +10,17 @@ class CoolAdminSubmission(models.Model):
         (V4, 'V4'),
         (V2, 'V2'),
     ]
+    status = models.CharField(
+        max_length=200, blank=True, default='ClickToSubmit')
     pipeline_version = models.CharField(max_length=2,choices=pipeline_versions_choices,default=V4)
     seqinfo = models.ForeignKey(
         SeqInfo, on_delete=models.CASCADE, blank=False, null=True)
-    genotype = models.CharField(max_length=6)
+    seqName = models.CharField(max_length=20)
+    species = models.CharField(max_length=6)
 
-    date_submitted = models.DateTimeField(auto_now_add=True)
-    ''' Optional Parameters to be included later
+    date_submitted = models.DateTimeField(blank=True, null=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    ''' Optional Parameters to be included later'''
     #USEHARMONY (default False, true if set to True) Perform harmony batch correction using the dataset IDs as batch IDs (Only used with 10x_model_multiple_projects.bash)
     useHarmony =  models.BooleanField(default=False)
 
@@ -33,9 +37,27 @@ class CoolAdminSubmission(models.Model):
     #TSSPERCELL (default empty or default value: 7. Should be float ). QC metric used to filter cells with low TSS
     tssPerCell = models.FloatField(default=7)
     #MINNBREADPERCELL (default empty or default value: 500. Should be int ). QC metric used to filter cells with low number of aligned fragments
-    minReadPerCell = models.IntergerField(default=500)
+    minReadPerCell = models.IntegerField(default=500)
     #SNAPBINSIZE (default empty or default value: 5000 100000. Should be a list of int values separated by a blank). Determine the bins used to perform SNAP clustering.
-    snapBinSize = models.CharField(default='5000 100000')
+    snapBinSize = models.CharField(default='5000 100000', max_length=100)
     #SNAPNDIMS (default empty or default value: 25. Should be a list of int values separated by a blank). Determine the number of dimensions to use to perform SNAP clustering.
-    snapNDims = models.CharField(default="25")
-    '''   
+    snapNDims = models.CharField(default="25", max_length=100)
+    
+    @classmethod
+    def create(cls, dict):
+        submission = cls(
+            pipeline_version=dict['pipeline_version'],
+            seqinfo = dict['seqinfo'],
+            seqName = dict['seqName'],
+            species = dict['genotype'],
+            useHarmony =  dict['useHarmony'],
+            snapUsePeak = dict['snapUsePeak'],
+            snapSubset = dict['snapSubset'],
+            doChromVar = dict['doChromVar'],
+            readInPeak = dict['readInPeak'],
+            tssPerCell = dict['tssPerCell'],
+            minReadPerCell = dict['minReadPerCell'],
+            snapBinSize = dict['snapBinSize'],
+            snapNDims = dict['snapNDims']    
+        )
+        return submission
