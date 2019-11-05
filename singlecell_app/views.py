@@ -15,18 +15,18 @@ from epigen_ucsd_django.shared import *
 
 # Create your views here.
 
-'''
-To add a column to scIndex or AllScLibs of libraryModel info, simply add the title of the coloumn wanted and the field name into a tuple
-in header
-list, eg ('Title of column', 'field_name')
-'''
+
 
 #hold all single cell experiment values
 SINGLE_CELL_EXPS = ['10xATAC','scRNA-seq','snRNA-seq', 'scATAC-seq']
+
+#TODO follow up with frank about this mapping and how people will choose the ref genome
 SPECIES_MAP = {
     'human': 'hg38',
     'mouse': 'mm10',
 }
+
+#view to return All sequences
 def AllSeqs(request):
     form = CoolAdminForm()
     seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo').order_by('date_submitted_for_sequencing')
@@ -44,7 +44,7 @@ def AllSeqs(request):
     }
     return render(request,'singlecell_app/seqs.html',context)
 
-
+#view to return user specific sequences
 def MySeqs(request):
     form = CoolAdminForm()
     header = [
@@ -63,24 +63,19 @@ def MySeqs(request):
     }
     return render(request,'singlecell_app/seqs.html',context)
 
-
-'''Use to build library lists
 '''
-def BuildList(item_list, header):
-    lists = []
-    for item in item_list:
-        properties = {}
-        for head in header:
-            try:
-                property = item[head[1]]
-                properties[head[1]] = property
-            except:
-                print('property not found: ', head[1])
-                properties[head[1]] = ''
-        lists.append(properties)
-    return lists
+This function returns a string that represents 
+the status that the sequence is in the 10x pipeline.
+@params
+    seq: a string that represents the sequence name to be checked.
+@returns
+    string 'No' when sequence is not submitted
+    string 'In Queue' when sequence is in the qsub queue
+    string 'In Process' when sequence is being processed by 10x pipeline
+    string 'Error' when an error occurs in pipeline
+    string 'Yes' when the 10x pipeline is succesfully done
 
-
+'''
 def TenXPipelineCheck(seq):
     tenx_output_folder = 'outs'
     tenx_target_outfile = 'web_summary.html'
@@ -104,10 +99,18 @@ def TenXPipelineCheck(seq):
             seqstatus = 'Yes'
         else:
             seqstatus = 'No'
-    #print(f'seq: {seq}, 10xstatus: {seqstatus}')
     return seqstatus
 
-
+'''#TODO maybe a dictionary would be better suited for this to not be order dependent
+This function checks the FASTQ sequence status and returns the results in a string array. 
+Order dependent.
+@params
+    seq_ids: an array of seq strings. seq string represents a sequence to be checked.
+@returns
+    returns an array of strings representing the status of the sequence.
+    'Yes': FASTQ files present
+    'No': no FASTQ files present
+'''
 def findSeqStatus(seq_ids):
     fastqdir = settings.FASTQ_DIR
     seqsStatus=[]
@@ -166,7 +169,13 @@ def findSeqStatus(seq_ids):
     #print(f'seqstatus: {seqsStatus}')
     return seqsStatus
 
-'''Use to build seq lists
+'''
+This function is used to build seq lists to be returned to the html template.
+@params
+    seqs_list is an array of strings each string is a single cell smaple sequence.
+@returns
+    returns a zipped list of data describing the sequence processed.
+    #TODO clean this function up, library IDs not necessary anymore?
 '''
 def BuildSeqList(seqs_list, request, owner):
     seq_ids = [seq.seq_id for seq in seqs_list] #0
@@ -177,7 +186,14 @@ def BuildSeqList(seqs_list, request, owner):
     seq_statuses = findSeqStatus(seqs_list)#5
     seqs10xStatus = [ TenXPipelineCheck(seq) for seq in seqs_list ] #6
     coolAdmin = [FindCoolAdminStatus(seq) for seq in seqs_list] #7
-    print(submitted_dates)
+    links = [] #8
+    #build lit of links
+    for seq in seqs_list:
+        if FindCoolAdminStatus(seq) == '.status.success':
+            links.append(getCoolAdminLink(seq))
+        else:
+            links.append('')
+    #build list if sequence is 'owned' this means it will be clickable by user
     if is_member(request.user,['bioinformatics']) or owner == True:
         ownerList = ['Owner' for seq in seqs_list ]
     else:
@@ -188,15 +204,15 @@ def BuildSeqList(seqs_list, request, owner):
             else:
                 ownerList.append('NotOwner')
     seqs_info = zip(seq_ids, libraryinfoIds, libraryIds, experiment_types, submitted_dates, 
-                    seq_statuses, seqs10xStatus, coolAdmin, ownerList)
+                    seq_statuses, seqs10xStatus, coolAdmin, ownerList, links)
     return seqs_info
 
-
+'''
+'''
 def FindCoolAdminStatus(seq):
     coolAdminDir = settings.COOLADMIN_DIR
     
     subExists = CoolAdminSubmission.objects.filter(seqName=seq, status='ClickToSubmit').exists()
-
     #check if folder exists in coolAdminDir
     path = os.path.join(coolAdminDir, str(seq))
     #if exists check which status file is present and return that
@@ -331,7 +347,7 @@ def createCoolAdminSubmission(dict):
 def getCoolAdminLink(seq):
     #cool_dir = f'/projects/ps-epigen/datasets/opoirion/output_LIMS/{seq}/repl1//repl1_{seq}_finals_logs.json'
     cool_dir = settings.COOLADMIN_DIR
-    json_file = os.path.join(cool_dir, seq, f'repl1//repl1_{seq}_final_logs.json' )
+    json_file = os.path.join(cool_dir, str(seq), f'repl1//repl1_{str(seq)}_final_logs.json')
     
     with open(json_file, 'r') as f:
         cool_data = f.read()

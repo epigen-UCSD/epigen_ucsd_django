@@ -97,6 +97,7 @@
 
                     {# comment seq.7: snapatac/cooladmin#}
                     {%if seq.5 == 'Yes' and seq.8 == 'Owner' and seq.7 == 'ClickToSubmit'%}
+                    {% if seq.3 == '10xATAC' and seq.6 == 'Yes' or seq.3 != '10xATAC' %}
                     <td>
                         <button type="button" class="btn btn-danger btn-sm btn-status-orange cooladmin-submit"
                             cooladmin-submission-url="{% url 'singlecell_app:submitcooladmin' %}" value="{{seq.0}}"
@@ -104,6 +105,15 @@
                             ClickToSubmit
                         </button>
                     </td>
+                    {% else %}
+                    <td>
+                        <button type="button" class="badge-success badge-status-blue cooladmin-submit"
+                            cooladmin-submission-url="{% url 'singlecell_app:submitcooladmin' %}" disabled
+                            value="{{seq.0}}" email="{{email}}">
+                            Run10xPipeline
+                        </button>
+                    </td>
+                    {% endif %}
                     {%elif seq.5 == 'Yes' and seq.7 == '.status.fail' %}
                     <td>
                         <button type="button" class="badge badge-success badge-status-yellow cooladmin-status"
@@ -111,12 +121,10 @@
                             {{seq.7}}
                         </button>
                     </td>
-                    {%elif seq.5 == 'Yes'%}
+                    {%elif seq.5 == 'Yes' and seq.7 == '.status.success'%}
                     <td>
-                        <button type="button" class="badge badge-success badge-status-lightblue cooladmin-status"
-                            value="{{seq.0}}">
-                            {{seq.7}}
-                        </button>
+                        <a href="{{seq.9}}" target="_blank">CoolAdmin Link</badge>
+                        </a>
                     </td>
                     {% else %}
                     <td>
