@@ -171,6 +171,7 @@ python ~/code/snATAC/snATAC_pipeline/fastq_pipeline.py \
        -threads_number 8 \
        -workflow_version ${VERSION} \
        -format_output_for_webinterface True \
+       -compute_doublets True \
        -sambamba /home/opoirion/prog/sambamba-0.6.8-linux-static \
        -path_to_remote_server "opoirion@ns104190.ip-147-135-44.us:data/data_ALL/output_LIMS" \
        ${OPTIONALARGS}

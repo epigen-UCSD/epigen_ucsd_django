@@ -173,6 +173,7 @@ python2 ~/code/snATAC/snATAC_pipeline/clustering_pipeline.py \
        -compute_TSS_enrichment ${COMPUTETSS} \
        -bam_bigwig_for_top_clustering True \
        -is_10x True \
+       -compute_doublets True \
        -min_number_of_reads_per_cell ${MINNBREADPERCELL} \
        -fraction_of_reads_in_peak ${READINPEAK} \
        -TSS_per_cell ${TSSPERCELL} \
