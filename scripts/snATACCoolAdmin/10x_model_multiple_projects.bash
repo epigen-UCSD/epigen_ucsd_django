@@ -151,14 +151,14 @@ fi
 
 echo "Additional arguments to be used: -snap_subset_diffusion_map ${SNAPSUBSET} "
 
-if [  ! -z "$DOCHROMVAR" ]
+if [  "$DOCHROMVAR"=="True" ]
 then
     OPTIONALARGS+=" -perform_chromVAR_analysis True "
 fi
 
 echo "Additional arguments to be used: -perform_chromVAR_analysis True "
 
-if [  ! -z "$DOCICERO" ]
+if [  "$DOCICERO"=="True" ]
 then
     OPTIONALARGS+=" -perform_cicero_analysis True "
 fi
@@ -166,28 +166,20 @@ fi
 echo "Additional arguments to be used: -perform_cicero_analysis True "
 
 
-if [  ! -z "$READINPEAK" ]
+if [ -z "$READINPEAK" ]
 then
-    OPTIONALARGS+=" -fraction_of_reads_in_peak ${READINPEAK} "
+    READINPEAK=0.0
 fi
 
-echo "Additional arguments to be used: -fraction_of_reads_in_peak ${READINPEAK} "
-
-
-if [  ! -z "$TSSPERCELL" ]
+if [ -z "$TSSPERCELL" ]
 then
-    OPTIONALARGS+=" -TSS_per_cell ${TSSPERCELL} "
+    TSSPERCELL=0.0
 fi
 
-echo "Additional arguments to be used: -TSS_per_cell ${TSSPERCELL} "
-
-
-if [  ! -z "$MINNBREADPERCELL" ]
+if [ -z "$MINNBREADPERCELL" ]
 then
-    OPTIONALARGS+=" -min_number_of_reads_per_cell ${MINNBREADPERCELL} "
+    MINNBREADPERCELL=0.0
 fi
-
-echo "Additional arguments to be used: -min_number_of_reads_per_cell ${MINNBREADPERCELL} "
 
 
 
@@ -199,19 +191,16 @@ python2 ~/code/snATAC/snATAC_pipeline/clustering_pipeline.py \
 	-refseq_promoter_file ${PROMOTER} \
 	-threads_number 8 \
 	-format_output_for_webinterface True \
-	-sambamba /home/oliver/prog/sambamba-0.6.8-linux-static \
+	-sambamba /home/opoirion/prog/sambamba-0.6.8-linux-static \
 	-rm_original_bed_file True \
 	-workflow_version ${VERSION} \
-	-snap_bin_size 5000 1000 \
-	-snap_use_peak True \
 	-compute_TSS_enrichment ${COMPUTETSS} \
 	-bam_bigwig_for_top_clustering True \
-	-perform_chromVAR_analysis False \
-	-perform_cicero_analysis False \
 	-is_10x True \
         -bed_file_regex "fragments.tsv.gz" \
         -barcode_file_regex "singlecell.csv" \
-	-min_number_of_reads_per_cell 0 \
-	-fraction_of_reads_in_peak 0.0 \
+	-min_number_of_reads_per_cell ${MINNBREADPERCELL} \
+	-fraction_of_reads_in_peak ${READINPEAK} \
+        -TSS_per_cell ${TSSPERCELL} \
 	-path_to_remote_server "opoirion@ns104190.ip-147-135-44.us:data/data_ALL/output_LIMS" \
         ${OPTIONALARGS}

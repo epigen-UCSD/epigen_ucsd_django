@@ -6,13 +6,22 @@
 * There are currently 2 scripts:
   1. A script (`10x_model.bash`) to process a single folder from /projects/ps-epigen/outputs/10xATAC
   2. A script (`10x_model_multiple_projects.bash`) to process a single folder from /projects/ps-epigen/outputs/10xATAC
+  3. A script (`from_fastq_process.bash`) to process a single folder from /projects/ps-epigen/seqdata/
+
+The `from_fastq_process.bash` script will process two demultiplexed fastq files with the following name architecture:
+
+```bash
+       -fastq_R1 /projects/ps-epigen/seqdata/${DATASETNAME}_R1.fastq.gz \
+       -fastq_R2 /projects/ps-epigen/seqdata/${DATASETNAME}_R2.fastq.gz \
+```
+
 
 * The script creates an output folder located here `/projects/ps-epigen/datasets/opoirion/output_LIMS/`
 * In addition, some part of the data are uploaded in the epigen remote server (plateform 2): `ns104190.ip-147-135-44.us`
 
 ### Requirements
 * if using TSCC, the conda environment `/home/opoirion/prog/conda_env` should be activated. Otherwise, the requriements of the [snATAC package](https://gitlab.com/Grouumf/snATAC) should be fulfilled
-* If using TSCC, the following path: `/home/opoirion/go/local/bin` should be included in the global path. Otherwise, our [GO package](https://gitlab.com/Grouumf/ATACdemultiplex) to process snATAC-Seq file should be installed. 
+* If using TSCC, the following path: `/home/opoirion/go/local/bin` should be included in the global path. Otherwise, our [GO package](https://gitlab.com/Grouumf/ATACdemultiplex) to process snATAC-Seq file should be installed.
 * Because the script is synchronising with the remote server `s104190.ip-147-135-44.us` under the user name `opoirion`, it is required to add the following SSH key: `ssh-add-key opoirion@ns104190.ip-147-135-44.us`
 * Because it might be possible to get conflicts when launching a Rscript from python, it might be required to configure this variable in the .bashrc file: `export NPY_MKL_FORCE_INTEL=true`
 
@@ -58,6 +67,16 @@ SNAPSUBSETTING=10000 # Int representing the number of cells to use to create the
 SNAPNDIMS="25 50" # List of int
 # Number of neighbors to use to perform KNN prior to clustering
 SNAPNEIGH="15" # int
+# Ratio of reads in peaks to select cells (default: 0)
+READINPEAK=0.0
+# TSS per cell to select cells (default: 7 for from_fastq script and 0 for 10x scripts because we use the cell Ranger QC to select cells)
+$TSSPERCELL=0.0
+# Min number of reads per cell to select cells (default: 500 for from_fastq script and 0 for 10x scripts because we use the cell Ranger QC to select cells)
+MINNBREADPERCELL=500
+# Perform chromVAR analysis (default: False)
+DOCHROMVAR=False / True
+# Perform cicero analysis (default: False)
+DOCICERO=False / True
 ```
 
 * In addition, multiple other parameters can / might be taken into consideration and are described into the workflow package:
