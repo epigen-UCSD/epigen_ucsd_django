@@ -1,0 +1,17 @@
+table CoolAdminSubmission{
+ pipeline_version charField
+ seqinfo "ForeignKey Seqinfo"
+ seqName charField
+ species charField
+ date_submitted datetime
+ date_modified datetime
+ useHarmony boolean
+ snapUsePeak boolean
+ snapSubset "positive integer"
+ doChromVar boolean
+  readInPeak float
+  tssPerCell float
+  minReadPerCell integer
+  snapBinSize charField
+  snapNDims charField
+}
