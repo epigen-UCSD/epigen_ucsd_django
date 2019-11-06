@@ -10,14 +10,12 @@ class CoolAdminSubmission(models.Model):
         (V4, 'V4'),
         (V2, 'V2'),
     ]
+    
     status = models.CharField(
         max_length=200, blank=True, default='ClickToSubmit')
     pipeline_version = models.CharField(max_length=2,choices=pipeline_versions_choices,default=V4)
     seqinfo = models.ForeignKey(
         SeqInfo, on_delete=models.CASCADE, blank=False, null=True)
-    seqName = models.CharField(max_length=20)
-    species = models.CharField(max_length=6)
-
     date_submitted = models.DateTimeField(blank=True, null=True)
     date_modified = models.DateTimeField(auto_now=True)
     ''' Optional Parameters to be included later'''
@@ -48,8 +46,6 @@ class CoolAdminSubmission(models.Model):
         submission = cls(
             pipeline_version=dict['pipeline_version'],
             seqinfo = dict['seqinfo'],
-            seqName = dict['seqName'],
-            species = dict['genotype'],
             useHarmony =  dict['useHarmony'],
             snapUsePeak = dict['snapUsePeak'],
             snapSubset = dict['snapSubset'],

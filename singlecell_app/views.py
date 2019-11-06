@@ -212,13 +212,14 @@ def BuildSeqList(seqs_list, request, owner):
 def FindCoolAdminStatus(seq):
     coolAdminDir = settings.COOLADMIN_DIR
     
-    subExists = CoolAdminSubmission.objects.filter(seqName=seq, status='ClickToSubmit').exists()
+    clickTosub = CoolAdminSubmission.objects.filter(seqinfo=seq, status='ClickToSubmit').exists()
     #check if folder exists in coolAdminDir
     path = os.path.join(coolAdminDir, str(seq))
-    #if exists check which status file is present and return that
-    #do something
-    if not os.path.isdir(path) or subExists == True:
+
+    #if no cool admin submitted before or if it has been but the parameters have been changed
+    if not os.path.isdir(path) or clickTosub == True:
         return 'ClickToSubmit'
+    
     elif os.path.isfile(path + '/.status.success'):
         return '.status.success'
     elif os.path.isfile(path + '/.status.processing'):
@@ -254,15 +255,13 @@ def SubmitToCoolAdmin(request):
     seq = request.POST.get('seq')
     info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seq)
     species = SPECIES_MAP[info.libraryinfo.sampleinfo.species.lower()]
-    submission, created = CoolAdminSubmission.objects.update_or_create(seqName=seq,
+    submission, created = CoolAdminSubmission.objects.update_or_create(seqinfo=info,
                         defaults={
-                            'seqName':seq,
-                            'species':species,
                             'status':'inProcess',
                             'seqinfo':info, 
                             'date_submitted':datetime.now()
                             })
-    
+    submission.save()
     print(model_to_dict(submission))
     cmd1 = f'./utility/coolAdmin.sh {email} {seq} {species}'
     
