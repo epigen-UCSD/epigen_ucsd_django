@@ -957,12 +957,12 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (data) {
-                if (data.is_submitted) {
+                if (data['is_submitted'] == true) {
+                    console.log(data['is_submitted'])
                     console.log('data submitted')
                     $(button).replaceWith('<button type="button" class="btn btn-info btn-sm" disabled name="buttonTenX">Submitted</button>')
                     return
                 }
-                $(button).replaceWith('<button type="button" class="btn btn-warning btn-sm" disabled name="buttonTenX">')
             }
 
         })
@@ -983,11 +983,14 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (data) {
-                $(button).replaceWith(
+                if (data['is_submitted'] == true) {
+                    console.log(data['is_submitted'])
+                    $(button).replaceWith(
 
-                    '<button type="button" class="badge badge-success badge-status-lightblue cooladmin-status">InProcess</button>'
+                        '<button type="button" class="badge badge-success badge-status-lightblue cooladmin-status">InProcess</button>'
 
-                );
+                    );
+                }
             }
         });
     });
