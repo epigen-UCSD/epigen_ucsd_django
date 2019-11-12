@@ -281,7 +281,10 @@ def SubmitToCoolAdmin(request):
                             })
     submission.save()
     dict = (model_to_dict(submission))
-    dict['refgenome'] = submission.refgenome
+    if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
+        dict['refgenome'] = getReferenceUsed(seq)
+    else:
+        dict['refgenome'] = submission.refgenome
     seqString = f'"{seq}"'
 
     paramString = buildCoolAdminParameterString(dict)
@@ -291,7 +294,7 @@ def SubmitToCoolAdmin(request):
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     data ={
-        'success':'submitted'
+        'is_submitted': True
     }
     return JsonResponse(data, safe=False)
 
@@ -303,7 +306,7 @@ def EditCoolAdminSubmission(request, seqinfo):
     
     info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seqinfo_id)
     species = info.libraryinfo.sampleinfo.species
-    exptType = info.libraryinfo.sampleinfo.experiment_type_choice
+    exptType = info.libraryinfo.experiment_type
     print("expt type: ", exptType)
     
     #starter_data for initialization values of CoolAdminSubmissionForm 
@@ -314,40 +317,48 @@ def EditCoolAdminSubmission(request, seqinfo):
     
     submission = False
 
-    #!!!TODO if the seq is 10xatac experiment then ref genome has already been chosen and must be kept the same
     #get previous cool admin submission if exists
     if CoolAdminSubmission.objects.filter(seqinfo=seqinfo_id).exists():
         submission = CoolAdminSubmission.objects.get(seqinfo=seqinfo_id)
         form = CoolAdminForm(initial=model_to_dict(submission), spec=species)
-        print("submission genome:  ",submission.refgenome)
-        print('form before setting genome: ', form.fields['genome'])
+        
         #set the choice field based on the key of the tuple using the previous submission 
         #set ref genome if 10xATAC type of experiment
         if(exptType == '10xATAC'):
-            refgenome =  getReferenceUsed(seq)
+            refgenome =  getReferenceUsed(seqinfo)
             form.fields['genome'].initial = [refgenome]
         else:
             form.fields['genome'].initial = [submission.refgenome]
-        
-        print('form after setting genome: ', form.fields['genome'])
         
         print(f'previous submission:{model_to_dict(submission)} ')
     else:#create a form with starter data if no previous submission form
         form = CoolAdminForm( initial=starter_data, spec=species)
         if(exptType == '10xATAC'):
-            refgenome =  getReferenceUsed(seq)
+            refgenome =  getReferenceUsed(seqinfo)
             form.fields['genome'].initial = [refgenome]
-    #handle submission of new submission form
+    
+    #handle save of new submission form
     if request.method == 'POST':
         post = request.POST.copy()
         print(post)
-
         post['seqinfo'] = seqinfo_id
-        post['refgenome'] = GenomeInfo.objects.get(genome_name=post['genome'])
-        #there has been a previous submission
+
+        #add refgenome to post data
+        if(exptType == '10xATAC'):
+            refgenome =  getReferenceUsed(seqinfo)#add refgenome from 10x pipeline
+            post['refgenome'] = GenomeInfo.objects.get(genome_name=refgenome)
+            post['genome'] = refgenome
+        else:
+            post['refgenome'] = GenomeInfo.objects.get(genome_name=post['genome'])
+        
+        #if previous submission, compare to new submission
         if(submission != False):
-            form = CoolAdminForm(post, initial=model_to_dict(submission))
-            print('form: ',form.is_valid(), form.has_changed(),form.cleaned_data)
+            data = model_to_dict(submission)
+            data['genome'] = GenomeInfo.objects.get(pk=data['refgenome']).genome_name
+            print('\n data: ',data)
+            print('\n post: ',post)
+            form = CoolAdminForm(post, initial=data)
+            print('form: is valid and has changed: ',form.is_valid(), form.has_changed())
             if form.is_valid():
                 if(form.has_changed()):
                     data = form.cleaned_data
@@ -357,14 +368,13 @@ def EditCoolAdminSubmission(request, seqinfo):
                     CoolAdminSubmission.objects.filter(seqinfo=seqinfo_id).update(**data)
                     obj = CoolAdminSubmission.objects.get(seqinfo=seqinfo_id)
                     obj.refgenome = GenomeInfo.objects.get(genome_name=post['refgenome'])
+                    obj.date_modified = datetime.now()
                     obj.save()
                 else:
                     print('no changes to submission!')
             else:
                 print('not valid!')
         else:
-            post['refgenome'] = post['genome']
-
             #there was no previous submission but new data was posted: save these parameters if they are different from the defaults
             form = CoolAdminForm(post)
             if form.is_valid():

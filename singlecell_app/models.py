@@ -19,7 +19,7 @@ class CoolAdminSubmission(models.Model):
         SeqInfo, on_delete=models.CASCADE, blank=False, null=True)
     refgenome = models.ForeignKey(GenomeInfo, on_delete=models.CASCADE, blank=True, null=True)
     date_submitted = models.DateTimeField(blank=True, null=True)
-    date_modified = models.DateTimeField(auto_now=True)
+    date_modified = models.DateTimeField(blank=True, null=True)
     ''' Optional Parameters to be included later'''
     #USEHARMONY (default False, true if set to True) Perform harmony batch correction using the dataset IDs as batch IDs (Only used with 10x_model_multiple_projects.bash)
     useHarmony =  models.BooleanField(default=False)

@@ -51,27 +51,28 @@
                     </td>
                     {% elif seq.6 == 'No' and seq.5 == 'No' %}{# no fastq files present and no 10x ran #}
                     <td>
-                        <button type="button" class="badge badge-success badge-status-blue" data-toggle="tooltip"
-                            data-placement="top" title="No FASTQ files available" name="buttonTenX">
+                        <button type="button" class="btn btn-sm btn-success badge-status-blue" data-toggle="tooltip"
+                            data-placement="top" title="No FASTQ files available">
                             ClickToSubmit
                         </button>
                     </td>
                     {%elif seq.6 == 'Yes' and seq.8 == "Owner" %}{#10x has completed running#}
                     <td>
                         {% url 'setqc_app:10xATACoutput2' seq.0 as the_url %}
-                        <a href="{{the_url}}" class="btn btn-primary btn-sm btn-status-white" role="button">
-                            Results
-                        </a>
+                        <button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"
+                            href="{{the_url}}">Results</button>
                     </td>
                     {%elif seq.6 == 'Yes' and seq.8 != "Owner" %}{#10x has completed running, but user is not owner#}
                     <td>
-                        <a href="#" class="btn btn-primary btn-sm btn-status-white" role="button">
+                        <button type="button" class="btn btn-sm badge-success badge-status-green" href="#"
+                            style="color:white">
                             Results
-                        </a>
+                        </button>
+
                     </td>
                     {%elif seq.6 == 'In Queue' or seq.6 == 'In Process' %} {#present 10x stage#}
                     <td>
-                        <button type="button" class="badge badge-success badge-status-lightblue" disabled>
+                        <button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>
                             {{ seq.6 }}
                         </button>
                     </td>
@@ -126,7 +127,8 @@
                     </td>
                     {%elif seq.5 == 'Yes' and seq.8 == 'Owner' and seq.7 == '.status.success'%}
                     <td>
-                        <a href="{{seq.9}}" target="_blank">Success</badge>
+                        <a href="{{seq.9}}" class="badge badge-success badge-status-green" target="_blank">Success
+
                         </a>
                     </td>
                     {% else %}

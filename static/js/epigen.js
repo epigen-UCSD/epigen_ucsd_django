@@ -960,7 +960,7 @@ $(document).ready(function () {
                 if (data['is_submitted'] == true) {
                     console.log(data['is_submitted'])
                     console.log('data submitted')
-                    $(button).replaceWith('<button type="button" class="btn btn-info btn-sm" disabled name="buttonTenX">Submitted</button>')
+                    $(button).replaceWith(' <button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>Submitted</button>')
                     return
                 }
             }
@@ -983,12 +983,12 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (data) {
+                console.log(data)
                 if (data['is_submitted'] == true) {
-                    console.log(data['is_submitted'])
+                    console.log('success')
                     $(button).replaceWith(
 
-                        '<button type="button" class="badge badge-success badge-status-lightblue cooladmin-status">InProcess</button>'
-
+                        '<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>Submitted</button>'
                     );
                 }
             }
@@ -1034,8 +1034,8 @@ $(document).ready(function () {
     $("#id_tssPerCell").attr('title', 'QC metric used to filter cells with low TSS');
     $("#id_minReadPerCell").attr('title', 'QC metric used to filter cells with low number of aligned fragments');
     $("#id_snapBinSize").attr('title', 'Should be a list of whole numbers separated by a single space. Determines the bin sizes used to perform SNAP clustering.');
-    $("#id_sanpNDims").attr('title', 'Default is 25 if blank. Should be a list of whole numbers separated by a single space. Determines the number of dimensions to use to perform SNAP clustering.');
-
+    $("#id_snapNDims").attr('title', 'Default is 25 if blank. Should be a list of whole numbers separated by a single space. Determines the number of dimensions to use to perform SNAP clustering.');
+    $("#id_genome").attr('title', 'Note: If experiment is of type 10xATAC, the ref genome will then the same as the one ran with the 10x pipeline');
     /* makse sure value is not negative
     $("").change(function (e) {
         if ()

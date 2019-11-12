@@ -5,7 +5,7 @@ from masterseq_app.models import SeqInfo, GenomeInfo
 from .models import CoolAdminSubmission
 
 class CoolAdminForm(ModelForm):
-    genome = forms.ChoiceField(label='Genome', choices=[(
+    genome = forms.ChoiceField(label=' Refernce Genome', choices=[(
         x.genome_name, x.genome_name) for x in GenomeInfo.objects.all()])
     
     def __init__(self, *args, **kwargs):
