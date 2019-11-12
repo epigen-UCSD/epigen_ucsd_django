@@ -113,14 +113,14 @@
                     </td>
                     {%elif seq.5 == 'Yes' and seq.7 == '.status.fail' %}
                     <td>
-                        <button type="button" class="badge badge-success badge-status-yellow cooladmin-status"
+                        <button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status"
                             value="{{seq.0}}">
                             Error!
                         </button>
                     </td>
                     {%elif seq.7 == '.status.processing' or seq.7 == 'Submitted'%}
                     <td>
-                        <button type="button" class="badge badge-success badge-status-lightblue cooladmin-status"
+                        <button type="button" class="btn btn-success btn-sm badge-status-lightblue cooladmin-status"
                             value="{{seq.0}}">
                             Processing
                         </button>

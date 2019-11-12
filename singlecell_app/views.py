@@ -178,7 +178,7 @@ def findSeqStatus(seq_ids):
 '''
 This function is used to build seq lists to be returned to the html template.
 @params
-    seqs_list is an array of strings each string is a single cell smaple sequence.
+    seqs_list is a list of strings where each string is the name for a single cell smaple sequence.
 @returns
     returns a zipped list of data describing the sequence processed.
     #TODO clean this function up, library IDs not necessary anymore?
@@ -218,12 +218,12 @@ def BuildSeqList(seqs_list, request, owner):
 def FindCoolAdminStatus(seq):
     coolAdminDir = settings.COOLADMIN_DIR
     
-    clickTosub = CoolAdminSubmission.objects.filter(seqinfo=seq, status='ClickToSubmit').exists()
+    clickToSub = CoolAdminSubmission.objects.filter(seqinfo=seq, status='ClickToSubmit').exists()
     #check if folder exists in coolAdminDir
     path = os.path.join(coolAdminDir, str(seq))
 
     #if no cool admin submitted before or if it has been but the parameters have been changed
-    if not os.path.isdir(path) or clickTosub == True:
+    if not os.path.isdir(path) or clickToSub == True:
         return 'ClickToSubmit'
     
     elif os.path.isfile(path + '/.status.success'):
@@ -239,12 +239,13 @@ def FindCoolAdminStatus(seq):
 def SubmitSingleCell(request):
     seq = request.POST.get('seq') 
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seq)
-    if not seqinfo_id or (not request.user.groups.filter(name='bioinformatics').exists() or request.user != seqinfo_id.team_member_initails):
+    #check if posting user has access to data
+    if (not request.user.groups.filter(name='bioinformatics').exists()) or request.user != seqinfo_id.team_member_initails:
         data = {
             'is_submitted' : False
         }
         return JsonResponse(data)
-    #print(request)
+
     email = request.POST.get('email')
     status = SubmitToTenX(seq, email)
     if status:
@@ -298,6 +299,27 @@ def SubmitToCoolAdmin(request):
     }
     return JsonResponse(data, safe=False)
 
+
+'''
+This is a big boy here...
+@Header
+This function will be hit by a request to 'save' an input form for editing cool
+admin submission parameters. This functions checks if the posted form data is
+different from the precvious submission form submitted, if it is different then 
+the posted form is saved to the CoolAdminSubmission model representing the sequence.
+If there was no previous submission then a new object is created and saved.
+
+@side-effects:
+-If new form is saved then status of CoolAdminSubmission model will be changed to
+    ClickToSubmit, this will cause the button to be displayed as clicktosubmit in 
+    seqs.html.(pseudo overwriting previous results)
+
+@params: 
+seqinfo is a string that represents the seq_id of SeqInfo model object.
+@returns:
+-redirects user if user posted 'save'
+-renders form
+'''
 def EditCoolAdminSubmission(request, seqinfo):
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seqinfo)
     
@@ -340,7 +362,6 @@ def EditCoolAdminSubmission(request, seqinfo):
     #handle save of new submission form
     if request.method == 'POST':
         post = request.POST.copy()
-        print(post)
         post['seqinfo'] = seqinfo_id
 
         #add refgenome to post data
@@ -373,7 +394,7 @@ def EditCoolAdminSubmission(request, seqinfo):
                 else:
                     print('no changes to submission!')
             else:
-                print('not valid!')
+                print('form not valid!')
         else:
             #there was no previous submission but new data was posted: save these parameters if they are different from the defaults
             form = CoolAdminForm(post)
@@ -433,7 +454,8 @@ def SubmitToTenX(seq, email):
         genome = 'hg38'
     else:
         genome = 'mm10'
-    
+
+    #filename = ".sequence.tsv"
     filename = '.'+str(seq)+'.tsv'
     tsv_writecontent = '\t'.join([seq, ','.join(seqs), genome]) 
     seqDir = os.path.join(tenxdir,seq)
@@ -465,6 +487,7 @@ def SplitSeqs(seq):
                 addlseqs.append(basename+'_'+addlseq)
     return addlseqs
 
+#TODO do param error checking?
 def buildCoolAdminParameterString(dict):
     paramString = ''
     for key in SNAP_PARAM_DICT.keys():

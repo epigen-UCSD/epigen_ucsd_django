@@ -40,4 +40,5 @@ class CoolAdminSubmission(models.Model):
     snapBinSize = models.CharField(default='5000 100000', max_length=100)
     #SNAPNDIMS (default empty or default value: 25. Should be a list of int values separated by a blank). Determine the number of dimensions to use to perform SNAP clustering.
     snapNDims = models.CharField(default="25", max_length=100)
-    
+    #link for cooladmin portal
+    link = models.CharField(max_length=280, blank=True, null=True)
