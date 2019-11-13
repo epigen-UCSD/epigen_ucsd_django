@@ -1,0 +1,26 @@
+{% extends 'singlecell_app/base.html' %}
+{% block content %}
+{% load nextseq_app_tags %}
+{% load singlecell_extras %}
+<div>
+    <div id="form-content">
+        <h1>CoolAdmin Submission Parameters</h1>
+        <div class="card">
+            <div class="card-header">
+                <h3>Sequence: {{seq}} </h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{form.as_p }}
+                    <button type="submit" url="(% url 'singlecell_app:submitcooladmin' %)" class="btn btn-primary mt-2"
+                        id="save-ca-edit">
+                        Save
+                    </button>
+                </form>
+            </div>
+            </card>
+        </div>
+
+    </div>
+    {%endblock%}

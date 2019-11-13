@@ -4,27 +4,6 @@
 {% load singlecell_extras %}
 
 <div id="content" class="col-sm-10 col-md-10 col-lg-10">
-
-    <div class="card popup-overlay text-light" id="popup-overlay">
-        <div class="card-body popup-content">
-            <button class="close-popup btn btn-dark">X</button>
-            <div class="card-body">
-                <h3 class="popup-title">CoolAdmin Submit</h3>
-                <p> Settings </p>
-                <div class="submission-form">
-                    <ul>
-                        <li> Setting</li>
-                        <li> Setting</li>
-                        <li> Setting</li>
-                </div>
-            </div>
-            <!--will need a form here to show available options-->
-            <!--popup's close button-->
-            <button class="submit-popup btn btn-dark">Submit</button>
-
-        </div>
-    </div>
-
     <div class="card">
         <div class="card-header fortable">
             {{ type }}
@@ -59,82 +38,112 @@
 
 
                     {# comment seq.6: 10xProcessed#}
-                    {% if seq.3 == '10xATAC' or seq.3 == 'scATAC-seq'  and seq.8 == True %}
-                    {% if seq.6 == 'No' and seq.5 == 'Yes' %}
+
+                    {% if seq.6 == 'No' and seq.5 == 'Yes'%}{# 10xNot ran FASTQ files present, user can submit  #}
                     <td>
                         <form method="post">{%csrf_token%}
-                            <button type="submit" class="btn btn-primary btn-sm runsinglecell"
+                            <button type="submit" class="btn btn-danger btn-sm btn-status-orange runsinglecell"
                                 singlecell-submission-url="{% url 'singlecell_app:submitsinglecell'%}" email={{email}}
                                 name="buttonTenX" value="{{seq.0}}">
-                                Submit to Process
+                                ClickToSubmit
                             </button>
                         </form>
                     </td>
-
-                    {% elif seq.6 == 'No' and seq.5 == 'No' %}
+                    {% elif seq.6 == 'No' and seq.5 == 'No' %}{# no fastq files present and no 10x ran #}
                     <td>
-                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip"
-                            data-placement="top" title="No FASTQ files available" name="buttonTenX">
-                            Submit
+                        <button type="button" class="btn btn-sm btn-success badge-status-blue" data-toggle="tooltip"
+                            data-placement="top" title="No FASTQ files available">
+                            ClickToSubmit
                         </button>
                     </td>
-                    {%elif seq.6 == 'Yes' %}
+                    {%elif seq.6 == 'Yes' and seq.8 == "Owner" %}{#10x has completed running#}
                     <td>
                         {% url 'setqc_app:10xATACoutput2' seq.0 as the_url %}
-                        <a href="{{the_url}}" class="btn btn-outline-primary btn-sm" role="button" name="buttonTenX">
-                            Results
-                        </a>
+                        <button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"
+                            href="{{the_url}}">Results</button>
                     </td>
-                    {%elif seq.6 == 'In Queue' or seq.6 == 'In Process' %}
+                    {%elif seq.6 == 'Yes' and seq.8 != "Owner" %}{#10x has completed running, but user is not owner#}
                     <td>
-                        <button type="button" class="btn btn-info btn-sm" disabled name="buttonTenX">
+                        <button type="button" class="btn btn-sm badge-success badge-status-green" href="#"
+                            style="color:white">
+                            Results
+                        </button>
+
+                    </td>
+                    {%elif seq.6 == 'In Queue' or seq.6 == 'In Process' %} {#present 10x stage#}
+                    <td>
+                        <button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>
                             {{ seq.6 }}
                         </button>
                     </td>
-                    {%else%}
+                    {%else%}{#there was an error in the 1ox pipeline}
                     <td>
-                        <button type="btn btn-primary btn-sm" class="btn btn-danger btn-sm" disabled name="buttonTenX">
+                        <button type="button" class="badge badge-success badge-status-red" data-toggle="tooltip"
+                            data-placement="top" title="Contact bioinformatics group!">
                             {{ seq.6 }}
                         </button>
                     </td>
                     {%endif%}
-                    {%else%}
-                    <td>
-                        <button class="btn btn-secondary btn-sm" type="button" disabled name="buttonTenX">
-                            {{ seq.6 }}
-                        </button>
-                    </td>
-                    {% endif %}
 
                     {# comment seq.7: snapatac/cooladmin#}
-                    {%if seq.7 == 'No' and seq.5 == 'Yes' and seq.8 == True %}
+                    {% if seq.3 == '10xATAC' and seq.5 == 'Yes' and seq.6 == 'Yes' and seq.7 == 'ClickToSubmit' %}{# only launch 10xATAC sequences in cooladmin when 10x had been processed already #}
                     <td>
-                        <button type="button" disabled class="btn btn-primary btn-sm cooladmin"
-                            cooladmin-submission-url="% url 'singlecell_app:submitcooladmin' %" value="{{seq.0}}"
+                        <button type="button" class="btn btn-danger btn-sm btn-status-orange  cooladmin-submit"
+                            cooladmin-submission-url="{% url 'singlecell_app:submitcooladmin' %}" value="{{seq.0}}"
                             email="{{email}}">
-                            Submit
+                            ClickToSubmit
                         </button>
                     </td>
-                    {% elif seq.7 == 'Submitted'%}
+                    {% elif seq.3 == '10xATAC' and seq.5 == 'Yes' and seq.6 != 'Yes' %}
                     <td>
-                        <button type="button" disabled class="btn btn-info btn-sm">
-                            Submitted
+                        <button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First"
+                            class="badge badge-success badge-status-blue cooladmin-submit"
+                            cooladmin-submission-url="{% url 'singlecell_app:submitcooladmin' %}" disabled
+                            value="{{seq.0}}" email="{{email}}">
+                            Run10xPipeline
                         </button>
                     </td>
-                    {%elif seq.7 == 'Yes' %}
+                    {% elif seq.3 != '10xATAC' and seq.5 == 'Yes' %}
                     <td>
-                        <a href="#" role="button" class="btn btn-outline-primary btn-sm">
-                            Results
+                        <button type="button" class="btn btn-danger btn-sm btn-status-orange cooladmin-submit"
+                            cooladmin-submission-url="{% url 'singlecell_app:submitcooladmin' %}" value="{{seq.0}}"
+                            email="{{email}}">
+                            ClickToSubmit
+                        </button>
+                    </td>
+                    {%elif seq.5 == 'Yes' and seq.7 == '.status.fail' %}
+                    <td>
+                        <button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status"
+                            value="{{seq.0}}">
+                            Error!
+                        </button>
+                    </td>
+                    {%elif seq.7 == '.status.processing' or seq.7 == 'Submitted'%}
+                    <td>
+                        <button type="button" class="btn btn-success btn-sm badge-status-lightblue cooladmin-status"
+                            value="{{seq.0}}">
+                            Processing
+                        </button>
+                    </td>
+                    {%elif seq.5 == 'Yes' and seq.8 == 'Owner' and seq.7 == '.status.success'%}
+                    <td>
+                        <a href="{{seq.9}}" class="badge badge-success badge-status-green" target="_blank">Success
+
                         </a>
                     </td>
                     {% else %}
                     <td>
-                        <button type="button" disabled class="btn btn-primary btn-sm">
-                            Submit to SC
+                        <button type="button" disabled class="badge badge-success badge-status-blue">
+                            {{seq.7}}
                         </button>
                     </td>
                     {% endif %}
-
+                    <td>{%if seq.3 != '10xATAC' or seq.6 == 'Yes' %}
+                        <a href="{% url 'singlecell_app:editcooladmin' seq.0 %}"><i class="fas fa-edit"></i></a>
+                        {%else%}
+                        <a href="#"><i class="fas fa-edit"></i></a>
+                        {%endif%}
+                    </td>
                 </tr>
                 {% endfor %}
                 {%else%}

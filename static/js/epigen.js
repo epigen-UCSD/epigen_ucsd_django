@@ -23,7 +23,6 @@ $.ajaxSetup({
 });
 
 
-
 $(document).ready(function () {
 
     // datatable js related
@@ -68,13 +67,6 @@ $(document).ready(function () {
         ]
 
     });
-
-    $('#datatable-sc').DataTable({
-        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
-        "iDisplayLength": 20,
-        "order": [[3, 'asc'], [0, 'desc']],
-    });
-
 
     $('#datatabledetailnotes2').DataTable({
         "order": [[2, "desc"]],
@@ -963,6 +955,7 @@ $(document).ready(function () {
         button = $(this)
         $.ajax({
             type: "POST",
+            cache: false,
             url: $(this).attr('singlecell-submission-url'),
             data: {
                 'seq': $(this).val(),
@@ -970,31 +963,88 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (data) {
-                if (data.is_submitted) {
+                if (data['is_submitted'] == true) {
+                    console.log(data['is_submitted'])
                     console.log('data submitted')
-                    $(button).replaceWith('<button type="button" class="btn btn-info btn-sm" disabled name="buttonTenX">Submitted</button>')
+                    $(button).replaceWith(' <button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>Submitted</button>')
                     return
                 }
-                $(button).replaceWith('<button type="button" class="btn btn-warning btn-sm" disabled name="buttonTenX">')
             }
 
         })
-    })
-
-    $(".cooladmin").on("click", function (e) {
-        document.getElementById("popup-overlay").style.display = "block";
-        console.log("submitting: ", $(this).val());
-
-    })
-
-    $(".close-popup").on("click", function (e) {
-        document.getElementById("popup-overlay").style.display = "none";
-
     });
-    $(".submit-popup").on("click", function (e) {
-        console.log('Submitting cooladmin job')
-        document.getElementById("popup-overlay").style.display = "none";
+    $('#id_date_submitted').attr("readonly", true);
 
+    $(".cooladmin-submit").click(function (e) {
+        button = $(this)
+        seq = $(button).val();
+        email = $(button).attr('email');
+        console.log("submitting thing: ", seq, email)
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('cooladmin-submission-url'),
+            data: {
+                'seq': seq,
+                'email': email,
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                if (data['is_submitted'] == true) {
+                    console.log('success')
+                    $(button).replaceWith(
+
+                        '<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>Submitted</button>'
+                    );
+                }
+            }
+        });
+    });
+    /*
+        $("#save-ca-edit").on("click", function (e) {
+            e.preventDefault();
+            console.log("submitting new ca submission");
+            button = $(this)
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: $(this).attr('singlecell-submission-url'),
+                data: {
+                    'seq': $(this).val(),
+                    
+                    'email': $(this).attr("email"),
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.is_submitted) {
+                        console.log('data submitted')
+                        $(button).replaceWith('<button type="button" class="btn btn-info btn-sm" disabled name="buttonTenX">Submitted</button>')
+                        return
+                    }
+                    $(button).replaceWith('<button type="button" class="btn btn-warning btn-sm" disabled name="buttonTenX">')
+                }
+    
+            })
+        })*/
+
+    $("#other").click(function (e) {
+        $("#target").click();
     });
 
+    $("#id_pipeline_version").attr('title', 'Choose desired pipeline version');
+    $("#id_useHarmony").attr('title', 'Default False. Perform harmony batch correction using the dataset IDs as batch IDs only for multiple sequences');
+    $("#id_snapUsePeak").attr('title', 'Construct a peak matrix in addition to the bin matrix');
+    $("#id_snapSubset").attr('title', ' Use this number to construct a subset that is used to construct the distance matrix for SNAP. The lower it is, the lesser is the resolution. After 10-15K cells, the memory might become an issue');
+    $("#id_doChromVar").attr('title', ' Perform chromVAR analysis');
+    $("#id_readInPeak").attr('title', 'Should be inbetween 0 and 1. QC metric used to filter cells with low ratio of reads in peak');
+    $("#id_tssPerCell").attr('title', 'QC metric used to filter cells with low TSS');
+    $("#id_minReadPerCell").attr('title', 'QC metric used to filter cells with low number of aligned fragments');
+    $("#id_snapBinSize").attr('title', 'Should be a list of whole numbers separated by a single space. Determines the bin sizes used to perform SNAP clustering.');
+    $("#id_snapNDims").attr('title', 'Default is 25 if blank. Should be a list of whole numbers separated by a single space. Determines the number of dimensions to use to perform SNAP clustering.');
+    $("#id_genome").attr('title', 'Note: If experiment is of type 10xATAC, the ref genome will then the same as the one ran with the 10x pipeline');
+    /* makse sure value is not negative
+    $("").change(function (e) {
+        if ()
+    });
+    */
 });

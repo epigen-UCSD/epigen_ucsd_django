@@ -28,6 +28,8 @@ ALTER USER test WITH PASSWORD '123456';
 * [metadata@dbdiagram.io](https://dbdiagram.io/d/5bb396d8e63c1f0014dab57d)
 * [usrs@dbdigram.io](https://dbdiagram.io/d/5c05a310b155a200149def72)
 
+* [CoolAdminModel](https://dbdiagram.io/d/5dc0512fedf08a25543d7eb5)
+
 # Migration Instruction for Special Cases: #
 
 ## change group from char to foreign key for SetQC app (existing char group is none, no need to transer data)
