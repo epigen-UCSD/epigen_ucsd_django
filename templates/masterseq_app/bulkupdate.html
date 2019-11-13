@@ -1,0 +1,164 @@
+{% extends 'masterseq_app/base.html' %}
+
+{% block content %}
+{% load nextseq_app_tags %}
+<div id="content" class="col-sm-10 col-md-10 col-lg-10">
+  <div class="card">
+    <div class="card-header fortable">
+      Bulk Update
+    </div><!-- /.card-header -->
+    <div class="card-body">
+      {% if error_message %}
+          <p class="error-message">{{ error_message }}</strong></p>
+      {% endif %}
+      <form id="changeble_librariesform" action="" method="post">{% csrf_token %}  
+        {% for field in update_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error |safe }}
+            </li>
+            {% endfor %}
+            </ul>
+            {% if field.field.widget|get_class == "Textarea" %}
+            <p class="textarea">
+            {% with tagtex=field.label_tag %}
+            {{ tagtex | linktrackingsheet | safe | linebreaks }}
+            {% endwith %}
+            </p>
+              <div class="row">
+                <div class="col-5">
+                  {{ field }}
+                </div>
+                <div class="col-7" style="padding-left: 5px">
+                  <div class="row">
+                    <a id="showorhideexamples" class="btn btn-outline-success btn-customesm" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Show examples<span style="margin-left: 5px"><i class="fas fa-angle-double-right"></i></span></a>
+                  </div>
+                  <div class="row collapse" style="padding-top: 10px" id="collapseExample">
+                    <div class="card" style="border-color: #28a745;width: 90%">
+                      <div class="card-body" style="font-size: 11px;color: #28a745">
+                        <div class="row">
+                        <div class="col-3">
+                          <div class="row" style="padding-left: 10px;padding-bottom: 10px">
+                            <span>&#9312;</span>
+                          </div>
+                          <div class="row" style="padding-left: 20px">
+                            <table class="table-responsive-xl summarytable">            
+                              <tbody>                          
+                                <tr>
+                                  <th>Sample ID</th> 
+                                  <td>Species</td>
+                                </tr>                                 
+                                <tr>
+                                  <th>CEMBA180723_4G</th> 
+                                  <td>human</td>
+                                </tr>   
+                                <tr>
+                                  <th>CEMBA180724_4H</th> 
+                                  <td>human</td>
+                                </tr>   
+                                <tr>
+                                  <th>CEMBA180730_4H</th> 
+                                  <td>human</td>
+                                </tr>   
+                                <tr>
+                                  <th>CEMBA180731_5A</th> 
+                                  <td>human</td>
+                                </tr>    
+                              </tbody>
+                            </table>                            
+                          </div>
+                        </div>
+
+                        <div class="col-4">
+                          <div class="row" style="padding-left: 10px;padding-bottom: 10px">
+                            <span>&#9313;</span>
+                          </div>
+                          <div class="row" style="padding-left: 20px">
+                            <table class="table-responsive-xl summarytable">            
+                              <tbody>                          
+                                <tr>
+                                  <th>Library ID</th> 
+                                  <td>Reference to notebook and page number</td>
+                                </tr>                                 
+                                <tr>
+                                  <th>JYH_517</th> 
+                                  <td>nb1_p232</td>
+                                </tr>   
+                                <tr>
+                                  <th>JYH_518</th> 
+                                  <td>nb1_p232</td>
+                                </tr>   
+                                <tr>
+                                  <th>JYH_519</th> 
+                                  <td>nb1_p232</td>
+                                </tr>   
+                                <tr>
+                                  <th>JYH_705</th> 
+                                  <td>nb1_p271</td>
+                                </tr>    
+                              </tbody>
+                            </table> 
+                          </div>
+                        </div>
+
+                        <div class="col-5">
+                          <div class="row" style="padding-left: 10px;padding-bottom: 10px">
+                            <span>&#9314;</span>
+                          </div>
+                          <div class="row" style="padding-left: 20px">
+                            <table class="table-responsive-xl summarytable">            
+                              <tbody>                          
+                                <tr>
+                                  <th>Sequencing ID</th> 
+                                  <td>Read type</td>
+                                  <td>i5 Index (or single index)</td>
+                                </tr>                                 
+                                <tr>
+                                  <th>JYH_21</th> 
+                                  <td>SE</td>
+                                  <td>N701</td>
+                                </tr>   
+                                <tr>
+                                  <th>JYH_22</th> 
+                                  <td>SE</td>
+                                  <td>N702</td>
+                                </tr>   
+                                <tr>
+                                  <th>JYH_23</th> 
+                                  <td>SE</td>
+                                  <td>N703</td>
+                                </tr>   
+                                <tr>
+                                  <th>JYH_24</th> 
+                                  <td>SE</td>
+                                  <td>N704</td>
+                                </tr>    
+                              </tbody>
+                            </table> 
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              {{ field.label_tag }} {{ field }}
+            {% endif %}
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %}   
+        <input id="bindtomodalok" type="submit" value="Save" name='Save' hidden='hidden'/>
+        <input type="submit" value="Save" name='Preview'/>
+      </form>
+    </div><!-- /.card-body -->              
+  </div><!-- /.card -->      
+</div><!-- /#content --> 
+{% endblock %}

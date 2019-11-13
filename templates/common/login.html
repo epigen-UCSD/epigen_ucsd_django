@@ -14,7 +14,7 @@
         <br />      
 
       {% endif %}
-      <form method="post" action=" {% url 'login' %} ">
+      <form method="post" action=" {% url 'login' %}?next={{request.path}} ">
         {% csrf_token %}
         {{ form.as_p }}
         <br/>
