@@ -80,7 +80,7 @@ class SeqMachineInfo(models.Model):
 class GenomeInfo(models.Model):
     genome_name = models.CharField(max_length=50)
     species_choice = choice_for_species
-    species = models.CharField(max_length=10, choices=species_choice)
+    species = models.CharField(max_length=20, choices=species_choice)
 
     def __str__(self):
         return self.genome_name
