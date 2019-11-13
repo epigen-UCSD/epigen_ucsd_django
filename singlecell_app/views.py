@@ -30,11 +30,12 @@ SNAP_PARAM_DICT= {
     'snapNDims':'SNAPNDIMS',
     'refgenome':'GENOMETYPE',
 }
-SPECIES_MAP = {'human':'hg38',
-                'mouse':' mm10'}
+
 #hold all single cell experiment values
 SINGLE_CELL_EXPS = ['10xATAC','scRNA-seq','snRNA-seq', 'scATAC-seq']
 
+defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
+                 'rat': 'rn6', 'cattle': 'ARS-UCD1.2'}
 #view to return All sequences
 def AllSeqs(request):
     form = CoolAdminForm()
@@ -273,7 +274,7 @@ def SubmitToCoolAdmin(request):
     print('submitting cool admin job')
     email = request.POST.get('email')
     info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seq)
-    species = SPECIES_MAP[info.libraryinfo.sampleinfo.species.lower()]
+    species = defaultgenome[info.libraryinfo.sampleinfo.species.lower()]
     submission, created = CoolAdminSubmission.objects.update_or_create(seqinfo=info,
                         defaults={
                             'status':'inProcess',
@@ -284,8 +285,11 @@ def SubmitToCoolAdmin(request):
     dict = (model_to_dict(submission))
     if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
         dict['refgenome'] = getReferenceUsed(seq)
-    else:
-        dict['refgenome'] = submission.refgenome
+    else:#make sure that choice for refgenome is not none
+        if(submission.refgenome == None):#use default genome if None
+            dict['refgenome'] =  species
+        else:
+            dict['refgenome'] = submission.refgenome
     seqString = f'"{seq}"'
 
     paramString = buildCoolAdminParameterString(dict)
@@ -358,7 +362,9 @@ def EditCoolAdminSubmission(request, seqinfo):
         if(exptType == '10xATAC'):
             refgenome =  getReferenceUsed(seqinfo)
             form.fields['genome'].initial = [refgenome]
-    
+        else:
+            form.fields['genome'].initial = [defaultgenome[species]]
+            print('form: ',form)
     #handle save of new submission form
     if request.method == 'POST':
         post = request.POST.copy()
