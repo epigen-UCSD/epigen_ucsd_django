@@ -266,7 +266,7 @@ This function run a bash script ./utility/coolAdmin.sh
 def SubmitToCoolAdmin(request):
     seq = request.POST.get('seq')
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seq)
-    if not seqinfo_id or (not request.user.groups.filter(name='bioinformatics').exists() or request.user != seqinfo_id.team_member_initails):
+    if(not request.user.groups.filter(name='bioinformatics').exists() and request.user != seqinfo_id.team_member_initails):
         data = {
             'is_submitted' : False
         }
@@ -326,8 +326,9 @@ seqinfo is a string that represents the seq_id of SeqInfo model object.
 '''
 def EditCoolAdminSubmission(request, seqinfo):
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seqinfo)
-    
-    if not seqinfo_id or (not request.user.groups.filter(name='bioinformatics').exists() or request.user != seqinfo_id.team_member_initails):
+    print('edit reqeust: ',(request.user.groups.filter(name='bioinformatics').exists()))
+    if(not request.user.groups.filter(name='bioinformatics').exists() and request.user != seqinfo_id.team_member_initails):
+        print('raising exception')
         raise PermissionDenied
     
     info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seqinfo_id)
