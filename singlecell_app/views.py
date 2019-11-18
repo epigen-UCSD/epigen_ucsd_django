@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.contrib.auth.models import User, Group
 from datetime import datetime
 from django.forms.models import model_to_dict
 from django.core import serializers
@@ -185,6 +186,7 @@ This function is used to build seq lists to be returned to the html template.
     #TODO clean this function up, library IDs not necessary anymore?
 '''
 def BuildSeqList(seqs_list, request, owner):
+    print('reqeust: ',request.user, (Group.objects.get(name='bioinformatics') in model_to_dict(User.objects.get(username=request.user))['groups'])) 
     seq_ids = [seq.seq_id for seq in seqs_list] #0
     libraryinfoIds = [ seq.libraryinfo.library_id for seq in seqs_list] #1
     libraryIds = [ seq.libraryinfo_id for seq in seqs_list]#2
@@ -206,7 +208,7 @@ def BuildSeqList(seqs_list, request, owner):
     else:
         ownerList = []
         for seq in seqs_list:
-            if(request.user == seq.team_member_initails):
+            if(request.user == seq.team_member_initails or ( Group.objects.get(name='bioinformatics') in model_to_dict(User.objects.get(username=request.user))['groups']) ):
                 ownerList.append('Owner')
             else:
                 ownerList.append('NotOwner')
@@ -266,7 +268,7 @@ This function run a bash script ./utility/coolAdmin.sh
 def SubmitToCoolAdmin(request):
     seq = request.POST.get('seq')
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seq)
-    if not seqinfo_id or (not request.user.groups.filter(name='bioinformatics').exists() or request.user != seqinfo_id.team_member_initails):
+    if(not request.user.groups.filter(name='bioinformatics').exists() and request.user != seqinfo_id.team_member_initails):
         data = {
             'is_submitted' : False
         }
@@ -326,8 +328,9 @@ seqinfo is a string that represents the seq_id of SeqInfo model object.
 '''
 def EditCoolAdminSubmission(request, seqinfo):
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seqinfo)
-    
-    if not seqinfo_id or (not request.user.groups.filter(name='bioinformatics').exists() or request.user != seqinfo_id.team_member_initails):
+    print('edit reqeust: ',(request.user.groups.filter(name='bioinformatics').exists()))
+    if(not request.user.groups.filter(name='bioinformatics').exists() and request.user != seqinfo_id.team_member_initails):
+        print('raising exception')
         raise PermissionDenied
     
     info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seqinfo_id)

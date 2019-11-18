@@ -1000,6 +1000,12 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('#datatable-sc').DataTable({
+
+        "pageLength": 50,
+        "order": [[0, "desc"], [3, "desc"]],
+    });
     /*
         $("#save-ca-edit").on("click", function (e) {
             e.preventDefault();
