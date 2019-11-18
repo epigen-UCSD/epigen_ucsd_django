@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.contrib.auth.models import User, Group
 from datetime import datetime
 from django.forms.models import model_to_dict
 from django.core import serializers
@@ -185,6 +186,7 @@ This function is used to build seq lists to be returned to the html template.
     #TODO clean this function up, library IDs not necessary anymore?
 '''
 def BuildSeqList(seqs_list, request, owner):
+    print('reqeust: ',request.user, (Group.objects.get(name='bioinformatics') in model_to_dict(User.objects.get(username=request.user))['groups'])) 
     seq_ids = [seq.seq_id for seq in seqs_list] #0
     libraryinfoIds = [ seq.libraryinfo.library_id for seq in seqs_list] #1
     libraryIds = [ seq.libraryinfo_id for seq in seqs_list]#2
@@ -206,7 +208,7 @@ def BuildSeqList(seqs_list, request, owner):
     else:
         ownerList = []
         for seq in seqs_list:
-            if(request.user == seq.team_member_initails):
+            if(request.user == seq.team_member_initails or ( Group.objects.get(name='bioinformatics') in model_to_dict(User.objects.get(username=request.user))['groups']) ):
                 ownerList.append('Owner')
             else:
                 ownerList.append('NotOwner')

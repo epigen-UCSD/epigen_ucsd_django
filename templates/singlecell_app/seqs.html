@@ -61,8 +61,8 @@
                         {%elif seq.6 == 'Yes' and seq.8 == "Owner" %}{#10x has completed running#}
                         <td>
                             {% url 'setqc_app:10xATACoutput2' seq.0 as the_url %}
-                            <button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"
-                                href="{{the_url}}">Results</button>
+                            <button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white">
+                                <a href="{{the_url}}" style="color:white" target="_blank">Results</a></button>
                         </td>
                         {%elif seq.6 == 'Yes' and seq.8 != "Owner" %}{#10x has completed running, but user is not owner#}
                         <td>
