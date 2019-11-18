@@ -1003,8 +1003,8 @@ $(document).ready(function () {
 
     $('#datatable-sc').DataTable({
 
-        "pageLength": 50,
-        "order": [[0, "desc"], [3, "desc"]],
+        "pageLength": 25,
+        "order": [[3, "desc"], [0, "desc"]],
     });
     /*
         $("#save-ca-edit").on("click", function (e) {
