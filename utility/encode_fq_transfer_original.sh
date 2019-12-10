@@ -5,12 +5,12 @@ seq_info_file=$1
 seqfolder=$2
 while IFS=$'\t' read -r -a myArray
 do
-	seqid=${myArray[0]}
-	seqtype=${myArray[1]}
-	fqurl=${myArray[2]}
+	seqid=${myArray[6]}
+	seqtype=${myArray[11]}
+	fqurl=${myArray[16]}
 	echo $seqid
 
-	if [ "${myArray[1]}" == "SE" ]; then
+	if [ "${myArray[11]}" == "SE" ]; then
 		IFS="/" read -r -a array <<< "$fqurl"
 		r1=${array[@]: -1:1}
 		r1rename=$seqfolder"/"$seqid".fastq.gz"
@@ -18,7 +18,7 @@ do
 		echo $r1rename
 		wget -nc -P $seqfolder"/ENCODE/" $fqurl
 		ln -s $seqfolder"/ENCODE/"$r1 $r1rename
-	elif [ "${myArray[1]}" == "PE" ]; then
+	elif [ "${myArray[11]}" == "PE" ]; then
 		IFS=',' read -r -a array <<< "$fqurl"
 		IFS="/" read -r -a subarray <<< "${array[0]}"
 		r1=${subarray[@]: -1:1}
@@ -37,4 +37,4 @@ do
 	fi
 
 
-done < $seq_info_file
+done < $seq_info_files
