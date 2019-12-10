@@ -3,7 +3,7 @@ from .models import LibrariesSetQC, LibraryInSet
 from masterseq_app.models import SeqInfo, GenomeInfo, SampleInfo, LibraryInfo
 from django.db import transaction
 from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm,\
-    ChIPLibrariesToIncludeCreatForm, SeqLabelGenomeCreationForm, BaseSeqLabelGenomeCreationFormSet
+    ChIPLibrariesToIncludeCreatForm, SeqLabelGenomeCreationForm, BaseSeqLabelGenomeCreationFormSet,EncodeSetForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import JsonResponse
@@ -1213,4 +1213,21 @@ def tenx_output2(request, outputname):
     if(data == None):
         print('No data read in 10x Web_Summary.html File!')
     return HttpResponse( data )
+
+def EncodeSetQCCreateView(request):
+
+    encode_set_form = EncodeSetForm(request.POST or None)
+
+    if request.method == 'POST':
+        if encode_set_form.is_valid():
+            return redirect('setqc_app:encode_setqc_add')
+
+    else:
+        encode_set_form = EncodeSetForm(None)
+
+    context = {
+        'encode_set_form': encode_set_form,
+    }
+
+    return render(request, 'setqc_app/encode_setqc_add.html', context)
 

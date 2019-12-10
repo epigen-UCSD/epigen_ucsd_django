@@ -28,6 +28,7 @@ def main():
     parser.add_argument('-user',help = 'the user(username) who requests this ENCODE setqc')
     out_for_fq = 'seq_fq.tsv'
     writelines = []
+    username_tm = parser.parse_args().user
 
     if len(sys.argv) != 5:
         parser.print_help(sys.stderr)
@@ -46,8 +47,7 @@ def main():
             if gname:
                 group_tm = Group.objects.get(name=gname)
             else:
-                group_tm = None
-            username_tm = parser.parse_args().user
+                group_tm = None        
             sampleid = fields[8].strip()
             samdescript = fields[9].strip()
             samspecies = fields[10].split('(')[0].lower().strip()
@@ -117,6 +117,7 @@ def main():
                 if seqid == item.notes.split(';')[1].split(')')[1]:
                     obj = item
                     existing_flag = 1
+                    writelines.append('\t'.join([item.seq_id,'1',fields[11].strip(),fields[16].strip()]))
                     break;
                 else:
                     existing_flag = 0
@@ -132,8 +133,10 @@ def main():
                 obj.read_length = fields[10].strip()
                 obj.read_type = fields[11].strip()
                 obj.notes = ';'.join([fields[5].strip()+':'+fields[6.strip(),fields[15].strip()]])
-                writelines.append('\t'.join([thisseqid,fields[11].strip(),fields[16].strip()]))
+                writelines.append('\t'.join([thisseqid,fields[1].strip(),'0',fields[11].strip(),fields[16].strip()]))
     with open(out_for_fq, 'w') as fw:
+        fw.write('\t'.join(['seq_id','label','existed','read_type','download_url']))
+        fw.write('\n')
         fw.write('\n'.join(writelines))
         fw.write('\n')
 
