@@ -1,0 +1,3 @@
+[submodule "scripts/snATACCoolAdmin"]
+	path = scripts/snATACCoolAdmin
+	url = git@github.com:epigen-UCSD/snATACCoolAdmin_LIMS.git
