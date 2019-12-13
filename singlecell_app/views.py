@@ -297,6 +297,7 @@ def SubmitToCoolAdmin(request):
     paramString = buildCoolAdminParameterString(dict)
     print('paramString: ',paramString)
     cmd1 = f'./utility/coolAdmin.sh {email} {seqString} {paramString}'
+    print(cmd1)
     
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
