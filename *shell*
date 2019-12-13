@@ -1,0 +1,1077 @@
+[zhc268@epigenomics setqc_app]$ cd ../
+[zhc268@epigenomics epigen_ucsd_django]$ ll
+total 52
+-rw-r--r-- 1 zhc268 epigen-group   24 Oct 18 12:50 5%
+drwxr-xr-x 4 zhc268 epigen-group  177 Jan 17  2019 collaborator_app
+drwxr-xr-x 4 zhc268 epigen-group   46 Aug 19 14:04 data
+drwxr-xr-x 2 zhc268 epigen-group  116 Nov 13 12:03 db
+-rw-r--r-- 1 zhc268 epigen-group  678 Nov 13 12:01 deploy.ini
+-rw-r--r-- 1 zhc268 epigen-group  245 Aug  8  2018 deploy.ini~
+-rw-r--r-- 1 zhc268 epigen-group  252 Sep 18 09:28 deploy.ini.eg
+drwxr-xr-x 4 zhc268 epigen-group  238 Nov 13 12:03 epigen_ucsd_django
+-rw-r--r-- 1 zhc268 epigen-group   59 Aug  8  2018 groupUsers.cfg
+-rw-r--r-- 1 zhc268 epigen-group   43 Aug  8  2018 groupUsers.cfg~
+-rw-r--r-- 1 zhc268 epigen-group   78 Nov 15  2018 groupUsers.cfg.eg
+-rwxr-xr-x 1 zhc268 epigen-group  550 Jun 13  2018 manage.py
+drwxr-xr-x 4 zhc268 epigen-group  193 Oct 18 12:01 manager_app
+drwxr-xr-x 4 zhc268 epigen-group  193 Nov 21 11:02 masterseq_app
+drwxr-xr-x 3 zhc268 epigen-group   24 Jan  8  2019 migrations
+drwxr-xr-x 5 zhc268 epigen-group  213 Nov 15 09:47 nextseq_app
+-rw-r--r-- 1 zhc268 epigen-group  822 Jun 26  2018 #README.md#
+-rw-r--r-- 1 zhc268 epigen-group 1149 Aug 20 12:44 README.md
+-rw-r--r-- 1 zhc268 epigen-group   97 Sep 27 13:41 requirement.txt
+drwxr-xr-x 3 zhc268 epigen-group 4096 Oct 22 09:47 scripts
+drwxr-xr-x 4 zhc268 epigen-group  193 Nov 21 11:17 setqc_app
+drwxr-xr-x 5 zhc268 epigen-group  193 Nov 18 10:19 singlecell_app
+drwxr-xr-x 6 zhc268 epigen-group   57 Aug 27  2018 static
+drwxr-xr-x 9 zhc268 epigen-group  142 Oct 16 11:36 templates
+drwxr-xr-x 5 zhc268 epigen-group  116 Sep 27 15:08 test
+drwxr-xr-x 2 zhc268 epigen-group 4096 Nov 18 10:23 utility
+[zhc268@epigenomics epigen_ucsd_django]$ gaddmit "added fruit fly" 
+[master 82217fa] added fruit fly
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+[zhc268@epigenomics epigen_ucsd_django]$ gpush
+Counting objects: 11, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (6/6), 524 bytes | 0 bytes/s, done.
+Total 6 (delta 5), reused 0 (delta 0)
+remote: Resolving deltas: 100% (5/5), completed with 5 local objects.        
+To git@github.com:epigen-UCSD/epigen_ucsd_django.git
+   8b24742..82217fa  master -> master
+[zhc268@epigenomics epigen_ucsd_django]$ gaddmit "fix pig-tailed macaque"
+[master 23c7f09] fix pig-tailed macaque
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+[zhc268@epigenomics epigen_ucsd_django]$ gpush
+Counting objects: 7, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 397 bytes | 0 bytes/s, done.
+Total 4 (delta 3), reused 0 (delta 0)
+remote: Resolving deltas: 100% (3/3), completed with 3 local objects.        
+To git@github.com:epigen-UCSD/epigen_ucsd_django.git
+   82217fa..23c7f09  master -> master
+[zhc268@epigenomics epigen_ucsd_django]$ cd utility/
+[zhc268@epigenomics utility]$ source activate django
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py --help 
+usage: updateLibrariesSetQC.py [-h] [-s {-1,0,1,2,3,4}] [-id ID] [-url URL] [-v V]
+
+optional arguments:
+  -h, --help         show this help message and exit
+  -s {-1,0,1,2,3,4}  -1: ClickToSubmit 0:JobSubmitted 1:ProcessingLibs 2:RunSetQC 3:Done 4:Warning
+  -id ID             Set_ID
+  -url URL           url of report
+  -v V               version of runsetqc script
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_663 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_663 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_660 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_663 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_655 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_662 -s 3
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_662 -s 3 -url http://epigenomics.sdsc.edu:8088/Set_662/05f8d6/setQC_report.html -v v3.0-15-g007890a
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_644 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_644 -s 3
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_655 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_657 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_663 -s 3 -url http://epigenomics.sdsc.edu:8088/Set_663/24c870/setQC_report.html -v v3.0-15-g007890a
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_666 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_667 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_667 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_668 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_668 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_668 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_666 -s 1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_667 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_664 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_667 -s 3
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_669 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_664 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_666 -s -1
+(django) [zhc268@epigenomics utility]$ ln ~/data/outputs/libQCs/JH_83/JH_83_R1.trim.PE2SE_qc.html ~/www/
+ln: failed to create hard link ‘/home/zhc268/www/JH_83_R1.trim.PE2SE_qc.html’ => ‘/home/zhc268/data/outputs/libQCs/JH_83/JH_83_R1.trim.PE2SE_qc.html’: Invalid cross-device link
+(django) [zhc268@epigenomics utility]$ ln -s  ~/data/outputs/libQCs/JH_83/JH_83_R1.trim.PE2SE_qc.html ~/www/
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py --help 
+usage: updateLibrariesSetQC.py [-h] [-s {-1,0,1,2,3,4}] [-id ID] [-url URL] [-v V]
+
+optional arguments:
+  -h, --help         show this help message and exit
+  -s {-1,0,1,2,3,4}  -1: ClickToSubmit 0:JobSubmitted 1:ProcessingLibs 2:RunSetQC 3:Done 4:Warning
+  -id ID             Set_ID
+  -url URL           url of report
+  -v V               version of runsetqc script
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_664 -s 3 -url http://epigenomics.sdsc.edu/zhc268/JH_83_R1.trim.PE2SE_qc.html
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_682 -s -1 
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_675 -s -1 
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_676 -s -1 
+(django) [zhc268@epigenomics utility]$ ln -s /projects/ps-epigen/nextSeq/191206_NB501692_0227_AHTML2AFXY
+(django) [zhc268@epigenomics utility]$ ln -s /projects/ps-epigen/nextSeq/191206_NB501692_0227_AHTML2AFXY ~/www/
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_670 -s -1 
+(django) [zhc268@epigenomics utility]$ qme -t
+bash: qme: command not found
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_670 -s -1 
+(django) [zhc268@epigenomics utility]$ python3 updateRunStatus.py -h
+usage: updateRunStatus.py [-h] [-s {-1,0,1,2,3,4}] [-f F] [-d D]
+
+optional arguments:
+  -h, --help         show this help message and exit
+  -s {-1,0,1,2,3,4}  -1: ClickToSubmit 0:JobSubmitted 1:JobStarted 2:Done 3:Error 4:Warning
+  -f F               FlowCellID
+  -d D               Nextseq Dir
+(django) [zhc268@epigenomics utility]$ python3 updateRunStatus.py -s -1 -f HW552AFXY
+(django) [zhc268@epigenomics utility]$ cd ../
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ll
+total 52
+-rw-r--r-- 1 zhc268 epigen-group   24 Oct 18 12:50 5%
+drwxr-xr-x 4 zhc268 epigen-group  177 Jan 17  2019 collaborator_app
+drwxr-xr-x 4 zhc268 epigen-group   46 Aug 19 14:04 data
+drwxr-xr-x 2 zhc268 epigen-group  116 Nov 13 12:03 db
+-rw-r--r-- 1 zhc268 epigen-group  678 Nov 13 12:01 deploy.ini
+-rw-r--r-- 1 zhc268 epigen-group  245 Aug  8  2018 deploy.ini~
+-rw-r--r-- 1 zhc268 epigen-group  252 Sep 18 09:28 deploy.ini.eg
+drwxr-xr-x 4 zhc268 epigen-group  238 Nov 13 12:03 epigen_ucsd_django
+-rw-r--r-- 1 zhc268 epigen-group   59 Aug  8  2018 groupUsers.cfg
+-rw-r--r-- 1 zhc268 epigen-group   43 Aug  8  2018 groupUsers.cfg~
+-rw-r--r-- 1 zhc268 epigen-group   78 Nov 15  2018 groupUsers.cfg.eg
+-rwxr-xr-x 1 zhc268 epigen-group  550 Jun 13  2018 manage.py
+drwxr-xr-x 4 zhc268 epigen-group  193 Oct 18 12:01 manager_app
+drwxr-xr-x 4 zhc268 epigen-group  193 Nov 21 11:02 masterseq_app
+drwxr-xr-x 3 zhc268 epigen-group   24 Jan  8  2019 migrations
+drwxr-xr-x 5 zhc268 epigen-group  213 Nov 15 09:47 nextseq_app
+-rw-r--r-- 1 zhc268 epigen-group  822 Jun 26  2018 #README.md#
+-rw-r--r-- 1 zhc268 epigen-group 1149 Aug 20 12:44 README.md
+-rw-r--r-- 1 zhc268 epigen-group   97 Sep 27 13:41 requirement.txt
+drwxr-xr-x 3 zhc268 epigen-group 4096 Oct 22 09:47 scripts
+drwxr-xr-x 4 zhc268 epigen-group  193 Nov 21 11:49 setqc_app
+drwxr-xr-x 5 zhc268 epigen-group  193 Nov 18 10:19 singlecell_app
+drwxr-xr-x 6 zhc268 epigen-group   57 Aug 27  2018 static
+drwxr-xr-x 9 zhc268 epigen-group  142 Oct 16 11:36 templates
+drwxr-xr-x 5 zhc268 epigen-group  116 Sep 27 15:08 test
+drwxr-xr-x 2 zhc268 epigen-group 4096 Dec  9 09:39 utility
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git rm 5% 
+rm '5%'
+(django) [zhc268@epigenomics epigen_ucsd_django]$ gaddmit "clean up" 
+[master e6f12bf] clean up
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+ delete mode 100644 5%
+ create mode 120000 utility/191206_NB501692_0227_AHTML2AFXY
+(django) [zhc268@epigenomics epigen_ucsd_django]$ gpush 
+Counting objects: 6, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 409 bytes | 0 bytes/s, done.
+Total 4 (delta 2), reused 0 (delta 0)
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.        
+To git@github.com:epigen-UCSD/epigen_ucsd_django.git
+   23c7f09..e6f12bf  master -> master
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git rm -r utility/191206_NB501692_0227_AHTML2AFXY/
+rm 'utility/191206_NB501692_0227_AHTML2AFXY'
+(django) [zhc268@epigenomics epigen_ucsd_django]$ gaddmit "clean up2 "  && gpush 
+[master b6308cb] clean up2
+ 1 file changed, 1 deletion(-)
+ delete mode 120000 utility/191206_NB501692_0227_AHTML2AFXY
+Counting objects: 5, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 280 bytes | 0 bytes/s, done.
+Total 3 (delta 2), reused 0 (delta 0)
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.        
+To git@github.com:epigen-UCSD/epigen_ucsd_django.git
+   e6f12bf..b6308cb  master -> master
+(django) [zhc268@epigenomics epigen_ucsd_django]$ watchme
+bash: watchme: command not found
+(django) [zhc268@epigenomics epigen_ucsd_django]$ qme -t
+bash: qme: command not found
+(django) [zhc268@epigenomics epigen_ucsd_django]$ cd utility/
+(django) [zhc268@epigenomics utility]$ python3 updateRunStatus.py -h
+usage: updateRunStatus.py [-h] [-s {-1,0,1,2,3,4}] [-f F] [-d D]
+
+optional arguments:
+  -h, --help         show this help message and exit
+  -s {-1,0,1,2,3,4}  -1: ClickToSubmit 0:JobSubmitted 1:JobStarted 2:Done 3:Error 4:Warning
+  -f F               FlowCellID
+  -d D               Nextseq Dir
+(django) [zhc268@epigenomics utility]$ python3 updateRunStatus.py -s 2 -f HW772DSXX
+(django) [zhc268@epigenomics utility]$ python3 updateReadsNumberPerRun.py -f HW772DSXX -i /projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/reads_cnt.tsv 
+Traceback (most recent call last):
+  File "updateReadsNumberPerRun.py", line 49, in <module>
+    main()
+  File "updateReadsNumberPerRun.py", line 38, in main
+    obj = LibrariesInRun.objects.get(Library_ID=fields[0])
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/query.py", line 403, in get
+    self.model._meta.object_name
+nextseq_app.models.DoesNotExist: LibrariesInRun matching query does not exist.
+(django) [zhc268@epigenomics utility]$ cat /projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/reads_cnt.tsv
+QY_228	10805536
+QY_229	9783515
+QY_230	7386258
+QY_231	9606308
+QY_232	7934696
+QY_233	8746597
+QY_234	10429597
+QY_235	10328342
+QY_236_2	92302699
+QY_237_2	70479148
+QY_238_2	93801900
+QY_239_2	98244574
+QY_240_2	91160946
+QY_241_2	93295777
+QY_242_2	97306643
+QY_243_2	83946520
+QY_244_2	62304807
+QY_245_2	97491761
+QY_246_2	98944894
+QY_247_2	107235682
+QY_248_2	108442901
+QY_249_2	111851186
+QY_250_2	81429519
+QY_251_2	104603103
+QY_252_2	114408604
+QY_253_2	108786962
+QY_254_2	95694869
+QY_255_2	106196545
+QY_256_2	93225930
+QY_257_2	85538403
+QY_258_2	99708289
+QY_259_2	110475605
+QY_356	69607418
+QY_357	69820031
+QY_358	50628109
+QY_359	72778222
+QY_360	83596075
+QY_361	86875246
+QY_362	93755231
+QY_363	55056381
+QY_364	13612443
+QY_365	17154738
+QY_366	19683522
+QY_367	14364871
+QY_368	15728857
+QY_369	16811778
+QY_370	9041616
+QY_371	16763724
+RMM_348	34374873
+RMM_349	18015887
+AVD_597_4	43477087
+(django) [zhc268@epigenomics utility]$ cat /projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/reads_cnt.tsv
+QY_228	10805536
+QY_229	9783515
+QY_230	7386258
+QY_231	9606308
+QY_232	7934696
+QY_233	8746597
+QY_234	10429597
+QY_235	10328342
+QY_236_2	92302699
+QY_237_2	70479148
+QY_238_2	93801900
+QY_239_2	98244574
+QY_240_2	91160946
+QY_241_2	93295777
+QY_242_2	97306643
+QY_243_2	83946520
+QY_244_2	62304807
+QY_245_2	97491761
+QY_246_2	98944894
+QY_247_2	107235682
+QY_248_2	108442901
+QY_249_2	111851186
+QY_250_2	81429519
+QY_251_2	104603103
+QY_252_2	114408604
+QY_253_2	108786962
+QY_254_2	95694869
+QY_255_2	106196545
+QY_256_2	93225930
+QY_257_2	85538403
+QY_258_2	99708289
+QY_259_2	110475605
+QY_356	69607418
+QY_357	69820031
+QY_358	50628109
+QY_359	72778222
+QY_360	83596075
+QY_361	86875246
+QY_362	93755231
+QY_363	55056381
+QY_364	13612443
+QY_365	17154738
+QY_366	19683522
+QY_367	14364871
+QY_368	15728857
+QY_369	16811778
+QY_370	9041616
+QY_371	16763724
+RMM_348	34374873
+RMM_349	18015887
+AVD_597_4	43477087
+(django) [zhc268@epigenomics utility]$ python3 updateReadsNumberPerRun.py -f HW772DSXX -i /projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/reads_cnt.tsv 
+(django) [zhc268@epigenomics utility]$ python3 updateRunReads.py -f HW772DSXX
+Traceback (most recent call last):
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 85, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.DataError: integer out of range
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "updateRunReads.py", line 56, in <module>
+    main(this_flowcellid)
+  File "updateRunReads.py", line 49, in main
+    obj.save()
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 729, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 759, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 823, in _save_table
+    forced_update)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 872, in _do_update
+    return filtered._update(values) > 0
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/query.py", line 709, in _update
+    return query.get_compiler(self.db).execute_sql(CURSOR)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 1378, in execute_sql
+    cursor = super().execute_sql(result_type)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 1067, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 100, in execute
+    return super().execute(sql, params)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 68, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 77, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 85, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/utils.py", line 89, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 85, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.DataError: integer out of range
+
+(django) [zhc268@epigenomics utility]$ which updateRunReads.py
+~/epigen_ucsd_django/utility/updateRunReads.py
+(django) [zhc268@epigenomics utility]$ find -L  /projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/ -name "DemultiplexingStats.xml"
+/projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/Stats/DemultiplexingStats.xml
+/projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/Gorkin/Stats/DemultiplexingStats.xml
+(django) [zhc268@epigenomics utility]$ find -L  /projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/ -name "DemultiplexingStats.xml"
+/projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/Stats/DemultiplexingStats.xml
+(django) [zhc268@epigenomics utility]$ python3 updateRunReads.py -f HW772DSXX
+Traceback (most recent call last):
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 85, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.DataError: integer out of range
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "updateRunReads.py", line 56, in <module>
+    main(this_flowcellid)
+  File "updateRunReads.py", line 49, in main
+    obj.save()
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 729, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 759, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 823, in _save_table
+    forced_update)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 872, in _do_update
+    return filtered._update(values) > 0
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/query.py", line 709, in _update
+    return query.get_compiler(self.db).execute_sql(CURSOR)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 1378, in execute_sql
+    cursor = super().execute_sql(result_type)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 1067, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 100, in execute
+    return super().execute(sql, params)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 68, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 77, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 85, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/utils.py", line 89, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 85, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.DataError: integer out of range
+
+(django) [zhc268@epigenomics utility]$ python3 
+Python 3.6.5 | packaged by conda-forge | (default, Apr  6 2018, 13:39:56) 
+[GCC 4.8.2 20140120 (Red Hat 4.8.2-15)] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import os
+import sys
+import django
+import argparse
+import subprocess
+>>> >>> >>> >>> >>> import xml.etree.ElementTree as ET
+>>> os.path.dirname()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: dirname() missing 1 required positional argument: 'p'
+>>> fastq_dir="/projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX"
+>>> os.environ.setdefault("DJANGO_SETTINGS_MODULE", "epigen_ucsd_django.settings")
+'epigen_ucsd_django.settings'
+>>> django.setup()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/__init__.py", line 19, in setup
+    configure_logging(settings.LOGGING_CONFIG, settings.LOGGING)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/conf/__init__.py", line 56, in __getattr__
+    self._setup(name)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/conf/__init__.py", line 43, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/conf/__init__.py", line 106, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 941, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 953, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'epigen_ucsd_django'
+>>> os.path.abspath('./')
+'/home/zhc268/epigen_ucsd_django/utility'
+>>> basedir=os.path.abspath('./')
+>>> os.chdir(os.path.dirname(basedir))
+>>> 
+>>> sys.path.append(basedir)
+>>> sys.path.append(os.path.dirname(basedir))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "epigen_ucsd_django.settings")
+django.setup()
+
+>>> 'epigen_ucsd_django.settings'
+>>> >>> >>> 
+>>> from nextseq_app.models import RunInfo
+>>> 
+>>> flowcell='HW772DSXX'
+>>> obj = RunInfo.objects.get(Flowcell_ID=flowcell)
+>>> this_dir = obj.nextseqdir
+>>> this_dir
+'/projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX'
+>>> fastq_dir = this_dir
+>>> libs = obj.librariesinrun_set.all()
+>>> libs
+<QuerySet [<LibrariesInRun: AVD_597_4>, <LibrariesInRun: QY_228>, <LibrariesInRun: QY_229>, <LibrariesInRun: QY_230>, <LibrariesInRun: QY_231>, <LibrariesInRun: QY_232>, <LibrariesInRun: QY_233>, <LibrariesInRun: QY_234>, <LibrariesInRun: QY_235>, <LibrariesInRun: QY_236_2>, <LibrariesInRun: QY_237_2>, <LibrariesInRun: QY_238_2>, <LibrariesInRun: QY_239_2>, <LibrariesInRun: QY_240_2>, <LibrariesInRun: QY_241_2>, <LibrariesInRun: QY_242_2>, <LibrariesInRun: QY_243_2>, <LibrariesInRun: QY_244_2>, <LibrariesInRun: QY_245_2>, <LibrariesInRun: QY_246_2>, '...(remaining elements truncated)...']>
+>>> obj.total_libraries = len(libs)
+>>> obj.total_libraries
+51
+>>> total_lib_reads = sum([i['numberofreads'] for i in libs.values()])
+>>> total_lib_reads
+3183044225
+>>> fq_dir=fastq_dir
+>>> log_files = subprocess.check_output(
+...         "find -L "+fq_dir+" -name DemultiplexingStats.xml", shell=True, universal_newlines=True).split()
+>>> log_file
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'log_file' is not defined
+>>> log_files
+['/projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/Stats/DemultiplexingStats.xml']
+>>> tree = ET.parse(log_files[0])
+>>> flowcell = tree.getroot().getchildren()[0]
+>>> flowcell
+<Element 'Flowcell' at 0x7f0978e51b38>
+>>>  cnts = []
+  File "<stdin>", line 1
+    cnts = []
+    ^
+IndentationError: unexpected indent
+>>> cnts = []
+>>> for p in flowcell.findall('Project'):
+...    if p.get('name') == 'all':
+...       for c in p.findall('./Sample/')[0].findall('./Lane/BarcodeCount'):
+...          print(c)
+... 
+<Element 'BarcodeCount' at 0x7f0978e1b278>
+>>> for p in flowcell.findall('Project'):
+...       for c in p.findall('./Sample/')[0].findall('./Lane/BarcodeCount'):
+...          print(c)
+... 
+<Element 'BarcodeCount' at 0x7f0978e51cc8>
+<Element 'BarcodeCount' at 0x7f0978e1b278>
+>>> for p in flowcell.findall('Project'):
+...    if p.get('name') == 'all':
+...       for c in p.findall('./Sample/')[0].findall('./Lane/BarcodeCount'):
+...          print(c.text)
+... 
+3270724460
+>>> obj.total_reads = getTotalReads(fastq_dir)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'getTotalReads' is not defined
+>>> 
+def getTotalReads(fq_dir):
+    '''
+    call shell function to count total reads in the library 
+    '''
+    log_files = subprocess.check_output(
+        "find -L "+fq_dir+" -name DemultiplexingStats.xml", shell=True, universal_newlines=True).split()
+    tree = ET.parse(log_files[0])
+    flowcell = tree.getroot().getchildren()[0]
+    cnts = []
+    for p in flowcell.findall('Project'):
+        if p.get('name') == 'all':
+            for c in p.findall('./Sample/')[0].findall('./Lane/BarcodeCount'):
+                cnts.append(int(c.text))
+>>> ... ... ... ... ... ... ... ... ... ... ... ... ...     return(sum(cnts))
+... 
+>>> 
+>>> 
+>>> obj.total_reads = getTotalReads(fastq_dir)
+>>> obj.total_reads
+3270724460
+>>> obj.percent_of_reads_demultiplexed = round(
+...         total_lib_reads/obj.total_reads*100)
+>>> obj.save()
+Traceback (most recent call last):
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 85, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.DataError: integer out of range
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 729, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 759, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 823, in _save_table
+    forced_update)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 872, in _do_update
+    return filtered._update(values) > 0
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/query.py", line 709, in _update
+    return query.get_compiler(self.db).execute_sql(CURSOR)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 1378, in execute_sql
+    cursor = super().execute_sql(result_type)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 1067, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 100, in execute
+    return super().execute(sql, params)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 68, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 77, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 85, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/utils.py", line 89, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 85, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.DataError: integer out of range
+
+>>> obj
+<RunInfo: HW772DSXX>
+>>> obj
+<RunInfo: HW772DSXX>
+>>> for i in obj: print(i)
+... 
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'RunInfo' object is not iterable
+>>> dir(obj)
+['DoesNotExist', 'Flowcell_ID', 'MultipleObjectsReturned', '__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__setstate__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_check_column_name_clashes', '_check_field_name_clashes', '_check_fields', '_check_id_field', '_check_index_together', '_check_local_fields', '_check_long_column_names', '_check_m2m_through_same_relationship', '_check_managers', '_check_model', '_check_model_name_db_lookup_clashes', '_check_ordering', '_check_swappable', '_check_unique_together', '_do_insert', '_do_update', '_get_FIELD_display', '_get_next_or_previous_by_FIELD', '_get_next_or_previous_in_order', '_get_pk_val', '_get_unique_checks', '_meta', '_perform_date_checks', '_perform_unique_checks', '_save_parents', '_save_table', '_set_pk_val', '_state', 'check', 'clean', 'clean_fields', 'date', 'date_error_message', 'delete', 'exp_type_choice', 'experiment_type', 'extra_parameters', 'from_db', 'full_clean', 'get_absolute_url', 'get_deferred_fields', 'get_experiment_type_display', 'get_machine_display', 'get_next_by_updated_at', 'get_previous_by_updated_at', 'get_read_type_display', 'id', 'jobstatus', 'librariesinrun_set', 'machine', 'nextseqdir', 'objects', 'operator', 'operator_id', 'percent_of_reads_demultiplexed', 'pk', 'prepare_database_save', 'read_length', 'read_type', 'read_type_choice', 'refresh_from_db', 'save', 'save_base', 'serializable_value', 'total_libraries', 'total_reads', 'unique_error_message', 'updated_at', 'validate_unique']
+>>> obj.percent_of_reads_demultiplexed
+97
+>>> obj.total_reads
+3270724460
+>>> obj.save()
+Traceback (most recent call last):
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 85, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.DataError: integer out of range
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 729, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 759, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 823, in _save_table
+    forced_update)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/base.py", line 872, in _do_update
+    return filtered._update(values) > 0
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/query.py", line 709, in _update
+    return query.get_compiler(self.db).execute_sql(CURSOR)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 1378, in execute_sql
+    cursor = super().execute_sql(result_type)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 1067, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 100, in execute
+    return super().execute(sql, params)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 68, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 77, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 85, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/utils.py", line 89, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/zhc268/anaconda2/envs/django/lib/python3.6/site-packages/django/db/backends/utils.py", line 85, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.DataError: integer out of range
+
+>>> exit()
+(django) [zhc268@epigenomics utility]$ ll
+total 532
+-rw-r--r-- 1 zhc268 epigen-group   1223 Sep 30 13:43 barcodeimport_bulk.py
+-rwxr-xr-x 1 zhc268 epigen-group   1135 Jan 23  2019 barcodeimport.py
+-rw-r--r-- 1 zhc268 epigen-group    697 Jan 17  2019 barcodeimport_sn.py
+-rw-r--r-- 1 zhc268 epigen-group   1124 Jan 17  2019 barcodeimport_TA.py
+-rw-r--r-- 1 zhc268 epigen-group   1578 Jul 29 10:55 barcodeimport_TR.py
+-rwxr--r-- 1 zhc268 epigen-group   1558 Mar  4  2019 convertTASampleSheet.py
+-rwxr-xr-x 1 zhc268 epigen-group    304 Nov 13 12:03 coolAdmin.sh
+-rwxr-xr-x 1 zhc268 epigen-group    244 Nov 15  2018 dmptest.sh
+-rw-r--r-- 1 zhc268 epigen-group     99 Mar 11  2019 dowload.sh
+-rwxr--r-- 1 zhc268 epigen-group    160 Feb 21  2019 download_igm.sh
+-rw-r--r-- 1 zhc268 epigen-group   1565 Feb 14  2019 getReadsNumberof10xATAC.py
+-rw-r--r-- 1 zhc268 epigen-group   1009 Mar 27  2019 getStats.py
+-rwxr-xr-x 1 zhc268 epigen-group    788 Nov 15  2018 groupUsers.py
+-rw-r--r-- 1 zhc268 epigen-group    891 Nov 15  2018 mseqinfoimport.py
+-rw-r--r-- 1 zhc268 epigen-group 200390 Nov 15  2018 MSeqTSarchive.tsv
+-rw-r--r-- 1 zhc268 epigen-group 200350 Nov 15  2018 MSeqTS.tsv
+-rw-r--r-- 1 zhc268 epigen-group  22426 Nov 15  2018 MSQcTS.tsv
+-rw-r--r-- 1 zhc268 epigen-group    723 Apr 15  2019 newindex.csv
+-rw-r--r-- 1 zhc268 epigen-group   2384 Aug 20 12:44 README.md
+-rw-r--r-- 1 zhc268 epigen-group    401 Oct 16 11:36 run10xOnly.sh
+-rwxr-xr-x 1 zhc268 epigen-group    962 Aug 20 12:44 runBcl2fastq.sh
+-rwxr--r-- 1 zhc268 epigen-group    426 Nov 18 10:23 runDemux10xATAC.sh
+-rwxr--r-- 1 zhc268 epigen-group    220 Jan 15  2019 runDemuxSnATAC.sh
+-rwxr-xr-x 1 zhc268 epigen-group   3049 Sep 25 10:13 runSetQC_chipseq.sh
+-rwxr-xr-x 1 zhc268 epigen-group   2801 Sep 24 10:08 runSetQC.sh
+-rwxr-xr-x 1 zhc268 epigen-group    368 Nov 15  2018 runsetqctest.sh
+-rwxr-xr-x 1 zhc268 epigen-group    845 Nov 15  2018 saveReadsNumber.py
+-rw-r--r-- 1 zhc268 epigen-group   2735 Nov 15  2018 setqcimport.py
+-rwxr-xr-x 1 zhc268 epigen-group   1769 Mar 27  2019 updateLibrariesSetQC.py
+-rwxr-xr-x 1 zhc268 epigen-group   1330 Nov 15  2018 updateReadsNumberPerRun.py
+-rwxr-xr-x 1 zhc268 epigen-group   1862 Jul  2 16:19 updateRunReads.py
+-rwxr-xr-x 1 zhc268 epigen-group   1575 Mar  1  2019 updateRunStatus.py
+(django) [zhc268@epigenomics utility]$ hgrep python3
+  103  hgrep python3
+  137  hgrep python3
+  742  python3 import_masterseq_data_20190311_correct.py 
+  743  python3 import_setqc_data_20190318.py 
+  773  python3 manage.py runserver 0.0.0.0:8000
+  776  python3 manage.py runserver 0.0.0.0:8000
+  983  python3 manage.py makemigrations 
+  984  python3 manage.py migrate
+  985  hgrep python3
+  986  python3 manage.py runserver 0.0.0.0:8000
+  987  python3 manage.py makemigrations 
+  988  python3 manage.py migrate
+  989  python3 manage.py runserver 0.0.0.0:8000
+  990  python3 manage.py makemigrations 
+  991  python3 manage.py migrate
+  992  python3 manage.py runserver 0.0.0.0:8000
+  993  python3 manage.py makemigrations 
+  994  python3 manage.py migrate
+  995  python3 manage.py runserver 0.0.0.0:8000
+ 1004  python3 updateLibrariesSetQC.py --help 
+ 1005  python3 updateLibrariesSetQC.py -id Set_663 -s -1
+ 1006  python3 updateLibrariesSetQC.py -id Set_660 -s -1
+ 1007  python3 updateLibrariesSetQC.py -id Set_663 -s -1
+ 1008  python3 updateLibrariesSetQC.py -id Set_655 -s -1
+ 1009  python3 updateLibrariesSetQC.py -id Set_662 -s 3
+ 1010  python3 updateLibrariesSetQC.py -id Set_662 -s 3 -url http://epigenomics.sdsc.edu:8088/Set_662/05f8d6/setQC_report.html -v v3.0-15-g007890a
+ 1011  python3 updateLibrariesSetQC.py -id Set_644 -s -1
+ 1012  python3 updateLibrariesSetQC.py -id Set_644 -s 3
+ 1013  python3 updateLibrariesSetQC.py -id Set_655 -s -1
+ 1014  python3 updateLibrariesSetQC.py -id Set_657 -s -1
+ 1015  python3 updateLibrariesSetQC.py -id Set_663 -s 3 -url http://epigenomics.sdsc.edu:8088/Set_663/24c870/setQC_report.html -v v3.0-15-g007890a
+ 1016  python3 updateLibrariesSetQC.py -id Set_666 -s -1
+ 1017  python3 updateLibrariesSetQC.py -id Set_667 -s -1
+ 1018  python3 updateLibrariesSetQC.py -id Set_668 -s -1
+ 1019  python3 updateLibrariesSetQC.py -id Set_666 -s 1
+ 1020  python3 updateLibrariesSetQC.py -id Set_667 -s -1
+ 1021  python3 updateLibrariesSetQC.py -id Set_664 -s -1
+ 1022  python3 updateLibrariesSetQC.py -id Set_667 -s 3
+ 1023  python3 updateLibrariesSetQC.py -id Set_669 -s -1
+ 1024  python3 updateLibrariesSetQC.py -id Set_664 -s -1
+ 1025  python3 updateLibrariesSetQC.py -id Set_666 -s -1
+ 1028  python3 updateLibrariesSetQC.py --help 
+ 1029  python3 updateLibrariesSetQC.py -id Set_664 -s 3 -url http://epigenomics.sdsc.edu/zhc268/JH_83_R1.trim.PE2SE_qc.html
+ 1030  python3 updateLibrariesSetQC.py -id Set_682 -s -1 
+ 1031  python3 updateLibrariesSetQC.py -id Set_675 -s -1 
+ 1032  python3 updateLibrariesSetQC.py -id Set_676 -s -1 
+ 1035  python3 updateLibrariesSetQC.py -id Set_670 -s -1 
+ 1037  python3 updateLibrariesSetQC.py -id Set_670 -s -1 
+ 1038  python3 updateRunStatus.py -h
+ 1039  python3 updateRunStatus.py -s -1 -f HW552AFXY
+ 1050  python3 updateRunStatus.py -h
+ 1051  python3 updateRunStatus.py -s 2 -f HW772DSXX
+ 1052  python3 updateReadsNumberPerRun.py -f HW772DSXX -i /projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/reads_cnt.tsv 
+ 1054  python3 updateReadsNumberPerRun.py -f HW772DSXX -i /projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/reads_cnt.tsv 
+ 1055  python3 updateRunReads.py -f HW772DSXX
+ 1058  python3 updateRunReads.py -f HW772DSXX
+ 1059  python3 
+ 1061  hgrep python3
+(django) [zhc268@epigenomics utility]$ python3 updateRunReads.py -f HW772DSXX
+(django) [zhc268@epigenomics utility]$  python3 updateLibrariesSetQC.py -id Set_675 -s -1
+(django) [zhc268@epigenomics utility]$  python3 updateLibrariesSetQC.py -id Set_686 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateRunStatus.py -s -1 -f HTT5FAFXY
+(django) [zhc268@epigenomics utility]$ cd ../
+(django) [zhc268@epigenomics epigen_ucsd_django]$ cd utility/
+(django) [zhc268@epigenomics utility]$ python3 updateRunStatus.py -s -1 -f HTT5FAFXY
+(django) [zhc268@epigenomics utility]$ cd ../
+(django) [zhc268@epigenomics epigen_ucsd_django]$ gaddmit "solved extra pars in 10x demux for masking" 
+[master 46dd50b] solved extra pars in 10x demux for masking
+ 2 files changed, 11 insertions(+), 3 deletions(-)
+(django) [zhc268@epigenomics epigen_ucsd_django]$ gpush
+Counting objects: 9, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (5/5), 586 bytes | 0 bytes/s, done.
+Total 5 (delta 4), reused 0 (delta 0)
+remote: Resolving deltas: 100% (4/4), completed with 4 local objects.        
+To git@github.com:epigen-UCSD/epigen_ucsd_django.git
+   b6308cb..46dd50b  master -> master
+(django) [zhc268@epigenomics epigen_ucsd_django]$ cd utility/
+(django) [zhc268@epigenomics utility]$ python3 updateRunStatus.py -s -1 -f HTJYWAFXY
+(django) [zhc268@epigenomics utility]$ python3 updateRunReads.py -f HTT5FAFXY
+(django) [zhc268@epigenomics utility]$ hgrep updateReadsNumberPerRun.py
+ 1052  python3 updateReadsNumberPerRun.py -f HW772DSXX -i /projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/reads_cnt.tsv 
+ 1054  python3 updateReadsNumberPerRun.py -f HW772DSXX -i /projects/ps-epigen/seqdata/igm-storage2.ucsd.edu/191030_A00953_0018_BHW772DSXX/reads_cnt.tsv 
+ 1075  hgrep updateReadsNumberPerRun.py
+(django) [zhc268@epigenomics utility]$ python3 updateReadsNumberPerRun.py -f HTT5FAFXY -i /projects/ps-epigen/nextSeq/191031_NB501692_0209_AHTT5FAFXY/Data/Fastqs/reads_cnt.tsv 
+(django) [zhc268@epigenomics utility]$  python3 updateLibrariesSetQC.py -id Set_688 -s -1
+(django) [zhc268@epigenomics utility]$ cd ../
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git branch test_snAPP
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git branch
+  greenmonkey
+* master
+  mastter
+  search
+  test_snAPP
+  tm2
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git branch -D greenmonkey
+Deleted branch greenmonkey (was 695adbb).
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git branch -D mastter
+Deleted branch mastter (was 60d1c02).
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git branch -D tmp2
+error: branch 'tmp2' not found.
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git branch -D tm2
+Deleted branch tm2 (was ab82cda).
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git branch
+* master
+  search
+  test_snAPP
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git branch -D search
+Deleted branch search (was 60d1c02).
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git checkout test_snAPP
+Switched to branch 'test_snAPP'
+(django) [zhc268@epigenomics epigen_ucsd_django]$ gaddmit "printed cmd for cooladmin job sub" 
+[test_snAPP e77da32] printed cmd for cooladmin job sub
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git push origin test_snAPP
+Counting objects: 7, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 382 bytes | 0 bytes/s, done.
+Total 4 (delta 3), reused 0 (delta 0)
+remote: Resolving deltas: 100% (3/3), completed with 3 local objects.        
+remote: 
+remote: Create a pull request for 'test_snAPP' on GitHub by visiting:        
+remote:      https://github.com/epigen-UCSD/epigen_ucsd_django/pull/new/test_snAPP        
+remote: 
+To git@github.com:epigen-UCSD/epigen_ucsd_django.git
+ * [new branch]      test_snAPP -> test_snAPP
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+Password:   C-c C-c
+
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+conda activate /home/opoirion/prog/conda_env/
+qsub -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2, /home/opoirion/data/ps-epigen_job/LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+conda activate /home/opoirion/prog/conda_env/
+qsub -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2, /home/opoirion/data/ps-epigen_job/LIMS/10x_model.bash
+./utility/coolAdmin.sh: line 12: qsub: command not found
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ll
+drwxr-xr-x 4 zhc268 epigen-group  177 Jan 17  2019 collaborator_app
+drwxr-xr-x 4 zhc268 epigen-group   46 Aug 19 14:04 data
+drwxr-xr-x 2 zhc268 epigen-group  116 Nov 13 12:03 db
+-rw-r--r-- 1 zhc268 epigen-group  678 Nov 13 12:01 deploy.ini
+-rw-r--r-- 1 zhc268 epigen-group  245 Aug  8  2018 deploy.ini~
+-rw-r--r-- 1 zhc268 epigen-group  252 Sep 18 09:28 deploy.ini.eg
+drwxr-xr-x 4 zhc268 epigen-group  238 Nov 13 12:03 epigen_ucsd_django
+-rw-r--r-- 1 zhc268 epigen-group   59 Aug  8  2018 groupUsers.cfg
+-rw-r--r-- 1 zhc268 epigen-group   43 Aug  8  2018 groupUsers.cfg~
+-rw-r--r-- 1 zhc268 epigen-group   78 Nov 15  2018 groupUsers.cfg.eg
+-rwxr-xr-x 1 zhc268 epigen-group  550 Jun 13  2018 manage.py
+drwxr-xr-x 4 zhc268 epigen-group  193 Oct 18 12:01 manager_app
+drwxr-xr-x 4 zhc268 epigen-group  193 Nov 21 11:02 masterseq_app
+drwxr-xr-x 3 zhc268 epigen-group   24 Jan  8  2019 migrations
+drwxr-xr-x 5 zhc268 epigen-group  213 Dec 12 14:26 nextseq_app
+-rw-r--r-- 1 zhc268 epigen-group  822 Jun 26  2018 #README.md#
+-rw-r--r-- 1 zhc268 epigen-group 1149 Aug 20 12:44 README.md
+-rw-r--r-- 1 zhc268 epigen-group   97 Sep 27 13:41 requirement.txt
+drwxr-xr-x 3 zhc268 epigen-group 4096 Oct 22 09:47 scripts
+drwxr-xr-x 4 zhc268 epigen-group  193 Nov 21 11:49 setqc_app
+drwxr-xr-x 5 zhc268 epigen-group  193 Dec 13 13:17 singlecell_app
+drwxr-xr-x 6 zhc268 epigen-group   57 Aug 27  2018 static
+drwxr-xr-x 9 zhc268 epigen-group  142 Oct 16 11:36 templates
+drwxr-xr-x 5 zhc268 epigen-group  116 Sep 27 15:08 test
+drwxr-xr-x 2 zhc268 epigen-group 4096 Dec 13 13:27 utility
+(django) [zhc268@epigenomics epigen_ucsd_django]$ mv ./scripts/snATACCoolAdmin/* ~/data/software/snATACCoolAdmin_LIMS/
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git rm ./scripts/snATACCoolAdmin/
+fatal: not removing 'scripts/snATACCoolAdmin' recursively without -r
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git rm -r ./scripts/snATACCoolAdmin/
+rm 'scripts/snATACCoolAdmin/10x_model.bash'
+rm 'scripts/snATACCoolAdmin/10x_model_multiple_projects.bash'
+rm 'scripts/snATACCoolAdmin/README.md'
+rm 'scripts/snATACCoolAdmin/from_fastq_process.bash'
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git submodule add git@github.com:epigen-UCSD/snATACCoolAdmin_LIMS.git ./scripts/snATACCoolAdmin
+Cloning into 'scripts/snATACCoolAdmin'...
+remote: Enumerating objects: 6, done.        
+remote: Counting objects: 100% (6/6), done.        
+remote: Compressing objects: 100% (4/4), done.        
+remote: Total 6 (delta 2), reused 6 (delta 2), pack-reused 0        
+Receiving objects: 100% (6/6), 5.25 KiB | 0 bytes/s, done.
+Resolving deltas: 100% (2/2), done.
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git status
+# On branch test_snAPP
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	new file:   .gitmodules
+#	new file:   scripts/snATACCoolAdmin
+#	deleted:    scripts/snATACCoolAdmin/10x_model.bash
+#	deleted:    scripts/snATACCoolAdmin/10x_model_multiple_projects.bash
+#	deleted:    scripts/snATACCoolAdmin/README.md
+#	deleted:    scripts/snATACCoolAdmin/from_fastq_process.bash
+#
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   utility/coolAdmin.sh
+#
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git submodule init
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git submodule update
+(django) [zhc268@epigenomics epigen_ucsd_django]$ gaddmit "isolate cooladmin scripts" 
+[test_snAPP c83d06d] isolate cooladmin scripts
+ 7 files changed, 8 insertions(+), 707 deletions(-)
+ create mode 100644 .gitmodules
+ create mode 160000 scripts/snATACCoolAdmin
+ delete mode 100644 scripts/snATACCoolAdmin/10x_model.bash
+ delete mode 100644 scripts/snATACCoolAdmin/10x_model_multiple_projects.bash
+ delete mode 100644 scripts/snATACCoolAdmin/README.md
+ delete mode 100644 scripts/snATACCoolAdmin/from_fastq_process.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git push origin  test_snAPP 
+Counting objects: 10, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (6/6), 644 bytes | 0 bytes/s, done.
+Total 6 (delta 4), reused 0 (delta 0)
+remote: Resolving deltas: 100% (4/4), completed with 4 local objects.        
+To git@github.com:epigen-UCSD/epigen_ucsd_django.git
+   e77da32..c83d06d  test_snAPP -> test_snAPP
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+conda activate /home/opoirion/prog/conda_env/
+qsub -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2, /home/opoirion/data/ps-epigen_job/LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2, /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+qsub: option requires an argument -- 'M'
+[exiting]
+
+usage: qsub [-a date_time] [-A account_string] [-b secs]
+    [-c [ none | { enabled | periodic | shutdown |
+    depth=<int> | dir=<path> | interval=<minutes>}... ]
+    [-C directive_prefix] [-d path] [-D path]
+    [-e path] [-h] [-I] [-j oe|eo|n] [-k {oe}] [-l resource_list] [-m n|{abe}]
+    [-M user_list] [-N jobname] [-o path] [-p priority] [-P proxy_user [-J <jobid]]
+    [-q queue] [-r y|n] [-S path] [-t number_to_submit] [-T type]  [-u user_list]
+    [-w] path
+      [-W additional_attributes] [-v variable_list] [-V ] [-x] [-X] [-z] [script]
+
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2, /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+qsub: option requires an argument -- 'M'
+[exiting]
+
+usage: qsub [-a date_time] [-A account_string] [-b secs]
+    [-c [ none | { enabled | periodic | shutdown |
+    depth=<int> | dir=<path> | interval=<minutes>}... ]
+    [-C directive_prefix] [-d path] [-D path]
+    [-e path] [-h] [-I] [-j oe|eo|n] [-k {oe}] [-l resource_list] [-m n|{abe}]
+    [-M user_list] [-N jobname] [-o path] [-p priority] [-P proxy_user [-J <jobid]]
+    [-q queue] [-r y|n] [-S path] [-t number_to_submit] [-T type]  [-u user_list]
+    [-w] path
+      [-W additional_attributes] [-v variable_list] [-V ] [-x] [-X] [-z] [script]
+
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10"
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2, /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+qsub: option requires an argument -- 'M'
+[exiting]
+
+usage: qsub [-a date_time] [-A account_string] [-b secs]
+    [-c [ none | { enabled | periodic | shutdown |
+    depth=<int> | dir=<path> | interval=<minutes>}... ]
+    [-C directive_prefix] [-d path] [-D path]
+    [-e path] [-h] [-I] [-j oe|eo|n] [-k {oe}] [-l resource_list] [-m n|{abe}]
+    [-M user_list] [-N jobname] [-o path] [-p priority] [-P proxy_user [-J <jobid]]
+    [-q queue] [-r y|n] [-S path] [-t number_to_submit] [-T type]  [-u user_list]
+    [-w] path
+      [-W additional_attributes] [-v variable_list] [-V ] [-x] [-X] [-z] [script]
+
+(django) [zhc268@epigenomics epigen_ucsd_django]$ a='JYH_1047_1_2,'
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo ${a#,}
+JYH_1047_1_2,
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo ${a##,}
+JYH_1047_1_2,
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo ${a##*,}
+
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo ${a#%*,}
+JYH_1047_1_2,
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo ${a#%,*}
+JYH_1047_1_2,
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo ${a##*,}
+
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo ${a##,*}
+JYH_1047_1_2,
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo ${a%?}
+JYH_1047_1_2
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo ${a%,}
+JYH_1047_1_2
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2, /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+qsub: option requires an argument -- 'M'
+[exiting]
+
+usage: qsub [-a date_time] [-A account_string] [-b secs]
+    [-c [ none | { enabled | periodic | shutdown |
+    depth=<int> | dir=<path> | interval=<minutes>}... ]
+    [-C directive_prefix] [-d path] [-D path]
+    [-e path] [-h] [-I] [-j oe|eo|n] [-k {oe}] [-l resource_list] [-m n|{abe}]
+    [-M user_list] [-N jobname] [-o path] [-p priority] [-P proxy_user [-J <jobid]]
+    [-q queue] [-r y|n] [-S path] [-t number_to_submit] [-T type]  [-u user_list]
+    [-w] path
+      [-W additional_attributes] [-v variable_list] [-V ] [-x] [-X] [-z] [script]
+
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2, /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+qsub: option requires an argument -- 'M'
+[exiting]
+
+usage: qsub [-a date_time] [-A account_string] [-b secs]
+    [-c [ none | { enabled | periodic | shutdown |
+    depth=<int> | dir=<path> | interval=<minutes>}... ]
+    [-C directive_prefix] [-d path] [-D path]
+    [-e path] [-h] [-I] [-j oe|eo|n] [-k {oe}] [-l resource_list] [-m n|{abe}]
+    [-M user_list] [-N jobname] [-o path] [-p priority] [-P proxy_user [-J <jobid]]
+    [-q queue] [-r y|n] [-S path] [-t number_to_submit] [-T type]  [-u user_list]
+    [-w] path
+      [-W additional_attributes] [-v variable_list] [-V ] [-x] [-X] [-z] [script]
+
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2,VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE=5000 100000,SNAPNDIMS=25,GENOMETYPE=mm10 /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+qsub: script file '100000,SNAPNDIMS=25,GENOMETYPE=mm10' cannot be loaded - No such file or directory
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2,VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE=5000 100000,SNAPNDIMS=25,GENOMETYPE=mm10 /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+VERSION=V4\,USEHARMONY=False\,SNAPUSEPEAK=False\,SNAPSUBSET=0\,DOCHROMVAR=False\,READINPEAK=0\,TSSPERCELL=7\,MINREADPERCELL=500\,SNAPBINSIZE=5000
+100000\,SNAPNDIMS=25\,GENOMETYPE=mm10\,
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2,VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE=5000 100000,SNAPNDIMS=25,GENOMETYPE=mm10 /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+VERSION=V4\,USEHARMONY=False\,SNAPUSEPEAK=False\,SNAPSUBSET=0\,DOCHROMVAR=False\,READINPEAK=0\,TSSPERCELL=7\,MINREADPERCELL=500\,SNAPBINSIZE=5000
+100000\,SNAPNDIMS=25\,GENOMETYPE=mm10\,
+./utility/coolAdmin.sh: line 7: ${3@Q}: bad substitution
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2,VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE=5000 100000,SNAPNDIMS=25,GENOMETYPE=mm10 /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE=5000
+100000,SNAPNDIMS=25,GENOMETYPE=mm10,
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2,VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE=5000 100000,SNAPNDIMS=25,GENOMETYPE=mm10 /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE=5000 100000,SNAPNDIMS=25,GENOMETYPE=mm10,
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2,VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE=5000 100000,SNAPNDIMS=25,GENOMETYPE=mm10 /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+VERSION=V4\,USEHARMONY=False\,SNAPUSEPEAK=False\,SNAPSUBSET=0\,DOCHROMVAR=False\,READINPEAK=0\,TSSPERCELL=7\,MINREADPERCELL=500\,SNAPBINSIZE=5000\ 100000\,SNAPNDIMS=25\,GENOMETYPE=mm10\,
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2,VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE=5000 100000,SNAPNDIMS=25,GENOMETYPE=mm10 /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1047_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1047_1_2,INPUTNAME=JYH_1047_1_2,DATASETNAME=JYH_1047_1_2,VERSION=V4\,USEHARMONY=False\,SNAPUSEPEAK=False\,SNAPSUBSET=0\,DOCHROMVAR=False\,READINPEAK=0\,TSSPERCELL=7\,MINREADPERCELL=500\,SNAPBINSIZE=5000\ 100000\,SNAPNDIMS=25\,GENOMETYPE=mm10\ /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1046_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1046_1_2,INPUTNAME=JYH_1046_1_2,DATASETNAME=JYH_1046_1_2,VERSION=V4\,USEHARMONY=False\,SNAPUSEPEAK=False\,SNAPSUBSET=0\,DOCHROMVAR=False\,READINPEAK=0\,TSSPERCELL=7\,MINREADPERCELL=500\,SNAPBINSIZE=5000\ 100000\,SNAPNDIMS=25\,GENOMETYPE=mm10\ /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1046_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1046_1_2,INPUTNAME=JYH_1046_1_2,DATASETNAME=JYH_1046_1_2,VERSION=V4\,USEHARMONY=False\,SNAPUSEPEAK=False\,SNAPSUBSET=0\,DOCHROMVAR=False\,READINPEAK=0\,TSSPERCELL=7\,MINREADPERCELL=500\,SNAPBINSIZE=5000\ 100000\,SNAPNDIMS=25\,GENOMETYPE=mm10\ /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1046_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1046_1_2,INPUTNAME=JYH_1046_1_2,DATASETNAME=JYH_1046_1_2,VERSION=V4\,USEHARMONY=False\,SNAPUSEPEAK=False\,SNAPSUBSET=0\,DOCHROMVAR=False\,READINPEAK=0\,TSSPERCELL=7\,MINREADPERCELL=500\,SNAPBINSIZE=5000\ 100000\,SNAPNDIMS=25\,GENOMETYPE=mm10\ /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+
+
+
+  C-c C-cKilled by signal 2.
+
+(django) [zhc268@epigenomics epigen_ucsd_django]$ cmd='./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1046_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",'
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo $cmd
+./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1046_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo ${cmd/"/\"}
+>   C-c C-c
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo ${cmd/"/\\"}
+./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1046_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+(django) [zhc268@epigenomics epigen_ucsd_django]$ echo ${cmd/"/\\\"}
+>   C-c C-c
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1046_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE=\"5000 100000\",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1046_1_2,INPUTNAME=JYH_1046_1_2,DATASETNAME=JYH_1046_1_2,VERSION=V4\,USEHARMONY=False\,SNAPUSEPEAK=False\,SNAPSUBSET=0\,DOCHROMVAR=False\,READINPEAK=0\,TSSPERCELL=7\,MINREADPERCELL=500\,SNAPBINSIZE=\"5000 /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+sh: -c: line 0: unexpected EOF while looking for matching `"'
+sh: -c: line 1: syntax error: unexpected end of file
+qsub: submit filter returned an error code, aborting job submission.
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1046_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE=\"5000 100000\",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1046_1_2,INPUTNAME=JYH_1046_1_2,DATASETNAME=JYH_1046_1_2,VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE="5000 /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1046_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE=\"5000 100000\",SNAPNDIMS="25",GENOMETYPE="mm10",
+VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE="5000
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1046_1_2,INPUTNAME=JYH_1046_1_2,DATASETNAME=JYH_1046_1_2,VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE="5000 /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1046_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE=\"5000\ 100000\",SNAPNDIMS="25",GENOMETYPE="mm10",
+VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE="5000 100000",SNAPNDIMS=25,GENOMETYPE=mm10,
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1046_1_2,INPUTNAME=JYH_1046_1_2,DATASETNAME=JYH_1046_1_2,VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE="5000 100000",SNAPNDIMS=25,GENOMETYPE=mm10 /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1046_1_2" VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE=\"5000\ 100000\",SNAPNDIMS="25",GENOMETYPE="mm10",
+VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE="5000 100000",SNAPNDIMS=25,GENOMETYPE=mm10,
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1046_1_2,INPUTNAME=JYH_1046_1_2,DATASETNAME=JYH_1046_1_2,VERSION=V4,USEHARMONY=False,SNAPUSEPEAK=False,SNAPSUBSET=0,DOCHROMVAR=False,READINPEAK=0,TSSPERCELL=7,MINREADPERCELL=500,SNAPBINSIZE="5000 100000",SNAPNDIMS=25,GENOMETYPE=mm10 /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ python3
+Python 3.6.5 | packaged by conda-forge | (default, Apr  6 2018, 13:39:56) 
+[GCC 4.8.2 20140120 (Red Hat 4.8.2-15)] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> paramString='VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0.0",TSSPERCELL="7.0",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",'
+>>> cmd1 = f'./utility/coolAdmin.sh  {paramString}'
+>>> print(cmd1)
+./utility/coolAdmin.sh  VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0.0",TSSPERCELL="7.0",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+>>> print(cmd1.replace('"','\"')
+... )
+./utility/coolAdmin.sh  VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0.0",TSSPERCELL="7.0",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+>>> print(
+./utility/coolAdmin.sh  VERSION=\"V4\",USEHARMONY=\"False\",SNAPUSEPEAK=\"False\",SNAPSUBSET=\"0\",DOCHROMVAR=\"False\",READINPEAK=\"0.0\",TSSPERCELL=\"7.0\",MINREADPERCELL=\"500\",SNAPBINSIZE=\"5000 100000\",SNAPNDIMS=\"25\",GENOMETYPE=\"mm10\",
+>>> cmd1 = f'./utility/coolAdmin.sh  {paramString.replace('"','\\"')}'
+  File "<stdin>", line 1
+SyntaxError: f-string: mismatched '(', '{', or '['
+>>> cmd1 = f'./utility/coolAdmin.sh  {paramString.replace('"','\\"')}'
+  File "<stdin>", line 1
+SyntaxError: f-string: mismatched '(', '{', or '['
+>>> cmd1 = f'./utility/coolAdmin.sh  {paramString.replace('"','\\"'))}'
+  File "<stdin>", line 1
+SyntaxError: f-string: mismatched '(', '{', or '['
+>>> print(cmd1.replace('"','\\"'))
+./utility/coolAdmin.sh  VERSION=\"V4\",USEHARMONY=\"False\",SNAPUSEPEAK=\"False\",SNAPSUBSET=\"0\",DOCHROMVAR=\"False\",READINPEAK=\"0.0\",TSSPERCELL=\"7.0\",MINREADPERCELL=\"500\",SNAPBINSIZE=\"5000 100000\",SNAPNDIMS=\"25\",GENOMETYPE=\"mm10\",
+>>> cmd1=cmd1
+>>> print(cmd1)
+./utility/coolAdmin.sh  VERSION=\"V4\",USEHARMONY=\"False\",SNAPUSEPEAK=\"False\",SNAPSUBSET=\"0\",DOCHROMVAR=\"False\",READINPEAK=\"0.0\",TSSPERCELL=\"7.0\",MINREADPERCELL=\"500\",SNAPBINSIZE=\"5000 100000\",SNAPNDIMS=\"25\",GENOMETYPE=\"mm10\",
+>>> cmd1 = f'./utility/coolAdmin.sh {email} {seqString} {paramString}'.replace('"','\\"')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'email' is not defined
+>>> cmd1 = f'./utility/coolAdmin.sh  {paramString}'.replace('"','\\"')
+>>> print(cmd1)
+./utility/coolAdmin.sh  VERSION=\"V4\",USEHARMONY=\"False\",SNAPUSEPEAK=\"False\",SNAPSUBSET=\"0\",DOCHROMVAR=\"False\",READINPEAK=\"0.0\",TSSPERCELL=\"7.0\",MINREADPERCELL=\"500\",SNAPBINSIZE=\"5000 100000\",SNAPNDIMS=\"25\",GENOMETYPE=\"mm10\",
+>>> print(cmd1.replace(' ','\\ '))
+./utility/coolAdmin.sh\ \ VERSION=\"V4\",USEHARMONY=\"False\",SNAPUSEPEAK=\"False\",SNAPSUBSET=\"0\",DOCHROMVAR=\"False\",READINPEAK=\"0.0\",TSSPERCELL=\"7.0\",MINREADPERCELL=\"500\",SNAPBINSIZE=\"5000\ 100000\",SNAPNDIMS=\"25\",GENOMETYPE=\"mm10\",
+>>> exit
+Use exit() or Ctrl-D (i.e. EOF) to exit
+>>> exit()
+(django) [zhc268@epigenomics epigen_ucsd_django]$ 
