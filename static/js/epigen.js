@@ -941,19 +941,18 @@ $(document).ready(function () {
             }
 
         })
-    })
+    });
 
-    $(".runsinglecell").on("click", function (e) {
+    $(document).on('click', '.runsinglecell', function (e) {
         e.preventDefault();
-        console.log("submitting: ", $(this).val());
         button = $(this)
         $.ajax({
             type: "POST",
             cache: false,
-            url: $(this).attr('singlecell-submission-url'),
+            url: "/singlecell/ajax/submit/",
             data: {
                 'seq': $(this).val(),
-                'email': $(this).attr("email")
+                'email': "no emailneeded rn"
             },
             dataType: 'json',
             success: function (data) {
@@ -965,21 +964,21 @@ $(document).ready(function () {
                 }
             }
 
-        })
+        });
     });
     $('#id_date_submitted').attr("readonly", true);
 
-    $(".cooladmin-submit").click(function (e) {
+    $(document).on('click', '.cooladmin-submit', function (e) {
+        e.preventDefault();
         button = $(this)
         seq = $(button).val();
         email = $(button).attr('email');
         console.log("submitting thing: ", seq, email)
         $.ajax({
             type: "POST",
-            url: $(this).attr('cooladmin-submission-url'),
+            url: "/singlecell/ajax/submitcooladmin",
             data: {
                 'seq': seq,
-                'email': email,
             },
             dataType: 'json',
             success: function (data) {
@@ -1000,6 +999,7 @@ $(document).ready(function () {
         "pageLength": 50,
         "order": [[0, "desc"], [3, "desc"]],
     });
+
     /*
         $("#save-ca-edit").on("click", function (e) {
             e.preventDefault();
@@ -1030,6 +1030,278 @@ $(document).ready(function () {
     $("#other").click(function (e) {
         $("#target").click();
     });
+
+    /* Start Singlecell functions
+    *
+    */
+    //all seqs datatable
+    var singlecellurl = $('#datatable-all-sc').attr("data-href");
+    $('#datatable-all-sc').DataTable({
+        //dom: 'lBfrtip',
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        //"order": [[5, "desc"], [4, "desc"]],
+        "ajax": {
+            url: singlecellurl,
+            dataSrc: ''
+        },
+        "columns": [
+            { data: "seq_id" },
+            { data: "libraryinfo__experiment_type" },
+            { data: "seq_status" },
+            { data: "10x_status" },
+            { data: "cooladmin_status" },
+
+        ],
+        "deferRender": true,
+        "columnDefs": [
+            {
+                "targets": 0,
+                "render": function (data, type, row) {
+                    var itemID = row["id"];
+                    return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+                }
+            },
+            // 10x pipeline check
+            {
+                "targets": 3,
+                "render": function (data, type, row) {
+                    var status = data;
+                    var seq = row['seq_id'];
+                    if (status === "Yes") {
+                        return ('<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="/setqc/' + seq + '/web_summary.html" style="color:white" target="_blank"> Results</a></button >');
+                    } else if (status === "Error!") {
+                        return ('<button type="button" class="badge badge-success badge-status-red" data-toggle="tooltip" data-placement="top" title="Contact bioinformatics group!">Error!</button>');
+                    } else if (status === "No" && row['seq_status'] === "No") {
+                        return ('<button type="button" class="btn btn-sm badge-status-blue" style="color:white" data-toggle="tooltip" data-placement="top" title="No FASTQ files available">ClickToSubmit</button>');
+                    } else if (status === "No" && row['seq_status'] === "Yes") {
+                        return ('<button type="button" class="runsinglecell btn btn-danger btn-sm btn-status-orange" value=' + seq + '> ClickToSubmit </button>');
+                    } else {
+                        return ('<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>' + status + '</button>');
+                    }
+                }
+            },
+            {
+                //cooladmin status
+                "targets": 4,
+                "render": function (data, type, row) {
+                    var status = data;
+                    var seq_id = row['seq_id'];
+                    if (status === "ClickToSubmit") {
+                        if (row['seq_status'] === "Yes") {
+                            if (row['libraryinfo__experiment_type'] === "10xATAC") {
+                                if (row['10x_status'] === "Yes" || row['10x_status'] === "Results") {
+                                    return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange  cooladmin-submit" cooladmin-submission-url="/Ajax/SubmitCA/" value="' + seq_id + '"> ClickToSubmit </button>');
+
+                                } else {
+                                    return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
+                                }
+                            } else {
+                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange singlecell-submission-url="/AJAX/submitCA" email="email" value="' + seq_id + '"> ClickToSubmit</button></form>');
+                            }
+                        } else { //no fastq file present
+                            return ('<button type="button" data-toggle="tooltip" data-placement="top" title="FASTQ not present" disabled class="badge badge-success badge-status-blue cooladmin-submit" disabled> ClickToSubmit </button>');
+                        }
+                    } else if (status === ".status.fail") {//failed
+                        return ('<button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status">Error!</button>')
+                    } else {//in process
+                        return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
+                    }
+                },
+            },
+            {
+                "targets": 5,
+                "render": function (data, type, row) {
+                    var seq_id = row['seq_id']
+                    if (row['libraryinfo__experiment_type'] !== "10xATAC" || row['10x_status'] === "Yes") {
+                        return ('<a href="/singlecell/EditCoolAdmin/' + seq_id + '"><i class="fas fa-edit"></i></a>');
+                    } else {
+                        return ('<a href="#"><i class="fas fa-edit"></i></a>')
+                    }
+                }
+            }
+        ]
+    });
+    //user sequences
+    var singlecellurl_user = $('#datatable-user-sc').attr("data-href");
+    $('#datatable-user-sc').DataTable({
+        //dom: 'lBfrtip',
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        //"order": [[5, "desc"], [4, "desc"]],
+        "ajax": {
+            url: singlecellurl_user,
+            dataSrc: ''
+        },
+        "columns": [
+            { data: "seq_id" },
+            { data: "libraryinfo__experiment_type" },
+            { data: "seq_status" },
+            { data: "10x_status" },
+            { data: "cooladmin_status" },
+
+        ],
+        "deferRender": true,
+        "columnDefs": [
+            {
+                "targets": 0,
+                "render": function (data, type, row) {
+                    var itemID = row["id"];
+                    return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+                }
+            },
+            // 10x pipeline check
+            {
+                "targets": 3,
+                "render": function (data, type, row) {
+                    var status = data;
+                    var seq = row['seq_id'];
+                    if (status === "Yes") {
+                        return ('<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="/setqc/' + seq + '/web_summary.html" style="color:white" target="_blank"> Results</a></button >');
+                    } else if (status === "Error!") {
+                        return ('<button type="button" class="badge badge-success badge-status-red" data-toggle="tooltip" data-placement="top" title="Contact bioinformatics group!">Error!</button>');
+                    } else if (status === "No" && row['seq_status'] === "No") {
+                        return ('<button type="button" class="btn btn-sm badge-status-blue" style="color:white" data-toggle="tooltip" data-placement="top" title="No FASTQ files available">ClickToSubmit</button>');
+                    } else if (status === "No" && row['seq_status'] === "Yes") {
+                        return ('<button type="button" class="runsinglecell btn btn-danger btn-sm btn-status-orange" value=' + seq + '> ClickToSubmit </button>');
+                    } else {
+                        return ('<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>' + status + '</button>');
+                    }
+                }
+            },
+            {
+                //cooladmin status
+                "targets": 4,
+                "render": function (data, type, row) {
+                    var status = data;
+                    var seq_id = row['seq_id'];
+                    if (status === "ClickToSubmit") {
+                        if (row['seq_status'] === "Yes") {
+                            if (row['libraryinfo__experiment_type'] === "10xATAC") {
+                                if (row['10x_status'] === "Yes" || row['10x_status'] === "Results") {
+                                    return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange  cooladmin-submit" cooladmin-submission-url="/Ajax/SubmitCA/" value="' + seq_id + '"> ClickToSubmit </button>');
+                                } else {
+                                    return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
+                                }
+                            } else {
+                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange singlecell-submission-url="/AJAX/submitCA" email="email" value="' + seq_id + '"> ClickToSubmit</button></form>');
+                            }
+                        } else { //no fastq file present
+                            return ('<button type="button" data-toggle="tooltip" data-placement="top" title="FASTQ not present" disabled class="badge badge-success badge-status-blue cooladmin-submit" disabled> ClickToSubmit </button>');
+                        }
+                    } else if (status === ".status.fail") {//failed
+                        return ('<button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status">Error!</button>')
+                    } else {//in process
+                        return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
+                    }
+                },
+            },
+            {//cooladmin edit button- links to edit page
+                "targets": 5,
+                "render": function (data, type, row) {
+                    var seq_id = row['seq_id']
+                    if (row['libraryinfo__experiment_type'] !== "10xATAC" || row['10x_status'] === "Yes") {
+                        return ('<a href="/singlecell/EditCoolAdmin/' + seq_id + '"><i class="fas fa-edit"></i></a>');
+                    } else {
+                        return ('<a href="#"><i class="fas fa-edit"></i></a>')
+                    }
+                }
+            }
+        ]
+    });
+    //this loads singlecell data for users(nonbionf group)
+    //return non clickable/nonfunctinal buttons
+    singlecellurl = $('#datatable-all-sc-user').attr("data-href");
+    $('#datatable-all-sc-user').DataTable({
+        //dom: 'lBfrtip',
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        //"order": [[5, "desc"], [4, "desc"]],
+        "ajax": {
+            url: singlecellurl,
+            dataSrc: ''
+        },
+        "columns": [
+            { data: "seq_id" },
+            { data: "libraryinfo__experiment_type" },
+            { data: "seq_status" },
+            { data: "10x_status" },
+            { data: "cooladmin_status" },
+
+        ],
+        "deferRender": true,
+        "columnDefs": [
+            {
+                "targets": 0,
+                "render": function (data, type, row) {
+                    var itemID = row["id"];
+                    return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+                }
+            },
+            // 10x pipeline check
+            {
+                "targets": 3,
+                "render": function (data, type, row) {
+                    var status = data;
+                    var seq = row['seq_id'];
+                    if (status === "Yes") {
+                        return ('<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="/#" style="color:white"> Results</a></button >');
+                    } else if (status === "Error!") {
+                        return ('<button type="button" class="badge badge-success badge-status-red" data-toggle="tooltip" data-placement="top" title="Contact bioinformatics group!">Error!</button>');
+                    } else if (status === "No" && row['seq_status'] === "No") {
+                        return ('<button type="button" class="btn btn-sm badge-status-blue" style="color:white" data-toggle="tooltip" data-placement="top" title="No FASTQ files available">ClickToSubmit</button>');
+                    } else if (status === "No" && row['seq_status'] === "Yes") {
+                        return ('<button type="button" disabled class="btn btn-danger btn-sm btn-status-orange" value=' + seq + '> ClickToSubmit </button>');
+                    } else {
+                        return ('<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>' + status + '</button>');
+                    }
+                }
+            },
+            {
+                //cooladmin status
+                "targets": 4,
+                "render": function (data, type, row) {
+                    var status = data;
+                    var seq_id = row['seq_id'];
+                    if (status === "ClickToSubmit") {
+                        if (row['seq_status'] === "Yes") {
+                            if (row['libraryinfo__experiment_type'] === "10xATAC") {
+                                if (row['10x_status'] === "Yes" || row['10x_status'] === "Results") {
+                                    return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange" disabled> ClickToSubmit </button>');
+
+                                } else {
+                                    return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
+                                }
+                            } else {
+                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange" disabled> ClickToSubmit</button>');
+                            }
+                        } else { //no fastq file present
+                            return ('<button type="button" data-toggle="tooltip" data-placement="top" title="FASTQ not present" disabled class="badge badge-success badge-status-blue cooladmin-submit" disabled> ClickToSubmit </button>');
+                        }
+                    } else if (status === ".status.fail") {//failed
+                        return ('<button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status">Error!</button>')
+                    } else {//in process
+                        return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
+                    }
+                },
+            },
+            {
+                "targets": 5,
+                "render": function (data, type, row) {
+                    var seq_id = row['seq_id']
+                    if (row['libraryinfo__experiment_type'] !== "10xATAC" || row['10x_status'] === "Yes") {
+                        return ('<a href="#"><i class="fas fa-edit"></i></a>');
+                    } else {
+                        return ('<a href="#"><i class="fas fa-edit"></i></a>')
+                    }
+                }
+            }
+        ]
+    });
+
 
     $("#id_pipeline_version").attr('title', 'Choose desired pipeline version');
     $("#id_useHarmony").attr('title', 'Default False. Perform harmony batch correction using the dataset IDs as batch IDs only for multiple sequences');

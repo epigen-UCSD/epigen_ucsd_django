@@ -15,8 +15,6 @@ import subprocess
 import json
 from epigen_ucsd_django.shared import *
 
-# Create your views here.
-
 #keys in snap param dict should be the same as the fields in the model and form.
 SNAP_PARAM_DICT= {
     'pipeline_version':'VERSION',
@@ -37,40 +35,71 @@ SINGLE_CELL_EXPS = ['10xATAC','scRNA-seq','snRNA-seq', 'scATAC-seq']
 
 defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
                  'rat': 'rn6', 'cattle': 'ARS-UCD1.2'}
+
 #view to return All sequences
 def AllSeqs(request):
-    form = CoolAdminForm()
-    seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo').order_by('date_submitted_for_sequencing')
-    header = [
-        'Sequence ID', 'Library ID', 'Experiment Type', 'Date Submitted for Sequencing',
-        'Sequence Status', '10xProcessed', 'CoolAdmin'
-    ]
-    seqs_info = BuildSeqList(seqs_list, request, False)
-    context = {
+    context ={
         'type':'All Sequences',
-        'header': header,
-        'seqs_info': seqs_info,
-        'email':  request.user.email,
-        'form' : form,
     }
-    return render(request,'singlecell_app/seqs.html',context)
+    ##TODO add a check to see users role, if bioinfo. then return html that allows submission on all seqs
+    #else return html that does not allow submissions
+    if not request.user.groups.filter(name='bioinformatics').exists():
+        return render(request, 'singlecell_app/allseqs_user.html', context)
+    else:
+        return render(request, 'singlecell_app/allseqs_bio.html', context)
 
-#view to return user specific sequences
+
+#Async view of MySeqs
 def MySeqs(request):
-    header = [
-        'Sequence ID', 'Library ID', 'Experiment Type', 'Date Submitted for Sequencing',
-        'Sequence Status', '10xProcessed', 'CoolAdmin'
-    ]
-    seqs_list = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).select_related('libraryinfo').order_by('date_submitted_for_sequencing')
-    seqs_info = BuildSeqList(seqs_list, request, True)
-    context = {
+    context ={
         'type':'My Sequences',
-        'header': header,
-        'seqs_info': seqs_info,
-        'email':  request.user.email,
-
     }
-    return render(request,'singlecell_app/seqs.html',context)
+    return render(request, 'singlecell_app/myseqs.html', context)
+
+'''
+This function is used to build seq lists to be returned to the from an AJAX call for AllSeqs2.
+@params
+    seqs_list is a list of dictionaires where each has the seq_id and experiment_type for a single cell sample sequence.
+@returns
+    returns a list of dictionaries with more information describing the sequence.
+    #TODO clean this function up, library IDs not necessary anymore
+'''
+def BuildSeqList(seqs_list):
+    #coolAdminSet = CoolAdminSubmission.objects.filter(seqinfo__in=seqs_list)
+    #print(f'cool admin submissions: {coolAdminSet}')
+    for entry in seqs_list:
+        seq_id = entry['seq_id']
+        entry['seq_status'] = findSeqStatus(seq_id, entry['read_type'])
+        entry['10x_status'] = TenXPipelineCheck(seq_id)
+        entry['cooladmin_status'] = FindCoolAdminStatus(entry['id'])
+        entry['link'] = getCoolAdminLink(seq_id)
+    return (seqs_list)
+
+#async function to get hit by ajax
+def AllSingleCellData(request):
+    #make sure only bioinformatics group users allowed
+
+    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=\
+        SINGLE_CELL_EXPS).select_related('libraryinfo',).order_by(\
+        'date_submitted_for_sequencing').values('id','seq_id', 'libraryinfo__experiment_type','read_type')
+
+    data = list(seqs_queryset)
+    print(data)
+    BuildSeqList(data)
+    print('new data: ',data)
+    return JsonResponse(data, safe=False)
+
+#async function to get hit by ajax, user only seqs
+def UserSingleCellData(request):
+    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=\
+        SINGLE_CELL_EXPS,team_member_initails=request.user).select_related('libraryinfo',).order_by(\
+        'date_submitted_for_sequencing').values('id','seq_id', 'libraryinfo__experiment_type','read_type')
+
+    data = list(seqs_queryset)
+    print(data)
+    BuildSeqList(data)
+    print('new data: ',data)
+    return JsonResponse(data, safe=False)
 
 '''
 This function returns a string that represents 
@@ -102,7 +131,7 @@ def TenXPipelineCheck(seq):
     else:
         if not os.path.isfile( os.path.join( path,
                 tenx_output_folder, tenx_target_outfile ) ):
-                seqstatus = 'No' 
+                seqstatus = 'No'
         elif os.path.isfile(os.path.join( path, tenx_output_folder, tenx_target_outfile ) ):
             seqstatus = 'Yes'
         else:
@@ -119,108 +148,101 @@ Order dependent.
     'Yes': FASTQ files present
     'No': no FASTQ files present
 '''
-def findSeqStatus(seq_ids):
+def findSeqStatus(seq_id, read_type):
     fastqdir = settings.FASTQ_DIR
-    seqsStatus=[]
-    for seq in seq_ids:
-        #print(f'seq: {seq}, seqid: {seq.seq_id}, readtype: {seq.read_type}')
-        seq_id = seq.seq_id
-        reps =  seq_id.split('_')[2:]
-        mainname = '_'.join(seq_id.split('_')[0:2])
-        #reps are [_2] in brandon_210_2 or [_1,_2,_3] in brandon_210_1_2_3
-        if len(reps) == 0:
-            if seq.read_type == 'PE':
-                r1 = mainname + '_R1.fastq.gz'
-                r2 = mainname +'_R2.fastq.gz'
-                if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
-                    seqsStatus.append('No')
-                else:
-                    seqsStatus.append('Yes')
+    #print(f'seq: {seq}, seqid: {seq.seq_id}, readtype: {seq.read_type}')
+    reps =  seq_id.split('_')[2:]
+    mainname = '_'.join(seq_id.split('_')[0:2])
+    #reps are [_2] in brandon_210_2 or [_1,_2,_3] in brandon_210_1_2_3
+    if len(reps) == 0:
+        if read_type == 'PE':
+            r1 = mainname + '_R1.fastq.gz'
+            r2 = mainname +'_R2.fastq.gz'
+            if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
+                seqsStatus = ('No')
             else:
-                r1 = mainname+'.fastq.gz'
-                r1op = mainname+'_R1.fastq.gz'
-                if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
-                    seqsStatus.append('No')
-                else: 
-                    seqsStatus.append('Yes')
+                seqsStatus = ('Yes')
         else:
-            for rep in reps:
-                if rep == '1':
-                    if seq.read_type == 'PE':
-                        r1 = mainname + '_R1.fastq.gz'
-                        r2 = mainname +'_R2.fastq.gz'
-                        if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
-                            seqsStatus.append('No')
-                            break
-                    else:
-                        r1 = mainname+'.fastq.gz'
-                        r1op = mainname+'_R1.fastq.gz'
-                        if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
-                            seqsStatus.append('No')
-                            break
+            r1 = mainname+'.fastq.gz'
+            r1op = mainname+'_R1.fastq.gz'
+            if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
+                seqsStatus = 'No'
+            else: 
+                seqsStatus = 'Yes'
+    else:
+        for rep in reps:
+            if rep == '1':
+                if read_type == 'PE':
+                    r1 = mainname + '_R1.fastq.gz'
+                    r2 = mainname +'_R2.fastq.gz'
+                    if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
+                        seqsStatus = 'No'
+                        break
                 else:
-                    #find mainname_rep
-                    repname = mainname + '_' + rep
-                    if seq.read_type == 'PE':
-                        r1 = repname + '_R1.fastq.gz'
-                        r2 = repname +'_R2.fastq.gz'
-                        if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
-                            seqsStatus.append('No')
-                            break
-                    else:
-                        r1 = repname+'.fastq.gz'
-                        r1op = repname+'_R1.fastq.gz'
-                        if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
-                            seqsStatus.append('No')
-                            break
-            seqsStatus.append('Yes')
+                    r1 = mainname+'.fastq.gz'
+                    r1op = mainname+'_R1.fastq.gz'
+                    if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
+                        seqsStatus = 'No'
+                        break
+            else:
+                #find mainname_rep
+                repname = mainname + '_' + rep
+                if read_type == 'PE':
+                    r1 = repname + '_R1.fastq.gz'
+                    r2 = repname +'_R2.fastq.gz'
+                    if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
+                        seqsStatus = 'No'
+                        break
+                else:
+                    r1 = repname+'.fastq.gz'
+                    r1op = repname+'_R1.fastq.gz'
+                    if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
+                        seqsStatus = 'No'
+                        break
+        #set when for loop statement terminates, all reps fastq's were present
+        seqsStatus = 'Yes'
     #print(f'seqstatus: {seqsStatus}')
     return seqsStatus
 
-'''
-This function is used to build seq lists to be returned to the html template.
-@params
-    seqs_list is a list of strings where each string is the name for a single cell smaple sequence.
-@returns
-    returns a zipped list of data describing the sequence processed.
-    #TODO clean this function up, library IDs not necessary anymore?
-'''
-def BuildSeqList(seqs_list, request, owner):
-    print('reqeust: ',request.user, (Group.objects.get(name='bioinformatics') in model_to_dict(User.objects.get(username=request.user))['groups'])) 
-    seq_ids = [seq.seq_id for seq in seqs_list] #0
-    libraryinfoIds = [ seq.libraryinfo.library_id for seq in seqs_list] #1
-    libraryIds = [ seq.libraryinfo_id for seq in seqs_list]#2
-    experiment_types = [seq.libraryinfo.experiment_type for seq in seqs_list]#3
-    submitted_dates = [ str(seq.date_submitted_for_sequencing) for seq in seqs_list ]#4
-    seq_statuses = findSeqStatus(seqs_list)#5
-    seqs10xStatus = [ TenXPipelineCheck(seq) for seq in seqs_list ] #6
-    coolAdmin = [FindCoolAdminStatus(seq) for seq in seqs_list] #7
-    links = [] #9
-    #build lit of links
-    for seq in seqs_list:
-        if FindCoolAdminStatus(seq) == '.status.success':
-            links.append(getCoolAdminLink(seq))
-        else:
-            links.append('')
-    #build list if sequence is 'owned' this means it will be clickable by user
-    if is_member(request.user,['bioinformatics']) or owner == True:
-        ownerList = ['Owner' for seq in seqs_list ]
-    else:
-        ownerList = []
-        for seq in seqs_list:
-            if(request.user == seq.team_member_initails or ( Group.objects.get(name='bioinformatics') in model_to_dict(User.objects.get(username=request.user))['groups']) ):
-                ownerList.append('Owner')
-            else:
-                ownerList.append('NotOwner')
-    seqs_info = zip(seq_ids, libraryinfoIds, libraryIds, experiment_types, submitted_dates, 
-                    seq_statuses, seqs10xStatus, coolAdmin, ownerList, links)
-    return seqs_info
+
+# def BuildSeqList(seqs_list, request, owner):
+#     #coolAdminSet = CoolAdminSubmission.objects.filter(seqinfo__in=seqs_list)
+#     #print(f'cool admin submissions: {coolAdminSet}')
+#     seq_ids = [seq.seq_id for seq in seqs_list] #0
+#     experiment_types = [seq.libraryinfo.experiment_type for seq in seqs_list]#1
+#     submitted_dates = [ str(seq.date_submitted_for_sequencing) for seq in seqs_list ]#2
+#     seq_statuses = findSeqStatus(seqs_list)#3
+#     seqs10xStatus = [ TenXPipelineCheck(seq) for seq in seqs_list ]#4
+#     coolAdmin = [FindCoolAdminStatus(seq) for seq in seqs_list]#5
+#     links = []#6
+#     seqIds = [seq.id for seq in seqs_list]
+    
+#     #build list of links
+#     for i in range(len(seqs_list)):
+#         if coolAdmin[i] == '.status.success':
+#             links.append(getCoolAdminLink( seq_ids[i] ))
+#         else:
+#             links.append('')
+    
+#     #build list if sequence is 'owned' this means it will be clickable by user
+#     if Group.objects.get(name='bioinformatics') in model_to_dict(User.objects.get(username=request.user))['groups'] or owner == True:
+#         ownerList = ['owner' for seq in seqs_list ]
+#     else:
+#         ownerList = []
+#         for seq in seqs_list:
+#             if(request.user == seq.team_member_initails): 
+#                 ownerList.append('owner')
+#             else:
+#                 ownerList.append('not-owner')
+    
+#     seqs_info = zip(seq_ids, experiment_types, submitted_dates, 
+#                     seq_statuses, seqs10xStatus, coolAdmin, ownerList, links, seqIds)
+#     return seqs_info
 
 '''
 '''
 def FindCoolAdminStatus(seq):
     coolAdminDir = settings.COOLADMIN_DIR
-    
     clickToSub = CoolAdminSubmission.objects.filter(seqinfo=seq, status='ClickToSubmit').exists()
     #check if folder exists in coolAdminDir
     path = os.path.join(coolAdminDir, str(seq))
@@ -236,29 +258,33 @@ def FindCoolAdminStatus(seq):
     elif os.path.isfile(path + '/.status.fail'):
         return '.status.fail'
     else: 
-        return 'Submitted'
+        return 'submitted'
 
 
 def SubmitSingleCell(request):
     seq = request.POST.get('seq') 
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seq)
-    #check if posting user has access to data
-    if (not request.user.groups.filter(name='bioinformatics').exists()) or request.user != seqinfo_id.team_member_initails:
-        data = {
-            'is_submitted' : False
-        }
-        return JsonResponse(data)
+    email = request.user.email
+    #check if posting user has access to data, no need, user should only be able to submit based on their role
+    # if (not request.user.groups.filter(name='bioinformatics').exists()) or request.user != seqinfo_id.team_member_initails:
+    #     data = {
+    #         'is_submitted' : False
+    #     }
+    #     return JsonResponse(data)
 
-    email = request.POST.get('email')
+    # status = SubmitToTenX(seq, email)
+    # if status:
+    #     data = {
+    #         'is_submitted' : True
+    #     }
+    # else:
+    #     data = {
+    #         'is_submitted' : False
+    #     }
     status = SubmitToTenX(seq, email)
-    if status:
-        data = {
-            'is_submitted' : True
-        }
-    else:
-        data = {
-            'is_submitted' : False
-        }
+    data = {
+        "is_submitted": True,
+    }
     return JsonResponse(data)
 
 '''
@@ -268,13 +294,13 @@ This function run a bash script ./utility/coolAdmin.sh
 def SubmitToCoolAdmin(request):
     seq = request.POST.get('seq')
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seq)
+    #remove this in future iteration
     if(not request.user.groups.filter(name='bioinformatics').exists() and request.user != seqinfo_id.team_member_initails):
         data = {
             'is_submitted' : False
         }
         return JsonResponse(data)
-    print('submitting cool admin job')
-    email = request.POST.get('email')
+    email = request.user.email
     info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seq)
     species = defaultgenome[info.libraryinfo.sampleinfo.species.lower()]
     submission, created = CoolAdminSubmission.objects.update_or_create(seqinfo=info,
@@ -295,7 +321,7 @@ def SubmitToCoolAdmin(request):
     seqString = f'"{seq}"'
 
     paramString = buildCoolAdminParameterString(dict)
-    print('paramString: ',paramString)
+    #print('paramString: ',paramString)
     cmd1 = f'./utility/coolAdmin.sh {email} {seqString} {paramString}'
     
     p = subprocess.Popen(
@@ -308,27 +334,25 @@ def SubmitToCoolAdmin(request):
 
 '''
 This is a big boy here...
-@Header
-This function will be hit by a request to 'save' an input form for editing cool
-admin submission parameters. This functions checks if the posted form data is
-different from the precvious submission form submitted, if it is different then 
-the posted form is saved to the CoolAdminSubmission model representing the sequence.
-If there was no previous submission then a new object is created and saved.
-
+@header:
+    This function will be hit by a request to 'save' an input form for editing cool
+    admin submission parameters. This functions checks if the posted form data is
+    different from the precvious submission form submitted, if it is different then 
+    the posted form is saved to the CoolAdminSubmission model representing the sequence.
+    If there was no previous submission then a new object is created and saved.
 @side-effects:
--If new form is saved then status of CoolAdminSubmission model will be changed to
+    If new form is saved then status of CoolAdminSubmission model will be changed to
     ClickToSubmit, this will cause the button to be displayed as clicktosubmit in 
     seqs.html.(pseudo overwriting previous results)
-
 @params: 
-seqinfo is a string that represents the seq_id of SeqInfo model object.
+    seqinfo is a string that represents the seq_id of SeqInfo model object.
 @returns:
--redirects user if user posted 'save'
--renders form
+    redirects user if user posted 'save'
+    renders form
 '''
 def EditCoolAdminSubmission(request, seqinfo):
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seqinfo)
-    print('edit reqeust: ',(request.user.groups.filter(name='bioinformatics').exists()))
+    #print('edit reqeust: ',(request.user.groups.filter(name='bioinformatics').exists()))
     if(not request.user.groups.filter(name='bioinformatics').exists() and request.user != seqinfo_id.team_member_initails):
         print('raising exception')
         raise PermissionDenied
@@ -336,7 +360,7 @@ def EditCoolAdminSubmission(request, seqinfo):
     info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seqinfo_id)
     species = info.libraryinfo.sampleinfo.species
     exptType = info.libraryinfo.experiment_type
-    print("expt type: ", exptType)
+    #print("expt type: ", exptType)
     
     #starter_data for initialization values of CoolAdminSubmissionForm 
     starter_data = {
@@ -359,7 +383,7 @@ def EditCoolAdminSubmission(request, seqinfo):
         else:
             form.fields['genome'].initial = [submission.refgenome]
         
-        print(f'previous submission:{model_to_dict(submission)} ')
+        #print(f'previous submission:{model_to_dict(submission)} ')
     else:#create a form with starter data if no previous submission form
         form = CoolAdminForm( initial=starter_data, spec=species)
         if(exptType == '10xATAC'):
@@ -367,7 +391,7 @@ def EditCoolAdminSubmission(request, seqinfo):
             form.fields['genome'].initial = [refgenome]
         else:
             form.fields['genome'].initial = [defaultgenome[species]]
-            print('form: ',form)
+            #print('form: ',form)
     #handle save of new submission form
     if request.method == 'POST':
         post = request.POST.copy()
@@ -385,16 +409,16 @@ def EditCoolAdminSubmission(request, seqinfo):
         if(submission != False):
             data = model_to_dict(submission)
             data['genome'] = GenomeInfo.objects.get(pk=data['refgenome']).genome_name
-            print('\n data: ',data)
-            print('\n post: ',post)
+            #print('\n data: ',data)
+            #print('\n post: ',post)
             form = CoolAdminForm(post, initial=data)
-            print('form: is valid and has changed: ',form.is_valid(), form.has_changed())
+            #print('form: is valid and has changed: ',form.is_valid(), form.has_changed())
             if form.is_valid():
                 if(form.has_changed()):
                     data = form.cleaned_data
                     del data['genome'] 
                     data['status'] = 'ClickToSubmit'
-                    print('changed data: ',form.changed_data)
+                    #print('changed data: ',form.changed_data)
                     CoolAdminSubmission.objects.filter(seqinfo=seqinfo_id).update(**data)
                     obj = CoolAdminSubmission.objects.get(seqinfo=seqinfo_id)
                     obj.refgenome = GenomeInfo.objects.get(genome_name=post['refgenome'])
@@ -411,15 +435,11 @@ def EditCoolAdminSubmission(request, seqinfo):
                 data = form.cleaned_data
                 data['seqinfo'] = seqinfo_id
                 del data['genome']
-                print(post)
-
                 obj = CoolAdminSubmission(**data)
                 genome = GenomeInfo.objects.get(genome_name=post['refgenome']) 
-                print('printing')
-                print('genome: ',genome)
                 obj.refgenome = genome
                 obj.save()
-                print('new submission: ',model_to_dict(obj))
+                #print('new submission: ',model_to_dict(obj))
             
         return redirect('singlecell_app:myseqs')
 
@@ -427,7 +447,6 @@ def EditCoolAdminSubmission(request, seqinfo):
         'form' : form,
         'seq': seqinfo,
     }
-
     return render(request,'singlecell_app/editCoolAdmin.html', context)
 
 def createCoolAdminSubmission(dict):
@@ -437,13 +456,15 @@ def createCoolAdminSubmission(dict):
 def getCoolAdminLink(seq):
     #cool_dir = f'/projects/ps-epigen/datasets/opoirion/output_LIMS/{seq}/repl1//repl1_{seq}_finals_logs.json'
     cool_dir = settings.COOLADMIN_DIR
-    json_file = os.path.join(cool_dir, str(seq), f'repl1//repl1_{str(seq)}_final_logs.json')
-    
-    with open(json_file, 'r') as f:
-        cool_data = f.read()
-    cool_dict = json.loads(cool_data) 
-    
-    return (cool_dict['report_address'])
+    try:
+        json_file = os.path.join(cool_dir, str(seq), f'repl1//repl1_{str(seq)}_final_logs.json')
+        
+        with open(json_file, 'r') as f:
+            cool_data = f.read()
+        cool_dict = json.loads(cool_data) 
+        return (cool_dict['report_address'])
+    except:
+        return("")
 
 '''
 This function should only be called by another fucntion that ensures the sequence is valid to be submitted
