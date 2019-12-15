@@ -36,20 +36,18 @@ SINGLE_CELL_EXPS = ['10xATAC','scRNA-seq','snRNA-seq', 'scATAC-seq']
 defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
                  'rat': 'rn6', 'cattle': 'ARS-UCD1.2'}
 
-#view to return All sequences
+#view returns All sequences
 def AllSeqs(request):
     context ={
         'type':'All Sequences',
     }
-    ##TODO add a check to see users role, if bioinfo. then return html that allows submission on all seqs
-    #else return html that does not allow submissions
     if not request.user.groups.filter(name='bioinformatics').exists():
         return render(request, 'singlecell_app/allseqs_user.html', context)
     else:
         return render(request, 'singlecell_app/allseqs_bio.html', context)
 
 
-#Async view of MySeqs
+#view returns myseqs.html which displays only  user's seqs
 def MySeqs(request):
     context ={
         'type':'My Sequences',
@@ -64,18 +62,18 @@ This function is used to build seq lists to be returned to the from an AJAX call
     returns a list of dictionaries with more information describing the sequence.
     #TODO clean this function up, library IDs not necessary anymore
 '''
-def BuildSeqList(seqs_list):
-    #coolAdminSet = CoolAdminSubmission.objects.filter(seqinfo__in=seqs_list)
-    #print(f'cool admin submissions: {coolAdminSet}')
+def build_seq_list(seqs_list):
     for entry in seqs_list:
         seq_id = entry['seq_id']
-        entry['seq_status'] = findSeqStatus(seq_id, entry['read_type'])
-        entry['10x_status'] = TenXPipelineCheck(seq_id)
-        entry['cooladmin_status'] = FindCoolAdminStatus(entry['id'])
-        entry['link'] = getCoolAdminLink(seq_id)
+        entry['seq_status'] = find_seq_status(seq_id, entry['read_type'])
+        entry['10x_status'] = tenX_pipeline_check(seq_id)
+        entry['cooladmin_status'] = find_cooladmin_status(entry['id'])
+        entry['link'] = get_cooladmin_link(seq_id)
     return (seqs_list)
 
-#async function to get hit by ajax
+""" async function to get hit by ajax. Returns json of all single cell data dict
+in db
+"""
 def AllSingleCellData(request):
     #make sure only bioinformatics group users allowed
 
@@ -85,11 +83,12 @@ def AllSingleCellData(request):
 
     data = list(seqs_queryset)
     print(data)
-    BuildSeqList(data)
+    build_seq_list(data)
     print('new data: ',data)
     return JsonResponse(data, safe=False)
 
-#async function to get hit by ajax, user only seqs
+"""async function to get hit by ajax, returns user only seqs
+"""
 def UserSingleCellData(request):
     seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=\
         SINGLE_CELL_EXPS,team_member_initails=request.user).select_related('libraryinfo',).order_by(\
@@ -97,13 +96,12 @@ def UserSingleCellData(request):
 
     data = list(seqs_queryset)
     print(data)
-    BuildSeqList(data)
+    build_seq_list(data)
     print('new data: ',data)
     return JsonResponse(data, safe=False)
 
-'''
-This function returns a string that represents 
-the status that the sequence is in the 10x pipeline.
+"""This function returns a string that represents 
+the status of parameter seq in the 10x pipeline.
 @params
     seq: a string that represents the sequence name to be checked.
 @returns
@@ -112,8 +110,8 @@ the status that the sequence is in the 10x pipeline.
     string 'In Process' when sequence is being processed by 10x pipeline
     string 'Error' when an error occurs in pipeline
     string 'Yes' when the 10x pipeline is succesfully done
-'''
-def TenXPipelineCheck(seq):
+"""
+def tenX_pipeline_check(seq):
     tenx_output_folder = 'outs'
     tenx_target_outfile = 'web_summary.html'
     tenxdir = settings.TENX_DIR
@@ -138,17 +136,15 @@ def TenXPipelineCheck(seq):
             seqstatus = 'No'
     return seqstatus
 
-'''#TODO maybe a dictionary would be better suited for this to not be order dependent
-This function checks the FASTQ sequence status and returns the results in a string array. 
-Order dependent.
+"""This function checks the FASTQ sequence status and returns the results 
 @params
-    seq_ids: an array of seq strings. seq string represents a sequence to be checked.
+    seq_id: string represents a seq_id to be checked.
+    read_type: Paired end or not
 @returns
-    returns an array of strings representing the status of the sequence.
     'Yes': FASTQ files present
     'No': no FASTQ files present
-'''
-def findSeqStatus(seq_id, read_type):
+"""
+def find_seq_status(seq_id, read_type):
     fastqdir = settings.FASTQ_DIR
     #print(f'seq: {seq}, seqid: {seq.seq_id}, readtype: {seq.read_type}')
     reps =  seq_id.split('_')[2:]
@@ -241,7 +237,7 @@ def findSeqStatus(seq_id, read_type):
 
 '''
 '''
-def FindCoolAdminStatus(seq):
+def find_cooladmin_status(seq):
     coolAdminDir = settings.COOLADMIN_DIR
     clickToSub = CoolAdminSubmission.objects.filter(seqinfo=seq, status='ClickToSubmit').exists()
     #check if folder exists in coolAdminDir
@@ -261,7 +257,7 @@ def FindCoolAdminStatus(seq):
         return 'submitted'
 
 
-def SubmitSingleCell(request):
+def submit_singlecell(request):
     seq = request.POST.get('seq') 
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seq)
     email = request.user.email
@@ -281,7 +277,7 @@ def SubmitSingleCell(request):
     #     data = {
     #         'is_submitted' : False
     #     }
-    status = SubmitToTenX(seq, email)
+    status = submit_tenX(seq, email)
     data = {
         "is_submitted": True,
     }
@@ -291,7 +287,7 @@ def SubmitSingleCell(request):
 This function handles a cooladmin submission request from LIMS user.
 This function run a bash script ./utility/coolAdmin.sh
 '''
-def SubmitToCoolAdmin(request):
+def submit_cooladmin(request):
     seq = request.POST.get('seq')
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seq)
     #remove this in future iteration
@@ -350,7 +346,7 @@ This is a big boy here...
     redirects user if user posted 'save'
     renders form
 '''
-def EditCoolAdminSubmission(request, seqinfo):
+def edit_cooladmin_sub(request, seqinfo):
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seqinfo)
     #print('edit reqeust: ',(request.user.groups.filter(name='bioinformatics').exists()))
     if(not request.user.groups.filter(name='bioinformatics').exists() and request.user != seqinfo_id.team_member_initails):
@@ -449,11 +445,7 @@ def EditCoolAdminSubmission(request, seqinfo):
     }
     return render(request,'singlecell_app/editCoolAdmin.html', context)
 
-def createCoolAdminSubmission(dict):
-    submission = CoolAdminSubmission.objects.create_submission(dict)
-    return submission
-
-def getCoolAdminLink(seq):
+def get_cooladmin_link(seq):
     #cool_dir = f'/projects/ps-epigen/datasets/opoirion/output_LIMS/{seq}/repl1//repl1_{seq}_finals_logs.json'
     cool_dir = settings.COOLADMIN_DIR
     try:
@@ -470,13 +462,13 @@ def getCoolAdminLink(seq):
 This function should only be called by another fucntion that ensures the sequence is valid to be submitted
 This function submits a sequence to 10x cell ranger pipeline
 '''
-def SubmitToTenX(seq, email):
+def submit_tenX(seq, email):
     tenxdir = settings.TENX_DIR
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
         'libraryinfo__sampleinfo').values('seq_id',
         'libraryinfo__sampleinfo__species','read_type',
         'libraryinfo__experiment_type'))
-    seqs = SplitSeqs(seq_info[0]['seq_id'])
+    seqs = split_seqs(seq_info[0]['seq_id'])
     genome =  seq_info[0]['libraryinfo__sampleinfo__species'] 
     
     #TODO check if this is a correct idea
@@ -502,7 +494,7 @@ def SubmitToTenX(seq, email):
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return True
 
-def SplitSeqs(seq):
+def split_seqs(seq):
     splt = seq.split('_')
     addlseqs = []
     basename = ('_').join(splt[:2])

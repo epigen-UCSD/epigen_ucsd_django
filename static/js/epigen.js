@@ -972,11 +972,10 @@ $(document).ready(function () {
         e.preventDefault();
         button = $(this)
         seq = $(button).val();
-        email = $(button).attr('email');
-        console.log("submitting thing: ", seq, email)
+        //console.log("submitting seq to cooladmin: ", seq)
         $.ajax({
             type: "POST",
-            url: "/singlecell/ajax/submitcooladmin",
+            url: "/singlecell/ajax/submitcooladmin/",
             data: {
                 'seq': seq,
             },
@@ -1098,7 +1097,7 @@ $(document).ready(function () {
                                     return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
                                 }
                             } else {
-                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange singlecell-submission-url="/AJAX/submitCA" email="email" value="' + seq_id + '"> ClickToSubmit</button></form>');
+                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange cooladmin-submit" singlecell-submission-url="/AJAX/submitCA" value="' + seq_id + '"> ClickToSubmit</button></form>');
                             }
                         } else { //no fastq file present
                             return ('<button type="button" data-toggle="tooltip" data-placement="top" title="FASTQ not present" disabled class="badge badge-success badge-status-blue cooladmin-submit" disabled> ClickToSubmit </button>');
