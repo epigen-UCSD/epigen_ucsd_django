@@ -1249,3 +1249,12 @@ class SeqsCreationForm_wetlab(forms.Form):
         if not Group.objects.filter(name=gname).exists():
             raise forms.ValidationError('Invalid Group Name!')
         return gname
+
+
+class EncodeDataForm(forms.Form):
+    encode_link = forms.CharField(
+        widget=forms.Textarea(attrs={'cols': 100, 'rows': 2}),
+        required=True,
+        )
+
+
