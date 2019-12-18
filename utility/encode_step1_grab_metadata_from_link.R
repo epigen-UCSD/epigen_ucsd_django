@@ -5,13 +5,18 @@ library(RCurl)
 ### Settings ===================================================
 
   # The url below pulls up K562 ChIP-seq data of interest from ENCODE
-
-  args <- commandArgs(trailingOnly = TRUE)
-  encode.experiment.links <- args[1]
-  output.file.samples <- paste(args[2],'samples.tsv',sep="/")
-  output.file.libraries <- paste(args[2],'libraries.tsv',sep="/")
-  output.file.sequencings <-paste(args[2],'sequencings.tsv',sep="/") 
+  #args <- commandArgs(trailingOnly = TRUE)
+  #encode.experiment.links <- args[1]
+  #output.file.samples <- paste(args[2],'samples.tsv',sep="/")
+  #output.file.libraries <- paste(args[2],'libraries.tsv',sep="/")
+  #output.file.sequencings <-paste(args[2],'sequencings.tsv',sep="/") 
   
+  encode.experiment.links <- "https://www.encodeproject.org/search/?type=Experiment&status=released&assay_title=Histone+ChIP-seq&biosample_ontology.term_name=K562&target.label=H3K4me3&target.label=H3K36me3&target.label=H3K27me3&target.label=H3K27ac&target.label=H3K4me1"
+  output.file.samples <- '/Users/liyuxin/djangoprojects/samples.tsv'
+  output.file.libraries <- '/Users/liyuxin/djangoprojects/libraries.tsv'
+  output.file.sequencings <-'/Users/liyuxin/djangoprojects/sequencings.tsv'
+  
+    
   acceptable.species <- c("human", "mouse", "rat", "cattle")  
   cell.labels <- c("cell line", "primary cell", "in vitro differentiated cells")
   tissue.labels <- c("tissue")
@@ -69,7 +74,8 @@ library(RCurl)
       biosample.list <- c(biosample.list, exp.list.in$replicates[[i]]$library$biosample$accession)
     }
     biosample.list <- unique(biosample.list)
-    
+
+    start_time <- Sys.time() 
     for(b in seq(biosample.list)){
       template.samples[nrow(template.samples)+1,] <- NA
       temp.json<-fromJSON(paste("https://www.encodeproject.org/", biosample.list[b], "/?frame=embedded", sep = ""))
@@ -112,9 +118,11 @@ library(RCurl)
     
     # output sample table
     write.table(template.samples, output.file.samples, quote=F, row.names=F, sep="\t")
+    end_time <- Sys.time()
+    end_time - start_time
   
   # Next, libraries.... ================================
-    
+    start_time <- Sys.time() 
     template.libraries <- as.data.frame(matrix(nrow = 0, ncol=10))
     colnames(template.libraries)<-c("Sample ID (Must Match Column I in Sample Sheet)",
                                     "Library description",
@@ -156,9 +164,10 @@ library(RCurl)
     
     # output sample table
     write.table(template.libraries, output.file.libraries, quote=F, row.names=F, sep="\t")
-      
+    end_time <- Sys.time()
+    end_time - start_time      
   # Finally, sequencings... ================================
-    
+    start_time <- Sys.time() 
     template.seqs <- as.data.frame(matrix(nrow = 0, ncol=17))
     colnames(template.seqs) <- c("Sample ID (Must Match Column I in Sample Sheet)",
                                     "Label (for QC report)",
@@ -180,6 +189,7 @@ library(RCurl)
     
     temp.libs <- template.libraries$`Library ID (if library generated)`
     already.added <- c()
+    i1<-0
     for(l in seq(temp.libs)){
       temp.reps <- fromJSON(paste("https://www.encodeproject.org/", temp.libs[l], "/?frame=embedded", sep = ""))$replicates
       temp.sample.id <-  template.libraries$`Sample ID (Must Match Column I in Sample Sheet)`[l]
@@ -188,6 +198,7 @@ library(RCurl)
         temp.target <- strsplit(strsplit(temp.rep.info$experiment$target, split="/")[[1]][3], split="-")[[1]][1]
         temp.files <- temp.rep.info$experiment$files
         for(f in seq(temp.files)){
+          i1<-i1+1
           temp.json <- fromJSON(paste("https://www.encodeproject.org/",temp.files[f], "/?frame=embedded", sep = ""))
           if(temp.json$file_format=="fastq"){
             if(temp.json$library$accession==temp.libs[l] & !(temp.json$accession %in% already.added)){
@@ -230,6 +241,8 @@ library(RCurl)
         }
       }
     }
-    
+    print(i1)
+    end_time <- Sys.time()
+    end_time - start_time
     # output sample table
     write.table(template.seqs, output.file.sequencings, quote=F, row.names=F, sep="\t")
