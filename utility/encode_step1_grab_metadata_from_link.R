@@ -1,14 +1,16 @@
 library(jsonlite)
 library(RCurl)
 
+
 ### Settings ===================================================
 
   # The url below pulls up K562 ChIP-seq data of interest from ENCODE
-  encode.experiment.links <- "https://www.encodeproject.org/search/?type=Experiment&status=released&assay_title=Histone+ChIP-seq&biosample_ontology.term_name=K562&target.label=H3K4me3&target.label=H3K36me3&target.label=H3K27me3&target.label=H3K27ac&target.label=H3K4me1"
-  
-  output.file.samples <- "C:/Users/dgork/Dropbox (UCSD_Epigenomics)/EPIGEN/misc/R/samples.tsv"
-  output.file.libraries <- "C:/Users/dgork/Dropbox (UCSD_Epigenomics)/EPIGEN/misc/R/libraries.tsv"
-  output.file.sequencings <- "C:/Users/dgork/Dropbox (UCSD_Epigenomics)/EPIGEN/misc/R/sequencings.tsv"
+
+  args <- commandArgs(trailingOnly = TRUE)
+  encode.experiment.links <- args[1]
+  output.file.samples <- paste(args[2],'samples.tsv',sep="/")
+  output.file.libraries <- paste(args[2],'libraries.tsv',sep="/")
+  output.file.sequencings <-paste(args[2],'sequencings.tsv',sep="/") 
   
   acceptable.species <- c("human", "mouse", "rat", "cattle")  
   cell.labels <- c("cell line", "primary cell", "in vitro differentiated cells")
