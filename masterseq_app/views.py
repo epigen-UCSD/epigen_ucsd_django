@@ -2111,3 +2111,11 @@ def download(request, path):
     raise Http404
 
 
+def tmview(request):
+    link = "https://www.encodeproject.org/search/\?type\=Experiment\&status\=released\&assay_title\=Histone+ChIP-seq\&biosample_ontology.term_name\=K562\&target.label\=H3K4me3\&target.label\=H3K36me3\&target.label\=H3K27me3\&target.label\=H3K27ac\&target.label\=H3K4me1"
+    folder = '/Users/yuxinli/yxwork/gitrepo'
+    cmd1 = 'Rscript ./utility/encode_step1_grab_metadata_from_link.R '+
+    p = subprocess.Popen(
+        cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+
