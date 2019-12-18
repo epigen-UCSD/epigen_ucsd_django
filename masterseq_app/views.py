@@ -4,7 +4,7 @@ from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm, LibraryCreationForm, SeqCreationForm,\
     SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm,\
-    LibsCreationForm_wetlab,SeqsCreationForm_wetlab,BulkUpdateForm
+    LibsCreationForm_wetlab,SeqsCreationForm_wetlab,BulkUpdateForm,EncodeDataForm
 from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
     SeqMachineInfo, SeqBioInfo, choice_for_preparation, choice_for_fixation,\
     choice_for_unit, choice_for_sample_type
@@ -2117,5 +2117,24 @@ def tmview(request):
     cmd1 = 'Rscript ./utility/encode_step1_grab_metadata_from_link.R '+
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+
+def EncodeDataSaveView(request):
+
+    encode_data_form = EncodeDataForm(request.POST or None)
+
+    if request.method == 'POST':
+        if encode_data_form.is_valid():
+            return redirect('masterseq_app:encode_data_add')
+
+    else:
+        encode_set_form = EncodeDataForm(None)
+
+    context = {
+        'encode_data_form': encode_data_form,
+    }
+
+    return render(request, 'masterseq_app/encode_data_add.html', context)
+
 
 

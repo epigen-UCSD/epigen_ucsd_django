@@ -1,0 +1,44 @@
+{% extends 'masterseq_app/base.html' %}
+
+{% block content %}
+{% load nextseq_app_tags %}
+<div id="content" class="col-sm-10 col-md-10 col-lg-10">
+  <div class="card">
+    <div class="card-header fortable">
+      Add new ENCODE data
+    </div><!-- /.card-header -->
+    <div class="card-body">
+      {% if error_message %}
+          <p class="error-message">{{ error_message }}</strong></p>
+      {% endif %}
+      <form id="encode_form" action="" method="post">{% csrf_token %}  
+        {% for field in encode_data_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error}}
+            </li>
+            {% endfor %}
+            </ul>
+            {% if field.field.widget|get_class == "Textarea" %}
+            <p class="textarea">{{ field.label_tag }}</p>
+               {{ field }}
+            {% else %}
+              {{ field.label_tag }} {{ field }}
+            {% endif %}
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %}   
+
+        <input type="submit" value="Submit Job"/>
+      </form>
+    </div><!-- /.card-body -->              
+  </div><!-- /.card -->      
+</div><!-- /#content --> 
+
+{% endblock %}
