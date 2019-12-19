@@ -1074,4 +1074,44 @@ NameError: name 'email' is not defined
 >>> exit
 Use exit() or Ctrl-D (i.e. EOF) to exit
 >>> exit()
-(django) [zhc268@epigenomics epigen_ucsd_django]$ 
+(django) [zhc268@epigenomics epigen_ucsd_django]$ gaddmit "solve double quote problem" 
+[test_snAPP 4c93352] solve double quote problem
+ 3 files changed, 1084 insertions(+), 7 deletions(-)
+ create mode 100644 *shell*
+(django) [zhc268@epigenomics epigen_ucsd_django]$ git push origin test_snAPP
+Counting objects: 12, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (7/7), done.
+Writing objects: 100% (7/7), 10.33 KiB | 0 bytes/s, done.
+Total 7 (delta 4), reused 0 (delta 0)
+remote: Resolving deltas: 100% (4/4), completed with 4 local objects.        
+To git@github.com:epigen-UCSD/epigen_ucsd_django.git
+   c83d06d..4c93352  test_snAPP -> test_snAPP
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "JYH_1046_1_2" VERSION=\"V4\",USEHARMONY=\"False\",SNAPUSEPEAK=\"False\",SNAPSUBSET=\"0\",DOCHROMVAR=\"False\",READINPEAK=\"0.0\",TSSPERCELL=\"7.0\",MINREADPERCELL=\"500\",SNAPBINSIZE=\"5000\ 100000\",SNAPNDIMS=\"25\",GENOMETYPE=\"mm10\",
+VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0.0",TSSPERCELL="7.0",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=JYH_1046_1_2,INPUTNAME=JYH_1046_1_2,DATASETNAME=JYH_1046_1_2,VERSION="V4",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0.0",TSSPERCELL="7.0",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="mm10" /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ cd utility/
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -h
+usage: updateLibrariesSetQC.py [-h] [-s {-1,0,1,2,3,4}] [-id ID] [-url URL] [-v V]
+
+optional arguments:
+  -h, --help         show this help message and exit
+  -s {-1,0,1,2,3,4}  -1: ClickToSubmit 0:JobSubmitted 1:ProcessingLibs 2:RunSetQC 3:Done 4:Warning
+  -id ID             Set_ID
+  -url URL           url of report
+  -v V               version of runsetqc script
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_689 -s -1
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_693 -s -1
+(django) [zhc268@epigenomics utility]$ cd ..
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "MM_166" VERSION=\"V2\",USEHARMONY=\"False\",SNAPUSEPEAK=\"False\",SNAPSUBSET=\"0\",DOCHROMVAR=\"False\",READINPEAK=\"0\",TSSPERCELL=\"7\",MINREADPERCELL=\"500\",SNAPBINSIZE=\"5000\ 100000\",SNAPNDIMS=\"25\",GENOMETYPE=\"hg38\",
+VERSION="V2",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="hg38",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=MM_166,INPUTNAME=MM_166,DATASETNAME=MM_166,VERSION="V2",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="hg38" /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "MM_166" VERSION=\"V2\",USEHARMONY=\"False\",SNAPUSEPEAK=\"False\",SNAPSUBSET=\"0\",DOCHROMVAR=\"False\",READINPEAK=\"0\",TSSPERCELL=\"7\",MINREADPERCELL=\"500\",SNAPBINSIZE=\"5000\ 100000\",SNAPNDIMS=\"25\",GENOMETYPE=\"hg38\",
+VERSION="V2",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="hg38",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=MM_166,INPUTNAME=MM_166,DATASETNAME=MM_166,VERSION="V2",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="hg38" /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ ./utility/coolAdmin.sh zhc268@ucsd.edu "MM_166" VERSION=\"V2\",USEHARMONY=\"False\",SNAPUSEPEAK=\"False\",SNAPSUBSET=\"0\",DOCHROMVAR=\"False\",READINPEAK=\"0\",TSSPERCELL=\"7\",MINREADPERCELL=\"500\",SNAPBINSIZE=\"5000\ 100000\",SNAPNDIMS=\"25\",GENOMETYPE=\"hg38\",
+VERSION="V2",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="hg38",
+qsub -k oe -M zhc268@ucsd.edu -v OUTPUTNAME=MM_166,INPUTNAME=MM_166,DATASETNAME=MM_166,VERSION="V2",USEHARMONY="False",SNAPUSEPEAK="False",SNAPSUBSET="0",DOCHROMVAR="False",READINPEAK="0",TSSPERCELL="7",MINREADPERCELL="500",SNAPBINSIZE="5000 100000",SNAPNDIMS="25",GENOMETYPE="hg38" /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash
+(django) [zhc268@epigenomics epigen_ucsd_django]$ cd utility/
+(django) [zhc268@epigenomics utility]$ python3 updateLibrariesSetQC.py -id Set_693 -s -1
+(django) [zhc268@epigenomics utility]$ o

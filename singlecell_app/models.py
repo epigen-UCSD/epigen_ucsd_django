@@ -7,14 +7,14 @@ class CoolAdminSubmission(models.Model):
     V4 = 'V4'
     V2 = 'V2'
     pipeline_versions_choices = [
-        (V4, 'V4'),
         (V2, 'V2'),
+        (V4, 'V4'),        
     ]
     
     status = models.CharField(
         max_length=200, blank=True, default='ClickToSubmit')
     
-    pipeline_version = models.CharField(max_length=2,choices=pipeline_versions_choices,default=V4)
+    pipeline_version = models.CharField(max_length=2,choices=pipeline_versions_choices,default=V2)
     seqinfo = models.ForeignKey(
         SeqInfo, on_delete=models.CASCADE, blank=False, null=True)
     refgenome = models.ForeignKey(GenomeInfo, on_delete=models.CASCADE, blank=True, null=True)
