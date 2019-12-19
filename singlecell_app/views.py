@@ -294,9 +294,10 @@ def SubmitToCoolAdmin(request):
             dict['refgenome'] = submission.refgenome
     seqString = f'"{seq}"'
 
-    paramString = buildCoolAdminParameterString(dict)
+    paramString = buildCoolAdminParameterString(dict).replace('"','\\"').replace(' ','\\ ')
     print('paramString: ',paramString)
     cmd1 = f'./utility/coolAdmin.sh {email} {seqString} {paramString}'
+    print(cmd1)
     
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
