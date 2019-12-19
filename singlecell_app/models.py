@@ -4,11 +4,11 @@ from masterseq_app.models import SeqInfo, GenomeInfo
 # Create your models here.
 
 class CoolAdminSubmission(models.Model):
-    V4 = 'V4'
-    V2 = 'V2'
+    V4 = 'v4'
+    V2 = 'v2'
     pipeline_versions_choices = [
-        (V2, 'V2'),
-        (V4, 'V4'),        
+        (V2, 'v2'),
+        (V4, 'v4'),        
     ]
     
     status = models.CharField(
