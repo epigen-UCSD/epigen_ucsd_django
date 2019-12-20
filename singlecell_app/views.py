@@ -188,6 +188,7 @@ This function is used to build seq lists to be returned to the html template.
 def BuildSeqList(seqs_list, request, owner):
     print('reqeust: ',request.user, (Group.objects.get(name='bioinformatics') in model_to_dict(User.objects.get(username=request.user))['groups'])) 
     seq_ids = [seq.seq_id for seq in seqs_list] #0
+    seq_ids_internal = [seq.id for seq in seqs_list] #0    
     libraryinfoIds = [ seq.libraryinfo.library_id for seq in seqs_list] #1
     libraryIds = [ seq.libraryinfo_id for seq in seqs_list]#2
     experiment_types = [seq.libraryinfo.experiment_type for seq in seqs_list]#3
@@ -213,7 +214,7 @@ def BuildSeqList(seqs_list, request, owner):
             else:
                 ownerList.append('NotOwner')
     seqs_info = zip(seq_ids, libraryinfoIds, libraryIds, experiment_types, submitted_dates, 
-                    seq_statuses, seqs10xStatus, coolAdmin, ownerList, links)
+                    seq_statuses, seqs10xStatus, coolAdmin, ownerList, links,seq_ids_internal)
     return seqs_info
 
 '''
