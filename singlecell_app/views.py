@@ -16,7 +16,7 @@ import json
 from epigen_ucsd_django.shared import *
 
 #keys in snap param dict should be the same as the fields in the model and form.
-SNAP_PARAM_DICT= {
+SNAP_PARAM_DICT = {
     'pipeline_version':'VERSION',
     'useHarmony':'USEHARMONY',
     'snapUsePeak':'SNAPUSEPEAK',
@@ -54,6 +54,32 @@ def MySeqs(request):
     }
     return render(request, 'singlecell_app/myseqs.html', context)
 
+""" async function to get hit by ajax. Returns json of all single cell data dict
+in db
+"""
+def AllSingleCellData(request):
+    #make sure only bioinformatics group users allowed
+
+    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=\
+        SINGLE_CELL_EXPS).select_related('libraryinfo',).order_by(\
+        'date_submitted_for_sequencing').values('id','seq_id', 'libraryinfo__experiment_type','read_type','libraryinfo__sampleinfo__species')
+
+    data = list(seqs_queryset)
+    build_seq_list(data)
+    print('new data: ',data)
+    return JsonResponse(data, safe=False)
+
+"""async function to get hit by ajax, returns user only seqs
+"""
+def UserSingleCellData(request):
+    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=\
+        SINGLE_CELL_EXPS,team_member_initails=request.user).select_related('libraryinfo','libraryinfo__sampleinfo').order_by(\
+        'date_submitted_for_sequencing').values('id','seq_id', 'libraryinfo__experiment_type','read_type','libraryinfo__sampleinfo__species')
+
+    data = list(seqs_queryset)
+    build_seq_list(data)
+    return JsonResponse(data, safe=False)
+
 '''
 This function is used to build seq lists to be returned to the from an AJAX call for AllSeqs2.
 @params
@@ -63,42 +89,15 @@ This function is used to build seq lists to be returned to the from an AJAX call
     #TODO clean this function up, library IDs not necessary anymore
 '''
 def build_seq_list(seqs_list):
+    #print(seqs_list)
     for entry in seqs_list:
         seq_id = entry['seq_id']
         entry['seq_status'] = find_seq_status(seq_id, entry['read_type'])
         entry['10x_status'] = tenX_pipeline_check(seq_id)
+        entry['species'] = entry['libraryinfo__sampleinfo__species']
         entry['cooladmin_status'] = find_cooladmin_status(entry['id'])
         entry['link'] = get_cooladmin_link(seq_id)
     return (seqs_list)
-
-""" async function to get hit by ajax. Returns json of all single cell data dict
-in db
-"""
-def AllSingleCellData(request):
-    #make sure only bioinformatics group users allowed
-
-    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=\
-        SINGLE_CELL_EXPS).select_related('libraryinfo',).order_by(\
-        'date_submitted_for_sequencing').values('id','seq_id', 'libraryinfo__experiment_type','read_type')
-
-    data = list(seqs_queryset)
-    print(data)
-    build_seq_list(data)
-    print('new data: ',data)
-    return JsonResponse(data, safe=False)
-
-"""async function to get hit by ajax, returns user only seqs
-"""
-def UserSingleCellData(request):
-    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=\
-        SINGLE_CELL_EXPS,team_member_initails=request.user).select_related('libraryinfo',).order_by(\
-        'date_submitted_for_sequencing').values('id','seq_id', 'libraryinfo__experiment_type','read_type')
-
-    data = list(seqs_queryset)
-    print(data)
-    build_seq_list(data)
-    print('new data: ',data)
-    return JsonResponse(data, safe=False)
 
 """This function returns a string that represents 
 the status of parameter seq in the 10x pipeline.
@@ -172,14 +171,12 @@ def find_seq_status(seq_id, read_type):
                     r1 = mainname + '_R1.fastq.gz'
                     r2 = mainname +'_R2.fastq.gz'
                     if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
-                        seqsStatus = 'No'
-                        break
+                        return( 'No' )
                 else:
                     r1 = mainname+'.fastq.gz'
                     r1op = mainname+'_R1.fastq.gz'
                     if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
-                        seqsStatus = 'No'
-                        break
+                        return('No')
             else:
                 #find mainname_rep
                 repname = mainname + '_' + rep
@@ -187,14 +184,13 @@ def find_seq_status(seq_id, read_type):
                     r1 = repname + '_R1.fastq.gz'
                     r2 = repname +'_R2.fastq.gz'
                     if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
-                        seqsStatus = 'No'
-                        break
+                        return ('No')
                 else:
                     r1 = repname+'.fastq.gz'
                     r1op = repname+'_R1.fastq.gz'
                     if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
-                        seqsStatus = 'No'
-                        break
+                        return ('No')
+                        
         #set when for loop statement terminates, all reps fastq's were present
         seqsStatus = 'Yes'
     #print(f'seqstatus: {seqsStatus}')
@@ -248,7 +244,7 @@ def find_cooladmin_status(seq):
         return 'ClickToSubmit'
     
     elif os.path.isfile(path + '/.status.success'):
-        return '.status.success'
+        return get_cooladmin_link(seq)
     elif os.path.isfile(path + '/.status.processing'):
         return '.status.processing'
     elif os.path.isfile(path + '/.status.fail'):
@@ -261,22 +257,6 @@ def submit_singlecell(request):
     seq = request.POST.get('seq') 
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seq)
     email = request.user.email
-    #check if posting user has access to data, no need, user should only be able to submit based on their role
-    # if (not request.user.groups.filter(name='bioinformatics').exists()) or request.user != seqinfo_id.team_member_initails:
-    #     data = {
-    #         'is_submitted' : False
-    #     }
-    #     return JsonResponse(data)
-
-    # status = SubmitToTenX(seq, email)
-    # if status:
-    #     data = {
-    #         'is_submitted' : True
-    #     }
-    # else:
-    #     data = {
-    #         'is_submitted' : False
-    #     }
     status = submit_tenX(seq, email)
     data = {
         "is_submitted": True,
@@ -289,34 +269,41 @@ This function run a bash script ./utility/coolAdmin.sh
 '''
 def submit_cooladmin(request):
     seq = request.POST.get('seq')
-    seqinfo_id = get_object_or_404(SeqInfo, seq_id=seq)
-    #remove this in future iteration
-    if(not request.user.groups.filter(name='bioinformatics').exists() and request.user != seqinfo_id.team_member_initails):
-        data = {
-            'is_submitted' : False
-        }
-        return JsonResponse(data)
     email = request.user.email
     info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seq)
     species = defaultgenome[info.libraryinfo.sampleinfo.species.lower()]
+    
+    defaults = {
+                'status':'inProcess',
+                'seqinfo':info, 
+                'date_submitted':datetime.now(),
+                'date_modified':datetime.now(),
+                }
+    
     submission, created = CoolAdminSubmission.objects.update_or_create(seqinfo=info,
-                        defaults={
-                            'status':'inProcess',
-                            'seqinfo':info, 
-                            'date_submitted':datetime.now()
-                            })
-    submission.save()
-    dict = (model_to_dict(submission))
-    if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
-        dict['refgenome'] = getReferenceUsed(seq)
-    else:#make sure that choice for refgenome is not none
-        if(submission.refgenome == None):#use default genome if None
-            dict['refgenome'] =  species
+                        defaults=defaults)
+    submission_dict = model_to_dict(submission)
+    if created == True:
+        if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
+            submission_dict['refgenome'] = getReferenceUsed(seq)
+        else:#set ref genome to default species
+            submission_dict['refgenome'] =  species
+            submission.refgenome = GenomeInfo.objects.create(genome_name=submission_dict['refgenome'],species=info.libraryinfo.sampleinfo.species.lower())
+            submission.date_modified = datetime.now()
+            submission.date_submitted = datetime.now()
+            submission.save()   
+    #convert key to refgenome
+    #always use refgenome used in 10xATAC job
+    else:
+        print('submission dict: ',submission_dict)
+        if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
+            submission_dict['refgenome'] =  getReferenceUsed(seq)
         else:
-            dict['refgenome'] = submission.refgenome
+            submission_dict['refgenome'] = str(GenomeInfo.objects.get(id=submission_dict['refgenome']).genome_name)
+
     seqString = f'"{seq}"'
 
-    paramString = buildCoolAdminParameterString(dict)
+    paramString = buildCoolAdminParameterString(submission_dict)
     #print('paramString: ',paramString)
     cmd1 = f'./utility/coolAdmin.sh {email} {seqString} {paramString}'
     
@@ -328,13 +315,12 @@ def submit_cooladmin(request):
     return JsonResponse(data, safe=False)
 
 
-'''
-This is a big boy here...
+"""This is a big boy here...
 @header:
-    This function will be hit by a request to 'save' an input form for editing cool
-    admin submission parameters. This functions checks if the posted form data is
-    different from the precvious submission form submitted, if it is different then 
-    the posted form is saved to the CoolAdminSubmission model representing the sequence.
+    This function will be hit by a request to 'save' a cooladmin form for editing
+    submission parameters. This functions checks if the posted form data is
+    different from the previous submission form submitted, if it is different then 
+    the posted form is saved to the CoolAdminSubmission model.
     If there was no previous submission then a new object is created and saved.
 @side-effects:
     If new form is saved then status of CoolAdminSubmission model will be changed to
@@ -343,9 +329,9 @@ This is a big boy here...
 @params: 
     seqinfo is a string that represents the seq_id of SeqInfo model object.
 @returns:
-    redirects user if user posted 'save'
-    renders form
-'''
+    redirects user if user POSTs 'save'
+"""
+#TODO write test for this function
 def edit_cooladmin_sub(request, seqinfo):
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seqinfo)
     #print('edit reqeust: ',(request.user.groups.filter(name='bioinformatics').exists()))
@@ -353,58 +339,54 @@ def edit_cooladmin_sub(request, seqinfo):
         print('raising exception')
         raise PermissionDenied
     
-    info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seqinfo_id)
-    species = info.libraryinfo.sampleinfo.species
-    exptType = info.libraryinfo.experiment_type
+    seqinfo = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seqinfo_id)
+    species = seqinfo.libraryinfo.sampleinfo.species
+    exptType = seqinfo.libraryinfo.experiment_type
     #print("expt type: ", exptType)
     
     #starter_data for initialization values of CoolAdminSubmissionForm 
     starter_data = {
             'species': species,
-            'seqinfo': seqinfo_id,
+            'seqinfo': seqinfo,
             }
-    
+
+    ref_genome_used = ""
     submission = False
 
     #get previous cool admin submission if exists
     if CoolAdminSubmission.objects.filter(seqinfo=seqinfo_id).exists():
         submission = CoolAdminSubmission.objects.get(seqinfo=seqinfo_id)
+        #make form based on model values
         form = CoolAdminForm(initial=model_to_dict(submission), spec=species)
-        
         #set the choice field based on the key of the tuple using the previous submission 
-        #set ref genome if 10xATAC type of experiment
-        if(exptType == '10xATAC'):
-            refgenome =  getReferenceUsed(seqinfo)
-            form.fields['genome'].initial = [refgenome]
+        if(exptType == '10xATAC'):#set ref genome if 10xATAC type of experiment
+            ref_genome_used =  getReferenceUsed(seqinfo)
+            form.fields['refgenome'].initial = [ref_genome_used]
         else:
-            form.fields['genome'].initial = [submission.refgenome]
-        
-        #print(f'previous submission:{model_to_dict(submission)} ')
+            form.fields['refgenome'].initial = [submission.refgenome]
     else:#create a form with starter data if no previous submission form
-        form = CoolAdminForm( initial=starter_data, spec=species)
+        form = CoolAdminForm(initial=starter_data, spec=species)
         if(exptType == '10xATAC'):
-            refgenome =  getReferenceUsed(seqinfo)
-            form.fields['genome'].initial = [refgenome]
+            ref_genome_used =  getReferenceUsed(seqinfo)
+            form.fields['refgenome'].initial = [ref_genome_used]
         else:
-            form.fields['genome'].initial = [defaultgenome[species]]
-            #print('form: ',form)
+            form.fields['refgenome'].initial = [defaultgenome[species]]
+    print('serving form: ',form)
     #handle save of new submission form
     if request.method == 'POST':
         post = request.POST.copy()
+        print('post: ',post)
         post['seqinfo'] = seqinfo_id
 
-        #add refgenome to post data
+        #overwrite refgenome to post data
         if(exptType == '10xATAC'):
-            refgenome =  getReferenceUsed(seqinfo)#add refgenome from 10x pipeline
-            post['refgenome'] = GenomeInfo.objects.get(genome_name=refgenome)
-            post['genome'] = refgenome
-        else:
-            post['refgenome'] = GenomeInfo.objects.get(genome_name=post['genome'])
+            post['refgenome'] = ref_genome_used
         
         #if previous submission, compare to new submission
         if(submission != False):
             data = model_to_dict(submission)
-            data['genome'] = GenomeInfo.objects.get(pk=data['refgenome']).genome_name
+            print('refgenome: ', data['refgenome'], data)
+            data['genome'] = data['refgenome']
             #print('\n data: ',data)
             #print('\n post: ',post)
             form = CoolAdminForm(post, initial=data)
@@ -412,12 +394,10 @@ def edit_cooladmin_sub(request, seqinfo):
             if form.is_valid():
                 if(form.has_changed()):
                     data = form.cleaned_data
-                    del data['genome'] 
                     data['status'] = 'ClickToSubmit'
-                    #print('changed data: ',form.changed_data)
+                    print('changed data: ',form.changed_data)
                     CoolAdminSubmission.objects.filter(seqinfo=seqinfo_id).update(**data)
                     obj = CoolAdminSubmission.objects.get(seqinfo=seqinfo_id)
-                    obj.refgenome = GenomeInfo.objects.get(genome_name=post['refgenome'])
                     obj.date_modified = datetime.now()
                     obj.save()
                 else:
@@ -430,10 +410,7 @@ def edit_cooladmin_sub(request, seqinfo):
             if form.is_valid():
                 data = form.cleaned_data
                 data['seqinfo'] = seqinfo_id
-                del data['genome']
                 obj = CoolAdminSubmission(**data)
-                genome = GenomeInfo.objects.get(genome_name=post['refgenome']) 
-                obj.refgenome = genome
                 obj.save()
                 #print('new submission: ',model_to_dict(obj))
             
@@ -445,6 +422,8 @@ def edit_cooladmin_sub(request, seqinfo):
     }
     return render(request,'singlecell_app/editCoolAdmin.html', context)
 
+"""Call this function when cooladmin status has already been confirmed to be success
+"""
 def get_cooladmin_link(seq):
     #cool_dir = f'/projects/ps-epigen/datasets/opoirion/output_LIMS/{seq}/repl1//repl1_{seq}_finals_logs.json'
     cool_dir = settings.COOLADMIN_DIR
@@ -458,10 +437,9 @@ def get_cooladmin_link(seq):
     except:
         return("")
 
-'''
-This function should only be called by another fucntion that ensures the sequence is valid to be submitted
+"""This function should only be called by another fucntion that ensures the sequence is valid to be submitted
 This function submits a sequence to 10x cell ranger pipeline
-'''
+"""
 def submit_tenX(seq, email):
     tenxdir = settings.TENX_DIR
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
@@ -511,17 +489,17 @@ def split_seqs(seq):
 
 #TODO do param error checking?
 def buildCoolAdminParameterString(dict):
+    print('dict: ',dict)
     paramString = ''
     for key in SNAP_PARAM_DICT.keys():
         paramString += f'{SNAP_PARAM_DICT[key]}="{dict[key]}",'
     return paramString
 
-'''
-This function gets the ref genome used in 10x atac pipeline to use for cool admin submission
-@params seq is a string of the sequnece wanted e.g. seq="JYH_1047"
-@returns a string that is the refernce genome used
-'''
 def getReferenceUsed(seq):
+    """This function gets the ref genome used in 10x atac pipeline to use for cool admin submission
+    @params seq is a string of the sequnece wanted e.g. seq="JYH_1047"
+    @returns a string that is the refernce genome used
+    """
     #To return
     refgenome = ''
 
@@ -536,3 +514,11 @@ def getReferenceUsed(seq):
         refgenome = data["reference_assembly"]    
     #open summarry.json and read "reference_assembly"
     return refgenome
+
+
+def getLatestModification(seq_object):
+    """This function returns the latest modfication to the seq object
+    """
+    #check if user modified cooladmin submission params, check if user submitted either cooladmin OR 10xCellranger job
+    #check if sequence status has updated? pipeline status's updates?
+    print(1)

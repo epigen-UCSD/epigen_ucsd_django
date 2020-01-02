@@ -972,6 +972,7 @@ $(document).ready(function () {
         e.preventDefault();
         button = $(this)
         seq = $(button).val();
+        console.log('cool admin firing')
         //console.log("submitting seq to cooladmin: ", seq)
         $.ajax({
             type: "POST",
@@ -1048,6 +1049,7 @@ $(document).ready(function () {
         "columns": [
             { data: "seq_id" },
             { data: "libraryinfo__experiment_type" },
+            { data: "species" },
             { data: "seq_status" },
             { data: "10x_status" },
             { data: "cooladmin_status" },
@@ -1064,18 +1066,18 @@ $(document).ready(function () {
             },
             // 10x pipeline check
             {
-                "targets": 3,
+                "targets": 4,
                 "render": function (data, type, row) {
                     var status = data;
                     var seq = row['seq_id'];
                     if (status === "Yes") {
-                        return ('<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="/setqc/' + seq + '/web_summary.html" style="color:white" target="_blank"> Results</a></button >');
+                        return ('<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="#" style="color:white" target="_blank"> Results</a></button >');
                     } else if (status === "Error!") {
                         return ('<button type="button" class="badge badge-success badge-status-red" data-toggle="tooltip" data-placement="top" title="Contact bioinformatics group!">Error!</button>');
                     } else if (status === "No" && row['seq_status'] === "No") {
                         return ('<button type="button" class="btn btn-sm badge-status-blue" style="color:white" data-toggle="tooltip" data-placement="top" title="No FASTQ files available">ClickToSubmit</button>');
                     } else if (status === "No" && row['seq_status'] === "Yes") {
-                        return ('<button type="button" class="runsinglecell btn btn-danger btn-sm btn-status-orange" value=' + seq + '> ClickToSubmit </button>');
+                        return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange" value=' + seq + '> ClickToSubmit </button>');
                     } else {
                         return ('<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>' + status + '</button>');
                     }
@@ -1083,34 +1085,36 @@ $(document).ready(function () {
             },
             {
                 //cooladmin status
-                "targets": 4,
+                "targets": 5,
                 "render": function (data, type, row) {
                     var status = data;
                     var seq_id = row['seq_id'];
                     if (status === "ClickToSubmit") {
-                        if (row['seq_status'] === "Yes") {
-                            if (row['libraryinfo__experiment_type'] === "10xATAC") {
-                                if (row['10x_status'] === "Yes" || row['10x_status'] === "Results") {
-                                    return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange  cooladmin-submit" cooladmin-submission-url="/Ajax/SubmitCA/" value="' + seq_id + '"> ClickToSubmit </button>');
-
-                                } else {
-                                    return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
-                                }
+                        //check fastq seq status
+                        if (row["seq_status"] === "Yes") {
+                            if (row['libraryinfo__experiment_type'] == "10xATAC" && (row['10x_status'] === "Yes" || row['10x_status'] === "Results")) {
+                                return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange" value="' + seq_id + '"> ClickToSubmit </button>');
+                            } else if (row['libraryinfo__experiment_type'] === "10xATAC" && !(row['10x_status'] === "Yes" || row['10x_status'] === "Results")) {
+                                return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
                             } else {
-                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange cooladmin-submit" singlecell-submission-url="/AJAX/submitCA" value="' + seq_id + '"> ClickToSubmit</button></form>');
+                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange  value="' + seq_id + '"> ClickToSubmit</button>');
                             }
-                        } else { //no fastq file present
+                        }
+                        else { //no fastq file present
                             return ('<button type="button" data-toggle="tooltip" data-placement="top" title="FASTQ not present" disabled class="badge badge-success badge-status-blue cooladmin-submit" disabled> ClickToSubmit </button>');
                         }
                     } else if (status === ".status.fail") {//failed
                         return ('<button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status">Error!</button>')
-                    } else {//in process
+                    } else if (status === ".status.process") {
                         return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
+                    } else {
+                        return '<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="' + '#' + '" style="color:white" target="_blank"> Results</a></button >'
+
                     }
                 },
             },
             {
-                "targets": 5,
+                "targets": 6,
                 "render": function (data, type, row) {
                     var seq_id = row['seq_id']
                     if (row['libraryinfo__experiment_type'] !== "10xATAC" || row['10x_status'] === "Yes") {
@@ -1137,6 +1141,7 @@ $(document).ready(function () {
         "columns": [
             { data: "seq_id" },
             { data: "libraryinfo__experiment_type" },
+            { data: "species" },
             { data: "seq_status" },
             { data: "10x_status" },
             { data: "cooladmin_status" },
@@ -1153,7 +1158,7 @@ $(document).ready(function () {
             },
             // 10x pipeline check
             {
-                "targets": 3,
+                "targets": 4,
                 "render": function (data, type, row) {
                     var status = data;
                     var seq = row['seq_id'];
@@ -1172,33 +1177,36 @@ $(document).ready(function () {
             },
             {
                 //cooladmin status
-                "targets": 4,
+                "targets": 5,
                 "render": function (data, type, row) {
                     var status = data;
                     var seq_id = row['seq_id'];
                     if (status === "ClickToSubmit") {
-                        if (row['seq_status'] === "Yes") {
-                            if (row['libraryinfo__experiment_type'] === "10xATAC") {
-                                if (row['10x_status'] === "Yes" || row['10x_status'] === "Results") {
-                                    return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange  cooladmin-submit" cooladmin-submission-url="/Ajax/SubmitCA/" value="' + seq_id + '"> ClickToSubmit </button>');
-                                } else {
-                                    return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
-                                }
+                        //check fastq seq status
+                        if (row["seq_status"] === "Yes") {
+                            if (row['libraryinfo__experiment_type'] == "10xATAC" && (row['10x_status'] === "Yes" || row['10x_status'] === "Results")) {
+                                return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange  cooladmin-submit" value="' + seq_id + '"> ClickToSubmit </button>');
+                            } else if (row['libraryinfo__experiment_type'] === "10xATAC" && !(row['10x_status'] === "Yes" || row['10x_status'] === "Results")) {
+                                return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
                             } else {
-                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange singlecell-submission-url="/AJAX/submitCA" email="email" value="' + seq_id + '"> ClickToSubmit</button></form>');
+                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange cooladmin-submit" value="' + seq_id + '"> ClickToSubmit</button>');
                             }
-                        } else { //no fastq file present
+                        }
+                        else { //no fastq file present
                             return ('<button type="button" data-toggle="tooltip" data-placement="top" title="FASTQ not present" disabled class="badge badge-success badge-status-blue cooladmin-submit" disabled> ClickToSubmit </button>');
                         }
                     } else if (status === ".status.fail") {//failed
                         return ('<button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status">Error!</button>')
-                    } else {//in process
+                    } else if (status === ".status.process") {
                         return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
+                    } else {
+                        return '<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="' + status + '" style="color:white" target="_blank"> Results</a></button >'
+
                     }
                 },
             },
             {//cooladmin edit button- links to edit page
-                "targets": 5,
+                "targets": 6,
                 "render": function (data, type, row) {
                     var seq_id = row['seq_id']
                     if (row['libraryinfo__experiment_type'] !== "10xATAC" || row['10x_status'] === "Yes") {
@@ -1226,6 +1234,7 @@ $(document).ready(function () {
         "columns": [
             { data: "seq_id" },
             { data: "libraryinfo__experiment_type" },
+            { data: "species" },
             { data: "seq_status" },
             { data: "10x_status" },
             { data: "cooladmin_status" },
@@ -1242,7 +1251,7 @@ $(document).ready(function () {
             },
             // 10x pipeline check
             {
-                "targets": 3,
+                "targets": 4,
                 "render": function (data, type, row) {
                     var status = data;
                     var seq = row['seq_id'];
@@ -1261,7 +1270,7 @@ $(document).ready(function () {
             },
             {
                 //cooladmin status
-                "targets": 4,
+                "targets": 5,
                 "render": function (data, type, row) {
                     var status = data;
                     var seq_id = row['seq_id'];
@@ -1288,7 +1297,7 @@ $(document).ready(function () {
                 },
             },
             {
-                "targets": 5,
+                "targets": 6,
                 "render": function (data, type, row) {
                     var seq_id = row['seq_id']
                     if (row['libraryinfo__experiment_type'] !== "10xATAC" || row['10x_status'] === "Yes") {
