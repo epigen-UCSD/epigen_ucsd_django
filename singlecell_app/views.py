@@ -40,17 +40,23 @@ defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
 def AllSeqs(request):
     context ={
         'type':'All Sequences',
+        'AllSeq': True
     }
-    if not request.user.groups.filter(name='bioinformatics').exists():
-        return render(request, 'singlecell_app/allseqs_user.html', context)
+    if request.user.groups.filter(name='bioinformatics').exists():
+        context['BioUser'] = True
+        print(context)
+        return render(request, 'singlecell_app/myseqs.html', context)
     else:
-        return render(request, 'singlecell_app/allseqs_bio.html', context)
+        context['BioUser'] = False
+        print(context)
+        return render(request, 'singlecell_app/myseqs.html', context)
 
 
 #view returns myseqs.html which displays only  user's seqs
 def MySeqs(request):
     context ={
         'type':'My Sequences',
+        'AllSeq': False
     }
     return render(request, 'singlecell_app/myseqs.html', context)
 
