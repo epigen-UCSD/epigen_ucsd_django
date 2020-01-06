@@ -36,8 +36,9 @@ SINGLE_CELL_EXPS = ['10xATAC','scRNA-seq','snRNA-seq', 'scATAC-seq']
 defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
                  'rat': 'rn6', 'cattle': 'ARS-UCD1.2'}
 
-#view returns All sequences
 def AllSeqs(request):
+    """view returns all singlecell expt type sequences
+    """
     context ={
         'type':'All Sequences',
         'AllSeq': True
@@ -52,7 +53,6 @@ def AllSeqs(request):
         return render(request, 'singlecell_app/myseqs.html', context)
 
 
-#view returns myseqs.html which displays only  user's seqs
 def MySeqs(request):
     context ={
         'type':'My Sequences',
@@ -60,44 +60,53 @@ def MySeqs(request):
     }
     return render(request, 'singlecell_app/myseqs.html', context)
 
-""" async function to get hit by ajax. Returns json of all single cell data dict
-in db
-"""
+
 def AllSingleCellData(request):
+    """ async function to get hit by ajax. Returns json of all single cell data dict
+    in db
+    """
     #make sure only bioinformatics group users allowed
 
     seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=\
         SINGLE_CELL_EXPS).select_related('libraryinfo',).order_by(\
-        'date_submitted_for_sequencing').values('id','seq_id', 'libraryinfo__experiment_type','read_type','libraryinfo__sampleinfo__species')
+        '-date_submitted_for_sequencing').values('id','seq_id', 'libraryinfo__experiment_type','read_type',\
+        'libraryinfo__sampleinfo__species','date_submitted_for_sequencing')
 
     data = list(seqs_queryset)
     build_seq_list(data)
     print('new data: ',data)
     return JsonResponse(data, safe=False)
 
-"""async function to get hit by ajax, returns user only seqs
-"""
-def UserSingleCellData(request):
+
+def UserSingleCellData(request):    
+    """async function to get hit by ajax, returns user only seqs
+    """
+
     seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=\
         SINGLE_CELL_EXPS,team_member_initails=request.user).select_related('libraryinfo','libraryinfo__sampleinfo').order_by(\
-        'date_submitted_for_sequencing').values('id','seq_id', 'libraryinfo__experiment_type','read_type','libraryinfo__sampleinfo__species')
+        '-date_submitted_for_sequencing').values('id','seq_id', 'libraryinfo__experiment_type','read_type',\
+        'libraryinfo__sampleinfo__species','date_submitted_for_sequencing')
 
     data = list(seqs_queryset)
     build_seq_list(data)
     return JsonResponse(data, safe=False)
 
-'''
-This function is used to build seq lists to be returned to the from an AJAX call for AllSeqs2.
-@params
-    seqs_list is a list of dictionaires where each has the seq_id and experiment_type for a single cell sample sequence.
-@returns
-    returns a list of dictionaries with more information describing the sequence.
-    #TODO clean this function up, library IDs not necessary anymore
-'''
+
 def build_seq_list(seqs_list):
-    #print(seqs_list)
+    """ This function is used to build seq lists to be returned to the from an 
+    AJAX call for AllSeqs2.
+    @params
+        seqs_list is a list of dictionaires where each has the seq_id and experiment_type for a single cell sample sequence.
+    @returns
+        returns a list of dictionaries with more information describing the sequence.
+        #TODO clean this function up, library IDs not necessary anymore
+    """
+    #optimize later
+    cooladmin_objects = CoolAdminSubmission.objects.all()
+
     for entry in seqs_list:
         seq_id = entry['seq_id']
+        entry['last_modified'] = get_latest_modified_time(seq_id, entry['id'], entry['date_submitted_for_sequencing'], cooladmin_objects)
         entry['seq_status'] = find_seq_status(seq_id, entry['read_type'])
         entry['10x_status'] = tenX_pipeline_check(seq_id)
         entry['species'] = entry['libraryinfo__sampleinfo__species']
@@ -105,18 +114,19 @@ def build_seq_list(seqs_list):
         entry['link'] = get_cooladmin_link(seq_id)
     return (seqs_list)
 
-"""This function returns a string that represents 
-the status of parameter seq in the 10x pipeline.
-@params
-    seq: a string that represents the sequence name to be checked.
-@returns
-    string 'No' when sequence is not submitted
-    string 'In Queue' when sequence is in the qsub queue
-    string 'In Process' when sequence is being processed by 10x pipeline
-    string 'Error' when an error occurs in pipeline
-    string 'Yes' when the 10x pipeline is succesfully done
-"""
+
 def tenX_pipeline_check(seq):
+    """This function returns a string that represents 
+    the status of parameter seq in the 10x pipeline.
+    @params
+        seq: a string that represents the sequence name to be checked.
+    @returns
+        string 'No' when sequence is not submitted
+        string 'In Queue' when sequence is in the qsub queue
+        string 'In Process' when sequence is being processed by 10x pipeline
+        string 'Error' when an error occurs in pipeline
+        string 'Yes' when the 10x pipeline is succesfully done
+    """
     tenx_output_folder = 'outs'
     tenx_target_outfile = 'web_summary.html'
     tenxdir = settings.TENX_DIR
@@ -141,15 +151,16 @@ def tenX_pipeline_check(seq):
             seqstatus = 'No'
     return seqstatus
 
-"""This function checks the FASTQ sequence status and returns the results 
-@params
-    seq_id: string represents a seq_id to be checked.
-    read_type: Paired end or not
-@returns
-    'Yes': FASTQ files present
-    'No': no FASTQ files present
-"""
+
 def find_seq_status(seq_id, read_type):
+    """This function checks the FASTQ sequence status and returns the results 
+    @params
+        seq_id: string represents a seq_id to be checked.
+        read_type: Paired end or not
+    @returns
+        'Yes': FASTQ files present
+        'No': no FASTQ files present
+    """
     fastqdir = settings.FASTQ_DIR
     #print(f'seq: {seq}, seqid: {seq.seq_id}, readtype: {seq.read_type}')
     reps =  seq_id.split('_')[2:]
@@ -203,56 +214,23 @@ def find_seq_status(seq_id, read_type):
     return seqsStatus
 
 
-# def BuildSeqList(seqs_list, request, owner):
-#     #coolAdminSet = CoolAdminSubmission.objects.filter(seqinfo__in=seqs_list)
-#     #print(f'cool admin submissions: {coolAdminSet}')
-#     seq_ids = [seq.seq_id for seq in seqs_list] #0
-#     experiment_types = [seq.libraryinfo.experiment_type for seq in seqs_list]#1
-#     submitted_dates = [ str(seq.date_submitted_for_sequencing) for seq in seqs_list ]#2
-#     seq_statuses = findSeqStatus(seqs_list)#3
-#     seqs10xStatus = [ TenXPipelineCheck(seq) for seq in seqs_list ]#4
-#     coolAdmin = [FindCoolAdminStatus(seq) for seq in seqs_list]#5
-#     links = []#6
-#     seqIds = [seq.id for seq in seqs_list]
-    
-#     #build list of links
-#     for i in range(len(seqs_list)):
-#         if coolAdmin[i] == '.status.success':
-#             links.append(getCoolAdminLink( seq_ids[i] ))
-#         else:
-#             links.append('')
-    
-#     #build list if sequence is 'owned' this means it will be clickable by user
-#     if Group.objects.get(name='bioinformatics') in model_to_dict(User.objects.get(username=request.user))['groups'] or owner == True:
-#         ownerList = ['owner' for seq in seqs_list ]
-#     else:
-#         ownerList = []
-#         for seq in seqs_list:
-#             if(request.user == seq.team_member_initails): 
-#                 ownerList.append('owner')
-#             else:
-#                 ownerList.append('not-owner')
-    
-#     seqs_info = zip(seq_ids, experiment_types, submitted_dates, 
-#                     seq_statuses, seqs10xStatus, coolAdmin, ownerList, links, seqIds)
-#     return seqs_info
-
-'''
-'''
 def find_cooladmin_status(seq):
+    """
+    """
     coolAdminDir = settings.COOLADMIN_DIR
-    clickToSub = CoolAdminSubmission.objects.filter(seqinfo=seq, status='ClickToSubmit').exists()
+
+    #requirement: only one active cooladminsubmission object per sequence
+    submitted_boolean = CoolAdminSubmission.objects.filter(seqinfo=seq, submitted=True).exists()
+    
     #check if folder exists in coolAdminDir
     path = os.path.join(coolAdminDir, str(seq))
-
     #if no cool admin submitted before or if it has been but the parameters have been changed
-    if not os.path.isdir(path) or clickToSub == True:
+    if not os.path.isdir(path) or submitted_boolean == False:
         return 'ClickToSubmit'
-    
-    elif os.path.isfile(path + '/.status.success'):
-        return get_cooladmin_link(seq)
     elif os.path.isfile(path + '/.status.processing'):
         return '.status.processing'
+    elif os.path.isfile(path + '/.status.success'):
+        return get_cooladmin_link(seq)
     elif os.path.isfile(path + '/.status.fail'):
         return '.status.fail'
     else: 
@@ -260,20 +238,26 @@ def find_cooladmin_status(seq):
 
 
 def submit_singlecell(request):
-    seq = request.POST.get('seq') 
-    seqinfo_id = get_object_or_404(SeqInfo, seq_id=seq)
-    email = request.user.email
-    status = submit_tenX(seq, email)
-    data = {
-        "is_submitted": True,
-    }
+    seq = request.POST.get('seq')
+    if not SeqInfo.objects.filter(seq_id=seq).exists():
+        data = {
+            is_submitted: False,
+            error: "Seq does not exist!"
+        }
+    else:
+        email = request.user.email
+
+        status = submit_tenX(seq, email)
+        data = {
+            "is_submitted": True,
+        }
     return JsonResponse(data)
 
-'''
-This function handles a cooladmin submission request from LIMS user.
-This function run a bash script ./utility/coolAdmin.sh
-'''
+
 def submit_cooladmin(request):
+    """This function handles a cooladmin submission request from LIMS user.
+    This function run a bash script ./utility/coolAdmin.sh
+    """
     seq = request.POST.get('seq')
     email = request.user.email
     info = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seq)
@@ -321,24 +305,24 @@ def submit_cooladmin(request):
     return JsonResponse(data, safe=False)
 
 
-"""This is a big boy here...
-@header:
+#TODO write test for this function
+def edit_cooladmin_sub(request, seqinfo):
+    """This is a big boy here...
+    @header:
     This function will be hit by a request to 'save' a cooladmin form for editing
     submission parameters. This functions checks if the posted form data is
     different from the previous submission form submitted, if it is different then 
     the posted form is saved to the CoolAdminSubmission model.
     If there was no previous submission then a new object is created and saved.
-@side-effects:
+    @side-effects:
     If new form is saved then status of CoolAdminSubmission model will be changed to
     ClickToSubmit, this will cause the button to be displayed as clicktosubmit in 
     seqs.html.(pseudo overwriting previous results)
-@params: 
+    @params: 
     seqinfo is a string that represents the seq_id of SeqInfo model object.
-@returns:
+    @returns:
     redirects user if user POSTs 'save'
-"""
-#TODO write test for this function
-def edit_cooladmin_sub(request, seqinfo):
+    """
     seqinfo_id = get_object_or_404(SeqInfo, seq_id=seqinfo)
     #print('edit reqeust: ',(request.user.groups.filter(name='bioinformatics').exists()))
     if(not request.user.groups.filter(name='bioinformatics').exists() and request.user != seqinfo_id.team_member_initails):
@@ -428,9 +412,10 @@ def edit_cooladmin_sub(request, seqinfo):
     }
     return render(request,'singlecell_app/editCoolAdmin.html', context)
 
-"""Call this function when cooladmin status has already been confirmed to be success
-"""
+
 def get_cooladmin_link(seq):
+    """Call this function when cooladmin status has already been confirmed to be success
+    """
     #cool_dir = f'/projects/ps-epigen/datasets/opoirion/output_LIMS/{seq}/repl1//repl1_{seq}_finals_logs.json'
     cool_dir = settings.COOLADMIN_DIR
     try:
@@ -443,10 +428,11 @@ def get_cooladmin_link(seq):
     except:
         return("")
 
-"""This function should only be called by another fucntion that ensures the sequence is valid to be submitted
-This function submits a sequence to 10x cell ranger pipeline
-"""
+
 def submit_tenX(seq, email):
+    """ This function should only be called by another fucntion that ensures the sequence is valid to be submitted
+    This function submits a sequence to 10x cell ranger pipeline
+    """
     tenxdir = settings.TENX_DIR
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
         'libraryinfo__sampleinfo').values('seq_id',
@@ -478,6 +464,7 @@ def submit_tenX(seq, email):
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return True
 
+
 def split_seqs(seq):
     splt = seq.split('_')
     addlseqs = []
@@ -501,6 +488,7 @@ def buildCoolAdminParameterString(dict):
         paramString += f'{SNAP_PARAM_DICT[key]}="{dict[key]}",'
     return paramString
 
+
 def getReferenceUsed(seq):
     """This function gets the ref genome used in 10x atac pipeline to use for cool admin submission
     @params seq is a string of the sequnece wanted e.g. seq="JYH_1047"
@@ -522,9 +510,57 @@ def getReferenceUsed(seq):
     return refgenome
 
 
-def getLatestModification(seq_object):
+def get_latest_modified_time(seq_id, seq_object_id, date_sub_for_seq, cooladmin_objects):
     """This function returns the latest modfication to the seq object
     """
+    #first get time that seqinfo object was submitted for sequencing - this will always exist
+    time = date_sub_for_seq
+    #print('time: ',time)
+
     #check if user modified cooladmin submission params, check if user submitted either cooladmin OR 10xCellranger job
-    #check if sequence status has updated? pipeline status's updates?
-    print(1)
+    #check if cooladminsubmission exists 
+    cooladmin_time_check = check_cooladmin_time(seq_object_id, cooladmin_objects)
+    if(time!= None and cooladmin_time_check != None and time < cooladmin_time_check):
+        time = cooladmin_time_check
+    #print('cooladmin_time_check: ', cooladmin_time_check)
+    #check if sequencestatus has updated? pipeline status's updates?
+    tenx_time_check = check_tenx_time(seq_id)
+
+    if(time!= None and tenx_time_check != None and time < tenx_time_check):
+        time = tenx_time_check
+    return time
+
+
+def check_cooladmin_time(seq_object_id, cooladmin_objects):
+    if cooladmin_objects.filter(seqinfo=seq_object_id).exists():
+        cooladmin_object = cooladmin_objects.get(seqinfo=seq_object_id)
+        date_submitted = cooladmin_object.date_submitted
+        date_modified = cooladmin_object.date_modified
+        #print('ca object: ',date_modified, date_submitted)
+        if(date_submitted == None):
+            time = date_modified
+        #date_modified never == None, if cooladmin sub object exists - it must have been modified at time of creation
+        elif(date_modified == None):
+            time = date_submitted.dat
+        elif(date_modified < date_submitted):
+            time = date_submitted
+        else:
+            time = date_modified
+        return time.date()
+    else: 
+        return None
+
+
+def check_tenx_time(seq_id):  
+    #check if tenx dir exists for seq_id
+    tenxdir = settings.TENX_DIR
+    #first check if there is an .inqueue then an .inprocess 
+    path = os.path.join(tenxdir, str(seq_id))
+    if(os.path.isdir(path) == True):
+        last_mod_time = os.path.getmtime(path)
+        time = datetime.fromtimestamp(last_mod_time).date()
+    else:
+        time = None
+    #print('tenx time: ',time)
+    #convert time to datetime 
+    return(time)

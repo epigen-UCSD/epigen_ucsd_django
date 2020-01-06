@@ -12,12 +12,13 @@ class CoolAdminSubmission(models.Model):
     ]
     
     status = models.CharField(
-        max_length=200, blank=True, default='ClickToSubmit')
-    
+        max_length=20, blank=True, default='ClickToSubmit')
+    #change status to a new field, if the job has been submitted or not
+    submitted =  models.BooleanField(default=False)
     pipeline_version = models.CharField(max_length=2,choices=pipeline_versions_choices,default=V4)
     seqinfo = models.ForeignKey(
         SeqInfo, on_delete=models.CASCADE, blank=False, null=True)
-    refgenome = models.ForeignKey(GenomeInfo, on_delete=models.CASCADE, blank=True, null=True)
+    refgenome = models.CharField(max_length=10, blank=True, null=True)
     date_submitted = models.DateTimeField(blank=True, null=True)
     date_modified = models.DateTimeField(blank=True, null=True)
     ''' Optional Parameters to be included later'''
