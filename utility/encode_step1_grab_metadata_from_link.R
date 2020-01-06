@@ -12,9 +12,9 @@ library(RCurl)
   #output.file.sequencings <-paste(args[2],'sequencings.tsv',sep="/") 
   
   encode.experiment.links <- "https://www.encodeproject.org/search/?type=Experiment&status=released&assay_title=Histone+ChIP-seq&biosample_ontology.term_name=K562&target.label=H3K4me3&target.label=H3K36me3&target.label=H3K27me3&target.label=H3K27ac&target.label=H3K4me1"
-  output.file.samples <- '/Users/liyuxin/djangoprojects/samples.tsv'
-  output.file.libraries <- '/Users/liyuxin/djangoprojects/libraries.tsv'
-  output.file.sequencings <-'/Users/liyuxin/djangoprojects/sequencings.tsv'
+  output.file.samples <- '/Users/yuxinli/yxwork/gitrepo/samples.tsv'
+  output.file.libraries <- '/Users/yuxinli/yxwork/gitrepo/libraries.tsv'
+  output.file.sequencings <-'/Users/yuxinli/yxwork/gitrepo/sequencings.tsv'
   
     
   acceptable.species <- c("human", "mouse", "rat", "cattle")  
@@ -74,8 +74,10 @@ library(RCurl)
       biosample.list <- c(biosample.list, exp.list.in$replicates[[i]]$library$biosample$accession)
     }
     biosample.list <- unique(biosample.list)
+    biosample.list
 
-    start_time <- Sys.time() 
+    start_time <- Sys.time()
+    paste("https://www.encodeproject.org/", biosample.list[1], "/?frame=embedded", sep = "")
     for(b in seq(biosample.list)){
       template.samples[nrow(template.samples)+1,] <- NA
       temp.json<-fromJSON(paste("https://www.encodeproject.org/", biosample.list[b], "/?frame=embedded", sep = ""))
@@ -139,7 +141,9 @@ library(RCurl)
     for(i in seq(exp.list.in$accession)){
       library.list <- c(library.list, exp.list.in$replicates[[i]]['@id'][,1])
     }
+    library.list
     library.list <- unique(library.list)
+    library.list
     for(l in seq(library.list)){
       template.libraries[nrow(template.libraries)+1,] <- NA
       temp.json<-fromJSON(paste("https://www.encodeproject.org/", library.list[l], "/?frame=embedded", sep = ""))
@@ -188,14 +192,18 @@ library(RCurl)
                                     "file_download_URL(s)")
     
     temp.libs <- template.libraries$`Library ID (if library generated)`
+    temp.libs
     already.added <- c()
     i1<-0
+    temp.libs[1]
+    fromJSON(paste("https://www.encodeproject.org/", temp.libs[1], "/?frame=embedded", sep = ""))$replicates
     for(l in seq(temp.libs)){
       temp.reps <- fromJSON(paste("https://www.encodeproject.org/", temp.libs[l], "/?frame=embedded", sep = ""))$replicates
       temp.sample.id <-  template.libraries$`Sample ID (Must Match Column I in Sample Sheet)`[l]
       for(r in seq(temp.reps)){
         temp.rep.info <- fromJSON(paste("https://www.encodeproject.org/", temp.reps[r], "/?frame=embedded", sep = ""))
         temp.target <- strsplit(strsplit(temp.rep.info$experiment$target, split="/")[[1]][3], split="-")[[1]][1]
+        print(temp.target)
         temp.files <- temp.rep.info$experiment$files
         for(f in seq(temp.files)){
           i1<-i1+1
