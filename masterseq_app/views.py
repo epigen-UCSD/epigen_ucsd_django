@@ -2115,164 +2115,153 @@ def download(request, path):
 def EncodeDataSaveView(request):
 
     encode_data_form = EncodeDataForm(request.POST or None)
-    folder = '/Users/liyuxin/djangoprojects'
     if request.method == 'POST':
         if encode_data_form.is_valid():
-            link = encode_data_form.cleaned_data['encode_link']
-            print(link)
-            cmd1 = 'python ./utility/encode_step1_grab_metadata_from_link.R -u ' + request.user.username + ' -l ' + link
-            p = subprocess.call(cmd1,shell=True)
-            samplefile = os.path.join(folder,'samples.tsv')
-            libfile = os.path.join(folder,'libraries.tsv')
-            seqfile = os.path.join(folder,'sequencings.tsv')
-            data_sam = {}
-            data_lib = {}
-            data_seq = {}       
+            url = encode_data_form.cleaned_data['encode_link']
+            print(url)
+            headers = {'accept': 'application/json'}
+            response = requests.get(url, headers=headers)
+            biosample = response.json()
+            graph = biosample['@graph']
+            
+            # First, biosamples.... ================================            
+            
+            start = time.time()
+            biosample_list = []
+            tosave_list = []
+            for x in graph:
+                for y in x['replicates']:
+                    biosample_list.append(str(y['library']['biosample']['accession']))
+            print(set(biosample_list))
+            for sample in set(biosample_list):
+                this_url = "https://www.encodeproject.org/"+sample+"/?frame=embedded"
+                response = requests.get(this_url, headers=headers)
+                this_sample = response.json()
+                if str(this_sample['biosample_ontology']['classification']) in cell_labels:
+                    this_sample_type = 'cultured cells'
+                elif str(this_sample['biosample_ontology']['classification']) in tissue_labels:
+                    this_sample_type = 'tissue'
+                else:
+                    this_sample_type = 'other (please explain in notes)'
+                today = datetime.date.today()
+                sample_id=str(this_sample['biosample_ontology']['term_name'])+'_'+sample        
 
-            # with open(samplefile, 'r') as f:
-            #     for line in f:
-            #         fields = line.strip('\n').split('\t')
-            #         try:
-            #             samdate = datetransform(fields[0].strip())
-            #         except:
-            #             samdate = None
-            #         gname = fields[1].strip() if fields[1].strip() not in ['NA','N/A'] else ''              
+                sample_type=this_sample_type
+                date=today      
 
-            #         sampleid = fields[8].strip()
-            #         samdescript = fields[9].strip()
-            #         samspecies = fields[10].split('(')[0].lower().strip()
-            #         samtype = fields[11].split('(')[0].strip().lower()
-            #         samnotes = fields[20].strip()
-            #         data_sam[sampleid] = {}
-            #         data_sam[sampleid] = {
-            #             'group':gname,
-            #             'species': samspecies,
-            #             'sample_type': samtype,
-            #             'notes': samnotes,
-            #         }
-            # print(data_sam)     
+                if not SampleInfo.objects.filter(sample_id=sample_id).exists():
+                    tosave_item = SampleInfo(
+                        sample_id=sample_id,
+                        team_member=request.user,
+                        description=str(this_sample['summary']),
+                        species=str(this_sample['organism']['name']),
+                        sample_type=this_sample_type,
+                        date=today,
+                        group=Group.objects.get(name='David Gorkin'),
+                        notes='pseudosample, data downloaded from ENCODE',
+                        )   
+                    tosave_list.append(tosave_item)
+            SampleInfo.objects.bulk_create(tosave_list)
+            end = time.time()
+            print(end - start)      
+
+            # Next, libraries.... ================================
+            start = time.time()
+            library_list = []
+            library_id_list = []
+            lib_sam = {}
+            tosave_list = []
+            ib_new_name = []
+            for x in graph:
+                for y in x['replicates']:
+                    library_list.append(str(y['@id']))
+            print(set(library_list))
+            for library in set(library_list):
+                this_url = "https://www.encodeproject.org/"+library+"/?frame=embedded"
+                response = requests.get(this_url, headers=headers)
+                this_library = response.json()      
+
+                this_id=str(this_library['libraries'][0]['accession'])
+                notes=';'.join(['pseudolibrary, ENCODE library downloaded from encodeproject.org','ENCODE accession:'+this_id])     
+
+                library_id_list.append(this_id)
+                lib_sam[this_id] = sampleinfo
+                existing_flag = 0
+                thissample = SampleInfo.objects,get(sample_id=str(this_library['library']['biosample']['accession']))
+                for item in thissample.libraryinfo_set.all():
+                    if this_id == item.notes.split(';')[1].split(':')[1]:
+                        lib_new_name[this_id] = item.library_id
+                        existing_flag = 1
+                        break;
+                    else:
+                        existing_flag = 0
+                lib_ids = list(LibraryInfo.objects.values_list('library_id', flat=True))
+                maxid = max([int(x.split('_')[1]) for x in lib_ids if x.startswith('ENCODE')])
+                libid_new = '_'.join(['ENCODE', str(maxid+1)])
+                lib_new_name[libid] = libid_new
+                if existing_flag == 0:
+                    tosave_item = LibraryInfo(
+                        sampleinfo=thissample,
+                        library_description=' '.join(['ENCODE',str(this_library['experiment']['description'])]),
+                        experiment_type=str(this_library['experiment']['assay_term_name']),
+                        library_id=libid_new,
+                        notes=notes,
+                        team_member_initails=request.user,
+                        )
+                    tosave_list.append(tosave_item)
+            LibraryInfo.objects.bulk_create(tosave_list)        
         
 
-            # with open(libfile, 'r') as f:
-            #     for line in f:
-            #         fields = line.strip('\n').split('\t')
-            #         sampleid = fields[0].strip()
-            #         lib_des = fields[1].strip()
-            #         username_tm = parser.parse_args().user
-            #         libexp = fields[5].strip()
-            #         libid = fields[8].strip()
-            #         libnote = fields[9].strip()
-            #         thissample = SampleInfo.objects.get(sample_id=sampleid)
-            #         existing_flag = 0
-            #         for item in thissample.libraryinfo_set.all():
-            #             if libid == item.notes.split(';')[0]:
-            #                 obj = item
-            #                 lib_new_name[libid] = item.library_id
-            #                 existing_flag = 1
-            #                 break;
-            #             else:
-            #                 existing_flag = 0
-            #         lib_ids = list(LibraryInfo.objects.values_list('library_id', flat=True))
-            #         maxid = max([int(x.split('_')[1]) for x in lib_ids if x.startswith('ENCODE')])
-            #         libid_new = '_'.join(['ENCODE', str(maxid+1)])
-            #         lib_new_name[libid] = libid_new
-            #         data_lib[libid] = {}
-            #         data_lib[libid] = {
-            #             'sampleinfo': sampid,
-            #             'lib_description': lib_des,
-            #             'experiment_type': libexp,
-            #             'notes': libnote,
-            #         }
-            # print(data_lib)     
+            end = time.time()
+            print(end - start)
+            print(library_id_list)      
 
-            # with open(seqfile, 'r') as f:
-            #     for line in f:
-            #         fields = line.strip('\n').split('\t')
-            #         seqid = fields[15].strip().split(';')[0].split(')')[1]
-            #         thislibary =  LibraryInfo.objects.get(library_id=lib_new_name[fields[5].strip()])
-            #         existing_flag = 0
-            #         read_length = fields[10].strip()
-            #         read_type = fields[11].strip()
-            #         notes = ';'.join([fields[5].strip()+':'+fields[6].strip(),fields[15].strip()])
-            #         for item in thislibary.seqinfo_set.all():
-            #             if seqid == item.notes.split(';')[1].split(')')[1]:
-            #                 obj = item
-            #                 existing_flag = 1
-            #                 writelines.append('\t'.join([item.seq_id,'1',fields[11].strip(),fields[16].strip()]))
-            #                 break;
-            #             else:
-            #                 existing_flag = 0
-            #         if existing_flag == 0:
-            #             counts = thislibary.seqinfo_set.all().count()
-            #             if counts == 0:
-            #                 thisseqid = lib_new_name[fields[5].strip()]
-            #             else:
-            #                 thisseqid = lib_new_name[fields[5].strip()]+'_'+str(counts+1)          
-            #         data_seq[seqid] = {}
-            #         data_seq[seqid] = {
-            #             'sampleinfo': sampid,
-            #             'library_id': lib_new_name[fields[5].strip()],
-            #             'read_length':read_length,
-            #             'read_type':read_type,
-            #             'notes':notes,      
+            # Finally, sequencings... ================================
+            start = time.time()
+            seq_list = []
+            tosave_list = []
+            for library in set(library_id_list):
+                this_url = "https://www.encodeproject.org/"+library+"/?frame=embedded"
+                response = requests.get(this_url, headers=headers)
+                this_library = response.json()
+                for rep in this_library['replicates']:
+                    this_rep_url = "https://www.encodeproject.org/"+rep+"/?frame=embedded"
+                    response = requests.get(this_rep_url, headers=headers)
+                    this_rep_library = response.json()
+                    target = re.split('/|-',str(this_rep_library['experiment']['target']))[2]       
 
-            #         }
-            # print(data_seq)     
+                    default_label = '_'.join([lib_sam[library],target])
+                    libraryinfo = LibraryInfo.objects.get(library_id=lib_new_name[library])       
+
+                    this_uuid = str(this_rep_library['uuid'])
+                    notes =';'.join(['ENCODE uuid:'+this_uuid,'ENCODE url for files info:'+this_rep_url])        
+
+                    existing_flag = 0
+                    for item in libraryinfo.seqinfo_set.all():
+                        if this_uuid == item.notes.split(';')[0].split(':')[1]:
+                            existing_flag = 1
+                            break;
+                        else:
+                            existing_flag = 0
+                    if existing_flag == 0:
+                        counts = thislibrary.seqinfo_set.all().count()
+                        if counts == 0:
+                            thisseqid = lib_new_name[library]
+                        else:
+                            thisseqid = lib_new_name[library]+'_'+str(counts+1)
+                        tosave_item = SeqInfo(
+                            default_label=default_label,
+                            libraryinfo=libraryinfo,
+                            seq_id=thisseqid,
+                            notes=notes,
+                            team_member_initails=request.user,
+                            )
+                        tosave_list.append(tosave_item)
+                SeqInfo.objects.bulk_create(tosave_list)        
         
 
-            # if 'Preview' in request.POST:
-            #     displayorder_sam = ['sample_id','sample_index','group','description', \
-            #      'date','species', 'sample_type','notes','team_member']
-            #     displayorder_lib = ['lib_id','sampleinfo','lib_description','team_member_initails', 'experiment_index', \
-            #     'experiment_type', 'notes']
-            #     displayorder_seq = ['seq_id','libraryinfo', 'default_label', 'team_member_initails', 'read_length',
-            #                         'read_type','notes']      
-
-            #     context = {
-            #         'encode_add_form': encode_add_form,
-            #         'modalshow': 1,
-            #         'displayorder_sam': displayorder_sam,
-            #         'displayorder_lib': displayorder_lib,
-            #         'displayorder_seq': displayorder_seq,
-            #         'data_sam': data_sam,
-            #         'data_lib':data_lib,
-            #         'data_seq':data_seq,
-            #     }        
-            #     return render(request, 'masterseq_app/encode.html', context)
-            #  if 'Save' in request.POST:
-            #     for k, v in data_sam.items():
-            #         if v['group']:
-            #             group_tm = Group.objects.get(name=v['group'])
-            #         else:
-            #             group_tm = None 
-            #         SampleInfo.objects.create(
-            #             sample_id=k,
-            #             species=v['species'],
-            #             sample_type=v['sample_type '],
-            #             notes=v['notes'],
-            #             group=group_tm,
-            #             )
-            #     for k,v in data_lib.items():
-            #         LibraryInfo.objects.create(
-            #             library_id=k,
-            #             sampleinfo=SampleInfo.objects.get(
-            #                     sample_id=v['sampleinfo']),
-            #             library_description=v['lib_description'],
-            #             experiment_type=v['experiment_type'],
-            #             notes=v['notes'],
-            #             )
-            #     for k,v in data_seq.items():
-            #         SeqInfo.objects.create(
-            #             seq_id=k,
-            #             libraryinfo=LibraryInfo.objects.get(
-            #                     library_id=v['library_id']),
-            #             read_length=v['read_length'],
-            #             read_type=v['read_type'],
-            #             notes=v['notes'],
-            #             )
-            # context = {
-            #     'encode_add_form': encode_add_form,
-            # }
+            end = time.time()
+            print(end - start)
             return redirect('masterseq_app:encode_data_add')
 
     else:

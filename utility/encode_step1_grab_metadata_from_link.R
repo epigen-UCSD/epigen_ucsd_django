@@ -195,14 +195,16 @@ library(RCurl)
     temp.libs
     already.added <- c()
     i1<-0
-    temp.libs[1]
     fromJSON(paste("https://www.encodeproject.org/", temp.libs[1], "/?frame=embedded", sep = ""))$replicates
     for(l in seq(temp.libs)){
       temp.reps <- fromJSON(paste("https://www.encodeproject.org/", temp.libs[l], "/?frame=embedded", sep = ""))$replicates
       temp.sample.id <-  template.libraries$`Sample ID (Must Match Column I in Sample Sheet)`[l]
+      print(temp.libs[l])
       for(r in seq(temp.reps)){
         temp.rep.info <- fromJSON(paste("https://www.encodeproject.org/", temp.reps[r], "/?frame=embedded", sep = ""))
         temp.target <- strsplit(strsplit(temp.rep.info$experiment$target, split="/")[[1]][3], split="-")[[1]][1]
+        print(r)
+        print(temp.reps[r])
         print(temp.target)
         temp.files <- temp.rep.info$experiment$files
         for(f in seq(temp.files)){
