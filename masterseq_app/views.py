@@ -2111,7 +2111,7 @@ def download(request, path):
             return response
     raise Http404
 
-
+@transaction.atomic
 def EncodeDataSaveView(request):
 
     encode_data_form = EncodeDataForm(request.POST or None)
@@ -2120,7 +2120,7 @@ def EncodeDataSaveView(request):
         if encode_data_form.is_valid():
             link = encode_data_form.cleaned_data['encode_link']
             print(link)
-            cmd1 = 'Rscript ./utility/encode_step1_grab_metadata_from_link.R ' + link + ' ' + folder
+            cmd1 = 'python ./utility/encode_step1_grab_metadata_from_link.R -u ' + request.user.username + ' -l ' + link
             p = subprocess.call(cmd1,shell=True)
             samplefile = os.path.join(folder,'samples.tsv')
             libfile = os.path.join(folder,'libraries.tsv')

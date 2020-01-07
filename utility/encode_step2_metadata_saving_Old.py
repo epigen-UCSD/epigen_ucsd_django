@@ -111,9 +111,9 @@ def main():
             fields = line.strip('\n').split('\t')
             username_tm = parser.parse_args().user
             seqid = fields[15].strip().split(';')[0].split(')')[1]
-            thislibary =  LibraryInfo.objects.get(library_id=lib_new_name[fields[5].strip()])
+            thislibrary =  LibraryInfo.objects.get(library_id=lib_new_name[fields[5].strip()])
             existing_flag = 0
-            for item in thislibary.seqinfo_set.all():
+            for item in thislibrary.seqinfo_set.all():
                 if seqid == item.notes.split(';')[1].split(')')[1]:
                     obj = item
                     existing_flag = 1
@@ -122,13 +122,13 @@ def main():
                 else:
                     existing_flag = 0
             if existing_flag == 0:
-                counts = thislibary.seqinfo_set.all().count()
+                counts = thislibrary.seqinfo_set.all().count()
                 if counts == 0:
                     thisseqid = lib_new_name[fields[5].strip()]
                 else:
                     thisseqid = lib_new_name[fields[5].strip()]+'_'+str(counts+1)
                 obj = SeqInfo.objects.create(seq_id=thisseqid)
-                obj.libraryinfo = thislibary
+                obj.libraryinfo = thislibrary
                 obj.team_member_initails = User.objects.get(username=username_tm)
                 obj.read_length = fields[10].strip()
                 obj.read_type = fields[11].strip()
