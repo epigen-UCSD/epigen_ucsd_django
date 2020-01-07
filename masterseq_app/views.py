@@ -23,6 +23,8 @@ from django.conf import settings
 import os
 from setqc_app.models import LibrariesSetQC
 import subprocess
+import datetime
+
 def nonetolist(inputthing):
     if not inputthing:
         return []
@@ -2113,156 +2115,167 @@ def download(request, path):
 
 @transaction.atomic
 def EncodeDataSaveView(request):
-
     encode_data_form = EncodeDataForm(request.POST or None)
     if request.method == 'POST':
         if encode_data_form.is_valid():
-            url = encode_data_form.cleaned_data['encode_link']
-            print(url)
-            headers = {'accept': 'application/json'}
-            response = requests.get(url, headers=headers)
-            biosample = response.json()
-            graph = biosample['@graph']
+            data = encode_data_form.cleaned_data['encode_link']
+            data_sam = {}
+            data_lib = {}
+            data_seq = {}
             
-            # First, biosamples.... ================================            
-            
-            start = time.time()
-            biosample_list = []
-            tosave_list = []
-            for x in graph:
-                for y in x['replicates']:
-                    biosample_list.append(str(y['library']['biosample']['accession']))
-            print(set(biosample_list))
-            for sample in set(biosample_list):
-                this_url = "https://www.encodeproject.org/"+sample+"/?frame=embedded"
-                response = requests.get(this_url, headers=headers)
-                this_sample = response.json()
-                if str(this_sample['biosample_ontology']['classification']) in cell_labels:
-                    this_sample_type = 'cultured cells'
-                elif str(this_sample['biosample_ontology']['classification']) in tissue_labels:
-                    this_sample_type = 'tissue'
-                else:
-                    this_sample_type = 'other (please explain in notes)'
-                today = datetime.date.today()
-                sample_id=str(this_sample['biosample_ontology']['term_name'])+'_'+sample        
+            # First, biosamples.... ================================
 
-                sample_type=this_sample_type
-                date=today      
+            samp_indexes = list(SampleInfo.objects.values_list('sample_index', flat=True))
+            existingmaxindex = max([int(x.split('-')[1]) for x in samp_indexes if x.startswith('SAMPNA')])
 
-                if not SampleInfo.objects.filter(sample_id=sample_id).exists():
-                    tosave_item = SampleInfo(
-                        sample_id=sample_id,
-                        team_member=request.user,
-                        description=str(this_sample['summary']),
-                        species=str(this_sample['organism']['name']),
-                        sample_type=this_sample_type,
-                        date=today,
-                        group=Group.objects.get(name='David Gorkin'),
-                        notes='pseudosample, data downloaded from ENCODE',
-                        )   
-                    tosave_list.append(tosave_item)
-            SampleInfo.objects.bulk_create(tosave_list)
-            end = time.time()
-            print(end - start)      
+            for sample in data['samples'].keys():
+                today = datetime.date.today()     
+                if not SampleInfo.objects.filter(sample_id=sample).exists():
+                    data_sam[sample] = {}
+                    data_sam[sample] = {
+                        'group':'David Gorkin',
+                        'team_member':request.user.username,
+                        'species':data['samples'][sample]['species'],
+                        'sample_type':data['samples'][sample]['sample_type'],
+                        'description':data['samples'][sample]['description'],
+                        'notes':data['samples'][sample]['notes'],
+                        'date':str(today),
+                        'sample_index':'SAMPNA-'+str(existingmaxindex+1)
+                        
+                    }
+                    existingmaxindex += 1
+   
 
             # Next, libraries.... ================================
-            start = time.time()
-            library_list = []
-            library_id_list = []
-            lib_sam = {}
-            tosave_list = []
-            ib_new_name = []
-            for x in graph:
-                for y in x['replicates']:
-                    library_list.append(str(y['@id']))
-            print(set(library_list))
-            for library in set(library_list):
-                this_url = "https://www.encodeproject.org/"+library+"/?frame=embedded"
-                response = requests.get(this_url, headers=headers)
-                this_library = response.json()      
 
-                this_id=str(this_library['libraries'][0]['accession'])
-                notes=';'.join(['pseudolibrary, ENCODE library downloaded from encodeproject.org','ENCODE accession:'+this_id])     
+            exp_indexes = list(LibraryInfo.objects.values_list('experiment_index', flat=True))
+            existingmaxexpindex = max([int(x.split('-')[1]) for x in exp_indexes if x.startswith('EXPNA')])
 
-                library_id_list.append(this_id)
-                lib_sam[this_id] = sampleinfo
+            lib_new_name = {}
+            lib_ids = list(LibraryInfo.objects.values_list('library_id', flat=True))
+            maxid = max([int(x.split('_')[1]) for x in lib_ids if x.startswith('ENCODE')]+[0])
+            curren_maxid = maxid
+            for library in data['libraries'].keys():
                 existing_flag = 0
-                thissample = SampleInfo.objects,get(sample_id=str(this_library['library']['biosample']['accession']))
-                for item in thissample.libraryinfo_set.all():
-                    if this_id == item.notes.split(';')[1].split(':')[1]:
-                        lib_new_name[this_id] = item.library_id
-                        existing_flag = 1
-                        break;
-                    else:
-                        existing_flag = 0
-                lib_ids = list(LibraryInfo.objects.values_list('library_id', flat=True))
-                maxid = max([int(x.split('_')[1]) for x in lib_ids if x.startswith('ENCODE')])
-                libid_new = '_'.join(['ENCODE', str(maxid+1)])
-                lib_new_name[libid] = libid_new
-                if existing_flag == 0:
-                    tosave_item = LibraryInfo(
-                        sampleinfo=thissample,
-                        library_description=' '.join(['ENCODE',str(this_library['experiment']['description'])]),
-                        experiment_type=str(this_library['experiment']['assay_term_name']),
-                        library_id=libid_new,
-                        notes=notes,
-                        team_member_initails=request.user,
-                        )
-                    tosave_list.append(tosave_item)
-            LibraryInfo.objects.bulk_create(tosave_list)        
-        
-
-            end = time.time()
-            print(end - start)
-            print(library_id_list)      
-
-            # Finally, sequencings... ================================
-            start = time.time()
-            seq_list = []
-            tosave_list = []
-            for library in set(library_id_list):
-                this_url = "https://www.encodeproject.org/"+library+"/?frame=embedded"
-                response = requests.get(this_url, headers=headers)
-                this_library = response.json()
-                for rep in this_library['replicates']:
-                    this_rep_url = "https://www.encodeproject.org/"+rep+"/?frame=embedded"
-                    response = requests.get(this_rep_url, headers=headers)
-                    this_rep_library = response.json()
-                    target = re.split('/|-',str(this_rep_library['experiment']['target']))[2]       
-
-                    default_label = '_'.join([lib_sam[library],target])
-                    libraryinfo = LibraryInfo.objects.get(library_id=lib_new_name[library])       
-
-                    this_uuid = str(this_rep_library['uuid'])
-                    notes =';'.join(['ENCODE uuid:'+this_uuid,'ENCODE url for files info:'+this_rep_url])        
-
-                    existing_flag = 0
-                    for item in libraryinfo.seqinfo_set.all():
-                        if this_uuid == item.notes.split(';')[0].split(':')[1]:
+                sam_id = data['libraries'][library]['sampleinfo']
+                if SampleInfo.objects.filter(sample_id=sam_id).exists():
+                    thissample = SampleInfo.objects.get(sample_id=sam_id)
+                    for item in thissample.libraryinfo_set.all():
+                        if library == item.notes.split(';')[1].split(':')[1]:
+                            lib_new_name[library] = item.library_id
                             existing_flag = 1
                             break;
                         else:
                             existing_flag = 0
-                    if existing_flag == 0:
-                        counts = thislibrary.seqinfo_set.all().count()
-                        if counts == 0:
-                            thisseqid = lib_new_name[library]
-                        else:
-                            thisseqid = lib_new_name[library]+'_'+str(counts+1)
-                        tosave_item = SeqInfo(
-                            default_label=default_label,
-                            libraryinfo=libraryinfo,
-                            seq_id=thisseqid,
-                            notes=notes,
-                            team_member_initails=request.user,
-                            )
-                        tosave_list.append(tosave_item)
-                SeqInfo.objects.bulk_create(tosave_list)        
-        
+                
+                curren_maxid += 1
+                libid_new = '_'.join(['ENCODE', str(curren_maxid)])
+                lib_new_name[library] = libid_new
+                if existing_flag == 0:
+                    data_lib[libid_new] = {}
+                    data_lib[libid_new] = {
+                        'sampleinfo':sam_id,
+                        'lib_description':data['libraries'][library]['library_description'],
+                        'experiment_type':data['libraries'][library]['experiment_type'],
+                        'notes':data['libraries'][library]['notes'],
+                        'team_member_initails':request.user.username,
+                        'experiment_index':'EXPNA-'+str(existingmaxexpindex+1)
+                    }
+                    existingmaxexpindex += 1
 
-            end = time.time()
-            print(end - start)
-            return redirect('masterseq_app:encode_data_add')
+            # Finally, sequencings... ================================
+
+            current_counts = {}
+            for seq in data['sequencings'].keys():
+                existing_flag = 0
+                lib_id = data['sequencings'][seq]['libraryinfo']
+                if LibraryInfo.objects.filter(library_id=lib_new_name[lib_id]).exists():
+                    libraryinfo = LibraryInfo.objects.get(library_id=lib_new_name[lib_id])               
+                    for item in libraryinfo.seqinfo_set.all():
+                        if seq == item.notes.split(';')[0].split(':')[1]:
+                            existing_flag = 1
+                            break;
+                        else:
+                            existing_flag = 0
+                if existing_flag == 0:
+                    if lib_new_name[lib_id] not in current_counts.keys():
+                        try:
+                            libraryinfo = LibraryInfo.objects.get(library_id=lib_new_name[lib_id])
+                            current_counts[lib_new_name[lib_id]] = libraryinfo.seqinfo_set.all().count()
+                        except:
+                            current_counts[lib_new_name[lib_id]] = 0
+
+
+                    if current_counts[lib_new_name[lib_id]] == 0:
+                        thisseqid = lib_new_name[lib_id]
+                        current_counts[lib_new_name[lib_id]] += 1
+                    else:
+                        thisseqid = lib_new_name[lib_id]+'_'+str(current_counts[lib_new_name[lib_id]]+1)
+                        current_counts[lib_new_name[lib_id]] += 1
+                    data_seq[thisseqid] = {}
+                    data_seq[thisseqid] = {
+                        'libraryinfo':lib_new_name[lib_id],
+                        'default_label':data['sequencings'][seq]['default_label'],
+                        'team_member_initails':request.user.username,
+                        'notes':data['sequencings'][seq]['notes']
+                    }
+
+
+
+
+            if 'Preview' in request.POST:
+                displayorder_sam = ['sample_index','group','description','date','species', 'sample_type','notes','team_member']
+                displayorder_lib = ['sampleinfo','lib_description','team_member_initails', 'experiment_index', \
+                'experiment_type', 'notes']
+                displayorder_seq = ['libraryinfo', 'default_label', 'team_member_initails','notes']      
+
+                context = {
+                    'encode_data_form': encode_data_form,
+                    'modalshow': 1,
+                    'displayorder_sam': displayorder_sam,
+                    'displayorder_lib': displayorder_lib,
+                    'displayorder_seq': displayorder_seq,
+                    'data_sam': data_sam,
+                    'data_lib':data_lib,
+                    'data_seq':data_seq,
+                }        
+                return render(request, 'masterseq_app/encode.html', context)
+
+            if 'Save' in request.POST:
+                for k, v in data_sam.items():
+                    if v['group']:
+                        group_tm = Group.objects.get(name=v['group'])
+                    else:
+                        group_tm = None
+                    SampleInfo.objects.create(
+                        sample_id=k,
+                        species=v['species'],
+                        team_member=request.user,
+                        description=v['description'],
+                        sample_type=v['sample_type'],
+                        notes=v['notes'],
+                        group=group_tm,
+                        date=today,
+                        )
+                for k,v in data_lib.items():
+                    LibraryInfo.objects.create(
+                        library_id=k,
+                        sampleinfo=SampleInfo.objects.get(sample_id=v['sampleinfo']),
+                        library_description=v['lib_description'],
+                        experiment_type=v['experiment_type'],
+                        notes=v['notes'],
+                        team_member_initails = request.user,
+                        )
+                for k,v in data_seq.items():
+                    SeqInfo.objects.create(
+                        seq_id=k,
+                        libraryinfo=LibraryInfo.objects.get(library_id=v['libraryinfo']),
+                        team_member_initails = request.user,
+                        notes=v['notes'],
+                        default_label=v['default_label']
+                        )
+
+                return redirect('masterseq_app:user_metadata')
 
     else:
         encode_set_form = EncodeDataForm(None)

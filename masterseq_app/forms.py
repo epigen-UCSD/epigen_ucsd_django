@@ -13,6 +13,8 @@ from epigen_ucsd_django.models import CollaboratorPersonInfo
 from django.db.models import Prefetch
 from django.urls import reverse
 import re
+import requests
+import time
 
 
 class SampleCreationForm(forms.ModelForm):
@@ -1273,6 +1275,7 @@ class EncodeDataForm(forms.Form):
 
         start = time.time()
         biosample_list = []
+        sam_new_name = {}
 
         acceptable_species = ['human', 'mouse', 'rat', 'cattle']  
         cell_labels = ['cell line', 'primary cell', 'in vitro differentiated cells']
@@ -1299,13 +1302,16 @@ class EncodeDataForm(forms.Form):
             else:
                 raise forms.ValidationError('Incompatible sample type(' + species.lower()+') for sample: '+sample)
 
-            sample_id=str(this_sample['biosample_ontology']['term_name'])+'_'+sample        
+            sample_id=str(this_sample['biosample_ontology']['term_name'])+'_'+sample
+            sam_new_name[sample] = sample_id
             sample_type=this_sample_type
 
             cleaned_data['samples'][sample_id] = {}
             cleaned_data['samples'][sample_id]['sample_type'] = this_sample_type
             cleaned_data['samples'][sample_id]['species'] = species.lower()
             cleaned_data['samples'][sample_id]['description'] = str(this_sample['summary'])
+            cleaned_data['samples'][sample_id]['notes'] = 'pseudosample, data downloaded from ENCODE'
+
         end = time.time()
         print(end - start)
 
@@ -1313,10 +1319,13 @@ class EncodeDataForm(forms.Form):
         
         start = time.time()
         library_list = []
+        library_id_list = []
         lib_sam = {}
         for x in graph:
             for y in x['replicates']:
                 library_list.append(str(y['@id']))
+        if len(set(library_list)) > 25:
+            raise forms.ValidationError('Exceed maximum number (25) of libraries in each request!')
         #print(set(library_list))
         for library in set(library_list):
             this_url = "https://www.encodeproject.org/"+library+"/?frame=embedded"
@@ -1331,7 +1340,7 @@ class EncodeDataForm(forms.Form):
             thissample = str(this_library['library']['biosample']['accession'])
 
             cleaned_data['libraries'][this_id] = {}
-            cleaned_data['libraries'][this_id]['sampleinfo'] = thissample
+            cleaned_data['libraries'][this_id]['sampleinfo'] = sam_new_name[thissample]
             cleaned_data['libraries'][this_id]['notes'] = ';'.join(['pseudolibrary, ENCODE library downloaded from encodeproject.org','ENCODE accession:'+this_id])
             cleaned_data['libraries'][this_id]['experiment_type'] = assay_name
             cleaned_data['libraries'][this_id]['library_description'] = ' '.join(['ENCODE',str(this_library['experiment']['description'])])
@@ -1357,12 +1366,14 @@ class EncodeDataForm(forms.Form):
 
                 cleaned_data['sequencings'][this_uuid] = {}
                 cleaned_data['sequencings'][this_uuid]['libraryinfo'] = library
-                cleaned_data['sequencings'][this_uuid]['notes'] = ';'.join(['ENCODE uuid:'+this_uuid,'ENCODE url for files info:'+this_rep_url])
+                #cleaned_data['sequencings'][this_uuid]['notes'] = ';'.join(['ENCODE uuid:'+this_uuid,'ENCODE url for files info:'+this_rep_url])
+                cleaned_data['sequencings'][this_uuid]['notes'] = 'ENCODE uuid:'+this_uuid
                 cleaned_data['sequencings'][this_uuid]['default_label'] = '_'.join([cleaned_data['libraries'][library]['sampleinfo'],target,this_uuid])
         end = time.time()
         print(end - start)
         print(seq_list)
 
+        print(cleaned_data)
         return(cleaned_data)
 
 
