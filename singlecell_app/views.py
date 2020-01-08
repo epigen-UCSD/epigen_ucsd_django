@@ -543,7 +543,7 @@ def check_cooladmin_time(seq_object_id, cooladmin_objects):
             time = date_modified
         #date_modified never == None, if cooladmin sub object exists - it must have been modified at time of creation
         elif(date_modified == None):
-            time = date_submitted.dat
+            time = date_submitted
         elif(date_modified < date_submitted):
             time = date_submitted
         else:
