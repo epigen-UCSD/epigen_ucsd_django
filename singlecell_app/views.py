@@ -74,11 +74,10 @@ def AllSingleCellData(request):
 
     data = list(seqs_queryset)
     build_seq_list(data)
-    print('new data: ',data)
     return JsonResponse(data, safe=False)
 
 
-def UserSingleCellData(request):    
+def UserSingleCellData(request):
     """async function to get hit by ajax, returns user only seqs
     """
 
@@ -264,7 +263,7 @@ def submit_cooladmin(request):
     species = defaultgenome[info.libraryinfo.sampleinfo.species.lower()]
     
     defaults = {
-                'status':'inProcess',
+                'submitted':True,
                 'seqinfo':info, 
                 'date_submitted':datetime.now(),
                 'date_modified':datetime.now(),
@@ -277,19 +276,18 @@ def submit_cooladmin(request):
         if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
             submission_dict['refgenome'] = getReferenceUsed(seq)
         else:#set ref genome to default species
-            submission_dict['refgenome'] =  species
-            submission.refgenome = GenomeInfo.objects.create(genome_name=submission_dict['refgenome'],species=info.libraryinfo.sampleinfo.species.lower())
+            submission_dict['refgenome'] = species
             submission.date_modified = datetime.now()
             submission.date_submitted = datetime.now()
-            submission.save()   
-    #convert key to refgenome
-    #always use refgenome used in 10xATAC job
+            submission.save()  
     else:
         print('submission dict: ',submission_dict)
         if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
             submission_dict['refgenome'] =  getReferenceUsed(seq)
-        else:
-            submission_dict['refgenome'] = str(GenomeInfo.objects.get(id=submission_dict['refgenome']).genome_name)
+        submission.date_submitted = datetime.now()
+
+    print(submission_dict)
+    print(submission)
 
     seqString = f'"{seq}"'
 
@@ -520,13 +518,17 @@ def get_latest_modified_time(seq_id, seq_object_id, date_sub_for_seq, cooladmin_
     #check if user modified cooladmin submission params, check if user submitted either cooladmin OR 10xCellranger job
     #check if cooladminsubmission exists 
     cooladmin_time_check = check_cooladmin_time(seq_object_id, cooladmin_objects)
-    if(time!= None and cooladmin_time_check != None and time < cooladmin_time_check):
+    if(time == None and cooladmin_time_check != None):
+        time = cooladmin_time_check
+    elif(time!= None and cooladmin_time_check != None and time < cooladmin_time_check):
         time = cooladmin_time_check
     #print('cooladmin_time_check: ', cooladmin_time_check)
+    
     #check if sequencestatus has updated? pipeline status's updates?
     tenx_time_check = check_tenx_time(seq_id)
-
-    if(time!= None and tenx_time_check != None and time < tenx_time_check):
+    if(time == None and tenx_time_check != None):
+        time = tenx_time_check
+    elif(time!= None and tenx_time_check != None and time < tenx_time_check):
         time = tenx_time_check
     return time
 

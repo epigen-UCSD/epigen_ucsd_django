@@ -966,7 +966,6 @@ $(document).ready(function () {
 
         });
     });
-    $('#id_date_submitted').attr("readonly", true);
 
     $(document).on('click', '.cooladmin-submit', function (e) {
         e.preventDefault();
@@ -1222,6 +1221,11 @@ $(document).ready(function () {
             }
         ]
     });
+
+    //Cool admin form edit page details 
+    $('#id_date_submitted').attr("readonly", true);
+    $('#id_date_modified').attr("readonly", true);
+
     $("#id_pipeline_version").attr('title', 'Choose desired pipeline version');
     $("#id_useHarmony").attr('title', 'Default False. Perform harmony batch correction using the dataset IDs as batch IDs only for multiple sequences');
     $("#id_snapUsePeak").attr('title', 'Construct a peak matrix in addition to the bin matrix');
