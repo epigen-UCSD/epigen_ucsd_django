@@ -106,11 +106,10 @@ def build_seq_list(seqs_list):
     for entry in seqs_list:
         seq_id = entry['seq_id']
         entry['last_modified'] = get_latest_modified_time(seq_id, entry['id'], entry['date_submitted_for_sequencing'], cooladmin_objects)
-        entry['seq_status'] = find_seq_status(seq_id, entry['read_type'])
+        entry['seq_status'] = get_seq_status(seq_id, entry['read_type'])
         entry['10x_status'] = tenX_pipeline_check(seq_id)
         entry['species'] = entry['libraryinfo__sampleinfo__species']
-        entry['cooladmin_status'] = find_cooladmin_status(entry['id'])
-        entry['link'] = get_cooladmin_link(seq_id)
+        entry['cooladmin_status'] = get_cooladmin_status(seq_id, entry['id'])
     return (seqs_list)
 
 
@@ -151,7 +150,7 @@ def tenX_pipeline_check(seq):
     return seqstatus
 
 
-def find_seq_status(seq_id, read_type):
+def get_seq_status(seq_id, read_type):
     """This function checks the FASTQ sequence status and returns the results 
     @params
         seq_id: string represents a seq_id to be checked.
@@ -213,27 +212,26 @@ def find_seq_status(seq_id, read_type):
     return seqsStatus
 
 
-def find_cooladmin_status(seq):
+def get_cooladmin_status(seq_id, seq_pk):
     """
     """
     coolAdminDir = settings.COOLADMIN_DIR
 
     #requirement: only one active cooladminsubmission object per sequence
-    submitted_boolean = CoolAdminSubmission.objects.filter(seqinfo=seq, submitted=True).exists()
-    
+    submitted_boolean = CoolAdminSubmission.objects.filter(seqinfo=seq_pk, submitted=True).exists()
     #check if folder exists in coolAdminDir
-    path = os.path.join(coolAdminDir, str(seq))
+    path = os.path.join(coolAdminDir, seq_id)
     #if no cool admin submitted before or if it has been but the parameters have been changed
     if not os.path.isdir(path) or submitted_boolean == False:
         return 'ClickToSubmit'
     elif os.path.isfile(path + '/.status.processing'):
         return '.status.processing'
     elif os.path.isfile(path + '/.status.success'):
-        return get_cooladmin_link(seq)
+        return get_cooladmin_link(seq_id)
     elif os.path.isfile(path + '/.status.fail'):
         return '.status.fail'
     else: 
-        return 'submitted'
+        return '.status.processing'
 
 
 def submit_singlecell(request):
@@ -252,7 +250,7 @@ def submit_singlecell(request):
         }
     return JsonResponse(data)
 
-
+#TODO add a modify_submission_model() funciton to update submission date_submitted/modified and submitted fields
 def submit_cooladmin(request):
     """This function handles a cooladmin submission request from LIMS user.
     This function run a bash script ./utility/coolAdmin.sh
@@ -279,12 +277,14 @@ def submit_cooladmin(request):
             submission_dict['refgenome'] = species
             submission.date_modified = datetime.now()
             submission.date_submitted = datetime.now()
+            submission.submitted = True
             submission.save()  
     else:
         print('submission dict: ',submission_dict)
         if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
             submission_dict['refgenome'] =  getReferenceUsed(seq)
         submission.date_submitted = datetime.now()
+        submission.submitted = True
 
     print(submission_dict)
     print(submission)
@@ -304,6 +304,7 @@ def submit_cooladmin(request):
 
 
 #TODO write test for this function
+#TODO handle repsonse when edit is invalid
 def edit_cooladmin_sub(request, seqinfo):
     """This is a big boy here...
     @header:
@@ -330,7 +331,6 @@ def edit_cooladmin_sub(request, seqinfo):
     seqinfo = SeqInfo.objects.select_related('libraryinfo__sampleinfo').get(seq_id=seqinfo_id)
     species = seqinfo.libraryinfo.sampleinfo.species
     exptType = seqinfo.libraryinfo.experiment_type
-    #print("expt type: ", exptType)
     
     #starter_data for initialization values of CoolAdminSubmissionForm 
     starter_data = {
@@ -359,7 +359,7 @@ def edit_cooladmin_sub(request, seqinfo):
             form.fields['refgenome'].initial = [ref_genome_used]
         else:
             form.fields['refgenome'].initial = [defaultgenome[species]]
-    print('serving form: ',form)
+    
     #handle save of new submission form
     if request.method == 'POST':
         post = request.POST.copy()
@@ -382,7 +382,7 @@ def edit_cooladmin_sub(request, seqinfo):
             if form.is_valid():
                 if(form.has_changed()):
                     data = form.cleaned_data
-                    data['status'] = 'ClickToSubmit'
+                    data['submitted'] = False
                     print('changed data: ',form.changed_data)
                     CoolAdminSubmission.objects.filter(seqinfo=seqinfo_id).update(**data)
                     obj = CoolAdminSubmission.objects.get(seqinfo=seqinfo_id)
@@ -417,11 +417,10 @@ def get_cooladmin_link(seq):
     #cool_dir = f'/projects/ps-epigen/datasets/opoirion/output_LIMS/{seq}/repl1//repl1_{seq}_finals_logs.json'
     cool_dir = settings.COOLADMIN_DIR
     try:
-        json_file = os.path.join(cool_dir, str(seq), f'repl1//repl1_{str(seq)}_final_logs.json')
-        
+        json_file = os.path.join(cool_dir, seq, 'repl1','repl1_' + seq + '_final_logs.json')
         with open(json_file, 'r') as f:
             cool_data = f.read()
-        cool_dict = json.loads(cool_data) 
+        cool_dict = json.loads(cool_data)
         return (cool_dict['report_address'])
     except:
         return("")

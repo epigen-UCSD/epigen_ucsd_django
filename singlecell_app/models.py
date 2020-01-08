@@ -11,8 +11,6 @@ class CoolAdminSubmission(models.Model):
         (V2, 'V2'),
     ]
     
-    status = models.CharField(
-        max_length=20, blank=True, default='ClickToSubmit')
     #change status to a new field, if the job has been submitted or not
     submitted =  models.BooleanField(default=False)
     pipeline_version = models.CharField(max_length=2,choices=pipeline_versions_choices,default=V4)

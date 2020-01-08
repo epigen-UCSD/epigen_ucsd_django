@@ -1200,7 +1200,7 @@ $(document).ready(function () {
                         }
                     } else if (status === ".status.fail") {//failed
                         return ('<button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status">Error!</button>')
-                    } else if (status === ".status.process") {
+                    } else if (status === ".status.processing") {
                         return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
                     } else {
                         return '<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="' + status + '" style="color:white" target="_blank"> Results</a></button >'
