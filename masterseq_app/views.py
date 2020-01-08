@@ -4,7 +4,7 @@ from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SampleCreationForm, LibraryCreationForm, SeqCreationForm,\
     SamplesCreationForm, LibsCreationForm, SeqsCreationForm, SeqsCreationForm,\
-    LibsCreationForm_wetlab,SeqsCreationForm_wetlab
+    LibsCreationForm_wetlab,SeqsCreationForm_wetlab,BulkUpdateForm
 from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
     SeqMachineInfo, SeqBioInfo, choice_for_preparation, choice_for_fixation,\
     choice_for_unit, choice_for_sample_type
@@ -21,7 +21,7 @@ import secrets,string
 from random import randint
 from django.conf import settings
 import os
-
+from setqc_app.models import LibrariesSetQC
 def nonetolist(inputthing):
     if not inputthing:
         return []
@@ -143,6 +143,190 @@ def load_protocals(request):
         experiment_type=exptype).order_by('protocal_name')
     print(protocals)
     return render(request, 'masterseq_app/protocal_dropdown_list_options.html', {'protocals': protocals})
+
+@transaction.atomic
+def BulkUpdateView(request):
+    update_form = BulkUpdateForm(request.POST or None)
+    i = 0
+    titleinfo = {}
+    colinfo = {}
+    title2field_seq = {
+    'label (for qc report)':'default_label',
+    'team member intials':'team_member_initails',
+    'date submitted for sequencing':'date_submitted_for_sequencing',
+    'date':'date_submitted_for_sequencing',
+    'library id':'libraryinfo',
+    'sequening length':'read_length',
+    'read type':'read_type',
+    'portion of lane':'portion_of_lane',
+    'i7 index (if applicable)':'i7index',
+    'i5 index (or single index)':'i5index',
+    'notes':'notes',
+    'i7 index':'i7index',
+    'i5 index':'i5index',
+    'label':'default_label',
+    'sequencing length':'read_length',
+    'team member initials':'team_member_initails',
+    }
+    title2field_lib = {
+    'sample id (must match column i in sample sheet)':'sampleinfo',
+    'library description':'library_description',
+    'team member intials':'team_member_initails',
+    'date experiment started':'date_started',
+    'date experiment completed':'date_completed',
+    'experiment type':'experiment_type',
+    'protocol used':'protocal_used',
+    'reference to notebook and page number':'reference_to_notebook_and_page_number',
+    'notes':'notes',
+    'sample id':'sampleinfo',
+    'team member initials':'team_member_initails',
+    }
+    title2field_sam = {
+    'date':'date',
+    'sample description':'description',
+    'species':'species',
+    'sample type':'sample_type',
+    'preperation':'preparation',
+    'fixation?':'fixation',
+    'sample amount':'sample_amount',
+    'units':'unit',
+    'unit':'unit',
+    'service requested':'service_requested',
+    'sequencing depth to target':'seq_depth_to_target',
+    'sequencing length requested':'seq_length_requested',
+    'sequencing type requested':'seq_type_requested',
+    'notes':'notes',
+    'date sample received':'date_received',
+    'initials of reciever':'team_member',
+    'storage location':'storage',
+    'internal notes':'internal_notes',
+    }
+
+    if update_form.is_valid():
+        updateinfo = update_form.cleaned_data['updateinfo']
+        for lineitem in updateinfo.strip().split('\n'):
+            fields = lineitem.strip('\n').split('\t')
+            if i == 0:
+                for k in range(len(fields)):
+                    titleinfo[k] = fields[k].strip().lower()
+                    colinfo[k] = []
+
+            else:
+                for k in range(len(fields)):
+                    colinfo[k].append(fields[k])
+            i = i+1
+        keytitle = titleinfo[0]
+        if keytitle == 'sequencing id':
+            cores_tm = {}
+            machines_tm = {}
+            for k in range(len(titleinfo)-1):
+                if titleinfo[k+1] in ['team member intials','team member initials']:
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_seq = SeqInfo.objects.get(seq_id=item[0])
+                        current_seq.team_member_initails = User.objects.get(username=item[1].strip())
+                        current_seq.save()
+                elif titleinfo[k+1] in ['date submitted for sequencing','date']:
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_seq = SeqInfo.objects.get(seq_id=item[0])
+                        current_seq.date_submitted_for_sequencing = datetransform(item[1].strip())
+                        current_seq.save()
+                elif titleinfo[k+1] == 'library id':
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_seq = SeqInfo.objects.get(seq_id=item[0])
+                        current_seq.libraryinfo = LibraryInfo.objects.get(library_id=item[1].strip())
+                        current_seq.save()
+                elif titleinfo[k+1] == 'portion of lane':
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_seq = SeqInfo.objects.get(seq_id=item[0])
+                        current_seq.portion_of_lane = float(item[1].strip())
+                        current_seq.save()
+                elif titleinfo[k+1] in ['i7 index (if applicable)','i7 index']:
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_seq = SeqInfo.objects.get(seq_id=item[0])
+                        if item[1].strip():
+                            current_seq.i7index = Barcode.objects.get(indexid=item[1].strip())
+                        else:
+                            current_seq.i7index = None
+                        current_seq.save()
+                elif titleinfo[k+1] in ['i5 index (or single index)','i5 index']:
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_seq = SeqInfo.objects.get(seq_id=item[0])
+                        if item[1].strip():
+                            current_seq.i5index = Barcode.objects.get(indexid=item[1].strip())
+                        else:
+                            current_seq.i5index = None
+                        current_seq.save()
+                elif titleinfo[k+1] not in ['sequencing core','sequening core','machine']:
+                     for item in zip(colinfo[0],colinfo[k+1]):
+                        current_seq = SeqInfo.objects.get(seq_id=item[0])
+                        setattr(current_seq,title2field_seq[titleinfo[k+1]],item[1].strip())
+                        current_seq.save()
+                else:
+                    if titleinfo[k+1] in ['sequencing core','sequening core']:
+                        cores_tm[colinfo[0]] = colinfo[k+1]
+                    elif titleinfo[k+1] == 'machine':
+                        machines_tm[colinfo[0]] = colinfo[k+1]
+            for k in cores_tm.keys():
+                current_seq = SeqInfo.objects.get(seq_id=k)
+                current_seq.machine = SeqMachineInfo.objects.get(sequencing_core=item[0], machine_name=item[1])
+                current_seq.save()
+        elif keytitle in ['library id (if library generated)','library id']:
+            for k in range(len(titleinfo)-1):
+                if titleinfo[k+1] in ['sample id (must match column i in sample sheet)','sample id']:
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_lib = LibraryInfo.objects.get(library_id=item[0])
+                        current_lib.sampleinfo = SampleInfo.objects.get(sample_id=item[1].strip())
+                        current_lib.save()
+                elif titleinfo[k+1] in ['team member intials','team member initials']:
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_lib = LibraryInfo.objects.get(library_id=item[0])
+                        current_lib.team_member_initails = User.objects.get(username=item[1].strip())
+                        current_lib.save()
+                elif titleinfo[k+1] == 'date experiment started':
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_lib = LibraryInfo.objects.get(library_id=item[0])
+                        current_lib.date_started = datetransform(item[1].strip())
+                        current_lib.save()
+                elif titleinfo[k+1] == 'date experiment completed':
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_lib = LibraryInfo.objects.get(library_id=item[0])
+                        current_lib.date_completed = datetransform(item[1].strip())
+                        current_lib.save()
+                else:
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_lib = LibraryInfo.objects.get(library_id=item[0])
+                        setattr(current_lib,title2field_lib[titleinfo[k+1]],item[1].strip())
+                        current_lib.save()
+        elif keytitle == 'sample id':
+            for k in range(len(titleinfo)-1):
+                if titleinfo[k+1] == 'date':
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_sam = SampleInfo.objects.get(sample_id=item[0])
+                        current_sam.date = datetransform(item[1].strip())
+                        current_sam.save()
+                elif titleinfo[k+1] == 'date sample received':
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_sam = SampleInfo.objects.get(sample_id=item[0])
+                        current_sam.date_received = datetransform(item[1].strip())
+                        current_sam.save()
+                elif titleinfo[k+1] == 'initials of reciever':
+                    for item in zip(colinfo[0],colinfo[k+1]):                       
+                        current_sam = SampleInfo.objects.get(sample_id=item[0])
+                        current_sam.team_member = User.objects.get(username=item[1].strip())
+                        current_sam.save()
+                else:
+                    for item in zip(colinfo[0],colinfo[k+1]):
+                        current_sam = SampleInfo.objects.get(sample_id=item[0])
+                        setattr(current_sam,title2field_sam[titleinfo[k+1]],item[1].strip())
+                        current_sam.save()
+        return redirect('masterseq_app:index')                    
+
+    context = {
+        'update_form': update_form,
+    }
+
+    return render(request, 'masterseq_app/bulkupdate.html', context)
+
 
 
 @transaction.atomic
@@ -1325,13 +1509,17 @@ def SeqDetailView(request, pk):
     bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
                     'tss_enrichment', 'frop']
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
+    setqcfield = ['set_id','set_name','experiment_type','url','date_requested']
+    setqcs = LibrariesSetQC.objects.filter(libraries_to_include=seqinfo)
     context = {
         'libinfo': libinfo,
         'saminfo': saminfo,
         'seqinfo': seqinfo,
         'summaryfield': summaryfield,
         'seqbioinfos': seqbioinfos,
-        'bioinfofield': bioinfofield
+        'bioinfofield': bioinfofield,
+        'setqcs':setqcs,
+        'setqcfield':setqcfield
 
     }
     return render(request, 'masterseq_app/seqdetail.html', context=context)
@@ -1348,13 +1536,17 @@ def SeqDetail2View(request, seqid):
     bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
                     'tss_enrichment', 'frop']
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
+    setqcfield = ['set_id','set_name','experiment_type','url','date_requested']
+    setqcs = LibrariesSetQC.objects.filter(libraries_to_include=seqinfo)
     context = {
         'libinfo': libinfo,
         'saminfo': saminfo,
         'seqinfo': seqinfo,
         'summaryfield': summaryfield,
         'seqbioinfos': seqbioinfos,
-        'bioinfofield': bioinfofield
+        'bioinfofield': bioinfofield,
+        'setqcs':setqcs,
+        'setqcfield':setqcfield
 
     }
     return render(request, 'masterseq_app/seqdetail.html', context=context)

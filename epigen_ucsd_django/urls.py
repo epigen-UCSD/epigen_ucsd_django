@@ -23,7 +23,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('nextseq/', include('nextseq_app.urls')),
-    path('setqc/', include('setqc_app.urls')),
+    path('setqc/', include('setqc_app.urls')),    
     path('metadata/', include('masterseq_app.urls')),
     path('manager/', include('manager_app.urls')),
     path('epigen/', include('collaborator_app.urls')),
@@ -35,7 +35,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('changepassword/', views.change_password, name='change_password'),
     path('register/', views.UserRegisterView.as_view(), name='register'),
-    path('singlecell/', include('singlecell_app.urls')),
+    path('singlecell/', include('singlecell_app.urls')),    
 ]
 
 if 'debug_toolbar' in settings.INSTALLED_APPS:

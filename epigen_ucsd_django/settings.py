@@ -186,5 +186,6 @@ SETQC_DIR = config['database']['SETQC_DIR']
 FASTQ_DIR = config['database']['FASTQ_DIR']
 TENX_DIR = config['database']['TENX_DIR']
 MEDIA_ROOT = config['database']['MEDIA_ROOT']
-TENX_WEBSUMMARY = config['database']['TENX_WEBSUMMARY']
-COOLADMIN_DIR = config['database']['COOLADMIN_DIR']
+TENX_WEBSUMMARY = config['snapp']['TENX_WEBSUMMARY']
+COOLADMIN_DIR = config['snapp']['COOLADMIN_DIR']
+

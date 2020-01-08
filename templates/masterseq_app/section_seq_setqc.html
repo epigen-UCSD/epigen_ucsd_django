@@ -1,0 +1,48 @@
+{% load nextseq_app_tags %}
+{% load humanize %}
+<div class="row" id="relatedsetqc">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="card bottom15">
+      <div class="card-header fortable collapseheader">
+        <a data-toggle="collapse" href="#collapse3" aria-expanded="true" aria-controls="collapse3"><i class="fa fas fa-caret-right collapseheader fa-lg fa-fw"></i><i class="fa fa-caret-down collapseheader fa-lg fa-fw"></i></a>
+        SetQC
+        <button type="button" class="close" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+        </button>
+      </div><!-- /.card-header -->
+      <div class="collapse show" id="collapse3">
+        <div class="card-body">
+          <br />
+          <table class="table table-sm table-striped text-center table-responsive-xl">
+
+            
+            <thead>
+            <tr>
+              {% for x in setqcfield %}
+              <th>{{ x }}</th>
+              {% endfor %} 
+            </tr>
+            </thead>
+            <tbody></tbody>
+
+            {% for setqc in setqcs %}
+            <tr>
+              {% for x in setqcfield %}
+                {% if x == 'set_name' %}
+                  <td><a href="{% url 'setqc_app:setqc_detail' setqc.pk %}">{{ setqc|get_value:x|default_if_none:"" }}</a></td>
+                {% elif x == 'url' %}
+                  <td><a href="{{setqc.url}}" target="_blank"><i class="fas fa-file-alt" style="font-size: 17px;color:#26D07C"></i></a></td>
+                {% else %}
+                  <td>{{ setqc|get_value:x|default_if_none:"" }}</td>
+                {% endif %}
+              {% endfor %}
+            </tr>
+            {% endfor %}
+            </tbody>               
+          </table>
+        </div><!-- /.card-body --> 
+      </div><!-- /.collapse -->             
+    </div><!-- /.card -->
+  
+  </div>
+</div>
