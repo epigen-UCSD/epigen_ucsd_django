@@ -1166,7 +1166,7 @@ $(document).ready(function () {
                     var status = data;
                     var seq = row['seq_id'];
                     if (status === "Yes") {
-                        return ('<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="/setqc/' + seq + '/web_summary.html" style="color:white" target="_blank"> Results</a></button >');
+                        return ('<a type="button" href="/setqc/' + seq + '/web_summary.html" class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a>');
                     } else if (status === "Error!") {
                         return ('<button type="button" class="badge badge-success badge-status-red" data-toggle="tooltip" data-placement="top" title="Contact bioinformatics group!">Error!</button>');
                     } else if (status === "No" && row['seq_status'] === "No") {
@@ -1203,7 +1203,7 @@ $(document).ready(function () {
                     } else if (status === ".status.processing") {
                         return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
                     } else {
-                        return '<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="' + status + '" style="color:white" target="_blank"> Results</a></button >'
+                        return '<a href="' + status + '" style="color:white" target="_blank" type="button" class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a>'
 
                     }
                 },

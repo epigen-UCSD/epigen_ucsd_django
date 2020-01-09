@@ -421,6 +421,7 @@ def get_cooladmin_link(seq):
         with open(json_file, 'r') as f:
             cool_data = f.read()
         cool_dict = json.loads(cool_data)
+        print('cooldict: ',cool_dict)
         return (cool_dict['report_address'])
     except:
         return("")
@@ -542,7 +543,7 @@ def check_cooladmin_time(seq_object_id, cooladmin_objects):
             time = date_modified
         #date_modified never == None, if cooladmin sub object exists - it must have been modified at time of creation
         elif(date_modified == None):
-            time = date_submitted.dat
+            time = date_submitted
         elif(date_modified < date_submitted):
             time = date_submitted
         else:
