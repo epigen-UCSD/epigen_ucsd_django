@@ -2162,16 +2162,16 @@ def EncodeDataSaveView(request):
                     thissample = SampleInfo.objects.get(sample_id=sam_id)
                     for item in thissample.libraryinfo_set.all():
                         if library == item.notes.split(';')[1].split(':')[1]:
-                            lib_new_name[library] = item.library_id
+                            lib_new_name[library] = item.library_id                           
                             existing_flag = 1
                             break;
                         else:
                             existing_flag = 0
-                
-                curren_maxid += 1
-                libid_new = '_'.join(['ENCODE', str(curren_maxid)])
-                lib_new_name[library] = libid_new
+               
                 if existing_flag == 0:
+                    curren_maxid += 1
+                    libid_new = '_'.join(['ENCODE', str(curren_maxid)])
+                    lib_new_name[library] = libid_new 
                     data_lib[libid_new] = {}
                     data_lib[libid_new] = {
                         'sampleinfo':sam_id,
@@ -2194,6 +2194,7 @@ def EncodeDataSaveView(request):
                     for item in libraryinfo.seqinfo_set.all():
                         if seq == item.notes.split(';')[0].split(':')[1]:
                             existing_flag = 1
+                            print(seq+'___ooooo___'+item.seq_id)
                             break;
                         else:
                             existing_flag = 0
@@ -2219,6 +2220,8 @@ def EncodeDataSaveView(request):
                         'team_member_initails':request.user.username,
                         'notes':data['sequencings'][seq]['notes']
                     }
+            #data_seq = {i:data_seq[i] for i in sorted(data_seq.keys())}
+            data_seq = {y:data_seq[y] for y in [x[1] for x in sorted([(value['libraryinfo'],key) for (key,value) in data_seq.items()])]}
 
 
 
@@ -2256,6 +2259,7 @@ def EncodeDataSaveView(request):
                         notes=v['notes'],
                         group=group_tm,
                         date=today,
+                        sample_index=v['sample_index']
                         )
                 for k,v in data_lib.items():
                     LibraryInfo.objects.create(
@@ -2265,6 +2269,7 @@ def EncodeDataSaveView(request):
                         experiment_type=v['experiment_type'],
                         notes=v['notes'],
                         team_member_initails = request.user,
+                        experiment_index=v['experiment_index']
                         )
                 for k,v in data_seq.items():
                     SeqInfo.objects.create(

@@ -1324,14 +1324,14 @@ class EncodeDataForm(forms.Form):
         for x in graph:
             for y in x['replicates']:
                 library_list.append(str(y['@id']))
-        if len(set(library_list)) > 25:
-            raise forms.ValidationError('Exceed maximum number (25) of libraries in each request!')
+
         #print(set(library_list))
         for library in set(library_list):
             this_url = "https://www.encodeproject.org/"+library+"/?frame=embedded"
             response = requests.get(this_url, headers=headers)
             this_library = response.json()
-            this_id=str(this_library['libraries'][0]['accession'])
+            #this_id=str(this_library['libraries'][0]['accession'])
+            this_id=str(this_library['library']['accession'])
             assay_name = str(this_library['experiment']['assay_term_name'])
             if assay_name not in experiment_types:
                 raise forms.ValidationError('Incompatible experiment type(' + assay_name+') for library: '+this_id)
@@ -1344,8 +1344,12 @@ class EncodeDataForm(forms.Form):
             cleaned_data['libraries'][this_id]['notes'] = ';'.join(['pseudolibrary, ENCODE library downloaded from encodeproject.org','ENCODE accession:'+this_id])
             cleaned_data['libraries'][this_id]['experiment_type'] = assay_name
             cleaned_data['libraries'][this_id]['library_description'] = ' '.join(['ENCODE',str(this_library['experiment']['description'])])
+        if len(set(library_id_list)) > 25:
+            raise forms.ValidationError('Exceed maximum number (25) of libraries allowed in each request!')
         end = time.time()
         print(end - start)
+        print(str(len(set(library_list))))
+        print(str(len(set(library_id_list))))
         print(library_id_list)
 
         # Finally, sequencings... ================================
@@ -1368,7 +1372,7 @@ class EncodeDataForm(forms.Form):
                 cleaned_data['sequencings'][this_uuid]['libraryinfo'] = library
                 #cleaned_data['sequencings'][this_uuid]['notes'] = ';'.join(['ENCODE uuid:'+this_uuid,'ENCODE url for files info:'+this_rep_url])
                 cleaned_data['sequencings'][this_uuid]['notes'] = 'ENCODE uuid:'+this_uuid
-                cleaned_data['sequencings'][this_uuid]['default_label'] = '_'.join([cleaned_data['libraries'][library]['sampleinfo'],target,this_uuid])
+                cleaned_data['sequencings'][this_uuid]['default_label'] = '_'.join([cleaned_data['libraries'][library]['sampleinfo'],target])
         end = time.time()
         print(end - start)
         print(seq_list)
