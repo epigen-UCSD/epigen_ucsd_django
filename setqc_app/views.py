@@ -25,7 +25,9 @@ DisplayField1 = ['set_id', 'set_name',
 DisplayField2 = ['set_id', 'set_name', 'last_modified',
                  'requestor', 'experiment_type', 'url', 'version']
 defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
-                 'rat': 'rn6', 'cattle': 'ARS-UCD1.2'}
+                 'rat': 'rn6', 'cattle': 'ARS-UCD1.2',
+                 'green monkey':'chlSab2', 'pig-tailed macaque':'Mnem1.0',
+                 'fruit fly':'dm6'}
 
 
 def groupnumber(datalist):
@@ -675,14 +677,13 @@ def RunSetQC(request, setqc_pk):
 
         # check if name in output_names has been processed, if so strike it from list and
         # put processed flag
-               
-        if len(to_process) > 0:        
+        #find genome used for samples
+        if len(to_process) > 0:
             output_names = StrikeOutputNames(to_process, output_names)
             print('outputnames: ', output_names)
             print('to_process dict:', to_process)
 
         # find genome used for samples
-
             genome_dict = {}
             for x in outinfo:
                 seqid = x['seqinfo__seq_id']

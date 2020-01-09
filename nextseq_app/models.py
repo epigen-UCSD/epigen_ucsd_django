@@ -5,6 +5,7 @@ from django.urls import reverse
 choice_for_machine = (
     ('EPIGEN_NextSeq550', 'EPIGEN_NextSeq550'),
     ('IGM_HiSeq4000', 'IGM_HiSeq4000'),
+    ('IGM_NovaSeq', 'IGM_NovaSeq'),
 )
 
 
@@ -38,7 +39,7 @@ class RunInfo(models.Model):
         max_length=2, choices=read_type_choice, default='PE', help_text='default:PE')
     experiment_type = models.CharField(max_length=2, choices=exp_type_choice,
                                        default='BK', help_text='bulk (default), snATAC_v2:combinatory barcode v2, 10xATAC, 10xRNAseq, bulk_10xATAC')
-    total_reads = models.IntegerField(blank=True, null=True)
+    total_reads = models.BigIntegerField(blank=True, null=True)
     total_libraries = models.IntegerField(blank=True, null=True)
     percent_of_reads_demultiplexed = models.IntegerField(blank=True, null=True)
     read_length = models.CharField(

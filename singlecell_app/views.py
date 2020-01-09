@@ -291,9 +291,10 @@ def submit_cooladmin(request):
 
     seqString = f'"{seq}"'
 
-    paramString = buildCoolAdminParameterString(submission_dict)
-    #print('paramString: ',paramString)
+    paramString = buildCoolAdminParameterString(submission_dict).replace('"','\\"').replace(' ','\\ ')
+    print('paramString: ',paramString)
     cmd1 = f'./utility/coolAdmin.sh {email} {seqString} {paramString}'
+    print(cmd1)
     
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

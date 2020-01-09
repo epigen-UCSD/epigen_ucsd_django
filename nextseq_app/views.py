@@ -755,15 +755,18 @@ def DemultiplexingView(request, run_pk):
             cmd1 = './utility/runDemuxSnATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         elif runinfo.experiment_type == 'TA':
+            # write extra_parameters to disk
+            with open( os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'),'w') as out:
+                out.write(runinfo.extra_parameters)
+                
             cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email + runinfo.extra_parameters
+                ' ' + basedirname + ' ' + request.user.email
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         print(cmd1)
 
-        p = subprocess.Popen(
-            cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        p = subprocess.Popen( cmd1, shell=True)
         # thisjobid=p.pid
 
         data['writetosamplesheet'] = 1
@@ -907,14 +910,17 @@ def DemultiplexingView2(request, run_pk):
             cmd1 = './utility/runDemuxSnATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         elif runinfo.experiment_type == 'TA':
+            # write extra_parameters to disk
+            with open( os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'),'w') as out:
+                out.write(runinfo.extra_parameters)
+                
             cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email + runinfo.extra_parameters
+                ' ' + basedirname + ' ' + request.user.email
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         print(cmd1)
-        p = subprocess.Popen(
-            cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        p = subprocess.Popen( cmd1, shell=True)
         # thisjobid=p.pid
 
         data['writetosamplesheet'] = 1
