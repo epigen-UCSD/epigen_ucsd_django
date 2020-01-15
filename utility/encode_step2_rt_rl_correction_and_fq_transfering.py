@@ -86,8 +86,9 @@ def main():
                     seq_info.read_type = 'SE'
                 elif read_type == 'paired-ended':
                     seq_info.read_type = 'PE'
-                notes_new = ';'.join([seq_info.notes,'ENCODE file accession(s) '+fq_accession])
-                seq_info.notes = notes_new
+                if seq_info.notes.find(fq_accession) == -1:
+                    notes_new = ';'.join([seq_info.notes,'ENCODE file accession(s) '+fq_accession])
+                    seq_info.notes = notes_new
                 seq_info.save()
 
             
