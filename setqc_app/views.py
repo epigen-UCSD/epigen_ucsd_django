@@ -1227,20 +1227,5 @@ def tenx_output2(request, outputname):
         print('No data read in 10x Web_Summary.html File!')
     return HttpResponse( data )
 
-def EncodeSetQCCreateView(request):
 
-    encode_set_form = EncodeSetForm(request.POST or None)
-
-    if request.method == 'POST':
-        if encode_set_form.is_valid():
-            return redirect('setqc_app:encode_setqc_add')
-
-    else:
-        encode_set_form = EncodeSetForm(None)
-
-    context = {
-        'encode_set_form': encode_set_form,
-    }
-
-    return render(request, 'setqc_app/encode_setqc_add.html', context)
 
