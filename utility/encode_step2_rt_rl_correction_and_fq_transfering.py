@@ -26,16 +26,20 @@ def main():
     status_file = os.path.join(setqcoutdir,parser.parse_args().f)
     headers = {'accept': 'application/json'}
     with open(status_file, 'r') as f:
-        next(f)
+        fields = next(f).strip('\n').split('\t')
+        process_index = fields.index('Processed Or Not')
         for line in f:
             fields = line.strip('\n').split('\t')
-            if fields[5] == 'No' and fields[0].startswith('ENCODE_'):
-                seq_info = SeqInfo.objects.get(seq_id=fields[0])
-                lib_info = seq_info.libraryinfo
-                lib_accession = lib_info.notes.split(';')[1].split(':')[1]
+            
+            if fields[process_index] == 'No' and fields[0].startswith('ENCODE_'):
+                fq_accession = ''
+                seq_info = SeqInfo.objects.get(seq_id=fields[0])                
+                #lib_info = seq_info.libraryinfo
+                #lib_accession = lib_info.notes.split(';')[1].split(':')[1]
                 uuid = seq_info.notes.split(';')[0].split(':')[1]
                 this_url = "https://www.encodeproject.org/replicates/"+uuid+"/?frame=embedded"
-                print(this_url)
+                #print(this_url)
+                print(fields[0])
                 response = requests.get(this_url, headers=headers)
                 this_seq = response.json()
                 for file in this_seq['experiment']['files']:
@@ -46,20 +50,45 @@ def main():
                         if this_file['replicate']['uuid']==uuid:
                             read_type = this_file['run_type']
                             read_length = this_file['read_length']
+                            print(this_file['accession'])
                             print(read_length)
-                            print(read_type)                                                   
+                            print(read_type)
                             if read_type == 'single-ended':
                                 accession_number = this_file['accession']
+                                fq_accession = ','.join([fq_accession,accession_number]).strip(',')
                                 fq_url = "https://www.encodeproject.org"+this_file['href']
-                                print(lib_accession+'::::'+accession_number+'::::'+fq_url)                               
+                                #print(lib_accession+'::::'+accession_number+'::::'+fq_url)                               
                                 cmd_wget = "wget -nc -P "+ encodetmdir + "/ "+fq_url
                                 print(cmd_wget)
                                 subprocess.call(cmd_wget,shell=True)
-                                r1_origin = os.path.join(encodetmdir,fq_url.rsplit('/',1)[1])                           
-                                r1_newname = os.path.join(fqdir,fields[0]+'.fastq.gz')
-                                cmd_ln = 'ln -s '+ r1_origin +' ' + r1_newname
+                                origin = os.path.join(encodetmdir,fq_url.rsplit('/',1)[1])                           
+                                newname = os.path.join(fqdir,fields[0]+'.fastq.gz')
+                                cmd_ln = 'ln -s '+ origin +' ' + newname
                                 print(cmd_ln)
                                 subprocess.call(cmd_ln,shell=True)
+
+                            elif read_type == 'paired-ended':
+                                accession_number = this_file['accession']
+                                fq_accession = ','.join([fq_accession,accession_number]).strip(',')
+                                r1_or_r2 = this_file['paired_end']
+                                fq_url = "https://www.encodeproject.org"+this_file['href']
+                                #print(lib_accession+'::::'+accession_number+'::::'+fq_url)                               
+                                cmd_wget = "wget -nc -P "+ encodetmdir + "/ "+fq_url
+                                print(cmd_wget)
+                                subprocess.call(cmd_wget,shell=True)
+                                origin = os.path.join(encodetmdir,fq_url.rsplit('/',1)[1])                           
+                                newname = os.path.join(fqdir,fields[0]+'_R'+str(r1_or_r2)+'.fastq.gz')
+                                cmd_ln = 'ln -s '+ origin +' ' + newname
+                                print(cmd_ln)
+                                subprocess.call(cmd_ln,shell=True)
+                seq_info.read_length = str(read_length)
+                if read_type == 'single-ended':
+                    seq_info.read_type = 'SE'
+                elif read_type == 'paired-ended':
+                    seq_info.read_type = 'PE'
+                notes_new = ';'.join([seq_info.notes,'ENCODE file accession(s) '+fq_accession])
+                seq_info.notes = notes_new
+                seq_info.save()
 
             
     print(status_file)
