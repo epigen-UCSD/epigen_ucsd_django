@@ -2277,7 +2277,7 @@ def EncodeDataSaveView(request):
                         libraryinfo=LibraryInfo.objects.get(library_id=v['libraryinfo']),
                         team_member_initails = request.user,
                         notes=v['notes'],
-                        default_label=v['default_label']
+                        default_label=v['default_label'],
                         )
 
                 return redirect('masterseq_app:user_metadata')

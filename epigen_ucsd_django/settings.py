@@ -188,4 +188,5 @@ TENX_DIR = config['database']['TENX_DIR']
 MEDIA_ROOT = config['database']['MEDIA_ROOT']
 TENX_WEBSUMMARY = config['snapp']['TENX_WEBSUMMARY']
 COOLADMIN_DIR = config['snapp']['COOLADMIN_DIR']
+ENCODE_TM_DIR = config['database']['ENCODE_TM_DIR']
 

@@ -12,9 +12,10 @@ library(RCurl)
   #output.file.sequencings <-paste(args[2],'sequencings.tsv',sep="/") 
   
   encode.experiment.links <- "https://www.encodeproject.org/search/?type=Experiment&status=released&assay_title=Histone+ChIP-seq&biosample_ontology.term_name=K562&target.label=H3K4me3&target.label=H3K36me3&target.label=H3K27me3&target.label=H3K27ac&target.label=H3K4me1"
-  output.file.samples <- '/Users/yuxinli/yxwork/gitrepo/samples.tsv'
-  output.file.libraries <- '/Users/yuxinli/yxwork/gitrepo/libraries.tsv'
-  output.file.sequencings <-'/Users/yuxinli/yxwork/gitrepo/sequencings.tsv'
+  #encode.experiment.links <- "https://www.encodeproject.org/search/?type=Experiment&status=released&lab.title=Bing+Ren%2C+UCSD&assay_title=Histone+ChIP-seq&award.rfa=ENCODE3&target.label=H3K27me3&biosample_ontology.term_name=forebrain&replicates.library.biosample.life_stage=embryonic"
+  output.file.samples <- '/Users/liyuxin/djangoprojects/samples.tsv'
+  output.file.libraries <- '/Users/liyuxin/djangoprojects/libraries.tsv'
+  output.file.sequencings <-'/Users/liyuxin/djangoprojects/sequencings.tsv'
   
     
   acceptable.species <- c("human", "mouse", "rat", "cattle")  
