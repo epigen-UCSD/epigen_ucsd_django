@@ -1364,7 +1364,11 @@ class EncodeDataForm(forms.Form):
                 this_rep_url = "https://www.encodeproject.org/"+rep+"/?frame=embedded"
                 response = requests.get(this_rep_url, headers=headers)
                 this_rep_library = response.json()
-                target = re.split('/|-',str(this_rep_library['experiment']['target']))[2]
+                try:
+                    target = re.split('/|-',str(this_rep_library['experiment']['target']))[2]
+                except:
+                    target = ''
+
                 this_uuid = str(this_rep_library['uuid'])
                 seq_list.append(this_uuid)
 
@@ -1372,7 +1376,7 @@ class EncodeDataForm(forms.Form):
                 cleaned_data['sequencings'][this_uuid]['libraryinfo'] = library
                 #cleaned_data['sequencings'][this_uuid]['notes'] = ';'.join(['ENCODE uuid:'+this_uuid,'ENCODE url for files info:'+this_rep_url])
                 cleaned_data['sequencings'][this_uuid]['notes'] = 'ENCODE uuid:'+this_uuid
-                cleaned_data['sequencings'][this_uuid]['default_label'] = '_'.join([cleaned_data['libraries'][library]['sampleinfo'],target])
+                cleaned_data['sequencings'][this_uuid]['default_label'] = '_'.join([cleaned_data['libraries'][library]['sampleinfo'],target]).strip('_')
         end = time.time()
         print(end - start)
         print(seq_list)

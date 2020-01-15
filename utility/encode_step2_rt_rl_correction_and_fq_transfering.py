@@ -52,14 +52,14 @@ def main():
                                 accession_number = this_file['accession']
                                 fq_url = "https://www.encodeproject.org"+this_file['href']
                                 print(lib_accession+'::::'+accession_number+'::::'+fq_url)                               
-                                cmd_wget = 'wget -nc -P '+ encodetmdir + '/ '+fq_url
+                                cmd_wget = "wget -nc -P "+ encodetmdir + "/ "+fq_url
                                 print(cmd_wget)
-                                subprocess.call(cmd_wget)
+                                subprocess.call(cmd_wget,shell=True)
                                 r1_origin = os.path.join(encodetmdir,fq_url.rsplit('/',1)[1])                           
                                 r1_newname = os.path.join(fqdir,fields[0]+'.fastq.gz')
                                 cmd_ln = 'ln -s '+ r1_origin +' ' + r1_newname
                                 print(cmd_ln)
-                                subprocess.call(cmd_ln)
+                                subprocess.call(cmd_ln,shell=True)
 
             
     print(status_file)
