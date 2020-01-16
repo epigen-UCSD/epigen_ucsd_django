@@ -22,6 +22,8 @@ from random import randint
 from django.conf import settings
 import os
 from setqc_app.models import LibrariesSetQC
+from singlecell_app.views import tenX_pipeline_check,get_cooladmin_status,check_cooladmin_time,getReferenceUsed
+from singlecell_app.models import CoolAdminSubmission
 def nonetolist(inputthing):
     if not inputthing:
         return []
@@ -1508,9 +1510,12 @@ def SeqDetailView(request, pk):
                     'i7index', 'i5index', 'total_reads', 'notes']
     bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
                     'tss_enrichment', 'frop']
+    singlecellfield = ['10x Results','10x RefGenome','CoolAdmin Results', 'CoolAdmin RefGenome', 'CoolAdmin Date']
+    singlecelldata = get_singlecell_data(seqinfo.seq_id, seqinfo.id)
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
     setqcfield = ['set_id','set_name','experiment_type','url','date_requested']
     setqcs = LibrariesSetQC.objects.filter(libraries_to_include=seqinfo)
+    
     context = {
         'libinfo': libinfo,
         'saminfo': saminfo,
@@ -1519,7 +1524,9 @@ def SeqDetailView(request, pk):
         'seqbioinfos': seqbioinfos,
         'bioinfofield': bioinfofield,
         'setqcs':setqcs,
-        'setqcfield':setqcfield
+        'setqcfield':setqcfield,
+        'singlecellfield':singlecellfield,
+        'singlecelldata':singlecelldata,
 
     }
     return render(request, 'masterseq_app/seqdetail.html', context=context)
@@ -2110,4 +2117,33 @@ def download(request, path):
             return response
     raise Http404
 
+def get_singlecell_data(seq_id, seq_pk):
+    """
+    Need to return:
+    singlecellfield = ['10x Results','10x RefGenome','CoolAdmin Status', 'CoolAdmin RefGenome', 'CoolAdmin Date']
+    """
+    tenx_status = tenX_pipeline_check(seq_id)
+    tenx_refgenome = getReferenceUsed(seq_id)
+    cooladmin_objects =  CoolAdminSubmission.objects.all()
+    #TODO in future get time and status from database
+    cooladmin_date_modified = check_cooladmin_time(seq_pk, cooladmin_objects)
+    cooladmin_results = get_cooladmin_status(seq_id, seq_pk)
+    if cooladmin_results == 'ClickToSubmit':
+        cooladmin_results = 'Not Submitted'
+    cooladmin_refgenome = get_cooladmin_genome(seq_pk, cooladmin_objects)
+    data = {}
+    data['10x Results'] = tenx_status
+    data['10x RefGenome'] = tenx_refgenome
+    data['CoolAdmin Results'] = cooladmin_results
+    data['CoolAdmin RefGenome'] = cooladmin_refgenome
+    data['CoolAdmin Date'] = cooladmin_date_modified
+    print(data)
+    return data
 
+#Should be in database
+def get_cooladmin_genome(seq_pk, cooladmin_objects):
+    if cooladmin_objects.filter(seqinfo=seq_pk).exists():
+        print('ca obj exists')
+        ca = cooladmin_objects.get(seqinfo=seq_pk)
+        return ca.refgenome
+    else: return 'N/A'

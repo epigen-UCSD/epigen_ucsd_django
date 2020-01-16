@@ -494,23 +494,24 @@ def getReferenceUsed(seq):
     @returns a string that is the refernce genome used
     """
     #To return
-    refgenome = ''
+    refgenome = 'N/A'
 
     tenx_output_folder = 'outs'
     tenx_target_outfile = 'summary.json'
     tenxdir = settings.TENX_DIR
 
     file_path = os.path.join(tenxdir, str(seq), tenx_output_folder, tenx_target_outfile)
-
-    with open(file_path) as json_file:
-        data = json.load(json_file)
-        refgenome = data["reference_assembly"]    
+    if(os.path.exists(file_path)):
+        with open(file_path) as json_file:
+            data = json.load(json_file)
+            refgenome = data["reference_assembly"]    
     #open summarry.json and read "reference_assembly"
-    return refgenome
+    return refgenome    
 
 
 def get_latest_modified_time(seq_id, seq_object_id, date_sub_for_seq, cooladmin_objects):
-    """This function returns the latest modfication to the seq object
+    """
+    This function returns the latest modfication to the seq object
     """
     #first get time that seqinfo object was submitted for sequencing - this will always exist
     time = date_sub_for_seq
