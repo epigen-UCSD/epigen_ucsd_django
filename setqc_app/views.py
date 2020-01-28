@@ -770,11 +770,15 @@ def RunSetQC(request, setqc_pk):
     setinfo.save()
 
     # run setQC script
-    #cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
+    # cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
     # print(cmd1)
+    cmd_tm = './utility/encode_test.sh .' + setinfo.set_id +'.txt'
+    print(cmd_tm)
     print('running subprocess')
-    p = subprocess.Popen(
-        cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    log = open('some file.txt', 'a')
+    # p = subprocess.Popen(
+    #     cmd_tm, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen(cmd_tm, shell=True, stdout=log, stderr=log)
     data['writesetdone'] = 1
     return JsonResponse(data)
 
