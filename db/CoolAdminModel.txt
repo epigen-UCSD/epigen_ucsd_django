@@ -1,4 +1,5 @@
 table CoolAdminSubmission{
+ submitted boolean
  pipeline_version charField
  seqinfo "ForeignKey Seqinfo"
  seqName charField
@@ -9,9 +10,9 @@ table CoolAdminSubmission{
  snapUsePeak boolean
  snapSubset "positive integer"
  doChromVar boolean
-  readInPeak float
-  tssPerCell float
-  minReadPerCell integer
-  snapBinSize charField
-  snapNDims charField
+ readInPeak float
+ tssPerCell float
+ minReadPerCell integer
+ snapBinSize charField
+ snapNDims charField
 }

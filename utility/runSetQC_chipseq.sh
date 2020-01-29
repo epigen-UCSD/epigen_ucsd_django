@@ -48,7 +48,7 @@ else
         RUN_LOG_PIP=${LOG_DIR}$(date +%Y%m%d)"_"${SET_ID}"_${g}.txt"
         awk -v FS='\t' -v gr=$g '(NR>1&&$2==gr){print $1,$4,$7,$3}' $STATUS_FILE > $RUN_LOG_PIP
         nrow=$(cat $RUN_LOG_PIP|wc -l )
-        cmd1="qsub -v samples=${RUN_LOG_PIP},chipseq=true -t 0-$[nrow-1] -M $USER_EMAIL -q home-epigen -l walltime=16:00:00  \$(which runBulkCHIP_fastq.pbs)"
+        cmd1="qsub -v samples=${RUN_LOG_PIP},chipseq=true -t 0-$[nrow-1] -M $USER_EMAIL -q hotel -l walltime=24:00:00  \$(which runBulkCHIP_fastq.pbs)"
         job_array+=($(ssh zhc268@tscc-login.sdsc.edu $cmd1))
         done
     fi
@@ -60,8 +60,9 @@ fi
 ## run pipeline and setQC 
 if [[ $n_libs -gt 0 ]] && [[ $setqc_type = "atac_chip" ]] 
 then
-    cmd1="qsub -k oe  -v samples=${RUN_LOG_PIP},chipseq=true -t 0-$[n_libs-1] -M $USER_EMAIL -q home-epigen -l walltime=16:00:00  \$(which runBulkATAC_fastq.pbs)"
+    cmd1="qsub -k oe  -v samples=${RUN_LOG_PIP},chipseq=true -t 0-$[n_libs-1] -M $USER_EMAIL -q hotel -l walltime=24:00:00  \$(which runBulkATAC_fastq.pbs)"
     job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
+    ssh zhc268@tscc-login.sdsc.edu "qalter $job1 -W queue=condo"
     python updateLibrariesSetQC.py -s '1' -id $SET_ID # process libs
     cmd2="qsub -k oe -W depend=afterokarray:$job1 -M $USER_EMAIL -v set_id=$SET_ID,set_name='$SET_NAME',type=$setqc_type -q condo  \$(which runSetQC.pbs)"
 elif [[ $n_libs -gt 0 ]] && [[ $setqc_type = "chip" ]]

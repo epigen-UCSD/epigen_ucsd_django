@@ -23,10 +23,11 @@ import re
 DisplayField1 = ['set_id', 'set_name',
                  'last_modified', 'experiment_type', 'url', 'version']
 DisplayField2 = ['set_id', 'set_name', 'last_modified',
-                 'requestor', 'experiment_type', 'url', 'version']
+                 'requestor', 'experiment_type', '#libraries','url', 'version']
 defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
                  'rat': 'rn6', 'cattle': 'ARS-UCD1.2',
-                 'green monkey':'chlSab2'}
+                 'green monkey':'chlSab2', 'pig-tailed macaque':'Mnem1.0',
+                 'fruit fly':'dm6'}
 
 
 def groupnumber(datalist):
