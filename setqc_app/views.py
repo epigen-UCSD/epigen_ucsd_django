@@ -772,13 +772,16 @@ def RunSetQC(request, setqc_pk):
     # run setQC script
     # cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
     # print(cmd1)
-    cmd_tm = './utility/encode_test.sh .' + setinfo.set_id +'.txt'
-    print(cmd_tm)
+
+    # cmd_tm = './utility/encode_test.sh .' + setinfo.set_id +'.txt'
+    # print(cmd_tm)
+    # log = open('some file.txt', 'a')
+    # p = subprocess.Popen(cmd_tm, shell=True, stdout=log, stderr=log)
+
     print('running subprocess')
-    log = open('some file.txt', 'a')
-    # p = subprocess.Popen(
-    #     cmd_tm, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    p = subprocess.Popen(cmd_tm, shell=True, stdout=log, stderr=log)
+    p = subprocess.Popen(
+        cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    
     data['writesetdone'] = 1
     return JsonResponse(data)
 
@@ -888,50 +891,56 @@ def RunSetQC2(request, setqc_pk):
         mainname = '_'.join(item.split('_')[0:2])
 
         if seqstatus[item] == 'No':
-            if list_readtype[i] == 'PE':
-                r1 = item+'_R1.fastq.gz'
-                r2 = item+'_R2.fastq.gz'
-                if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
-                    for j in set(reps):
-                        if j == '1':
-                            repname = mainname
-                        else:
-                            repname = '_'.join([mainname, j])
+            if not item.startswith('ENCODE_'):
+                if list_readtype[i] == 'PE':
+                    r1 = item+'_R1.fastq.gz'
+                    r2 = item+'_R2.fastq.gz'
+                    if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
+                        for j in set(reps):
+                            if j == '1':
+                                repname = mainname
+                            else:
+                                repname = '_'.join([mainname, j])   
 
-                        r1 = repname+'_R1.fastq.gz'
-                        r2 = repname+'_R2.fastq.gz'
-                        try:
-                            if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
-                                data['fastqerror'] = 'There is at least one library without fastq file. Please go to the setQC detail page.'
-                                return JsonResponse(data)
-                        except Exception as e:
-                            data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
-                            print(e)
-                            return JsonResponse(data)
-
-            elif list_readtype[i] == 'SE':
-                r1 = item+'.fastq.gz'
-                r1op = item+'_R1.fastq.gz'
-                if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
-                    for j in set(reps):
-                        if j == '1':
-                            repname = mainname
-                        else:
-                            repname = '_'.join([mainname, j])
-
-                        r1 = repname+'.fastq.gz'
-                        r1op = repname+'_R1.fastq.gz'
-                        try:
-                            if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
+                            r1 = repname+'_R1.fastq.gz'
+                            r2 = repname+'_R2.fastq.gz'
+                            try:
+                                if not os.path.isfile(os.path.join(fastqdir, r1)) or not os.path.isfile(os.path.join(fastqdir, r2)):
+                                    data['fastqerror'] = 'There is at least one library without fastq file. Please go to the setQC detail page.'
+                                    return JsonResponse(data)
+                            except Exception as e:
                                 data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
+                                print(e)
+                                return JsonResponse(data)   
+
+                elif list_readtype[i] == 'SE':
+                    r1 = item+'.fastq.gz'
+                    r1op = item+'_R1.fastq.gz'
+                    if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
+                        for j in set(reps):
+                            if j == '1':
+                                repname = mainname
+                            else:
+                                repname = '_'.join([mainname, j])   
+
+                            r1 = repname+'.fastq.gz'
+                            r1op = repname+'_R1.fastq.gz'
+                            try:
+                                if not os.path.isfile(os.path.join(fastqdir, r1)) and not os.path.isfile(os.path.join(fastqdir, r1op)):
+                                    data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
+                                    return JsonResponse(data)
+                            except Exception as e:
+                                data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
+                                print(e)
                                 return JsonResponse(data)
-                        except Exception as e:
-                            data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
-                            print(e)
-                            return JsonResponse(data)
         i += 1
 
     if setinfo.experiment_type == 'ChIP-seq':
+        for x in outinfo:
+            if not x['seqinfo__read_type']:
+                x['seqinfo__read_type'] = 'NA'
+            if not x['seqinfo__machine__machine_name']:
+                x['seqinfo__machine__machine_name'] = 'NA'
 
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['group_number'],
                                              str(x['is_input']
@@ -1005,7 +1014,11 @@ def RunSetQC2(request, setqc_pk):
             else:
                 tenXProcessed[x['seqinfo__seq_id']] = 'No'
         # print(tenXProcessed)
-
+        for x in outinfo:
+            if not x['seqinfo__read_type']:
+                x['seqinfo__read_type'] = 'NA'
+            if not x['seqinfo__machine__machine_name']:
+                x['seqinfo__machine__machine_name'] = 'NA'
         writecontent = '\n'.join(['\t'.join([x['seqinfo__seq_id'], x['genome__genome_name'],
                                              x['label'], seqstatus[x['seqinfo__seq_id']],
                                              x['seqinfo__read_type'],
