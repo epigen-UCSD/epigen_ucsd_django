@@ -713,6 +713,22 @@ $(document).ready(function () {
             document.getElementById('chipform').style.display = "none";
         }
     });
+
+    $('select#id_step_to_run').on('change', function () {
+        if (this.value == "step1") {
+            $( "#id_set_name" ).prop( "disabled", true );
+            $( "#encode_experiment_type" ).prop( "disabled", true );
+            $( "#id_notes" ).prop( "disabled", true );
+            $( "#id_genome" ).prop( "disabled", true );
+        }
+        else {
+            $( "#id_set_name" ).prop( "disabled", false );
+            $( "#encode_experiment_type" ).prop( "disabled", false );
+            $( "#id_notes" ).prop( "disabled", false );
+            $( "#id_genome" ).prop( "disabled", false );
+        }
+    });
+
     //console.log(document.getElementById('changeble_librariesform'))
     var changeble_form = $('#changeble_librariesform').find("select#id_experiment_type option:selected").text()
     if (changeble_form == "ChIP-seq") {
