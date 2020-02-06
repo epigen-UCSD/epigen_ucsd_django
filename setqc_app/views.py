@@ -1071,8 +1071,11 @@ def TenXPipelineCheck(lib):
     path = os.path.join(tenxdir, lib)
     # first check if there is an .inqueue then an .inprocess
     print('path: ', path)
-    if not os.path.isdir(path):
+    if not os.path.isdir(path) | not os.path.isfile(os.path.join(path,
+                                           tenx_output_folder, tenx_target_outfile)):
         seqstatus = 'No'
+    elif os.path.isfile(os.path.join(path, tenx_output_folder, tenx_target_outfile)):
+        seqstatus = 'Yes'
     elif os.path.isfile(path + '/.inqueue'):
         seqstatus = 'In Queue'
     elif os.path.isfile(path + '/.inprocess'):
@@ -1080,13 +1083,7 @@ def TenXPipelineCheck(lib):
     elif os.path.isfile(path + '/_errors'):
         seqstatus = 'Error!'
     else:
-        if not os.path.isfile(os.path.join(path,
-                                           tenx_output_folder, tenx_target_outfile)):
-            seqstatus = 'No'
-        elif os.path.isfile(os.path.join(path, tenx_output_folder, tenx_target_outfile)):
-            seqstatus = 'Yes'
-        else:
-            seqstatus = 'No'
+        seqstatus = 'No'
     return seqstatus
 
 
