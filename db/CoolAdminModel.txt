@@ -23,9 +23,11 @@ table SingleCellObject{
   CoolAdminSubmission ForeignKey
   Seqinfo ForeignKey
   tenx_date_submitted datetime
+  tenx_submitted boolean
   tenx_pipeline_status charField
   tenx_link charField
 }
+
 
 
 Ref: "SingleCellObject"."CoolAdminSubmission" < "CoolAdminSubmission"."id"
