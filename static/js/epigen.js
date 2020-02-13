@@ -1104,11 +1104,11 @@ $(document).ready(function () {
                             } else if (row['libraryinfo__experiment_type'] === "10xATAC" && !(row['10x_status'] === "Yes" || row['10x_status'] === "Results")) {
                                 return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
                             } else {
-                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange  value="' + seq_id + '"> ClickToSubmit</button>');
+                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange"  value="' + seq_id + '"> ClickToSubmit</button>');
                             }
                         }
                         else { //no fastq file present
-                            return ('<button type="button" data-toggle="tooltip" data-placement="top" title="FASTQ not present" disabled class="badge badge-success badge-status-blue cooladmin-submit" disabled> ClickToSubmit </button>');
+                            return ('<button type="button" data-toggle="tooltip" data-placement="top" title="No FASTQ files available" disabled class="badge badge-success badge-status-blue cooladmin-submit" disabled> ClickToSubmit </button>');
                         }
                     } else if (status === ".status.fail") {//failed
                         return ('<button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status">Error!</button>')
@@ -1202,7 +1202,7 @@ $(document).ready(function () {
                             }
                         }
                         else { //no fastq file present
-                            return ('<button type="button" data-toggle="tooltip" data-placement="top" title="FASTQ not present" disabled class="badge badge-success badge-status-blue cooladmin-submit" disabled> ClickToSubmit </button>');
+                            return ('<button type="button" data-toggle="tooltip" data-placement="top" title="No FASTQ files available" disabled class="badge badge-success badge-status-blue cooladmin-submit" disabled> ClickToSubmit </button>');
                         }
                     } else if (status === ".status.fail") {//failed
                         return ('<button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status">Error!</button>')
