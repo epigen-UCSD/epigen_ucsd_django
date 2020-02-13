@@ -1,18 +1,31 @@
 table CoolAdminSubmission{
+ id int PK
  submitted boolean
  pipeline_version charField
- seqinfo "ForeignKey Seqinfo"
- seqName charField
- species charField
+ Seqinfo "ForeignKey Seqinfo"
  date_submitted datetime
  date_modified datetime
  useHarmony boolean
  snapUsePeak boolean
  snapSubset "positive integer"
  doChromVar boolean
- readInPeak float
- tssPerCell float
- minReadPerCell integer
- snapBinSize charField
- snapNDims charField
+  readInPeak float
+  tssPerCell float
+  minReadPerCell integer
+  snapBinSize charField
+  snapNDims charField
+  pipeline_status charField
+  link charField
 }
+
+table SingleCellObject{
+  id int PK
+  CoolAdminSubmission ForeignKey
+  Seqinfo ForeignKey
+  tenx_date_submitted datetime
+  tenx_pipeline_status charField
+  tenx_link charField
+}
+
+
+Ref: "SingleCellObject"."CoolAdminSubmission" < "CoolAdminSubmission"."id"
