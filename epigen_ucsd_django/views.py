@@ -56,15 +56,22 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, form.user)
             #messages.success(request, 'Your password was successfully updated!')
-
-            return redirect('nextseq_app:userruns')
+            if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
+                return redirect('collaborator_app:user_metadata')
+            else:
+                return redirect('nextseq_app:userruns')
         # else:
             #messages.error(request, 'Please correct the error below.')
     else:
         form = PasswordChangeForm(user=request.user)
-    return render(request, 'common/change_password.html', {
-        'form': form
-    })
+    if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
+        return render(request, 'collaborator_app/collab_change_password.html', {
+            'form': form
+        })
+    else:
+        return render(request, 'common/change_password.html', {
+            'form': form
+        })
 
 class UserRegisterView(FormView):
     form_class = UserRegisterForm

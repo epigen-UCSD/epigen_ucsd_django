@@ -5,7 +5,7 @@ from epigen_ucsd_django.shared import is_in_multiple_groups
 from django.http import JsonResponse
 from setqc_app.models import LibrariesSetQC,LibraryInSet
 from masterseq_app.models import SampleInfo
-from epigen_ucsd_django.models import CollaboratorPersonInfo
+from epigen_ucsd_django.models import CollaboratorPersonInfo,Group_Institution
 from django.core import serializers
 from masterseq_app.models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
     SeqMachineInfo
@@ -87,7 +87,25 @@ def GetNotesView(request, setqc_pk):
     data['notes'] = setinfo.notes
     return JsonResponse(data)
 
+def UserProfileView(request):
+    group = request.user.groups.all().first()
+    collabs = CollaboratorPersonInfo.objects.filter(group=group).select_related('person_id').prefetch_related('person_id__groups')
+    collabs_list = collabs.values(\
+        'group__name','person_id__username',\
+        'person_id__first_name','person_id__last_name',\
+        'phone','email','role','index','initial_password')
+    group_institute_list = Group_Institution.objects.all().select_related('group').values('group__name','institution')
+    group_institute_dict = {}
+    for item in group_institute_list:
+        group_institute_dict[item['group__name']]=item['institution']
+ 
+    context = {
+        'group_name': group.name,
+        'collab_list':collabs_list,
+        'group_institute_dict':group_institute_dict,
+    }
 
+    return render(request, 'collaborator_app/collab_user_profile.html', context)   
 
 
 
@@ -100,7 +118,7 @@ def collab_change_password(request):
             update_session_auth_hash(request, form.user)
             #messages.success(request, 'Your password was successfully updated!')
 
-            return redirect('collaborator_app:collaboratorsetqcs')
+            return redirect('collaborator_app:user_metadata')
 
         # else:
             #messages.error(request, 'Please correct the error below.')
