@@ -1,0 +1,19 @@
+{% extends 'collaborator_app/collab_base.html' %}
+
+{% block title %}
+<title>MetaDataApp</title>
+{% endblock %}
+
+{% block sidebar %}
+<div id="sidebar" class="col-sm-2 col-md-2 col-lg-2" role="navigation">
+  <div class="list-group navsiebar">
+    <li class="sidebar-header">MetaData App</li>
+    <a href="{% url 'collaborator_app:user_metadata' %}" class="list-group-item list-group-item-action-custom-orange editable">My Metadata</a>
+    <a href="" class="list-group-item list-group-item-action-custom-orange">Request a New Service</a>    
+  </div>
+</div> 
+
+{% endblock %}
+
+{% block content %}
+{% endblock %}

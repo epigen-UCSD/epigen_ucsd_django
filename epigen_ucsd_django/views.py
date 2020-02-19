@@ -33,7 +33,7 @@ class UserLoginView(View):
                 if user.is_active:
                     login(request, user)
                     if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
-                        return redirect('collaborator_app:collaboratorsetqcs')
+                        return redirect('collaborator_app:user_metadata')
                     else:
                         if valuenext and valuenext!='/login/':
                             return HttpResponseRedirect(request.POST.get('next'))
