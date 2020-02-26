@@ -3,7 +3,7 @@ from .models import LibrariesSetQC, LibraryInSet
 from masterseq_app.models import SeqInfo, GenomeInfo, SampleInfo, LibraryInfo
 from django.db import transaction
 from .forms import LibrariesSetQCCreationForm, LibrariesToIncludeCreatForm,\
-    ChIPLibrariesToIncludeCreatForm, SeqLabelGenomeCreationForm, BaseSeqLabelGenomeCreationFormSet,EncodeSetForm
+    ChIPLibrariesToIncludeCreatForm, SeqLabelGenomeCreationForm, BaseSeqLabelGenomeCreationFormSet, EncodeSetForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import JsonResponse
@@ -23,11 +23,11 @@ import re
 DisplayField1 = ['set_id', 'set_name',
                  'last_modified', 'experiment_type', 'url', 'version']
 DisplayField2 = ['set_id', 'set_name', 'last_modified',
-                 'requestor', 'experiment_type', '#libraries','url', 'version']
+                 'requestor', 'experiment_type', '#libraries', 'url', 'version']
 defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
-                 'rat': 'rn6', 'cattle': 'ARS-UCD1.2',
-                 'green monkey':'chlSab2', 'pig-tailed macaque':'Mnem1.0',
-                 'fruit fly':'dm6'}
+                 'rat': 'rn6', 'cattle': 'ARS-UCD1.2', 'sheep': 'oar_v3.1',
+                 'green monkey': 'chlSab2', 'pig-tailed macaque': 'Mnem1.0',
+                 'fruit fly': 'dm6'}
 
 
 def groupnumber(datalist):
@@ -610,7 +610,7 @@ def RunSetQC(request, setqc_pk):
                             if j == '1':
                                 repname = mainname
                             else:
-                                repname = '_'.join([mainname, j])   
+                                repname = '_'.join([mainname, j])
 
                             r1 = repname+'_R1.fastq.gz'
                             r2 = repname+'_R2.fastq.gz'
@@ -621,7 +621,7 @@ def RunSetQC(request, setqc_pk):
                             except Exception as e:
                                 data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
                                 print(e)
-                                return JsonResponse(data)   
+                                return JsonResponse(data)
 
                 elif list_readtype[i] == 'SE':
                     r1 = item+'.fastq.gz'
@@ -631,7 +631,7 @@ def RunSetQC(request, setqc_pk):
                             if j == '1':
                                 repname = mainname
                             else:
-                                repname = '_'.join([mainname, j])   
+                                repname = '_'.join([mainname, j])
 
                             r1 = repname+'.fastq.gz'
                             r1op = repname+'_R1.fastq.gz'
@@ -684,7 +684,7 @@ def RunSetQC(request, setqc_pk):
 
         # check if name in output_names has been processed, if so strike it from list and
         # put processed flag
-        #find genome used for samples
+        # find genome used for samples
         if len(to_process) > 0:
             output_names = StrikeOutputNames(to_process, output_names)
             print('outputnames: ', output_names)
@@ -752,7 +752,7 @@ def RunSetQC(request, setqc_pk):
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
             ' ' + request.user.email + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
-   
+
     # write Set_**.txt to setqcoutdir
     setStatusFile = os.path.join(setqcoutdir, '.'+setinfo.set_id+'.txt')
     print(setStatusFile)
@@ -782,7 +782,7 @@ def RunSetQC(request, setqc_pk):
     print('running subprocess')
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    
+
     data['writesetdone'] = 1
     return JsonResponse(data)
 
@@ -901,7 +901,7 @@ def RunSetQC2(request, setqc_pk):
                             if j == '1':
                                 repname = mainname
                             else:
-                                repname = '_'.join([mainname, j])   
+                                repname = '_'.join([mainname, j])
 
                             r1 = repname+'_R1.fastq.gz'
                             r2 = repname+'_R2.fastq.gz'
@@ -912,7 +912,7 @@ def RunSetQC2(request, setqc_pk):
                             except Exception as e:
                                 data['fastqerror'] = 'There is at least one library without fastq file ready. Please go to the setQC detail page.'
                                 print(e)
-                                return JsonResponse(data)   
+                                return JsonResponse(data)
 
                 elif list_readtype[i] == 'SE':
                     r1 = item+'.fastq.gz'
@@ -922,7 +922,7 @@ def RunSetQC2(request, setqc_pk):
                             if j == '1':
                                 repname = mainname
                             else:
-                                repname = '_'.join([mainname, j])   
+                                repname = '_'.join([mainname, j])
 
                             r1 = repname+'.fastq.gz'
                             r1op = repname+'_R1.fastq.gz'
@@ -1071,7 +1071,7 @@ def TenXPipelineCheck(lib):
     path = os.path.join(tenxdir, lib)
     # first check if there is an .inqueue then an .inprocess
     print('path: ', path)
-    if not os.path.isdir(path) or not os.path.isfile(os.path.join(path,tenx_output_folder, tenx_target_outfile)):
+    if not os.path.isdir(path) | (not os.path.isfile(os.path.join(path, tenx_output_folder, tenx_target_outfile))):
         seqstatus = 'No'
     elif os.path.isfile(os.path.join(path, tenx_output_folder, tenx_target_outfile)):
         seqstatus = 'Yes'
@@ -1229,17 +1229,15 @@ def tenx_output(request, setqc_pk, outputname):
     data = file.read()
     if(data == None):
         print('No data read in 10x Web_Summary.html File!')
-    return HttpResponse( data )
+    return HttpResponse(data)
+
 
 def tenx_output2(request, outputname):
-    html=('/'+outputname+settings.TENX_WEBSUMMARY) 
+    html = ('/'+outputname+settings.TENX_WEBSUMMARY)
     tenxdir = settings.TENX_DIR
     file = open(tenxdir+html)
-    
+
     data = file.read()
     if(data == None):
         print('No data read in 10x Web_Summary.html File!')
-    return HttpResponse( data )
-
-
-
+    return HttpResponse(data)
