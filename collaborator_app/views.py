@@ -5,12 +5,110 @@ from epigen_ucsd_django.shared import is_in_multiple_groups
 from django.http import JsonResponse
 from setqc_app.models import LibrariesSetQC,LibraryInSet
 from masterseq_app.models import SampleInfo
-from epigen_ucsd_django.models import CollaboratorPersonInfo
+from epigen_ucsd_django.models import CollaboratorPersonInfo,Group_Institution
 from django.core import serializers
-
+from masterseq_app.models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
+    SeqMachineInfo
+from django.contrib.auth.models import User, Group
+from setqc_app.models import LibrariesSetQC, LibraryInSet
 # Create your views here.
 
 DisplayFieldforcollab = ['set_name','date_requested','experiment_type','url']
+
+
+def UserSampleDataView(request):
+    group_name = request.user.groups.all().first().name
+    print(group_name)
+
+    Samples_list = SampleInfo.objects.filter(group=request.user.groups.all().first()).values(
+        'pk', 'sample_id', 'description', 'date', 'sample_type', 'group__name', 'status')
+    for sample in Samples_list:
+        try:
+            sample['group__name'] = sample['group__name'].replace(
+                '_group', '').replace('_', ' ')
+        except:
+            pass
+    data = list(Samples_list)
+
+    return JsonResponse(data, safe=False)
+
+
+def UserLibDataView(request):
+    # Libs_list = LibraryInfo.objects.filter(team_member_initails=request.user)\
+    #     .select_related('sampleinfo__group').values(
+    #         'pk', 'library_description','library_id', 'sampleinfo__id',  'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
+    #     'sampleinfo__species', 'sampleinfo__group__name', 'date_started', 'experiment_type')
+    Libs_list = LibraryInfo.objects.select_related('sampleinfo__group').filter(sampleinfo__group=request.user.groups.all().first()).values(
+            'pk', 'library_description','library_id', 'sampleinfo__id',  'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
+        'sampleinfo__species', 'sampleinfo__group__name', 'date_started', 'experiment_type')
+    data = list(Libs_list)
+
+    return JsonResponse(data, safe=False)
+
+
+def UserSeqDataView(request):
+    # Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user)\
+    #     .select_related('libraryinfo__sampleinfo__group','machine').values(
+    #     'pk', 'seq_id','libraryinfo__library_description', 'libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
+    #     'libraryinfo__sampleinfo__description', 'libraryinfo__sampleinfo__group__name',
+    #     'date_submitted_for_sequencing','machine__sequencing_core',\
+    #     'machine__machine_name','portion_of_lane','read_length', 'read_type')
+    Seqs_list = SeqInfo.objects.select_related('libraryinfo__sampleinfo__group','machine').filter(libraryinfo__sampleinfo__group=request.user.groups.all().first()).values(
+        'pk', 'seq_id','libraryinfo__library_description', 'libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
+        'libraryinfo__sampleinfo__description', 'libraryinfo__sampleinfo__group__name',
+        'date_submitted_for_sequencing','machine__sequencing_core',\
+        'machine__machine_name','portion_of_lane','read_length', 'read_type')
+    data = list(Seqs_list)
+
+    return JsonResponse(data, safe=False)
+
+
+def UserSetqcView(request):
+
+    Setqcs_list = LibrariesSetQC.objects.filter(group=request.user.groups.all().first()).values(
+        'pk','notes','set_id','set_name','last_modified','experiment_type','url','status')
+    data = list(Setqcs_list)
+
+    return JsonResponse(data, safe=False)
+
+def CollaboratorGetNotesView(request,setqc_pk):
+    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
+    if setinfo.collaborator != request.user:
+        raise PermissionDenied
+    data = {}
+    data['notes'] = setinfo.notes
+    return JsonResponse(data)
+
+def GetNotesView(request, setqc_pk):
+    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
+    # if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+    #     raise PermissionDenied
+    data = {}
+    data['notes'] = setinfo.notes
+    return JsonResponse(data)
+
+def UserProfileView(request):
+    group = request.user.groups.all().first()
+    collabs = CollaboratorPersonInfo.objects.filter(group=group).select_related('person_id').prefetch_related('person_id__groups')
+    collabs_list = collabs.values(\
+        'group__name','person_id__username',\
+        'person_id__first_name','person_id__last_name',\
+        'phone','email','role','index','initial_password')
+    group_institute_list = Group_Institution.objects.all().select_related('group').values('group__name','institution')
+    group_institute_dict = {}
+    for item in group_institute_list:
+        group_institute_dict[item['group__name']]=item['institution']
+ 
+    context = {
+        'group_name': group.name,
+        'collab_list':collabs_list,
+        'group_institute_dict':group_institute_dict,
+    }
+
+    return render(request, 'collaborator_app/collab_user_profile.html', context)   
+
+
+
 
 def collab_change_password(request):
     if request.method == 'POST':
@@ -20,7 +118,7 @@ def collab_change_password(request):
             update_session_auth_hash(request, form.user)
             #messages.success(request, 'Your password was successfully updated!')
 
-            return redirect('collaborator_app:collaboratorsetqcs')
+            return redirect('collaborator_app:user_metadata')
 
         # else:
             #messages.error(request, 'Please correct the error below.')
@@ -39,13 +137,7 @@ def CollaboratorSetQCView(request):
 
 
 
-def CollaboratorGetNotesView(request,setqc_pk):
-    setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
-    if setinfo.collaborator != request.user:
-        raise PermissionDenied
-    data = {}
-    data['notes'] = setinfo.notes
-    return JsonResponse(data)
+
 
 def CollaboratorSetQCDetailView(request,setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
