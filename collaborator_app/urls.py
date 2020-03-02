@@ -11,7 +11,9 @@ urlpatterns = [
     path('userseqs/',views.UserSeqDataView, name='user_seqs_display'),    
     path('mysets/', TemplateView.as_view(template_name="collaborator_app/collab_setqc_user.html"), name='usersetqcs'),
     path('<int:setqc_pk>/getmynotes/',views.CollaboratorGetNotesView, name='setqc_getnotes'),
+    #path('userscseqs', views.UserSingleCellSeqs, name='user_scseqs_display'),
     path('myprofile/',views.UserProfileView, name='user_profile'),  
+
 
 
     path('usersetqcs/',views.UserSetqcView, name='user_setqcs_display'),

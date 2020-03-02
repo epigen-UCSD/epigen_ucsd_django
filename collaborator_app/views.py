@@ -91,7 +91,7 @@ def UserProfileView(request):
     group = request.user.groups.all().first()
     collabs = CollaboratorPersonInfo.objects.filter(group=group).select_related('person_id').prefetch_related('person_id__groups')
     collabs_list = collabs.values(\
-        'group__name','person_id__username',\
+        'group__name',\
         'person_id__first_name','person_id__last_name',\
         'phone','email','role','index','initial_password')
     group_institute_list = Group_Institution.objects.all().select_related('group').values('group__name','institution')
@@ -100,6 +100,7 @@ def UserProfileView(request):
         group_institute_dict[item['group__name']]=item['institution']
  
     context = {
+        'user_name':request.user.username,
         'group_name': group.name,
         'collab_list':collabs_list,
         'group_institute_dict':group_institute_dict,
