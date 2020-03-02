@@ -58,7 +58,7 @@ def main():
                                 fq_accession = ','.join([fq_accession,accession_number]).strip(',')
                                 fq_url = "https://www.encodeproject.org"+this_file['href']
                                 #print(lib_accession+'::::'+accession_number+'::::'+fq_url)                               
-                                cmd_wget = "wget -nc -P "+ encodetmdir + "/ "+fq_url
+                                cmd_wget = "wget -cq -P "+ encodetmdir + "/ "+fq_url
                                 print(cmd_wget)
                                 subprocess.call(cmd_wget,shell=True)
                                 origin = os.path.join(encodetmdir,fq_url.rsplit('/',1)[1])                           
@@ -72,7 +72,7 @@ def main():
                                 fq_accession = ','.join([fq_accession,accession_number]).strip(',')
                                 r1_or_r2 = this_file['paired_end']
                                 fq_url = "https://www.encodeproject.org"+this_file['href']                            
-                                cmd_wget = "wget -nc -P "+ encodetmdir + "/ "+fq_url
+                                cmd_wget = "wget -cq -P "+ encodetmdir + "/ "+fq_url
                                 print(cmd_wget)
                                 subprocess.call(cmd_wget,shell=True)
                                 origin = os.path.join(encodetmdir,fq_url.rsplit('/',1)[1])                           

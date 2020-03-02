@@ -14,8 +14,11 @@ LOG_DIR="/projects/ps-epigen/logs/app/"
 RUN_LOG_PIP=${LOG_DIR}$(date +%Y%m%d)"_"${SET_ID}".txt"
 TYPE="atac"
 ##################################################
-## Step 1. construct set_xxx.txt
+## Step 1. construct set_xxx.txt/download fastq if needed
 ##################################################
+[[ -z $STATUS_FILE ]] && { echo "$STATUS_FILE not found"; exit 1; }
+echo "downloading encode files" 
+python encode_step2_rt_rl_correction_and_fq_transfering.py -f $STATUS_FILE
 awk '(NR>1){print $1}' $STATUS_FILE > $SETQC_FILE
 
 ##################################################
