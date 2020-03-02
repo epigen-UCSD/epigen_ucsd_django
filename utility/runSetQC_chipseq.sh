@@ -13,6 +13,11 @@ STATUS_FILE=${SETQC_DIR}"."${SET_ID}.txt
 SETQC_FILE=${SETQC_DIR}${SET_ID}.txt
 LOG_DIR="/projects/ps-epigen/logs/app/"
 
+## downloading files 
+[[ -z $STATUS_FILE ]] && { echo "$STATUS_FILE not found"; exit 1; }
+echo "downloading encode files" 
+python encode_step2_rt_rl_correction_and_fq_transfering.py -f $STATUS_FILE
+
 ## determine how many groups
 groups=($(awk '(NR>1){print $2}' $STATUS_FILE|uniq))
 n_groups=${#groups[@]}

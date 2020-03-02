@@ -779,7 +779,7 @@ def RunSetQC(request, setqc_pk):
     # log = open('some file.txt', 'a')
     # p = subprocess.Popen(cmd_tm, shell=True, stdout=log, stderr=log)
 
-    print('running subprocess')
+    print(cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     
@@ -1051,7 +1051,7 @@ def RunSetQC2(request, setqc_pk):
 
     # run setQC script
     #cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
-    # print(cmd1)
+    print(cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     data['writesetdone'] = 1
