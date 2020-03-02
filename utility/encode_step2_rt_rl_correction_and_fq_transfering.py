@@ -63,7 +63,7 @@ def main():
                                 subprocess.call(cmd_wget,shell=True)
                                 origin = os.path.join(encodetmdir,fq_url.rsplit('/',1)[1])                           
                                 newname = os.path.join(fqdir,fields[0]+'.fastq.gz')
-                                cmd_ln = 'ln -s '+ origin +' ' + newname
+                                cmd_ln = 'ln -fs '+ origin +' ' + newname
                                 print(cmd_ln)
                                 subprocess.call(cmd_ln,shell=True)
 
@@ -77,7 +77,7 @@ def main():
                                 subprocess.call(cmd_wget,shell=True)
                                 origin = os.path.join(encodetmdir,fq_url.rsplit('/',1)[1])                           
                                 newname = os.path.join(fqdir,fields[0]+'_R'+str(r1_or_r2)+'.fastq.gz')
-                                cmd_ln = 'ln -s '+ origin +' ' + newname
+                                cmd_ln = 'ln -sf '+ origin +' ' + newname
                                 print(cmd_ln)
                                 subprocess.call(cmd_ln,shell=True)
                 seq_info.read_length = str(read_length)

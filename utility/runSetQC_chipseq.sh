@@ -23,7 +23,6 @@ groups=($(awk '(NR>1){print $2}' $STATUS_FILE|uniq))
 n_groups=${#groups[@]}
 n_libs=$(awk -v FS='\t' 'BEGIN{n=0};{if(NR>1&&$6=="No") n=n+1}END{print n}' $STATUS_FILE)
 
-
 ## determine which pipeline to run
 if [ $(grep -c True $STATUS_FILE) -eq 0 ] 
 then
@@ -86,3 +85,20 @@ ssh zhc268@tscc-login.sdsc.edu $cmd2
 
 
 #python updateLibrariesSetQC.py -s '3' -url $url -v $ver -id $SET_ID
+
+##################################################
+##  Step 4. (optional) delete ENCODE raw fastq files
+##################################################
+SEQ_DIR='/projects/ps-epigen/seqdata/'
+libs=($(awk -v FS='\t' '(NR>1){print $1}' $STATUS_FILE))
+for lib in ${libs[@]}
+do
+    if [ $lib = "ENCODE_"* ]
+    then
+        echo $lib
+        for lib_link in ${SEQ_DIR}/${lib}.fastq.gz ${SEQ_DIR}/${lib}_R1.fastq.gz ${SEQ_DIR}/${lib}_R2.fastq.gz
+        do
+            [[ ! -z ${lib_link} ]] && rm "$(readlink -f $lib_link)"
+        done
+    fi
+done
