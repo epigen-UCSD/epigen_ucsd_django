@@ -1202,7 +1202,7 @@ def SeqsCreateView(request):
 
 def SampleDataView(request):
     Samples_list = SampleInfo.objects.all().select_related('group').values(
-        'pk', 'sample_id', 'description', 'date', 'sample_type', 'group__name', 'status')
+        'pk', 'sample_id', 'description', 'date', 'sample_type', 'group__name', 'status','species','storage','preparation','fixation','notes','internal_notes')
     for sample in Samples_list:
         try:
             sample['group__name'] = sample['group__name'].replace(
@@ -1217,7 +1217,7 @@ def SampleDataView(request):
 def LibDataView(request):
     Libs_list = LibraryInfo.objects.all().select_related('sampleinfo__group').values(
         'pk', 'library_id', 'library_description','sampleinfo__id', 'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
-        'sampleinfo__species', 'sampleinfo__group__name', 'date_started', 'experiment_type')
+        'sampleinfo__species', 'sampleinfo__group__name', 'date_started', 'experiment_type','protocal_used','reference_to_notebook_and_page_number','notes')
     data = list(Libs_list)
 
     return JsonResponse(data, safe=False)
@@ -1228,7 +1228,7 @@ def SeqDataView(request):
         'pk', 'seq_id', 'libraryinfo__library_description','libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
         'libraryinfo__sampleinfo__description', 'libraryinfo__sampleinfo__group__name', \
         'date_submitted_for_sequencing','machine__sequencing_core',\
-        'machine__machine_name','portion_of_lane','read_length', 'read_type')
+        'machine__machine_name','portion_of_lane','read_length', 'read_type','i7index','i5index','default_label','notes')
     data = list(Seqs_list)
 
     return JsonResponse(data, safe=False)
@@ -1236,7 +1236,7 @@ def SeqDataView(request):
 
 def UserSampleDataView(request):
     Samples_list = SampleInfo.objects.filter(team_member=request.user).values(
-        'pk', 'sample_id', 'description', 'date', 'sample_type', 'group__name', 'status')
+        'pk', 'sample_id', 'description', 'date', 'sample_type', 'group__name', 'status','species','storage','preparation','fixation','notes','internal_notes')
     for sample in Samples_list:
         try:
             sample['group__name'] = sample['group__name'].replace(
@@ -1252,7 +1252,7 @@ def UserLibDataView(request):
     Libs_list = LibraryInfo.objects.filter(team_member_initails=request.user)\
         .select_related('sampleinfo__group').values(
             'pk', 'library_description','library_id', 'sampleinfo__id',  'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
-        'sampleinfo__species', 'sampleinfo__group__name', 'date_started', 'experiment_type')
+        'sampleinfo__species', 'sampleinfo__group__name', 'date_started', 'experiment_type','protocal_used','reference_to_notebook_and_page_number','notes')
     data = list(Libs_list)
 
     return JsonResponse(data, safe=False)
@@ -1264,7 +1264,7 @@ def UserSeqDataView(request):
         'pk', 'seq_id','libraryinfo__library_description', 'libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
         'libraryinfo__sampleinfo__description', 'libraryinfo__sampleinfo__group__name',
         'date_submitted_for_sequencing','machine__sequencing_core',\
-        'machine__machine_name','portion_of_lane','read_length', 'read_type')
+        'machine__machine_name','portion_of_lane','read_length', 'read_type','i7index','i5index','default_label','notes')
     data = list(Seqs_list)
 
     return JsonResponse(data, safe=False)
