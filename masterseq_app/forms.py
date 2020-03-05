@@ -1280,7 +1280,7 @@ class EncodeDataForm(forms.Form):
         acceptable_species = ['human', 'mouse', 'rat', 'cattle']  
         cell_labels = ['cell line', 'primary cell', 'in vitro differentiated cells']
         tissue_labels = ['tissue']
-        experiment_types = ['ATAC-seq','ChIP-seq']
+        experiment_types = ['ATAC-seq','ChIP-seq','DNase-seq']
 
         for x in graph:
             for y in x['replicates']:

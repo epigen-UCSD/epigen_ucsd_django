@@ -15,6 +15,7 @@ choice_for_experiment_type = (
     ('snRNA-seq', 'snRNA-seq'),
     ('4C', '4C'),
     ('CUT&RUN', 'CUT&RUN'),
+    ('DNase-seq', 'DNase-seq'),
     ('other (please explain in notes)', 'other (please explain in notes)')
 )
 choice_for_sample_type = (
