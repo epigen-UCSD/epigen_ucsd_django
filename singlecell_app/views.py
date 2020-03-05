@@ -31,7 +31,7 @@ SNAP_PARAM_DICT = {
 }
 
 #hold all single cell experiment values
-SINGLE_CELL_EXPS = ['10xATAC','scRNA-seq','snRNA-seq', 'scATAC-seq']
+SINGLE_CELL_EXPS = ['10xATAC','scRNA-seq','snRNA-seq','scATAC-seq']
 
 defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
                  'rat': 'rn6', 'cattle': 'ARS-UCD1.2'}
@@ -458,7 +458,12 @@ def submit_tenX(seq, email):
     tsv_file = os.path.join(seqDir, filename)
     with open(tsv_file, 'w') as f:
         f.write(tsv_writecontent)
-    cmd1 = './utility/run10xOnly_local.sh ' + seq +' ' + tenxdir + ' ' + email
+    #set command depedning on experiment
+    if( seq_info[0]['libraryinfo__experiment_type'] == 'scRNA-seq'):
+        cmd1 = './utility/runCellRanger.sh' + seq +' ' + tenxdir + ' ' + email
+    else:
+        cmd1 = './utility/run10xOnly_local.sh ' + seq +' ' + tenxdir + ' ' + email
+    
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return True
