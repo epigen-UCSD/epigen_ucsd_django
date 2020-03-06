@@ -107,13 +107,13 @@ def build_seq_list(seqs_list):
         seq_id = entry['seq_id']
         entry['last_modified'] = get_latest_modified_time(seq_id, entry['id'], entry['date_submitted_for_sequencing'], cooladmin_objects)
         entry['seq_status'] = get_seq_status(seq_id, entry['read_type'])
-        entry['10x_status'] = tenX_pipeline_check(seq_id)
+        entry['10x_status'] = get_tenx_status(seq_id)
         entry['species'] = entry['libraryinfo__sampleinfo__species']
         entry['cooladmin_status'] = get_cooladmin_status(seq_id, entry['id'])
     return (seqs_list)
 
 
-def tenX_pipeline_check(seq):
+def get_tenx_status(seq):
     """This function returns a string that represents 
     the status of parameter seq in the 10x pipeline.
     @params
@@ -134,9 +134,9 @@ def tenX_pipeline_check(seq):
     if not os.path.isdir(path):
         seqstatus = 'No'
     elif os.path.isfile(path + '/.inqueue'):
-        seqstatus = 'In Queue'
+        seqstatus = 'InQueue'
     elif os.path.isfile( path + '/.inprocess' ):
-        seqstatus = 'In Process'
+        seqstatus = 'InProcess'
     elif os.path.isfile( path + '/outs/_errors' ):
         seqstatus = 'Error!'
     else:
@@ -460,10 +460,10 @@ def submit_tenX(seq, email):
         f.write(tsv_writecontent)
     #set command depedning on experiment
     if( seq_info[0]['libraryinfo__experiment_type'] == 'scRNA-seq'):
-        cmd1 = './utility/runCellRanger.sh' + seq +' ' + tenxdir + ' ' + email
+        cmd1 = './utility/runCellRanger.sh ' + seq +' ' + tenxdir + ' ' + email
     else:
         cmd1 = './utility/run10xOnly_local.sh ' + seq +' ' + tenxdir + ' ' + email
-    
+    print('cmd submitted: ',cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return True

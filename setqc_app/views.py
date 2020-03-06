@@ -1044,9 +1044,9 @@ def TenXPipelineCheck(lib):
     if not os.path.isdir(path):
         seqstatus = 'No'
     elif os.path.isfile(path + '/.inqueue'):
-        seqstatus = 'In Queue'
+        seqstatus = 'InQueue'
     elif os.path.isfile(path + '/.inprocess'):
-        seqstatus = 'In Process'
+        seqstatus = 'InProcess'
     elif os.path.isfile(path + '/_errors'):
         seqstatus = 'Error!'
     else:
