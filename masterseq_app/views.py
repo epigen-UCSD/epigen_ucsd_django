@@ -2161,7 +2161,15 @@ def EncodeDataSaveView(request):
                 if SampleInfo.objects.filter(sample_id=sam_id).exists():
                     thissample = SampleInfo.objects.get(sample_id=sam_id)
                     for item in thissample.libraryinfo_set.all():
+                        if (len(item.notes.split(';')[1].split(':'))<2):
+                            #print('failed libs:')
+                            #print(library)
+                            #print(item.notes)
+                            break;
                         if library == item.notes.split(';')[1].split(':')[1]:
+                            #print('successful libs:')
+                            #print(library)
+                            #print(item.notes)
                             lib_new_name[library] = item.library_id                           
                             existing_flag = 1
                             break;
