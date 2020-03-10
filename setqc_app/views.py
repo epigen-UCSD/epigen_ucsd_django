@@ -27,7 +27,7 @@ DisplayField2 = ['set_id', 'set_name', 'last_modified',
 defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
                  'rat': 'rn6', 'cattle': 'ARS-UCD1.2', 'sheep': 'oar_v3.1',
                  'green monkey': 'chlSab2', 'pig-tailed macaque': 'Mnem1.0',
-                 'fruit fly': 'dm6'}
+                 'fruit fly': 'dm6','rabbit':'OryCun2.0'}
 
 
 def groupnumber(datalist):
