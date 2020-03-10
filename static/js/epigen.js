@@ -257,6 +257,27 @@ $(document).ready(function () {
     });
 
 
+ $('#seqmanager_seq').DataTable({
+        dom: 'lBfrtip',
+        buttons: [
+            'excel',
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv',
+                fieldBoundary: ''
+            }
+        ],
+        "select": true,
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[1, "asc"]],
+    });
+
+
+
+
     var metalibsurl = $('#collab_metadata_libs').attr("data-href");
     $('#collab_metadata_libs').DataTable({
         dom: 'lBfrtip',
