@@ -182,3 +182,13 @@ def CollaboratorSampleComView(request):
 	}
 	return render(request, 'collaborator_app/collaboratorsetqcinfocom.html', context)
 
+
+def QuoteView(request):
+
+    context = {
+
+    }
+    return render(request, 'collaborator_app/collab_feeforservice_quote.html', context)
+
+
+
