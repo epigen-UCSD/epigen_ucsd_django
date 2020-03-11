@@ -4,7 +4,7 @@ SEQ=$1
 TENX_DIR=$2
 USER_EMAIL=$3
 
-TENXFILE=${TENX_DIR}${SEQ}"/."${SEQ}"_samplesheet.tsv"
+TENXFILE=${TENX_DIR}${SEQ}"/."${SEQ}".tsv"
 TYPE2='10xATAC'
 #only one job shuold be submitted with this
 n_libs=$( wc -l $TENXFILE |  awk '{print $1}'  )
