@@ -27,6 +27,7 @@ ALTER USER test WITH PASSWORD '123456';
 * [nextseq@dbdiagram.io](https://dbdiagram.io/d/5c3d227619c125001489f837)
 * [metadata@dbdiagram.io](https://dbdiagram.io/d/5bb396d8e63c1f0014dab57d)
 * [usrs@dbdigram.io](https://dbdiagram.io/d/5c05a310b155a200149def72)
+* [FeeForServiceModel](https://dbdiagram.io/d/5e691c144495b02c3b881e6d)
 
 * [CoolAdminModel](https://dbdiagram.io/d/5dc0512fedf08a25543d7eb5)
 
