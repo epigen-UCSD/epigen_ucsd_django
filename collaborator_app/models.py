@@ -9,8 +9,8 @@ class ServiceInfo(models.Model):
     nonuc_rate = models.FloatField(blank=True, null=True)
     rate_unit = models.CharField(max_length=50)
     description = models.TextField(blank=True)
-    start_date =  models.DateField(blank=True, null=True)
-    end_date =  models.DateField(blank=True, null=True)
+    #start_date =  models.DateField(blank=True, null=True)
+    #end_date =  models.DateField(blank=True, null=True)
 
     def __str__(self):
         return self.service_name

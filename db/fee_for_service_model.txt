@@ -40,8 +40,6 @@ Table ServiceInfo {
   nonuc_rate float
   rate_unit varchar
   description varchar
-  start_date date
-  end_date date
 }
 
 Table ServiceRequestItem {
