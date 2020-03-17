@@ -9,19 +9,24 @@ class ServiceInfo(models.Model):
     nonuc_rate = models.FloatField(blank=True, null=True)
     rate_unit = models.CharField(max_length=50)
     description = models.TextField(blank=True)
+    start_date =  models.DateField(blank=True, null=True)
+    end_date =  models.DateField(blank=True, null=True)
 
     def __str__(self):
         return self.service_name
 
-class Request(models.Model):
+
+class ServiceRequest(models.Model):
     quote_number= models.CharField('quote number', max_length=100,unique=True,blank=True, null=True)
     #service_request = models.ManyToManyField(ServiceRequest)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
     date =  models.DateField(blank=True, null=True)
     notes = models.TextField(blank=True)
+    status = models.CharField(max_length=50, blank=True, null=True)
 
-class ServiceRequest(models.Model):
-    request = models.ForeignKey(Request, on_delete=models.CASCADE)
+
+class ServiceRequestItem(models.Model):
+    request = models.ForeignKey(ServiceRequest, on_delete=models.CASCADE)
     service = models.ForeignKey(ServiceInfo, on_delete=models.CASCADE)
     quantity = models.FloatField(blank=True, null=True)
-    status = models.CharField(max_length=20, blank=True, null=True)
+    status = models.CharField(max_length=50, blank=True, null=True)

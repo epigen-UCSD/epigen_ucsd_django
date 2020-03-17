@@ -40,9 +40,11 @@ Table ServiceInfo {
   nonuc_rate float
   rate_unit varchar
   description varchar
+  start_date date
+  end_date date
 }
 
-Table ServiceRequest {
+Table ServiceRequestItem {
   id int PK
   request_id int
   service_id int
@@ -50,12 +52,13 @@ Table ServiceRequest {
   status varchar
 }
 
-Table Request {
+Table ServiceRequest {
   id int PK
   quote_number varchar
   group_id int
   date date
   notes varchar
+  status varchar
 }
 
 
@@ -63,6 +66,6 @@ Table Request {
 Ref: User_Group.user_id > User.id
 Ref: User_Group.group_id > Group.id
 Ref: CollaboratorPersonInfo.person_id > User.id
-Ref: ServiceRequest.service_id > ServiceInfo.id
-Ref: Request.group_id > Group.id
-Ref: ServiceRequest.request_id > Request.id
+Ref: ServiceRequestItem.service_id > ServiceInfo.id
+Ref: ServiceRequest.group_id > Group.id
+Ref: ServiceRequestItem.request_id > ServiceRequest.id
