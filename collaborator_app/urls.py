@@ -25,6 +25,7 @@ urlpatterns = [
     path('mysamples/', views.CollaboratorSampleView, name='collab_samples'),
     path('mysamples_com/', views.CollaboratorSampleComView, name='collab_samples_compare'),
 
-    path('feeforservice/quote/', views.QuoteView, name='collab_quote'),
+    path('feeforservice/servicerequest/', views.ServiceRequestListView, name='collab_servicerequest_list'),
+    path('feeforservice/servicerequest_add/', views.ServiceRequestCreateView, name='collab_servicerequest_add'),
 
 ]

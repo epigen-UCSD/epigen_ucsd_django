@@ -971,6 +971,12 @@ $(document).ready(function () {
         prefix: 'librariesinrun_set'
     });
 
+    $('.servicerequestitemformset_row').formset({
+        addText: 'add another service',
+        deleteText: 'remove',
+        prefix: 'form'
+    });
+
     $('.chipformset_row').formset({
         addText: 'add another group',
         deleteText: 'remove',
