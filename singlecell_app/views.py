@@ -596,7 +596,7 @@ def generate_tenx_link(request):
     Will generate a link if needed. Will return the link in the response.
     """
     print(request)
-    LENGTH_OF_KEY = 8 #put this in the deploy or settings file?
+    LENGTH_OF_KEY = 9 #put this in the deploy or settings file?
     seq = request.GET.get('seq')
     print('genertaing link for seq: ',seq)
     info = {}

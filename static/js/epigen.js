@@ -949,6 +949,7 @@ $(document).ready(function () {
         })
     });
 
+    /* Click on runsinglecell located in singlecell app will submit the sequence to be analyzed using its value.*/
     $(document).on('click', '.runsinglecell', function (e) {
         e.preventDefault();
         button = $(this)
@@ -1040,25 +1041,54 @@ $(document).ready(function () {
     function tenx_results_button(seq) {
         if (seq === -1) {
             var href = "#"
-            var share_button = '<a disabled class="popupButtonSc badge badge-pill badge-info">...</a>'
+            var share_button = '<a class="shareButtonSc btn btn-sm" disabled><i disabled class="fas fa-link"></i></a>'
         }
         else {
             href = ("/setqc/" + seq + "/web_summary.html");
-            share_button = '<a href="#" value="' + seq + '" class="popupButtonSc badge badge-pill badge-info">...</a>'
+            share_button = '<a style="display:inline-block;" class="shareButtonSc btn btn-sm" data-toggle="tooltip" data-placement="top" title="Copy link to share to clipboard." value="' + seq + '" ><i class="fas fa-link"></i></a>'
         }
 
-        return ('<a type="button" href=' + href + ' class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a> ' + share_button + '');
+        return ('<a style="display:inline-block;" type="button" href=' + href + ' class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a> ' + more_button);
     }
 
     //popup btn will make popup visible
-    $(document).on('click', '.popupButtonSc', function (e) {
+    $(document).on('click', '.shareButtonSc', function (e) {
         var seq = $(this).attr('value');
         console.log(seq);
-        var toShareButton = '<li class="list-group-item share-button-li"><button value="' + seq + '" class="btn btn-sm btn-info share-button">Share Outs Directory</button></li>'
+        //var toShareButton = '<li class="list-group-item share-button-li"><button value="' + seq + '" class="btn btn-sm btn-info share-button" data-toggle="tooltip" data-placement="top" title="Share a link to the data directory"><i class="fas fa-link"></i></button></li>'
         console.log('clicked')
-        $(".popup-options-sc").append(toShareButton);
-        $(".popup-overlay, .popup-content").addClass("active");
+
+        //hit ajax endpoint
+        $.ajax({
+            type: "GET",
+            cache: false,
+            url: "/singlecell/ajax/generate_link",
+            data: {
+                'seq': seq
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data['error']) {
+                    return alert(data['error'])
+                }
+                console.log(data['link'])
+                console.log('link generated and returned!')
+                var link_string = 'http://epigenomics.sdsc.edu/zhc268/' + data['link'];
+
+                //copy link to clipboard
+                const el = document.createElement('textarea');
+                el.value = link_string;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+
+            }
+        });
+        //$(".popup-options-sc").append(toShareButton);
+        //$(".popup-overlay, .popup-content").addClass("active");
     });
+
 
     //removes the "active" class to .popup and .popup-content when the "Close" button is clicked 
     $(".closePopup").on("click", function () {
@@ -1086,9 +1116,20 @@ $(document).ready(function () {
                 }
                 console.log(data['link'])
                 console.log('link generated and returned!')
-                var link_string = 'http://epigenomics.sdsc.edu/zhc268/' + data['link']
-                var link = '<p class="lead"> Link generated: <a href="http://epigenomics.sdsc.edu/zhc268/' + data['link'] + '">' + link_string + '</a></p>'
+                var link_string = 'http://epigenomics.sdsc.edu/zhc268/' + data['link'];
+
+                //copy link to clipboard
+                const el = document.createElement('textarea');
+                el.value = link_string;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+
+                var link = '<p> Link generated and copied to clipboard: <a href="http://epigenomics.sdsc.edu/zhc268/' + data['link'] + '">' + link_string + '</a></p>'
                 $(".share-button-li").append(link);
+
+
 
             }
         });
