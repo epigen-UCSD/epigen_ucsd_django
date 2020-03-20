@@ -949,31 +949,6 @@ $(document).ready(function () {
         })
     });
 
-
-    $(document).on('click', '.runsinglecell', function (e) {
-        e.preventDefault();
-        button = $(this)
-        $.ajax({
-            type: "POST",
-            cache: false,
-            url: "/singlecell/ajax/submit/",
-            data: {
-                'seq': $(this).val(),
-                'email': "no emailneeded rn"
-            },
-            dataType: 'json',
-            success: function (data) {
-                if (data['is_submitted'] == true) {
-                    console.log(data['is_submitted'])
-                    console.log('data submitted')
-                    $(button).replaceWith(' <button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>Submitted</button>')
-                    return
-                }
-            }
-
-        });
-    });
-
     $(document).on('click', '.runsinglecell', function (e) {
         e.preventDefault();
         button = $(this)
