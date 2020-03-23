@@ -13,6 +13,7 @@ urlpatterns = [
     path('ajax/load-groups/', views.load_groups, name='ajax_load_groups'),
     path('ajax/group_add/', views.AjaxGroupCreateView, name='ajax_group_add'),
     path('ajax/load-collabs/', views.load_collabs, name='ajax_load_collabs'),
+    path('servicerequest_add/', views.ServiceRequestCreateView, name='collab_servicerequest_add'),
 
 
 ]

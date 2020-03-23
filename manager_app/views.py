@@ -10,6 +10,9 @@ from django.http import JsonResponse
 from django.db.models import Q
 from epigen_ucsd_django.shared import is_member
 from masterseq_app.views import nonetolist,removenone
+from django.forms import formset_factory
+from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm
+import datetime
 
 # Create your views here.
 
@@ -29,7 +32,7 @@ def CollaboratorListView(request):
         'collab_list':collabs_list,
         'group_institute_dict':group_institute_dict,
     }
-    print(context)
+    #print(context)
     if is_member(request.user,'manager'):
         return render(request, 'manager_app/manageronly_collaboratorlist.html', context)
     else:
@@ -206,3 +209,82 @@ def load_collabs_old(request):
             u.last_name+'('+u.groups.all().first().name+')'
         results.append(uu)
     return JsonResponse(results, safe=False)
+
+
+
+@transaction.atomic
+def ServiceRequestCreateView(request):
+
+    data_requestitem = {}
+    data_request = {}
+
+    ServiceRequestItemFormSet = formset_factory(
+        ServiceRequestItemCreationForm, can_delete=True)
+    servicerequestitems_formset = ServiceRequestItemFormSet(request.POST or None)
+    groupinfo = request.user.groups.all().first()
+    today = datetime.date.today()
+
+    if request.method == 'POST':
+        servicerequest_form = ServiceRequestCreationForm(request.POST)
+        if servicerequest_form.is_valid():
+            data_request = {
+                'date':str(today),
+                'group':groupinfo.name,
+                'status':'initiate',
+                'notes':servicerequest_form.cleaned_data['notes'],
+            }
+            if servicerequestitems_formset.is_valid():
+                for form in servicerequestitems_formset.forms:
+                    if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
+                        service = form.cleaned_data['service']
+                        quantity = form.cleaned_data['quantity']
+                        data_requestitem[service.service_name] = {
+                            'rate':str(service.uc_rate)+'/'+service.rate_unit,
+                            'rate_number':service.uc_rate,
+                            'quantity':quantity,
+                        }
+                total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
+                total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity']) for x in data_requestitem.values()])+' = $'+str(total_price)
+
+                if 'Preview' in request.POST:
+                    displayorde_requestitem = ['rate','quantity']
+                    displayorder_request = ['date','group','notes','status']
+                    #print(data_request)  
+
+                    context = {
+                        'servicerequest_form': servicerequest_form,
+                        'servicerequestitems_formset': servicerequestitems_formset,
+                        'modalshow': 1,
+                        'displayorde_requestitem': displayorde_requestitem,
+                        'displayorder_request': displayorder_request,
+                        'data_requestitem':data_requestitem,
+                        'data_request':data_request,
+                        'total_expression':total_expression
+                    }        
+                    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate.html', context)
+
+                if 'Save' in request.POST:
+                    thisrequest = ServiceRequest.objects.create(
+                        group=groupinfo,
+                        date=data_request['date'],
+                        notes=data_request['notes'],
+                        status=data_request['status'],
+                        )
+                    for item in data_requestitem:
+                        ServiceRequestItem.objects.create(
+                            request=thisrequest,
+                            service=ServiceInfo.objects.get(service_name=item.key()),
+                            quantity=item['quantity'],
+                            )
+                    return redirect('manager_app:collab_quote')
+
+
+    else:
+        servicerequest_form = ServiceRequestCreationForm(None)
+
+    context = {
+        'servicerequest_form': servicerequest_form,
+        'servicerequestitems_formset': servicerequestitems_formset,
+    }
+
+    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate.html', context)

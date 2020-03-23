@@ -3,6 +3,7 @@ from django.contrib.auth.models import User,Group
 from epigen_ucsd_django.models import CollaboratorPersonInfo,Group_Institution
 import secrets
 import string
+from collaborator_app.models import ServiceInfo,ServiceRequest,ServiceRequestItem
 
 class UserForm(forms.ModelForm):
 	class Meta:
@@ -49,3 +50,14 @@ class CollabInfoAddForm(forms.ModelForm):
 		model = CollaboratorPersonInfo
 		fields = ('person_id','email','phone','index')
 
+class ServiceRequestItemCreationForm(forms.ModelForm):
+    class Meta:
+        model = ServiceRequestItem
+        fields = ['service', 'quantity']
+class ServiceRequestCreationForm(forms.ModelForm):
+    class Meta:
+        model = ServiceRequest
+        fields = ['notes']
+        widgets = {
+            'notes': forms.Textarea(attrs={'cols': 60, 'rows': 3}),
+        }
