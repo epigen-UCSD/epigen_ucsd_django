@@ -442,6 +442,14 @@ def get_cooladmin_link(seq):
         return("")
 
 
+def setup_submission(seq_object, data):
+    """This helper function will assign values to the data dict based on the 
+    experimental type and species/genome of the seq object. Will return the data dict so that the
+    submission funtion can use the dict for bash script parameters.
+    """
+    
+    return data
+
 def submit_tenX(seq, email):
     """ This function should only be called by another fucntion that ensures the sequence is valid to be submitted
     This function submits a sequence to 10x cell ranger or 10x atac pipeline
@@ -463,7 +471,7 @@ def submit_tenX(seq, email):
     #TODO check which genome to use based on experiment type, scRNA vs 10xATAC
     if data['genome'].lower() == 'human':
         genome = 'hg38'
-    else:
+    elif  data['genome'].lower() == 'mouse':
         genome = 'mm10'
 
     #filename = ".sequence.tsv"
@@ -482,7 +490,7 @@ def submit_tenX(seq, email):
         f.write(tsv_writecontent)
         
     #set command depedning on experiment
-    if( seq_info[0]['libraryinfo__experiment_type'] == 'scRNA-seq'):
+    if( seq_info[0]['libraryinfo__experiment_type'] == 'scRNA-seq' or seq_info[0]['libraryinfo__experiment_type'] == 'snRNA-seq'):
         cmd1 = './utility/runCellRanger.sh ' + data['seq'] +' ' + dir + ' ' + email
     else:
         cmd1 = './utility/run10xOnly.sh ' + data['seq'] +' ' + dir + ' ' + email
@@ -609,6 +617,8 @@ def generate_tenx_link(request):
     Will generate a link if needed. Will return the link in the response.
     """
     print(request)
+    exposeddir = os.path.basename(settings.EXPOSED_OUTS_DIR)
+    print(exposeddir)
     LENGTH_OF_KEY = 9 #put this in the deploy or settings file?
     seq = request.GET.get('seq')
     print('genertaing link for seq: ',seq)
@@ -658,11 +668,14 @@ def generate_tenx_link(request):
             print(link)
             print(fullpath_link)
             os.system("ln -s %s %s" % (to_link_dir, fullpath_link))
-
+            link = os.path.join(exposeddir, link)
             #bash script process 
 
         else:
-            link = filenames_dict[seq]
+            link = os.path.join(exposeddir, filenames_dict[seq])
         data['link'] = link
 
         return JsonResponse(data, safe= False)
+    else:
+        data["error"] = "Permission denied"
+        return JsonResponse(data,safe=False)

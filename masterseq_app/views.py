@@ -2127,7 +2127,7 @@ def get_singlecell_data(seq_info, seq_pk):
     singlecellfield = ['10x Results','10x RefGenome','CoolAdmin Status', 'CoolAdmin RefGenome', 'CoolAdmin Date']
     """
     seq_id = seq_info.seq_id
-    exptype = seq_info.libraryinfo__experiment_type
+    exptype = seq_info.libraryinfo.experiment_type
     tenx_status = get_tenx_status(seq_id,exptype)
     tenx_refgenome = getReferenceUsed(seq_id)
     cooladmin_objects =  CoolAdminSubmission.objects.all()

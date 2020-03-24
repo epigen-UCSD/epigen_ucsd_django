@@ -601,8 +601,11 @@ def change_password(request):
 @transaction.atomic
 def DemultiplexingView(request, run_pk):
     print('started xxxx')
+
     dmpdir = settings.NEXTSEQAPP_DMPDIR
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
+    print('expt type: ',runinfo.experiment_type)
+
     if runinfo.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     data = {}
@@ -611,7 +614,7 @@ def DemultiplexingView(request, run_pk):
         # print(os.path.join(dmpdir,fname))
         if os.path.isdir(os.path.join(dmpdir, fname)) and fname.endswith(runinfo.Flowcell_ID):
             data['is_direxists'] = 1
-            basedirname = os.path.join(dmpdir, fname)
+            basedirname = os.path.join(x, fname)
             rundate = '20'+'-'.join([fname[i:i+2]
                                      for i in range(0, len(fname.split('_')[0]), 2)])
             # print(rundate)
@@ -751,6 +754,7 @@ def DemultiplexingView(request, run_pk):
         RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSubmitted')
 
         # runBcl2fastq
+        print('expt type: ',runinfo.experiment_type)
         if runinfo.experiment_type == 'S2':
             cmd1 = './utility/runDemuxSnATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
@@ -761,6 +765,7 @@ def DemultiplexingView(request, run_pk):
                 
             cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
+        
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
