@@ -137,6 +137,35 @@ $(document).ready(function () {
 
     });
 
+
+    $('#collab_setqcs_user tbody').on('click', 'td.details-control', function () {
+        var thisurl = $(this).attr("data-href");
+        var tr = $(this).closest('tr');
+        if ($(this).hasClass("closing")) {
+            $(this).removeClass("closing")
+            tr.next().closest(".detailnotes").remove()
+        }
+        else {
+            $(this).addClass("closing")
+
+            $.ajax({
+                url: thisurl,
+                cache: false,
+                dataType: 'json',
+                success: function (data) {
+
+                    if (data.notes) {
+                        tr.after('<tr class="detailnotes"><td class="detailnotes" colspan="8"><div class="detailnotes">Notes:' + data.notes + '</div></td></tr>')
+
+
+                    }
+                }
+            })
+
+        }
+
+    });
+
     $('select#nextseq_app_machine').on('change', function () {
         console.log(this.value);
         if (this.value.startsWith('IGM_')) {
@@ -183,6 +212,275 @@ $(document).ready(function () {
     $('#collab_samples_com').DataTable({
 
     })
+
+
+
+    var metasampsurl = $('#collab_metadata_samples').attr("data-href");
+    $('#collab_metadata_samples').DataTable({
+        dom: 'lBfrtip',
+        buttons: [
+            'excel',
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv',
+                fieldBoundary: ''
+            }
+        ],
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[2, "desc"]],
+        "processing": true,
+        "ajax": {
+            url: metasampsurl,
+            dataSrc: ''
+        },
+        "columns": [
+            { "data": "sample_id" },
+            { "data": "description" },
+            { "data": "date" },
+            { "data": "group__name" },
+            { "data": "sample_type" },
+            { "data": "status" },
+        ],
+        "deferRender": true,
+        "select": true,
+
+        "columnDefs": [{
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        }],
+    });
+
+
+ $('#seqmanager_seq').DataTable({
+        dom: 'lBfrtip',
+        buttons: [
+            'excel',
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv',
+                fieldBoundary: ''
+            }
+        ],
+        "select": true,
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[1, "asc"]],
+    });
+
+
+
+
+    var metalibsurl = $('#collab_metadata_libs').attr("data-href");
+    $('#collab_metadata_libs').DataTable({
+        dom: 'lBfrtip',
+        buttons: [
+            'excel',
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv',
+                fieldBoundary: ''
+            }
+        ],
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        "order": [[7, "desc"]],
+        "ajax": {
+            url: metalibsurl,
+            dataSrc: ''
+        },
+        "columns": [
+            { "data": "library_id" },
+            { "data": "library_description" },
+            { "data": "sampleinfo__sample_id" },
+            { "data": "sampleinfo__sample_type" },
+            { "data": "sampleinfo__description" },
+            { "data": "sampleinfo__species" },
+            { "data": "sampleinfo__group__name" },
+            { "data": "date_started" },
+            { "data": "experiment_type" },
+        ],
+        "deferRender": true,
+        "select": true,
+
+        "columnDefs": [{
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                return '<a href="/metadata/lib/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 2,
+            "render": function (data, type, row) {
+                var itemID = row["sampleinfo__id"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        },
+
+        ],
+    });
+
+
+
+    var metaseqsurl = $('#collab_metadata_seqs').attr("data-href");
+    $('#collab_metadata_seqs').DataTable({
+        dom: 'lBfrtip',
+        buttons: [
+            'excel',
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv',
+                fieldBoundary: ''
+            }
+        ],
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        "order": [[5, "desc"]],
+        "ajax": {
+            url: metaseqsurl,
+            dataSrc: ''
+        },
+        "columns": [
+            { "data": "seq_id" },
+            { "data": "libraryinfo__library_description" },
+            { "data": "libraryinfo__sampleinfo__sample_id" },
+            { "data": "libraryinfo__sampleinfo__description" },
+            { "data": "libraryinfo__sampleinfo__group__name" },
+            { "data": "date_submitted_for_sequencing" },
+            { "data": "machine__sequencing_core" },
+            { "data": "portion_of_lane" },
+            { "data": "read_length" },
+            { "data": "read_type" },
+
+        ],
+        "deferRender": true,
+        "select": true,
+
+        "columnDefs": [{
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 2,
+            "render": function (data, type, row) {
+                var itemID = row["libraryinfo__sampleinfo__id"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 6,
+            "render": function (data, type, row) {
+                if (row["machine__sequencing_core"] == null) {
+                    return ''
+                }
+                else {
+                    return row["machine__sequencing_core"] + '_' + row["machine__machine_name"];
+                }
+            }
+        },
+        ],
+    });
+
+
+
+    var usersetqcsurl = $('#collab_setqcs_user').attr("data-href");
+    $('#collab_setqcs_user').DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[2, "desc"]],
+        "processing": true,
+        "ajax": {
+            url: usersetqcsurl,
+            dataSrc: ''
+        },
+        "columns": [
+            { "data": "notes" },
+            { "data": "set_id" },
+            { "data": "set_name" },
+            { "data": "last_modified" },
+            { "data": "experiment_type" },
+            { "data": "url" },
+            { "data": "status" },
+        ],
+        "deferRender": true,
+        "select": false,
+
+        "columnDefs": [{
+            "targets": 0,
+            "createdCell": function (td, data, row, col) {
+                var itemID = row["pk"];
+                var n = row["notes"];
+                if(n){
+                    $(td).addClass('details-control');
+                    $(td).attr('data-href', '{% url \'collaborator_app:setqc_getnotes\' '+itemID+' %}');
+                    $(td).text('');
+
+                }
+                else{
+                    $(td).text('');
+                }
+
+            }
+
+        },
+        {
+            "targets": 1,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 3,
+            "render": function (data, type, row){
+                var date = row["last_modified"];
+                var dt = new Date(date);
+                var y = dt.getFullYear();
+                var m = dt.getMonth()+1;
+                var d = dt.getDate();
+                return y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+
+
+            }
+        },
+        {
+            "targets": 5,
+            "render": function (data, type, row) {
+                var reporturl = row["url"];
+                if (reporturl) {
+                    return '<a href="'+reporturl+'" target="_blank"><i class="fas fa-file-alt" style="font-size: 17px;color:#26D07C"></i></a>'
+                }
+                else{
+                    return ''
+                }
+
+            }
+        }],
+    });
+
+
+
+
+
+
+
 
 
     var metasampsurl = $('#metadata_samples').attr("data-href");
@@ -713,6 +1011,22 @@ $(document).ready(function () {
             document.getElementById('chipform').style.display = "none";
         }
     });
+
+    $('select#id_step_to_run').on('change', function () {
+        if (this.value == "step1") {
+            $( "#id_set_name" ).prop( "disabled", true );
+            $( "#encode_experiment_type" ).prop( "disabled", true );
+            $( "#id_notes" ).prop( "disabled", true );
+            $( "#id_genome" ).prop( "disabled", true );
+        }
+        else {
+            $( "#id_set_name" ).prop( "disabled", false );
+            $( "#encode_experiment_type" ).prop( "disabled", false );
+            $( "#id_notes" ).prop( "disabled", false );
+            $( "#id_genome" ).prop( "disabled", false );
+        }
+    });
+
     //console.log(document.getElementById('changeble_librariesform'))
     var changeble_form = $('#changeble_librariesform').find("select#id_experiment_type option:selected").text()
     if (changeble_form == "ChIP-seq") {

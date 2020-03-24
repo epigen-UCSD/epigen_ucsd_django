@@ -1,0 +1,22 @@
+K562_ENCBS980HYW	ENCODE 	LYX			ChIP-seq	NA	ENCODE library	ENCODE_1	ENCLB184SXU;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS619VEE	ENCODE 	LYX			ChIP-seq	NA	ENCODE library	ENCODE_2	ENCLB104IWE;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS349ULG	ENCODE H3K36me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_3	ENCLB594HGR;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS204NMW	ENCODE H3K36me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_4	ENCLB838QDS;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS667AAA	ENCODE H3K4me1 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_5	ENCLB060JFJ;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS667AAA	ENCODE H3K4me1 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_6	ENCLB497KKU;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS667AAA	ENCODE H3K27me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_7	ENCLB727SIV;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS667AAA	ENCODE H3K27me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_8	ENCLB951TBX;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS667AAA	ENCODE H3K4me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_9	ENCLB474AFW;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS667AAA	ENCODE H3K4me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_10	ENCLB069TXP;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS204NMW	ENCODE H3K4me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_11	ENCLB100QPV;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS511YCF	ENCODE H3K4me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_12	ENCLB082SOT;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS639AAA	ENCODE H3K4me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_13	ENCLB695ANE;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS674MPN	ENCODE H3K4me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_14	ENCLB695AND;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS674MPN	ENCODE H3K4me1 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_15	ENCLB695APC;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS639AAA	ENCODE H3K4me1 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_16	ENCLB695AOH;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS639AAA	ENCODE H3K36me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_17	ENCLB695AMC;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS674MPN	ENCODE H3K36me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_18	ENCLB695AMD;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS674MPN	ENCODE H3K27ac ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_19	ENCLB695AJD;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS639AAA	ENCODE H3K27ac ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_20	ENCLB695AJE;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS674MPN	ENCODE H3K27me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_21	ENCLB695ALZ;pseudolibrary, ENCODE library downloaded from encodeproject.org		
+K562_ENCBS639AAA	ENCODE H3K27me3 ChIP-seq on human K562	LYX			ChIP-seq	NA	ENCODE library	ENCODE_22	ENCLB695AMA;pseudolibrary, ENCODE library downloaded from encodeproject.org		
