@@ -1,0 +1,71 @@
+#!/bin/bash
+#PBS -q home-epigen
+#PBS -N django_10xPipeline_CellRanger
+#PBS -l nodes=1:ppn=16
+#PBS -l walltime=24:00:00
+#PBS -l mem=96gb
+#PBS -o /home/zhc/logs/run_10xMkpipeline.out
+#PBS -e /home/zhc/logs/run_10xMkpipeline.err
+#PBS -V
+#PBS -m abe
+#PBS -A epigen-group
+
+# -v pass parameters: samples
+
+export PATH=/projects/ps-epigen/software/cellranger-3.0.2/cellranger/:$PATH
+WORKDIR="/oasis/tscc/scratch/$(whoami)/outputs_TA/"
+FASTQDIR="/projects/ps-epigen/seqdata/"
+
+
+# select libs 
+samplenames=(`cat $samples`)
+INPREFIX=${samplenames[${PBS_ARRAYID}*3]} #index start from 0
+SAMPLE=${samplenames[${PBS_ARRAYID}*3+1]}
+GENOME=${samplenames[${PBS_ARRAYID}*3+2]}
+
+cd $WORKDIR
+
+# determine genomes
+case $GENOME in
+    mm10)
+        genome_dir="/projects/ps-epigen/GENOME/mm10/10x_Genomics3.0/refdata-cellranger-mm10-3.0.0";;
+    hg38)
+        genome_dir="/projects/ps-epigen/GENOME/hg38/10x_Genomics3.0/refdata-cellranger-GRCh38-3.0.0";;
+    hg19)
+        genome_dir="/projects/ps-epigen/GENOME/hg38/10x_Genomics3.0/refdata-cellranger-GRCh38-3.0.0";;
+    *)
+        echo "wrong genome input: $GENOME"
+        exit 0;;
+esac
+
+# prepare fastqs, comma seperated values
+fastqs=$(echo $SAMPLE| awk -v FS=',' -v d="${FASTQDIR}" '{ for(i=1;i<=NF-1;i++) {printf "%s,", d$i};print d$NF;}')
+
+#fastqs="${FASTQDIR}/${INPREFIX}"
+#echo $fastqs
+# [[ ! -d $fastqs ]] && { echo "$fastqs not found"; exit 0; }
+
+
+# run pipeline
+mkdir -p ~/data/outputs/scRNA/$INPREFIX
+[[ -f ~/data/outputs/scRNA/${INPREFIX}/.inqueue ]] && rm  ~/data/outputs/scRNA/${INPREFIX}/.inqueue 
+touch ~/data/outputs/scRNA/${INPREFIX}/.inprocess
+cellranger count --id=$INPREFIX --fastqs=$fastqs --sample $SAMPLE --transcriptome=$genome_dir --localcores=16  --mempercore=5
+wait
+
+# transfer results
+rsync -azr ${WORKDIR}${INPREFIX} ~/data/outputs/scRNA/
+rm  ~/data/outputs/scRNA/${INPREFIX}/.inprocess
+## addtional check
+#[[ -z $(find ${OUTDIR}/qc/rep1 -name "*_qc.txt") ]]  && { echo  "pipeline interrupted"; exit 0; }
+
+
+# runFastQC & fastq_screen
+#runFastQC_screen.sh  $INPREFIX
+#results_transfer.sh $INPREFIX $(whoami)
+
+# add .finished.txt tag
+
+
+#qsub -t 0-3 -v samples=$(pwd)/run_2019-04-25_10xatac.txt $(which run10xPipeline.pbs)
+

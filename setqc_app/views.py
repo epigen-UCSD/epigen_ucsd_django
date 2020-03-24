@@ -1076,9 +1076,9 @@ def TenXPipelineCheck(lib):
     elif os.path.isfile(os.path.join(path, tenx_output_folder, tenx_target_outfile)):
         seqstatus = 'Yes'
     elif os.path.isfile(path + '/.inqueue'):
-        seqstatus = 'In Queue'
+        seqstatus = 'InQueue'
     elif os.path.isfile(path + '/.inprocess'):
-        seqstatus = 'In Process'
+        seqstatus = 'InProcess'
     elif os.path.isfile(path + '/_errors'):
         seqstatus = 'Error!'
     else:

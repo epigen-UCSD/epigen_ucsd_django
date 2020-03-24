@@ -4,16 +4,18 @@ from django.contrib.auth.models import User, Group
 from datetime import datetime
 from django.forms.models import model_to_dict
 from django.core import serializers
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse, HttpResponse
 from masterseq_app.models import LibraryInfo, SeqInfo, GenomeInfo
 from .forms import CoolAdminForm
 from .models import CoolAdminSubmission
 from django.conf import settings
 import os
-import random
+import random, string
 import subprocess
 import json
 from epigen_ucsd_django.shared import *
+import shutil
+
 
 # keys in snap param dict should be the same as the fields in the model and form.
 SNAP_PARAM_DICT = {
@@ -104,40 +106,44 @@ def build_seq_list(seqs_list):
 
     for entry in seqs_list:
         seq_id = entry['seq_id']
-        entry['last_modified'] = get_latest_modified_time(
-            seq_id, entry['id'], entry['date_submitted_for_sequencing'], cooladmin_objects)
+        experiment_type = entry['libraryinfo__experiment_type']
+        entry['last_modified'] = get_latest_modified_time(seq_id, entry['id'], entry['date_submitted_for_sequencing'], cooladmin_objects)
         entry['seq_status'] = get_seq_status(seq_id, entry['read_type'])
-        entry['10x_status'] = tenX_pipeline_check(seq_id)
+        entry['10x_status'] = get_tenx_status(seq_id, experiment_type)
         entry['species'] = entry['libraryinfo__sampleinfo__species']
         entry['cooladmin_status'] = get_cooladmin_status(seq_id, entry['id'])
     return (seqs_list)
 
 
-def tenX_pipeline_check(seq):
+def get_tenx_status(seq, experiment_type):
     """This function returns a string that represents 
     the status of parameter seq in the 10x pipeline.
     @params
         seq: a string that represents the sequence name to be checked.
     @returns
         string 'No' when sequence is not submitted
-        string 'In Queue' when sequence is in the qsub queue
-        string 'In Process' when sequence is being processed by 10x pipeline
+        string 'InQueue' when sequence is in the qsub queue
+        string 'InProcess' when sequence is being processed by 10x pipeline
         string 'Error' when an error occurs in pipeline
         string 'Yes' when the 10x pipeline is succesfully done
     """
+    if(experiment_type == 'snRNA-seq' or experiment_type == 'scRNA-seq' ):
+        dir_to_check = settings.SCRNA_DIR
+    else:
+        dir_to_check = settings.TENX_DIR
+    
     tenx_output_folder = 'outs'
     tenx_target_outfile = 'web_summary.html'
-    tenxdir = settings.TENX_DIR
-    path = os.path.join(tenxdir, str(seq))
-    # first check if there is an .inqueue then an .inprocess
-
+    path = os.path.join(dir_to_check, str(seq))
+    #first check if there is an .inqueue then an .inprocess 
+    
     if not os.path.isdir(path):
         seqstatus = 'No'
     elif os.path.isfile(path + '/.inqueue'):
-        seqstatus = 'In Queue'
-    elif os.path.isfile(path + '/.inprocess'):
-        seqstatus = 'In Process'
-    elif os.path.isfile(path + '/outs/_errors'):
+        seqstatus = 'InQueue'
+    elif os.path.isfile( path + '/.inprocess' ):
+        seqstatus = 'InProcess'
+    elif os.path.isfile( path + '/outs/_errors' ):
         seqstatus = 'Error!'
     else:
         if not os.path.isfile(os.path.join(path,
@@ -418,7 +424,7 @@ def edit_cooladmin_sub(request, seqinfo):
     }
     return render(request, 'singlecell_app/editCoolAdmin.html', context)
 
-
+ 
 def get_cooladmin_link(seq):
     """Call this function when cooladmin status has already been confirmed to be success
     """
@@ -430,6 +436,7 @@ def get_cooladmin_link(seq):
         with open(json_file, 'r') as f:
             cool_data = f.read()
         cool_dict = json.loads(cool_data)
+        print('cooldict: ',cool_dict)
         return (cool_dict['report_address'])
     except:
         return("")
@@ -437,26 +444,34 @@ def get_cooladmin_link(seq):
 
 def submit_tenX(seq, email):
     """ This function should only be called by another fucntion that ensures the sequence is valid to be submitted
-    This function submits a sequence to 10x cell ranger pipeline
+    This function submits a sequence to 10x cell ranger or 10x atac pipeline
     """
-    tenxdir = settings.TENX_DIR
+    
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
         'libraryinfo__sampleinfo').values('seq_id',
-                                          'libraryinfo__sampleinfo__species', 'read_type',
-                                          'libraryinfo__experiment_type'))
-    seqs = split_seqs(seq_info[0]['seq_id'])
-    genome = seq_info[0]['libraryinfo__sampleinfo__species']
+        'libraryinfo__sampleinfo__species','read_type',
+        'libraryinfo__experiment_type'))
+    data['seq'] = split_seqs(seq_info[0]['seq_id'])
+    data['genome'] =  seq_info[0]['libraryinfo__sampleinfo__species'] 
+     
+    #set output dir
+    if seq_info[0]['libraryinfo__experiment_type'] == '10xATAC':
+        dir = settings.TENX_DIR
+    else:
+        dir = settings.SCRNA_DIR
 
-    # TODO check if this is a correct idea
-    if genome.lower() == 'human':
+    #TODO check which genome to use based on experiment type, scRNA vs 10xATAC
+    if data['genome'].lower() == 'human':
         genome = 'hg38'
     else:
         genome = 'mm10'
 
     #filename = ".sequence.tsv"
     filename = '.'+str(seq)+'.tsv'
-    tsv_writecontent = '\t'.join([seq, ','.join(seqs), genome])
-    seqDir = os.path.join(tenxdir, seq)
+    tsv_writecontent = '\t'.join([seq, ','.join(seqs), genome]) 
+    seqDir = os.path.join(dir,seq)
+   
+    #replace with db update that this seq status is inqueue
     if not os.path.exists(seqDir):
         os.mkdir(seqDir)
     inqueue = os.path.join(seqDir, '.inqueue')
@@ -465,8 +480,13 @@ def submit_tenX(seq, email):
     tsv_file = os.path.join(seqDir, filename)
     with open(tsv_file, 'w') as f:
         f.write(tsv_writecontent)
-    cmd1 = 'bash ./utility/run10xOnly.sh ' + seq + ' ' + tenxdir + ' ' + email
-    print(cmd1)
+        
+    #set command depedning on experiment
+    if( seq_info[0]['libraryinfo__experiment_type'] == 'scRNA-seq'):
+        cmd1 = './utility/runCellRanger.sh ' + data['seq'] +' ' + dir + ' ' + email
+    else:
+        cmd1 = './utility/run10xOnly.sh ' + data['seq'] +' ' + dir + ' ' + email
+    print('cmd submitted: ',cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return True
@@ -503,25 +523,28 @@ def getReferenceUsed(seq):
     @params seq is a string of the sequnece wanted e.g. seq="JYH_1047"
     @returns a string that is the refernce genome used
     """
-    # To return
-    refgenome = ''
+    
+    #To return
+    refgenome = 'N/A'
 
     tenx_output_folder = 'outs'
     tenx_target_outfile = 'summary.json'
     tenxdir = settings.TENX_DIR
 
-    file_path = os.path.join(tenxdir, str(
-        seq), tenx_output_folder, tenx_target_outfile)
+    file_path = os.path.join(tenxdir, str(seq), tenx_output_folder, tenx_target_outfile)
+    if(os.path.exists(file_path)):
+        with open(file_path) as json_file:
+            data = json.load(json_file)
+            refgenome = data["reference_assembly"]    
+    #open summarry.json and read "reference_assembly"
+    return refgenome    
 
-    with open(file_path) as json_file:
-        data = json.load(json_file)
-        refgenome = data["reference_assembly"]
-    # open summarry.json and read "reference_assembly"
-    return refgenome
+
 
 
 def get_latest_modified_time(seq_id, seq_object_id, date_sub_for_seq, cooladmin_objects):
-    """This function returns the latest modfication to the seq object
+    """
+    This function returns the latest modfication to the seq object
     """
     # first get time that seqinfo object was submitted for sequencing - this will always exist
     time = date_sub_for_seq
@@ -579,3 +602,67 @@ def check_tenx_time(seq_id):
     #print('tenx time: ',time)
     # convert time to datetime
     return(time)
+
+
+def generate_tenx_link(request):
+    """ return a link for files to be viewed with a share link
+    Will generate a link if needed. Will return the link in the response.
+    """
+    print(request)
+    LENGTH_OF_KEY = 9 #put this in the deploy or settings file?
+    seq = request.GET.get('seq')
+    print('genertaing link for seq: ',seq)
+    info = {}
+    data = {}
+    try:
+        seq_object = SeqInfo.objects.select_related('libraryinfo').get(seq_id=seq)
+    except ObjectDoesNotExist:
+        print('SeqObject does not exist!')
+        data['error'] = "Sequence object does not exist!"
+        return JsonResponse(data, safe=False)
+
+    #get seq owner:
+    library_info = seq_object.libraryinfo
+    info['experiment_type'] = library_info.experiment_type
+    info['seq_owner'] = seq_object.team_member_initails
+    info['seq_id'] = seq_object.seq_id
+    print(info) 
+    print(request.user)
+    if request.user.groups.filter(name='bioinformatics').exists() or info['seq_owner'] == request.user:
+        #get all files in exposed outs folder
+        exposed_outs_dir = settings.EXPOSED_OUTS_DIR
+        listdir = os.listdir(exposed_outs_dir)
+        basenames = [os.path.basename(fn)[LENGTH_OF_KEY:] for fn in listdir]
+        filenames_dict = {}
+        for i in range(len(listdir)):
+            filenames_dict[basenames[i]] = listdir[i]
+
+        print(filenames_dict)
+        #get directory that seq is in
+        #check if symbolic link is present
+        if(seq not in (basenames)):
+            print('making new symbolic')
+            #Do symbolic linking
+            if info['experiment_type'] == '10xATAC':
+                parent_dir = settings.TENX_DIR
+            else:
+                parent_dir = settings.SCRNA_DIR
+            output_dir = 'outs'
+            to_link_dir = os.path.join(parent_dir,info['seq_id'],output_dir)
+
+            #create link name
+            chars = (string.ascii_uppercase + string.digits + string.ascii_lowercase)
+            link = ''.join(random.choice(chars) for x in range(LENGTH_OF_KEY - 1))
+            link += '_' + seq
+            fullpath_link = os.path.join(settings.EXPOSED_OUTS_DIR, link)
+            print(link)
+            print(fullpath_link)
+            os.system("ln -s %s %s" % (to_link_dir, fullpath_link))
+
+            #bash script process 
+
+        else:
+            link = filenames_dict[seq]
+        data['link'] = link
+
+        return JsonResponse(data, safe= False)

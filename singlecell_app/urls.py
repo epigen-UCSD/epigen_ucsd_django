@@ -10,4 +10,6 @@ urlpatterns = [
     path('EditCoolAdmin/<str:seqinfo>', views.edit_cooladmin_sub, name='editcooladmin'),
     path('ajax/submitcooladmin/',views.submit_cooladmin, name='submitcooladmin'),
     path('ajax/submit/', views.submit_singlecell, name='submitsinglecell'),
+    path('ajax/generate_link', views.generate_tenx_link, name='generate_link'),
+
 ]
