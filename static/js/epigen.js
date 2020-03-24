@@ -1037,7 +1037,7 @@ $(document).ready(function () {
         $("#target").click();
     });
 
-    /**This return button to link to html resutls and a button for pop-up funcitionality */
+    /**This returns a button to link to html resutls AND a button for link sharing funcitionality */
     function tenx_results_button(seq) {
         if (seq === -1) {
             var href = "#"
@@ -1048,7 +1048,7 @@ $(document).ready(function () {
             share_button = '<a style="display:inline-block;" class="shareButtonSc btn btn-sm" data-toggle="tooltip" data-placement="top" title="Copy link to share to clipboard." value="' + seq + '" ><i class="fas fa-link"></i></a>'
         }
 
-        return ('<a style="display:inline-block;" type="button" href=' + href + ' class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a> ' + more_button);
+        return ('<a style="display:inline-block;" type="button" href=' + href + ' class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a> ' + share_button);
     }
 
     //popup btn will make popup visible

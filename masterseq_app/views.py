@@ -22,7 +22,7 @@ from random import randint
 from django.conf import settings
 import os
 from setqc_app.models import LibrariesSetQC
-from singlecell_app.views import tenX_pipeline_check,get_cooladmin_status,check_cooladmin_time,getReferenceUsed
+from singlecell_app.views import get_tenx_status,get_cooladmin_status,check_cooladmin_time,getReferenceUsed
 from singlecell_app.models import CoolAdminSubmission
 def nonetolist(inputthing):
     if not inputthing:
@@ -1416,6 +1416,7 @@ def SeqUpdateView(request, pk):
             seqinfo = seq_form.save(commit=False)
             seqinfo.team_member_initails = request.user
             seqinfo.save()
+            #update es index, dispatch signal
             return redirect('masterseq_app:user_metadata')
     else:
         seq_form = SeqCreationForm(instance=seqinfo)
@@ -1511,7 +1512,7 @@ def SeqDetailView(request, pk):
     bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
                     'tss_enrichment', 'frop']
     singlecellfield = ['10x Results','10x RefGenome','CoolAdmin Results', 'CoolAdmin RefGenome', 'CoolAdmin Date']
-    singlecelldata = get_singlecell_data(seqinfo.seq_id, seqinfo.id)
+    singlecelldata = get_singlecell_data(seqinfo, seqinfo.id)
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
     setqcfield = ['set_id','set_name','experiment_type','url','date_requested']
     setqcs = LibrariesSetQC.objects.filter(libraries_to_include=seqinfo)
@@ -2117,12 +2118,14 @@ def download(request, path):
             return response
     raise Http404
 
-def get_singlecell_data(seq_id, seq_pk):
+def get_singlecell_data(seq_info, seq_pk):
     """
     Need to return:
     singlecellfield = ['10x Results','10x RefGenome','CoolAdmin Status', 'CoolAdmin RefGenome', 'CoolAdmin Date']
     """
-    tenx_status = tenX_pipeline_check(seq_id)
+    seq_id = seq_info.seq_id
+    exptype = seq_info.libraryinfo__experiment_type
+    tenx_status = get_tenx_status(seq_id,exptype)
     tenx_refgenome = getReferenceUsed(seq_id)
     cooladmin_objects =  CoolAdminSubmission.objects.all()
     #TODO in future get time and status from database
