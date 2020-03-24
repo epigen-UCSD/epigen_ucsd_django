@@ -208,7 +208,7 @@ TENX_DIR = config['database']['TENX_DIR']
 MEDIA_ROOT = config['database']['MEDIA_ROOT']
 TENX_WEBSUMMARY = config['snapp']['TENX_WEBSUMMARY']
 COOLADMIN_DIR = config['snapp']['COOLADMIN_DIR']
-EXPOSED_OUTS_DIR = config['snapp']['EXPOSED_OUTS_DIR']
+ENCODE_TM_DIR = config['database']['ENCODE_TM_DIR']
 SCRNA_DIR = config['snapp']['SCRNA_DIR']
-
+EXPOSED_OUTS_DIR = config['snapp']['EXPOSED_OUTS_DIR']
 
