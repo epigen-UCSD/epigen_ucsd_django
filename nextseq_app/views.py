@@ -614,7 +614,7 @@ def DemultiplexingView(request, run_pk):
         # print(os.path.join(dmpdir,fname))
         if os.path.isdir(os.path.join(dmpdir, fname)) and fname.endswith(runinfo.Flowcell_ID):
             data['is_direxists'] = 1
-            basedirname = os.path.join(x, fname)
+            basedirname = os.path.join(dmpdir, fname)
             rundate = '20'+'-'.join([fname[i:i+2]
                                      for i in range(0, len(fname.split('_')[0]), 2)])
             # print(rundate)
