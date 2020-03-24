@@ -25,14 +25,14 @@ GENOME=${samplenames[${PBS_ARRAYID}*3+2]}
 
 cd $WORKDIR
 
-# determine genomes
+# determine genomes, docs say to use only hg38 if human only 
 case $GENOME in
     mm10)
         genome_dir="/projects/ps-epigen/GENOME/mm10/10x_Genomics3.0/refdata-cellranger-mm10-3.0.0";;
     hg38)
         genome_dir="/projects/ps-epigen/GENOME/hg38/10x_Genomics3.0/refdata-cellranger-GRCh38-3.0.0";;
     hg19)
-        genome_dir="/projects/ps-epigen/GENOME/hg38/10x_Genomics3.0/refdata-cellranger-GRCh38-3.0.0";;
+        genome_dir="/projects/ps-epigen/GENOME/hg19/10x_Genomics3.0/refdata-cellranger-hg19-3.0.0";;
     *)
         echo "wrong genome input: $GENOME"
         exit 0;;

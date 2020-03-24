@@ -1351,7 +1351,7 @@ $(document).ready(function () {
         $("#target").click();
     });
 
-    /**This return button to link to html resutls and a button for pop-up funcitionality */
+    /**This returns a button to link to html resutls AND a button for link sharing funcitionality */
     function tenx_results_button(seq) {
         if (seq === -1) {
             var href = "#"

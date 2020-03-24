@@ -444,6 +444,14 @@ def get_cooladmin_link(seq):
         return("")
 
 
+def setup_submission(seq_object, data):
+    """This helper function will assign values to the data dict based on the 
+    experimental type and species/genome of the seq object. Will return the data dict so that the
+    submission funtion can use the dict for bash script parameters.
+    """
+    
+    return data
+
 def submit_tenX(seq, email):
     """ This function should only be called by another fucntion that ensures the sequence is valid to be submitted
     This function submits a sequence to 10x cell ranger or 10x atac pipeline
@@ -465,7 +473,7 @@ def submit_tenX(seq, email):
     # TODO check which genome to use based on experiment type, scRNA vs 10xATAC
     if data['genome'].lower() == 'human':
         genome = 'hg38'
-    else:
+    elif  data['genome'].lower() == 'mouse':
         genome = 'mm10'
 
     #filename = ".sequence.tsv"
@@ -668,7 +676,6 @@ def generate_tenx_link(request):
             print(link)
             print(fullpath_link)
             os.system("ln -s %s %s" % (to_link_dir, fullpath_link))
-
             # bash script process
 
         else:
@@ -678,3 +685,9 @@ def generate_tenx_link(request):
         data['link'] = link
 
         return JsonResponse(data, safe=False)
+        return JsonResponse(data, safe= False)
+    else:
+        data["error"] = "Permission denied"
+        return JsonResponse(data,safe=False)
+      
+

@@ -1473,6 +1473,7 @@ def SeqUpdateView(request, pk):
             seqinfo = seq_form.save(commit=False)
             seqinfo.team_member_initails = request.user
             seqinfo.save()
+            #update es index, dispatch signal
             return redirect('masterseq_app:user_metadata')
     else:
         seq_form = SeqCreationForm(instance=seqinfo)
@@ -2193,13 +2194,14 @@ def download(request, path):
             return response
     raise Http404
 
-
 def get_singlecell_data(seq_id, seq_pk):
     """
     Need to return:
     singlecellfield = ['10x Results','10x RefGenome','CoolAdmin Status', 'CoolAdmin RefGenome', 'CoolAdmin Date']
     """
-    tenx_status = get_tenx_status(seq_id)
+    seq_id = seq_info.seq_id
+    exptype = seq_info.libraryinfo.experiment_type
+    tenx_status = get_tenx_status(seq_id,exptype)
     tenx_refgenome = getReferenceUsed(seq_id)
     cooladmin_objects = CoolAdminSubmission.objects.all()
     # TODO in future get time and status from database
