@@ -20,5 +20,6 @@ urlpatterns = [
     path('ajax/load-users/', views.load_users, name='ajax_load_users'),
     path('<int:setqc_pk>/<str:outputname>/web_summary.html', views.tenx_output, name='10xATACoutput'),
     path('<str:outputname>/web_summary.html', views.tenx_output2, name='10xATACoutput2'),
+    #path('encodesetadd/', views.EncodeSetQCCreateView, name='encode_setqc_add'),
 
 ]

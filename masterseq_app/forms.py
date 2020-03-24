@@ -13,6 +13,8 @@ from epigen_ucsd_django.models import CollaboratorPersonInfo
 from django.db.models import Prefetch
 from django.urls import reverse
 import re
+import requests
+import time
 
 
 class SampleCreationForm(forms.ModelForm):
@@ -1249,3 +1251,137 @@ class SeqsCreationForm_wetlab(forms.Form):
         if not Group.objects.filter(name=gname).exists():
             raise forms.ValidationError('Invalid Group Name!')
         return gname
+
+
+class EncodeDataForm(forms.Form):
+    encode_link = forms.CharField(
+        widget=forms.Textarea(attrs={'cols': 100, 'rows': 2}),
+        required=True,
+        )
+    def clean_encode_link(self):
+        cleaned_data = {}
+        cleaned_data['samples'] = {}
+        cleaned_data['libraries'] = {}
+        cleaned_data['sequencings'] = {}
+
+        url = self.cleaned_data['encode_link']
+        print(url)
+        headers = {'accept': 'application/json'}
+        response = requests.get(url, headers=headers)
+        biosample = response.json()
+        graph = biosample['@graph']
+
+        # First, biosamples.... ================================ 
+
+        start = time.time()
+        biosample_list = []
+        sam_new_name = {}
+
+        acceptable_species = ['human', 'mouse', 'rat', 'cattle']  
+        cell_labels = ['cell line', 'primary cell', 'in vitro differentiated cells']
+        tissue_labels = ['tissue']
+        experiment_types = ['ATAC-seq','ChIP-seq','DNase-seq']
+
+        for x in graph:
+            for y in x['replicates']:
+                biosample_list.append(str(y['library']['biosample']['accession']))
+        print(set(biosample_list))
+        for sample in set(biosample_list):
+            this_url = "https://www.encodeproject.org/"+sample+"/?frame=embedded"
+            response = requests.get(this_url, headers=headers)
+            this_sample = response.json()
+            species = str(this_sample['organism']['name'])
+            sam_class = str(this_sample['biosample_ontology']['classification'])
+            if species.lower() not in acceptable_species:
+                raise forms.ValidationError('Incompatible species(' + species.lower()+') for sample: '+sample)
+
+            if sam_class in cell_labels:
+                this_sample_type = 'cultured cells'
+            elif sam_class in tissue_labels:
+                this_sample_type = 'tissue'
+            else:
+                raise forms.ValidationError('Incompatible sample type(' + species.lower()+') for sample: '+sample)
+
+            sample_id=str(this_sample['biosample_ontology']['term_name'])+'_'+sample
+            sam_new_name[sample] = sample_id
+            sample_type=this_sample_type
+
+            cleaned_data['samples'][sample_id] = {}
+            cleaned_data['samples'][sample_id]['sample_type'] = this_sample_type
+            cleaned_data['samples'][sample_id]['species'] = species.lower()
+            cleaned_data['samples'][sample_id]['description'] = str(this_sample['summary'])
+            cleaned_data['samples'][sample_id]['notes'] = 'pseudosample, data downloaded from ENCODE'
+
+        end = time.time()
+        print(end - start)
+
+        # Next, libraries.... ================================
+        
+        start = time.time()
+        library_list = []
+        library_id_list = []
+        lib_sam = {}
+        for x in graph:
+            for y in x['replicates']:
+                library_list.append(str(y['@id']))
+
+        #print(set(library_list))
+        for library in set(library_list):
+            this_url = "https://www.encodeproject.org/"+library+"/?frame=embedded"
+            response = requests.get(this_url, headers=headers)
+            this_library = response.json()
+            #this_id=str(this_library['libraries'][0]['accession'])
+            this_id=str(this_library['library']['accession'])
+            assay_name = str(this_library['experiment']['assay_term_name'])
+            if assay_name not in experiment_types:
+                raise forms.ValidationError('Incompatible experiment type(' + assay_name+') for library: '+this_id)
+
+            library_id_list.append(this_id)
+            thissample = str(this_library['library']['biosample']['accession'])
+
+            cleaned_data['libraries'][this_id] = {}
+            cleaned_data['libraries'][this_id]['sampleinfo'] = sam_new_name[thissample]
+            cleaned_data['libraries'][this_id]['notes'] = ';'.join(['pseudolibrary, ENCODE library downloaded from encodeproject.org','ENCODE accession:'+this_id])
+            cleaned_data['libraries'][this_id]['experiment_type'] = assay_name
+            cleaned_data['libraries'][this_id]['library_description'] = ' '.join(['ENCODE',str(this_library['experiment']['description'])])
+        if len(set(library_id_list)) > 25:
+            raise forms.ValidationError('Exceed maximum number (25) of libraries allowed in each request!')
+        end = time.time()
+        print(end - start)
+        print(str(len(set(library_list))))
+        print(str(len(set(library_id_list))))
+        print(library_id_list)
+
+        # Finally, sequencings... ================================
+
+        start = time.time()
+        seq_list = []
+        for library in set(library_id_list):
+            this_url = "https://www.encodeproject.org/"+library+"/?frame=embedded"
+            response = requests.get(this_url, headers=headers)
+            this_library = response.json()
+            for rep in this_library['replicates']:
+                this_rep_url = "https://www.encodeproject.org/"+rep+"/?frame=embedded"
+                response = requests.get(this_rep_url, headers=headers)
+                this_rep_library = response.json()
+                try:
+                    target = re.split('/|-',str(this_rep_library['experiment']['target']))[2]
+                except:
+                    target = ''
+
+                this_uuid = str(this_rep_library['uuid'])
+                seq_list.append(this_uuid)
+
+                cleaned_data['sequencings'][this_uuid] = {}
+                cleaned_data['sequencings'][this_uuid]['libraryinfo'] = library
+                #cleaned_data['sequencings'][this_uuid]['notes'] = ';'.join(['ENCODE uuid:'+this_uuid,'ENCODE url for files info:'+this_rep_url])
+                cleaned_data['sequencings'][this_uuid]['notes'] = 'ENCODE uuid:'+this_uuid
+                cleaned_data['sequencings'][this_uuid]['default_label'] = '_'.join([cleaned_data['libraries'][library]['sampleinfo'],target]).strip('_')
+        end = time.time()
+        print(end - start)
+        print(seq_list)
+
+        print(cleaned_data)
+        return(cleaned_data)
+
+
