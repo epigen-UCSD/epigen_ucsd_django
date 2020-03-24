@@ -51,9 +51,7 @@ INSTALLED_APPS = [
     'manager_app',
     'collaborator_app',
     'singlecell_app',
-    'search_app',
     'debug_toolbar',
-    'django_elasticsearch_dsl',
 ]
 
 if 'extra_app' in dict(config.items('database')).keys():
@@ -202,36 +200,6 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.profiling.ProfilingPanel',
 ]
 
-if os.path.isfile('/run/secrets/elastic_cloud_auth'):
-    with open('/run/secrets/elastic_cloud_auth', 'r') as f:
-        ES_AUTH = f.read().strip()
-else:
-    ES_AUTH = ""
-
-ES_HOST = os.environ.get('ES_HOST', 'localhost')
-
-ES_INDEX = os.environ.get('ES_INDEX', 'epigen_index')
-ES_INDEX_SETTINGS = {
-    'number_of_shards': 1,
-    'number_of_replicas': 0,
-}
-
-ES_CONNECTIONS = {
-    'default': {
-        'hosts': [{
-            'host': ES_HOST,
-            'http_auth': ES_AUTH,
-            'verify_certs': False,
-            'use_ssl': os.environ.get('ES_USE_SSL', False) == 'True',
-            'port': os.environ.get('ES_PORT', '9200'),
-        }]
-    }
-}
-ELASTICSEARCH_DSL={
-    'default': {
-        'hosts': 'localhost:9200'
-    },
-}
 NEXTSEQAPP_DMPDIR = config['database']['NEXTSEQAPP_DMPDIR']
 LIBQC_DIR = config['database']['LIBQC_DIR']
 SETQC_DIR = config['database']['SETQC_DIR']
