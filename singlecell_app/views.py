@@ -640,7 +640,7 @@ def generate_tenx_link(request):
     print(request.user)
     if request.user.groups.filter(name='bioinformatics').exists() or info['seq_owner'] == request.user:
         #get all files in exposed outs folder
-        exposed_outs_dir = settings.EXPOSED_OUTS_DIR
+        exposed_outs_dir = settings.EXPOSED_OUTS_DIR 
         listdir = os.listdir(exposed_outs_dir)
         basenames = [os.path.basename(fn)[LENGTH_OF_KEY:] for fn in listdir]
         filenames_dict = {}
