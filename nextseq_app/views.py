@@ -604,7 +604,7 @@ def DemultiplexingView(request, run_pk):
 
     dmpdir = settings.NEXTSEQAPP_DMPDIR
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
-    print('expt type: ',runinfo.experiment_type)
+    #print('expt type: %s. Flowcell ID: %s' %(runinfo.experiment_type, runinfo.Flowcell_ID))
 
     if runinfo.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
@@ -617,9 +617,7 @@ def DemultiplexingView(request, run_pk):
             basedirname = os.path.join(dmpdir, fname)
             rundate = '20'+'-'.join([fname[i:i+2]
                                      for i in range(0, len(fname.split('_')[0]), 2)])
-            # print(rundate)
             break
-    # print(data)
     if 'is_direxists' in data:
         try:
             os.mkdir(os.path.join(basedirname, 'Data/Fastqs'))
@@ -670,7 +668,7 @@ def DemultiplexingView(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i2_file = open(filename.replace('.csv', '_I2.csv'), 'w')
-                elif runinfo.experiment_type == 'TA':
+                elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR': #support for sc-RNA expts.
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i1_file.write(','.join(["Lane", "Sample", "Index"])+'\n')
 
@@ -717,7 +715,7 @@ def DemultiplexingView(request, run_pk):
                             if runinfo.experiment_type == 'S2':
                                 i1_file.write(i7seq+'\n')
                                 i2_file.write(i5seq+'\n')
-                            elif runinfo.experiment_type == 'TA':
+                            elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR':
                                 i1_file.write(
                                     ','.join(['*', samples.Library_ID, i7seq])+'\n')
                         else:
@@ -741,7 +739,7 @@ def DemultiplexingView(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file.close()
                     i2_file.close()
-                elif runinfo.experiment_type == 'TA':
+                elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR':
                     i1_file.close()
 
         except Exception as e:
@@ -754,11 +752,11 @@ def DemultiplexingView(request, run_pk):
         RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSubmitted')
 
         # runBcl2fastq
-        print('expt type: ',runinfo.experiment_type)
+        print('expt type: %s. Flowcell ID: %s' %(runinfo.experiment_type, runinfo.Flowcell_ID))
         if runinfo.experiment_type == 'S2':
             cmd1 = './utility/runDemuxSnATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
-        elif runinfo.experiment_type == 'TA':
+        elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR':
             # write extra_parameters to disk
             with open( os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'),'w') as out:
                 out.write(runinfo.extra_parameters)
@@ -826,7 +824,7 @@ def DemultiplexingView2(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i2_file = open(filename.replace('.csv', '_I2.csv'), 'w')
-                elif runinfo.experiment_type == 'TA':
+                elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR':
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i1_file.write(','.join(["Lane", "Sample", "Index"])+'\n')
 
@@ -873,7 +871,7 @@ def DemultiplexingView2(request, run_pk):
                             if runinfo.experiment_type == 'S2':
                                 i1_file.write(i7seq+'\n')
                                 i2_file.write(i5seq+'\n')
-                            elif runinfo.experiment_type == 'TA':
+                            elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR':
                                 i1_file.write(
                                     ','.join(['*', samples.Library_ID, i7seq]) + '\n')
 
@@ -899,7 +897,7 @@ def DemultiplexingView2(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file.close()
                     i2_file.close()
-                elif runinfo.experiment_type == "TA":
+                elif runinfo.experiment_type == "TA" or runinfo.experiment_type == "TR":
                     i1_file.close()
         except Exception as e:
             data['writesamplesheeterror'] = 'Unexpected writing to SampleSheet.csv Error!'
@@ -914,13 +912,14 @@ def DemultiplexingView2(request, run_pk):
         if runinfo.experiment_type == 'S2':
             cmd1 = './utility/runDemuxSnATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
-        elif runinfo.experiment_type == 'TA':
+        elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR':
             # write extra_parameters to disk
             with open( os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'),'w') as out:
                 out.write(runinfo.extra_parameters)
                 
             cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
+
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
