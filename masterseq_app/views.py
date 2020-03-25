@@ -1515,6 +1515,7 @@ def SeqDetailView(request, pk):
     bioinfofield = ['genome', 'pipeline_version', 'final_reads', 'final_yield', 'mito_frac',
                     'tss_enrichment', 'frop']
     singlecellfield = ['10x Results','10x RefGenome','CoolAdmin Results', 'CoolAdmin RefGenome', 'CoolAdmin Date']
+    #changed
     singlecelldata = get_singlecell_data(seqinfo, seqinfo.id)
     seqbioinfos = seqinfo.seqbioinfo_set.all().select_related('genome')
     setqcfield = ['set_id','set_name','experiment_type','url','date_requested']
