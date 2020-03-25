@@ -89,6 +89,12 @@ class ServiceRequestItemCreationForm(forms.ModelForm):
 	class Meta:
 		model = ServiceRequestItem
 		fields = ['service', 'quantity']
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		excludes = ['ATAC-seq_24','ATAC-seq_96']
+		self.fields['service'].queryset = ServiceInfo.objects.all().exclude(service_name__in=excludes)
+
+
 class ServiceRequestCreationForm(forms.ModelForm):
 	class Meta:
 		model = ServiceRequest

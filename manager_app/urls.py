@@ -16,6 +16,7 @@ urlpatterns = [
     path('ajax/load-researchcontact/', views.load_researchcontact, name='ajax_load_researchcontact'),
     path('ajax/load-email/', views.load_email, name='ajax_load_email'),
     path('servicerequest_add/', views.ServiceRequestCreateView, name='collab_servicerequest_add'),
+    path('servicerequests_list/', TemplateView.as_view(template_name="manager_app/servicerequests_list.html"), name='servicerequests_list'),
 
 
 ]

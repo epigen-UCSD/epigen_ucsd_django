@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+from epigen_ucsd_django.models import CollaboratorPersonInfo
 
 # Create your models here.
 
@@ -20,6 +21,8 @@ class ServiceRequest(models.Model):
     quote_number= models.CharField('quote number', max_length=100,unique=True,blank=True, null=True)
     #service_request = models.ManyToManyField(ServiceRequest)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
+    #research_contact = models.ForeignKey(CollaboratorPersonInfo, on_delete=models.CASCADE, blank=True, null=True)
+    #research_contact_email = models.CharField(max_length=100, blank=True, null=True)
     date =  models.DateField(blank=True, null=True)
     notes = models.TextField(blank=True)
     status = models.CharField(max_length=50, blank=True, null=True)

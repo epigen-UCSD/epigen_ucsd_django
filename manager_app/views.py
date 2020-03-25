@@ -14,7 +14,7 @@ from masterseq_app.views import nonetolist,removenone
 from django.forms import formset_factory
 from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm
 import datetime
-
+from collaborator_app.models import ServiceInfo,ServiceRequest,ServiceRequestItem
 # Create your views here.
 
 
@@ -216,14 +216,14 @@ def load_researchcontact(request):
     # researchcontact = CollaboratorPersonInfo.objects.\
     # filter(person_id__groups__name__in=[groupname]).prefetch_related(Prefetch('person_id__groups'))
     researchcontact = CollaboratorPersonInfo.objects.filter(person_id__groups__name__in=[groupname])
-    print(researchcontact)
+    #print(researchcontact)
     return render(request, 'manager_app/researchcontact_dropdown_list_options.html', {'researchcontact': researchcontact})
 
 def load_email(request):
     colllab_id = request.GET.get('colllab_id')
 
     researchcontact = CollaboratorPersonInfo.objects.get(id=colllab_id)
-    print(researchcontact.email)
+    #print(researchcontact.email)
     return render(request, 'manager_app/email_dropdown_list_options.html', {'researchcontact': researchcontact})
 
 
@@ -244,28 +244,50 @@ def ServiceRequestCreateView(request):
         servicerequest_form = ServiceRequestCreationForm(request.POST)
         if servicerequest_form.is_valid() and contact_form.is_valid():
             group_name = contact_form.cleaned_data['group']
-            groupinfo = Group.objects.filter(name=group_name)
+            groupinfo = Group.objects.get(name=group_name)
             data_request = {
                 'date':str(today),
                 'group':group_name,
                 'status':'initiate',
                 'notes':servicerequest_form.cleaned_data['notes'],
             }
+            try:
+                institute = Group_Institution.objects.get(group=groupinfo).institution.lower()
+            except:
+                institute = 'non-ucsd'
+            #print(institute)
             if servicerequestitems_formset.is_valid():
                 for form in servicerequestitems_formset.forms:
                     if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
                         service = form.cleaned_data['service']
                         quantity = form.cleaned_data['quantity']
-                        data_requestitem[service.service_name] = {
-                            'rate':str(service.uc_rate)+'/'+service.rate_unit,
-                            'rate_number':service.uc_rate,
-                            'quantity':quantity,
-                        }
+                        if service.service_name == 'ATAC-seq':
+                            if float(quantity) >= 24 and float(quantity) < 96:
+                                service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
+                            elif float(quantity) >= 96:
+                                service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
+                        #print(service.service_name)
+
+                        if institute == 'ucsd':
+                            data_requestitem[service.service_name] = {
+                                'rate(uc users)':str(service.uc_rate)+'/'+service.rate_unit,
+                                'rate_number':service.uc_rate,
+                                'quantity':quantity,
+                            }
+                        else:
+                            data_requestitem[service.service_name] = {
+                                'rate(non-uc users)':str(service.nonuc_rate)+'/'+service.rate_unit,
+                                'rate_number':service.nonuc_rate,
+                                'quantity':quantity,
+                            }                            
                 total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
                 total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity']) for x in data_requestitem.values()])+' = $'+str(total_price)
 
                 if 'Preview' in request.POST:
-                    displayorde_requestitem = ['rate','quantity']
+                    if institute == 'ucsd':
+                        displayorde_requestitem = ['rate(uc users)','quantity']
+                    else:
+                        displayorde_requestitem = ['rate(non-uc users)','quantity']
                     displayorder_request = ['date','group','notes','status']
                     #print(data_request)  
 
@@ -289,13 +311,15 @@ def ServiceRequestCreateView(request):
                         notes=data_request['notes'],
                         status=data_request['status'],
                         )
-                    for item in data_requestitem:
+                    for item in data_requestitem.keys():
+                        print(item)
+                        print(data_requestitem[item]['quantity'])
                         ServiceRequestItem.objects.create(
-                            request=thisrequest,
-                            service=ServiceInfo.objects.get(service_name=item.key()),
-                            quantity=item['quantity'],
+                            request=thisrequest, 
+                            service=ServiceInfo.objects.get(service_name=item),
+                            quantity=data_requestitem[item]['quantity'],
                             )
-                    return redirect('manager_app:collab_quote')
+                    return redirect('manager_app:servicerequests_list')
 
 
     else:
