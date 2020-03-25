@@ -8,10 +8,11 @@ from django.contrib import messages
 from django.contrib.auth.models import User,Group
 from django.http import JsonResponse
 from django.db.models import Q
+from django.db.models import Prefetch
 from epigen_ucsd_django.shared import is_member
 from masterseq_app.views import nonetolist,removenone
 from django.forms import formset_factory
-from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm
+from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm
 import datetime
 
 # Create your views here.
@@ -210,6 +211,20 @@ def load_collabs_old(request):
         results.append(uu)
     return JsonResponse(results, safe=False)
 
+def load_researchcontact(request):
+    groupname = request.GET.get('group')
+    # researchcontact = CollaboratorPersonInfo.objects.\
+    # filter(person_id__groups__name__in=[groupname]).prefetch_related(Prefetch('person_id__groups'))
+    researchcontact = CollaboratorPersonInfo.objects.filter(person_id__groups__name__in=[groupname])
+    print(researchcontact)
+    return render(request, 'manager_app/researchcontact_dropdown_list_options.html', {'researchcontact': researchcontact})
+
+def load_email(request):
+    colllab_id = request.GET.get('colllab_id')
+
+    researchcontact = CollaboratorPersonInfo.objects.get(id=colllab_id)
+    print(researchcontact.email)
+    return render(request, 'manager_app/email_dropdown_list_options.html', {'researchcontact': researchcontact})
 
 
 @transaction.atomic
@@ -218,18 +233,21 @@ def ServiceRequestCreateView(request):
     data_requestitem = {}
     data_request = {}
 
+    contact_form = ContactForm(request.POST or None)
     ServiceRequestItemFormSet = formset_factory(
         ServiceRequestItemCreationForm, can_delete=True)
     servicerequestitems_formset = ServiceRequestItemFormSet(request.POST or None)
-    groupinfo = request.user.groups.all().first()
+    
     today = datetime.date.today()
 
     if request.method == 'POST':
         servicerequest_form = ServiceRequestCreationForm(request.POST)
-        if servicerequest_form.is_valid():
+        if servicerequest_form.is_valid() and contact_form.is_valid():
+            group_name = contact_form.cleaned_data['group']
+            groupinfo = Group.objects.filter(name=group_name)
             data_request = {
                 'date':str(today),
-                'group':groupinfo.name,
+                'group':group_name,
                 'status':'initiate',
                 'notes':servicerequest_form.cleaned_data['notes'],
             }
@@ -252,6 +270,7 @@ def ServiceRequestCreateView(request):
                     #print(data_request)  
 
                     context = {
+                        'contact_form':contact_form,
                         'servicerequest_form': servicerequest_form,
                         'servicerequestitems_formset': servicerequestitems_formset,
                         'modalshow': 1,
@@ -283,6 +302,7 @@ def ServiceRequestCreateView(request):
         servicerequest_form = ServiceRequestCreationForm(None)
 
     context = {
+        'contact_form':contact_form,
         'servicerequest_form': servicerequest_form,
         'servicerequestitems_formset': servicerequestitems_formset,
     }
