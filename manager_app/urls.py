@@ -13,6 +13,10 @@ urlpatterns = [
     path('ajax/load-groups/', views.load_groups, name='ajax_load_groups'),
     path('ajax/group_add/', views.AjaxGroupCreateView, name='ajax_group_add'),
     path('ajax/load-collabs/', views.load_collabs, name='ajax_load_collabs'),
+    path('ajax/load-researchcontact/', views.load_researchcontact, name='ajax_load_researchcontact'),
+    path('ajax/load-email/', views.load_email, name='ajax_load_email'),
+    path('servicerequest_add/', views.ServiceRequestCreateView, name='collab_servicerequest_add'),
+    path('servicerequests_list/', TemplateView.as_view(template_name="manager_app/servicerequests_list.html"), name='servicerequests_list'),
 
 
 ]

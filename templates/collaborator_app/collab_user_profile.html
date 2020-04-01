@@ -14,7 +14,6 @@
                   <th scope="col">group</th>
                   <th scope="col">institute</th>                  
                   <th scope="col">role</th>
-                  <th scope="col">username</th>
                   <th scope="col">first_name</th>
                   <th scope="col">last_name</th>
                   <th scope="col">email</th>
@@ -28,7 +27,6 @@
                   <td>{{ collab.group__name | default_if_none:"" }}</td>
                   <td>{{ group_institute_dict | key:collab.group__name | default_if_none:"" }}</td>
                   <td>{{ collab.role | default_if_none:"" }}</td>
-                  <td>{{ collab.person_id__username | default_if_none:""}}</td>
                   <td>{{ collab.person_id__first_name | default_if_none:"" }}</td>
                   <td>{{ collab.person_id__last_name | default_if_none:"" }}</td>
                   <td>{{ collab.email | default_if_none:"" | join:","}}</td>

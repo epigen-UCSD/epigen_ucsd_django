@@ -1,0 +1,22 @@
+{% extends 'collaborator_app/collab_base.html' %}
+
+{% block title %}
+<title>FeeForServiceApp</title>
+{% endblock %}
+
+{% block sidebar %}
+<div id="sidebar" class="col-sm-2 col-md-2 col-lg-2" role="navigation">
+  <div class="list-group navsiebar">
+    <li class="sidebar-header">FeeForService App</li>
+    <a href="{% url 'collaborator_app:collab_servicerequest_list' %}" class="list-group-item list-group-item-action-custom editable">My ServiceRequest</a>
+    <a href="{% url 'collaborator_app:collab_servicerequest_add' %}" class="list-group-item list-group-item-action-custom">Add a new ServiceRequest</a>
+    <a href="" class="list-group-item list-group-item-action-custom">Service Intro</a>
+
+ 
+  </div>
+</div> 
+
+{% endblock %}
+
+{% block content %}
+{% endblock %}
