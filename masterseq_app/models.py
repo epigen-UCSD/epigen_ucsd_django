@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.models import CollaboratorPersonInfo
+
+from search_app.documents import SampleInfo as SampleDoc, SeqInfo as SeqDoc, LibraryInfo as LibDoc
 # Create your models here.
 
 
@@ -138,6 +140,24 @@ class SampleInfo(models.Model):
     #fiscal_person_index = models.ForeignKey(Person_Index,on_delete=models.CASCADE,blank=True,null=True)
     status = models.CharField(max_length=20, blank=True, null=True)
 
+
+    def to_search(self):
+        data = {
+            '_id':self.pk,
+            'id':self.pk,
+            'sample_id':str(self.sample_id),
+            'date':self.date,
+            'date_received':self.date_received,
+            'team_member':str(self.team_member.username),
+            'species':self.species,
+            'sample_type':self.sample_type,
+            'preparation':self.preparation,
+            'description':self.description,
+            'fixation':self.fixation,
+            'notes':self.notes,
+        }
+        return SampleDoc(**data)
+
     def __str__(self):
         return self.sample_index+':'+self.sample_id
 
@@ -163,6 +183,20 @@ class LibraryInfo(models.Model):
     team_member_initails = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True)
     notes = models.TextField(blank=True)
+
+    def to_search(self):
+        data = {
+            '_id':self.pk,
+            'id':self.pk,
+            'sampleinfo':self.sampleinfo.to_search(),
+            'library_id':self.library_id,
+            'library_description':self.library_description,
+            'experiment_type':self.experiment_type,
+            'date_started':self.date_started,
+            'date_completed':self.date_completed,
+            'notes':self.notes,
+        }
+        return LibDoc(**data)
 
     def __str__(self):
         return self.library_id
@@ -192,6 +226,17 @@ class SeqInfo(models.Model):
         'Default Label(for setQC report)', max_length=200, blank=True)
     notes = models.TextField(blank=True)
 
+    def to_search(self):
+        data={
+            'id':self.pk,
+            '_id':self.pk,
+            'libraryinfo':self.libraryinfo.to_search,
+            'read_type':self.read_type,
+            'date_submitted_for_sequencing':self.date_submitted_for_sequencing,
+            'notes':self.notes
+        }
+        return SeqDoc(**data)
+
     def __str__(self):
         return self.seq_id
 
@@ -206,3 +251,21 @@ class SeqBioInfo(models.Model):
     mito_frac = models.FloatField(blank=True, null=True)
     tss_enrichment = models.FloatField(blank=True, null=True)
     frop = models.FloatField(blank=True, null=True)
+
+
+
+
+class ExperimentType(models.Model):
+    experiment = models.CharField(max_length=50)
+    def __str__(self):
+        return self.experiment
+
+
+class RefGenomeInfo(models.Model):
+    genome_name = models.CharField(max_length=50)
+    species = models.CharField(max_length=25)
+    experiment_type = models.ManyToManyField(ExperimentType)
+    path = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.genome_name

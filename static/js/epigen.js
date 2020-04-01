@@ -257,7 +257,7 @@ $(document).ready(function () {
     });
 
 
- $('#seqmanager_seq').DataTable({
+    $('#seqmanager_seq').DataTable({
         dom: 'lBfrtip',
         buttons: [
             'excel',
@@ -427,13 +427,13 @@ $(document).ready(function () {
             "createdCell": function (td, data, row, col) {
                 var itemID = row["pk"];
                 var n = row["notes"];
-                if(n){
+                if (n) {
                     $(td).addClass('details-control');
-                    $(td).attr('data-href', '{% url \'collaborator_app:setqc_getnotes\' '+itemID+' %}');
+                    $(td).attr('data-href', '{% url \'collaborator_app:setqc_getnotes\' ' + itemID + ' %}');
                     $(td).text('');
 
                 }
-                else{
+                else {
                     $(td).text('');
                 }
 
@@ -449,13 +449,13 @@ $(document).ready(function () {
         },
         {
             "targets": 3,
-            "render": function (data, type, row){
+            "render": function (data, type, row) {
                 var date = row["last_modified"];
                 var dt = new Date(date);
                 var y = dt.getFullYear();
-                var m = dt.getMonth()+1;
+                var m = dt.getMonth() + 1;
                 var d = dt.getDate();
-                return y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+                return y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
 
 
             }
@@ -465,9 +465,9 @@ $(document).ready(function () {
             "render": function (data, type, row) {
                 var reporturl = row["url"];
                 if (reporturl) {
-                    return '<a href="'+reporturl+'" target="_blank"><i class="fas fa-file-alt" style="font-size: 17px;color:#26D07C"></i></a>'
+                    return '<a href="' + reporturl + '" target="_blank"><i class="fas fa-file-alt" style="font-size: 17px;color:#26D07C"></i></a>'
                 }
-                else{
+                else {
                     return ''
                 }
 
@@ -874,32 +874,32 @@ $(document).ready(function () {
     });
 
 
-    $('#id_group').bind('autocompleteselect', function(e, ui){
+    $('#id_group').bind('autocompleteselect', function (e, ui) {
         var url = $("#groupdependent").attr("data-collabs-url");
         var groupname = ui.item.value;
         $.ajax({
-            url:url,
+            url: url,
             cache: false,
             data: {
-                'group':groupname
+                'group': groupname
             },
-            success:function (data){
+            success: function (data) {
                 $("#id_research_contact").html(data);
             }
         })
     });
 
-    $('select#id_research_contact').on('change', function (){
+    $('select#id_research_contact').on('change', function () {
         console.log(this.value);
         var url = $("#groupdependent").attr("data-email-url");
         var colllab_id = this.value;
         $.ajax({
-            url:url,
+            url: url,
             cache: false,
             data: {
-                'colllab_id':colllab_id
+                'colllab_id': colllab_id
             },
-            success:function (data){
+            success: function (data) {
                 $("#id_research_contact_email").html(data);
             }
         })
@@ -1055,16 +1055,16 @@ $(document).ready(function () {
 
     $('select#id_step_to_run').on('change', function () {
         if (this.value == "step1") {
-            $( "#id_set_name" ).prop( "disabled", true );
-            $( "#encode_experiment_type" ).prop( "disabled", true );
-            $( "#id_notes" ).prop( "disabled", true );
-            $( "#id_genome" ).prop( "disabled", true );
+            $("#id_set_name").prop("disabled", true);
+            $("#encode_experiment_type").prop("disabled", true);
+            $("#id_notes").prop("disabled", true);
+            $("#id_genome").prop("disabled", true);
         }
         else {
-            $( "#id_set_name" ).prop( "disabled", false );
-            $( "#encode_experiment_type" ).prop( "disabled", false );
-            $( "#id_notes" ).prop( "disabled", false );
-            $( "#id_genome" ).prop( "disabled", false );
+            $("#id_set_name").prop("disabled", false);
+            $("#encode_experiment_type").prop("disabled", false);
+            $("#id_notes").prop("disabled", false);
+            $("#id_genome").prop("disabled", false);
         }
     });
 
@@ -1304,30 +1304,86 @@ $(document).ready(function () {
         })
     });
 
-    /* Click on runsinglecell located in singlecell app will submit the sequence to be analyzed using its value.*/
+    function add_radio_buttons(refs, seq) {
+        var divtoadd = $('<div value=' + seq + ' class="radio-buttons-sc"></div>')
+        divtoadd.appendTo('.refgenomes');
+        for (ref in refs) {
+            var radiobtn = $('<div class="radio"><label><input type="radio" \
+               value='+ refs[ref] + ' name = "refradio" > ' + refs[ref] + '</label ></div>');
+            radiobtn.appendTo('.radio-buttons-sc');
+        }
+
+    }
+
+    /* Click on runsinglecell located in singlecell app will GET refrence genomes available to the sequence for confirming*/
     $(document).on('click', '.runsinglecell', function (e) {
         e.preventDefault();
         button = $(this)
+        var seq = $(this).val()
+        console.log(seq)
         $.ajax({
-            type: "POST",
+            type: "GET",
             cache: false,
             url: "/singlecell/ajax/submit/",
             data: {
-                'seq': $(this).val(),
+                'seq': seq,
                 'email': "no emailneeded rn"
             },
             dataType: 'json',
             success: function (data) {
-                if (data['is_submitted'] == true) {
-                    console.log(data['is_submitted'])
-                    console.log('data submitted')
-                    $(button).replaceWith(' <button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>Submitted</button>')
-                    return
+                if (data['success'] === true) {
+                    if (data['submitted'] === true) {
+                        //submitted the seq without need to promp user
+                        $(".runsinglecell[value=" + seq + "]").replaceWith(
+                            '<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>Submitted</button>'
+                        );
+                        return
+                    }
+                    console.log(data['success'])
+                    $(".popup-overlay, .popup-content").addClass("active");
+                    console.log(data['refs'])
+                    add_radio_buttons(data['refs'], seq)
+
+                    //activate popup to confirm
                 }
             }
 
         });
     });
+
+
+    /* Click on runsinglecell located in singlecell app will GET refrence genomes available to the sequence for confirming*/
+    $(document).on('click', '.runsinglecell-confirm', function (e) {
+        e.preventDefault();
+        var seq = $('.radio-buttons-sc').attr('value');
+        var ref = $('input[name="refradio"]:checked').val();
+        console.log(`ref chosen: ${ref}, seq: ${seq}`)
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/singlecell/ajax/submit/",
+            data: {
+                'seq': seq,
+                'ref': ref,
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data['success'] == true) {
+                    console.log(data['success'])
+                    $(".popup-overlay, .popup-content").removeClass("active");
+                    $(".radio-buttons-sc").remove();
+                    $(".runsinglecell[value=" + seq + "]").replaceWith(
+                        '<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>Submitted</button>'
+                    );
+                }
+                else {
+                    alert(data['error'])
+                }
+            }
+
+        });
+    });
+
 
     $(document).on('click', '.cooladmin-submit', function (e) {
         e.preventDefault();
@@ -1448,7 +1504,7 @@ $(document).ready(function () {
     //removes the "active" class to .popup and .popup-content when the "Close" button is clicked 
     $(".closePopup").on("click", function () {
         $(".popup-overlay, .popup-content").removeClass("active");
-        $(".share-button-li").remove();
+        $(".radio-buttons-sc").remove();
     });
 
     //share-button will generate or get link. 

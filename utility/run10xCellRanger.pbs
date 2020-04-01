@@ -27,6 +27,7 @@ cd $WORKDIR
 
 # determine genomes, docs say to use only hg38 if human only 
 case $GENOME in
+genome_dir=$REF_GEN_LOCATION
     mm10)
         genome_dir="/projects/ps-epigen/GENOME/mm10/10x_Genomics3.0/refdata-cellranger-mm10-3.0.0";;
     hg38)
