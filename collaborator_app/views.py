@@ -11,6 +11,10 @@ from masterseq_app.models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo,
     SeqMachineInfo
 from django.contrib.auth.models import User, Group
 from setqc_app.models import LibrariesSetQC, LibraryInSet
+from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm
+import datetime
+from django.forms import formset_factory
+from django.db import transaction
 # Create your views here.
 
 DisplayFieldforcollab = ['set_name','date_requested','experiment_type','url']
@@ -91,7 +95,7 @@ def UserProfileView(request):
     group = request.user.groups.all().first()
     collabs = CollaboratorPersonInfo.objects.filter(group=group).select_related('person_id').prefetch_related('person_id__groups')
     collabs_list = collabs.values(\
-        'group__name','person_id__username',\
+        'group__name',\
         'person_id__first_name','person_id__last_name',\
         'phone','email','role','index','initial_password')
     group_institute_list = Group_Institution.objects.all().select_related('group').values('group__name','institution')
@@ -100,6 +104,7 @@ def UserProfileView(request):
         group_institute_dict[item['group__name']]=item['institution']
  
     context = {
+        'user_name':request.user.username,
         'group_name': group.name,
         'collab_list':collabs_list,
         'group_institute_dict':group_institute_dict,
@@ -180,4 +185,102 @@ def CollaboratorSampleComView(request):
 		'Sample_list':Sample_list,
 	}
 	return render(request, 'collaborator_app/collaboratorsetqcinfocom.html', context)
+
+
+def ServiceRequestListView(request):
+
+    context = {
+
+    }
+    return render(request, 'collaborator_app/collab_feeforservice_quote.html', context)
+
+@transaction.atomic
+def ServiceRequestCreateView(request):
+
+    data_requestitem = {}
+    data_request = {}
+
+    ServiceRequestItemFormSet = formset_factory(
+        ServiceRequestItemCreationForm, can_delete=True)
+    servicerequestitems_formset = ServiceRequestItemFormSet(request.POST or None)
+    groupinfo = request.user.groups.all().first()
+    today = datetime.date.today()
+
+    if request.method == 'POST':
+        servicerequest_form = ServiceRequestCreationForm(request.POST)
+        if servicerequest_form.is_valid():
+            data_request = {
+                'date':str(today),
+                'group':groupinfo.name,
+                'status':'initiate',
+                'notes':servicerequest_form.cleaned_data['notes'],
+            }
+            if servicerequestitems_formset.is_valid():
+                for form in servicerequestitems_formset.forms:
+                    if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
+                        service = form.cleaned_data['service']
+                        quantity = form.cleaned_data['quantity']
+                        data_requestitem[service.service_name] = {
+                            'rate':str(service.uc_rate)+'/'+service.rate_unit,
+                            'rate_number':service.uc_rate,
+                            'quantity':quantity,
+                        }
+                total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
+                total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity']) for x in data_requestitem.values()])+' = $'+str(total_price)
+
+                if 'Preview' in request.POST:
+                    displayorde_requestitem = ['rate','quantity']
+                    displayorder_request = ['date','group','notes','status']
+                    #print(data_request)  
+
+                    context = {
+                        'servicerequest_form': servicerequest_form,
+                        'servicerequestitems_formset': servicerequestitems_formset,
+                        'modalshow': 1,
+                        'displayorde_requestitem': displayorde_requestitem,
+                        'displayorder_request': displayorder_request,
+                        'data_requestitem':data_requestitem,
+                        'data_request':data_request,
+                        'total_expression':total_expression
+                    }        
+                    return render(request, 'collaborator_app/collab_feeforservice_servicerequestcreate.html', context)
+
+                if 'Save' in request.POST:
+                    thisrequest = ServiceRequest.objects.create(
+                        group=groupinfo,
+                        date=data_request['date'],
+                        notes=data_request['notes'],
+                        status=data_request['status'],
+                        )
+                    for item in data_requestitem:
+                        ServiceRequestItem.objects.create(
+                            request=thisrequest,
+                            service=ServiceInfo.objects.get(service_name=item.key()),
+                            quantity=item['quantity'],
+                            )
+                    return redirect('collaborator_app:collab_quote')
+
+
+    else:
+        servicerequest_form = ServiceRequestCreationForm(None)
+
+    context = {
+        'servicerequest_form': servicerequest_form,
+        'servicerequestitems_formset': servicerequestitems_formset,
+    }
+
+    return render(request, 'collaborator_app/collab_feeforservice_servicerequestcreate.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
