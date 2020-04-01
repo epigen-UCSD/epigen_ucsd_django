@@ -872,6 +872,41 @@ $(document).ready(function () {
             }
         })
     });
+
+
+    $('#id_group').bind('autocompleteselect', function(e, ui){
+        var url = $("#groupdependent").attr("data-collabs-url");
+        var groupname = ui.item.value;
+        $.ajax({
+            url:url,
+            cache: false,
+            data: {
+                'group':groupname
+            },
+            success:function (data){
+                $("#id_research_contact").html(data);
+            }
+        })
+    });
+
+    $('select#id_research_contact').on('change', function (){
+        console.log(this.value);
+        var url = $("#groupdependent").attr("data-email-url");
+        var colllab_id = this.value;
+        $.ajax({
+            url:url,
+            cache: false,
+            data: {
+                'colllab_id':colllab_id
+            },
+            success:function (data){
+                $("#id_research_contact_email").html(data);
+            }
+        })
+    });
+
+
+
     // $('#id_group').change(function (){
     //     var url = $("#groupdependent").attr("data-samplescollabs-url");
     //     var url2 = $("#groupdependent").attr("data-fiscalindex-url");
@@ -990,6 +1025,12 @@ $(document).ready(function () {
         addText: 'add another samples',
         deleteText: 'remove',
         prefix: 'librariesinrun_set'
+    });
+
+    $('.servicerequestitemformset_row').formset({
+        addText: 'add another service',
+        deleteText: 'remove',
+        prefix: 'form'
     });
 
     $('.chipformset_row').formset({

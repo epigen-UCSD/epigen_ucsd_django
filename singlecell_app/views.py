@@ -10,7 +10,8 @@ from .forms import CoolAdminForm
 from .models import CoolAdminSubmission
 from django.conf import settings
 import os
-import random, string
+import random
+import string
 import subprocess
 import json
 from epigen_ucsd_django.shared import *
@@ -107,7 +108,8 @@ def build_seq_list(seqs_list):
     for entry in seqs_list:
         seq_id = entry['seq_id']
         experiment_type = entry['libraryinfo__experiment_type']
-        entry['last_modified'] = get_latest_modified_time(seq_id, entry['id'], entry['date_submitted_for_sequencing'], cooladmin_objects)
+        entry['last_modified'] = get_latest_modified_time(
+            seq_id, entry['id'], entry['date_submitted_for_sequencing'], cooladmin_objects)
         entry['seq_status'] = get_seq_status(seq_id, entry['read_type'])
         entry['10x_status'] = get_tenx_status(seq_id, experiment_type)
         entry['species'] = entry['libraryinfo__sampleinfo__species']
@@ -127,23 +129,23 @@ def get_tenx_status(seq, experiment_type):
         string 'Error' when an error occurs in pipeline
         string 'Yes' when the 10x pipeline is succesfully done
     """
-    if(experiment_type == 'snRNA-seq' or experiment_type == 'scRNA-seq' ):
+    if(experiment_type == 'snRNA-seq' or experiment_type == 'scRNA-seq'):
         dir_to_check = settings.SCRNA_DIR
     else:
         dir_to_check = settings.TENX_DIR
-    
+
     tenx_output_folder = 'outs'
     tenx_target_outfile = 'web_summary.html'
     path = os.path.join(dir_to_check, str(seq))
-    #first check if there is an .inqueue then an .inprocess 
-    
+    # first check if there is an .inqueue then an .inprocess
+
     if not os.path.isdir(path):
         seqstatus = 'No'
     elif os.path.isfile(path + '/.inqueue'):
         seqstatus = 'InQueue'
-    elif os.path.isfile( path + '/.inprocess' ):
+    elif os.path.isfile(path + '/.inprocess'):
         seqstatus = 'InProcess'
-    elif os.path.isfile( path + '/outs/_errors' ):
+    elif os.path.isfile(path + '/outs/_errors'):
         seqstatus = 'Error!'
     else:
         if not os.path.isfile(os.path.join(path,
@@ -424,7 +426,7 @@ def edit_cooladmin_sub(request, seqinfo):
     }
     return render(request, 'singlecell_app/editCoolAdmin.html', context)
 
- 
+
 def get_cooladmin_link(seq):
     """Call this function when cooladmin status has already been confirmed to be success
     """
@@ -436,7 +438,7 @@ def get_cooladmin_link(seq):
         with open(json_file, 'r') as f:
             cool_data = f.read()
         cool_dict = json.loads(cool_data)
-        print('cooldict: ',cool_dict)
+        print('cooldict: ', cool_dict)
         return (cool_dict['report_address'])
     except:
         return("")
@@ -454,21 +456,21 @@ def submit_tenX(seq, email):
     """ This function should only be called by another fucntion that ensures the sequence is valid to be submitted
     This function submits a sequence to 10x cell ranger or 10x atac pipeline
     """
-    
+
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
         'libraryinfo__sampleinfo').values('seq_id',
-        'libraryinfo__sampleinfo__species','read_type',
-        'libraryinfo__experiment_type'))
+                                          'libraryinfo__sampleinfo__species', 'read_type',
+                                          'libraryinfo__experiment_type'))
     data['seq'] = split_seqs(seq_info[0]['seq_id'])
-    data['genome'] =  seq_info[0]['libraryinfo__sampleinfo__species'] 
-     
-    #set output dir
+    data['genome'] = seq_info[0]['libraryinfo__sampleinfo__species']
+
+    # set output dir
     if seq_info[0]['libraryinfo__experiment_type'] == '10xATAC':
         dir = settings.TENX_DIR
     else:
         dir = settings.SCRNA_DIR
 
-    #TODO check which genome to use based on experiment type, scRNA vs 10xATAC
+    # TODO check which genome to use based on experiment type, scRNA vs 10xATAC
     if data['genome'].lower() == 'human':
         genome = 'hg38'
     elif  data['genome'].lower() == 'mouse':
@@ -476,10 +478,10 @@ def submit_tenX(seq, email):
 
     #filename = ".sequence.tsv"
     filename = '.'+str(seq)+'.tsv'
-    tsv_writecontent = '\t'.join([seq, ','.join(seqs), genome]) 
-    seqDir = os.path.join(dir,seq)
-   
-    #replace with db update that this seq status is inqueue
+    tsv_writecontent = '\t'.join([seq, ','.join(seqs), genome])
+    seqDir = os.path.join(dir, seq)
+
+    # replace with db update that this seq status is inqueue
     if not os.path.exists(seqDir):
         os.mkdir(seqDir)
     inqueue = os.path.join(seqDir, '.inqueue')
@@ -488,13 +490,15 @@ def submit_tenX(seq, email):
     tsv_file = os.path.join(seqDir, filename)
     with open(tsv_file, 'w') as f:
         f.write(tsv_writecontent)
-        
-    #set command depedning on experiment
-    if( seq_info[0]['libraryinfo__experiment_type'] == 'scRNA-seq' or seq_info[0]['libraryinfo__experiment_type'] == 'snRNA-seq'):
-        cmd1 = './utility/runCellRanger.sh ' + data['seq'] +' ' + dir + ' ' + email
+
+    # set command depedning on experiment
+    if(seq_info[0]['libraryinfo__experiment_type'] == 'scRNA-seq'):
+        cmd1 = './utility/runCellRanger.sh ' + \
+            data['seq'] + ' ' + dir + ' ' + email
     else:
-        cmd1 = './utility/run10xOnly.sh ' + data['seq'] +' ' + dir + ' ' + email
-    print('cmd submitted: ',cmd1)
+        cmd1 = './utility/run10xOnly.sh ' + \
+            data['seq'] + ' ' + dir + ' ' + email
+    print('cmd submitted: ', cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return True
@@ -531,23 +535,22 @@ def getReferenceUsed(seq):
     @params seq is a string of the sequnece wanted e.g. seq="JYH_1047"
     @returns a string that is the refernce genome used
     """
-    
-    #To return
+
+    # To return
     refgenome = 'N/A'
 
     tenx_output_folder = 'outs'
     tenx_target_outfile = 'summary.json'
     tenxdir = settings.TENX_DIR
 
-    file_path = os.path.join(tenxdir, str(seq), tenx_output_folder, tenx_target_outfile)
+    file_path = os.path.join(tenxdir, str(
+        seq), tenx_output_folder, tenx_target_outfile)
     if(os.path.exists(file_path)):
         with open(file_path) as json_file:
             data = json.load(json_file)
-            refgenome = data["reference_assembly"]    
-    #open summarry.json and read "reference_assembly"
-    return refgenome    
-
-
+            refgenome = data["reference_assembly"]
+    # open summarry.json and read "reference_assembly"
+    return refgenome
 
 
 def get_latest_modified_time(seq_id, seq_object_id, date_sub_for_seq, cooladmin_objects):
@@ -617,30 +620,29 @@ def generate_tenx_link(request):
     Will generate a link if needed. Will return the link in the response.
     """
     print(request)
-    exposeddir = os.path.basename(settings.EXPOSED_OUTS_DIR)
-    print(exposeddir)
-    LENGTH_OF_KEY = 9 #put this in the deploy or settings file?
+    LENGTH_OF_KEY = 9  # put this in the deploy or settings file?
     seq = request.GET.get('seq')
-    print('genertaing link for seq: ',seq)
+    print('genertaing link for seq: ', seq)
     info = {}
     data = {}
     try:
-        seq_object = SeqInfo.objects.select_related('libraryinfo').get(seq_id=seq)
+        seq_object = SeqInfo.objects.select_related(
+            'libraryinfo').get(seq_id=seq)
     except ObjectDoesNotExist:
         print('SeqObject does not exist!')
         data['error'] = "Sequence object does not exist!"
         return JsonResponse(data, safe=False)
 
-    #get seq owner:
+    # get seq owner:
     library_info = seq_object.libraryinfo
     info['experiment_type'] = library_info.experiment_type
     info['seq_owner'] = seq_object.team_member_initails
     info['seq_id'] = seq_object.seq_id
-    print(info) 
+    print(info)
     print(request.user)
     if request.user.groups.filter(name='bioinformatics').exists() or info['seq_owner'] == request.user:
-        #get all files in exposed outs folder
-        exposed_outs_dir = settings.EXPOSED_OUTS_DIR 
+        # get all files in exposed outs folder
+        exposed_outs_dir = settings.EXPOSED_OUTS_DIR
         listdir = os.listdir(exposed_outs_dir)
         basenames = [os.path.basename(fn)[LENGTH_OF_KEY:] for fn in listdir]
         filenames_dict = {}
@@ -648,34 +650,44 @@ def generate_tenx_link(request):
             filenames_dict[basenames[i]] = listdir[i]
 
         print(filenames_dict)
-        #get directory that seq is in
-        #check if symbolic link is present
+        # get directory that seq is in
+        # check if symbolic link is present
         if(seq not in (basenames)):
             print('making new symbolic')
-            #Do symbolic linking
+            # Do symbolic linking
             if info['experiment_type'] == '10xATAC':
                 parent_dir = settings.TENX_DIR
             else:
                 parent_dir = settings.SCRNA_DIR
             output_dir = 'outs'
-            to_link_dir = os.path.join(parent_dir,info['seq_id'],output_dir)
+            print(parent_dir)
+            to_link_dir = os.path.join(parent_dir, info['seq_id'], output_dir)
 
-            #create link name
-            chars = (string.ascii_uppercase + string.digits + string.ascii_lowercase)
-            link = ''.join(random.choice(chars) for x in range(LENGTH_OF_KEY - 1))
+            # create link name
+            chars = (string.ascii_uppercase +
+                     string.digits + string.ascii_lowercase)
+            link = ''.join(random.choice(chars)
+                           for x in range(LENGTH_OF_KEY - 1))
             link += '_' + seq
             fullpath_link = os.path.join(settings.EXPOSED_OUTS_DIR, link)
+
+            link = os.path.join(os.path.basename(
+                os.path.split(exposed_outs_dir)[0]), link)
             print(link)
             print(fullpath_link)
             os.system("ln -s %s %s" % (to_link_dir, fullpath_link))
-            link = os.path.join(exposeddir, link)
-            #bash script process 
+            # bash script process
 
         else:
-            link = os.path.join(exposeddir, filenames_dict[seq])
+            link = filenames_dict[seq]
+            link = os.path.join(os.path.basename(
+                os.path.split(exposed_outs_dir)[0]), link)
         data['link'] = link
 
+        return JsonResponse(data, safe=False)
         return JsonResponse(data, safe= False)
     else:
         data["error"] = "Permission denied"
         return JsonResponse(data,safe=False)
+      
+
