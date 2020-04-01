@@ -53,7 +53,7 @@ for i in $libs
 do
     #cp -r ${out_dir_sys}/$flowcell_id/${i} ~/data/seqdata/
     ln -sf ${out_dir_sys}/${flowcell_id}/${i} ~/data/seqdata/
-    cat ~/data/seqdata/${i}/${i}*R3*fastq.gz > ~/data/seqdata/${i}_R2.fastq.gz & sleep 1
+    cat ~/data/seqdata/${i}/${i}*R2*fastq.gz > ~/data/seqdata/${i}_R2.fastq.gz & sleep 1
     cat ~/data/seqdata/${i}/${i}*R1*fastq.gz > ~/data/seqdata/${i}_R1.fastq.gz & sleep 1
     wait 
     nreads=$(zcat ~/data/seqdata/${i}_R1.fastq.gz | wc -l ) && echo -e "$i\t$[nreads/4]" >> $reads_cnt_file & sleep 1
