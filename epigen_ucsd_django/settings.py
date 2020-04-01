@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'manager_app',
     'collaborator_app',
     'singlecell_app',
+    'debug_toolbar',
 ]
 
 if 'extra_app' in dict(config.items('database')).keys():
@@ -66,6 +67,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'epigen_ucsd_django.middleware.LoginRequiredMiddleware',
     'epigen_ucsd_django.middleware.InternalRequiredMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+
 
 ]
 
@@ -181,6 +184,22 @@ INTERNAL_EXEMPT_URLS = (
 
 )
 
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+    'debug_toolbar.panels.profiling.ProfilingPanel',
+]
+
 NEXTSEQAPP_DMPDIR = config['database']['NEXTSEQAPP_DMPDIR']
 LIBQC_DIR = config['database']['LIBQC_DIR']
 SETQC_DIR = config['database']['SETQC_DIR']
@@ -190,4 +209,6 @@ MEDIA_ROOT = config['database']['MEDIA_ROOT']
 TENX_WEBSUMMARY = config['snapp']['TENX_WEBSUMMARY']
 COOLADMIN_DIR = config['snapp']['COOLADMIN_DIR']
 ENCODE_TM_DIR = config['database']['ENCODE_TM_DIR']
+SCRNA_DIR = config['snapp']['SCRNA_DIR']
+EXPOSED_OUTS_DIR = config['snapp']['EXPOSED_OUTS_DIR']
 

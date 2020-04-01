@@ -4,4 +4,4 @@ from .models import CoolAdminSubmission
 
 @admin.register(CoolAdminSubmission)
 class SCAdmin(admin.ModelAdmin):
-    list_display = ('seqinfo', 'pipeline_version', 'date_submitted', 'date_modified', 'date_submitted', 'link')
+    list_display = ('seqinfo', 'pipeline_version', 'date_submitted', 'date_modified', 'date_submitted', 'link','submitted')

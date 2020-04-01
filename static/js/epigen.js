@@ -257,6 +257,27 @@ $(document).ready(function () {
     });
 
 
+ $('#seqmanager_seq').DataTable({
+        dom: 'lBfrtip',
+        buttons: [
+            'excel',
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv',
+                fieldBoundary: ''
+            }
+        ],
+        "select": true,
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[1, "asc"]],
+    });
+
+
+
+
     var metalibsurl = $('#collab_metadata_libs').attr("data-href");
     $('#collab_metadata_libs').DataTable({
         dom: 'lBfrtip',
@@ -1283,6 +1304,7 @@ $(document).ready(function () {
         })
     });
 
+    /* Click on runsinglecell located in singlecell app will submit the sequence to be analyzed using its value.*/
     $(document).on('click', '.runsinglecell', function (e) {
         e.preventDefault();
         button = $(this)
@@ -1370,6 +1392,104 @@ $(document).ready(function () {
         $("#target").click();
     });
 
+    /**This returns a button to link to html resutls AND a button for link sharing funcitionality */
+    function tenx_results_button(seq) {
+        if (seq === -1) {
+            var href = "#"
+            var share_button = '<a class="shareButtonSc btn btn-sm" disabled><i disabled class="fas fa-link"></i></a>'
+        }
+        else {
+            href = ("/setqc/" + seq + "/web_summary.html");
+            share_button = '<a style="display:inline-block;" class="shareButtonSc btn btn-sm" data-toggle="tooltip" data-placement="top" title="Copy link to share to clipboard." value="' + seq + '" ><i class="fas fa-link"></i></a>'
+        }
+
+        return ('<a style="display:inline-block;" type="button" href=' + href + ' class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a> ' + share_button);
+    }
+
+    //popup btn will make popup visible
+    $(document).on('click', '.shareButtonSc', function (e) {
+        var seq = $(this).attr('value');
+        console.log(seq);
+        //var toShareButton = '<li class="list-group-item share-button-li"><button value="' + seq + '" class="btn btn-sm btn-info share-button" data-toggle="tooltip" data-placement="top" title="Share a link to the data directory"><i class="fas fa-link"></i></button></li>'
+        console.log('clicked')
+
+        //hit ajax endpoint
+        $.ajax({
+            type: "GET",
+            cache: false,
+            url: "/singlecell/ajax/generate_link",
+            data: {
+                'seq': seq
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data['error']) {
+                    return alert(data['error'])
+                }
+                console.log(data['link'])
+                console.log('link generated and returned!')
+                var link_string = 'http://epigenomics.sdsc.edu/zhc268/' + data['link'];
+
+                //copy link to clipboard
+                const el = document.createElement('textarea');
+                el.value = link_string;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+
+            }
+        });
+        //$(".popup-options-sc").append(toShareButton);
+        //$(".popup-overlay, .popup-content").addClass("active");
+    });
+
+
+    //removes the "active" class to .popup and .popup-content when the "Close" button is clicked 
+    $(".closePopup").on("click", function () {
+        $(".popup-overlay, .popup-content").removeClass("active");
+        $(".share-button-li").remove();
+    });
+
+    //share-button will generate or get link. 
+    $(document).on('click', '.share-button', function (e) {
+        var seq = $(this).attr('value');
+        console.log(seq);
+        console.log('clicked')
+        //hit ajax endpoint
+        $.ajax({
+            type: "GET",
+            cache: false,
+            url: "/singlecell/ajax/generate_link",
+            data: {
+                'seq': seq
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data['error']) {
+                    return alert(data['error'])
+                }
+                console.log(data['link'])
+                console.log('link generated and returned!')
+                var link_string = 'http://epigenomics.sdsc.edu/zhc268/' + data['link'];
+
+                //copy link to clipboard
+                const el = document.createElement('textarea');
+                el.value = link_string;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+
+                var link = '<p> Link generated and copied to clipboard: <a href="http://epigenomics.sdsc.edu/zhc268/' + data['link'] + '">' + link_string + '</a></p>'
+                $(".share-button-li").append(link);
+
+
+
+            }
+        });
+    });
+
     /* Start Singlecell functions
     *
     */
@@ -1412,7 +1532,7 @@ $(document).ready(function () {
                     var status = data;
                     var seq = row['seq_id'];
                     if (status === "Yes") {
-                        return ('<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="#" style="color:white" target="_blank"> Results</a></button >');
+                        return (tenx_results_button(-1));
                     } else if (status === "Error!") {
                         return ('<button type="button" class="badge badge-success badge-status-red" data-toggle="tooltip" data-placement="top" title="Contact bioinformatics group!">Error!</button>');
                     } else if (status === "No" && row['seq_status'] === "No") {
@@ -1506,7 +1626,7 @@ $(document).ready(function () {
                     var status = data;
                     var seq = row['seq_id'];
                     if (status === "Yes") {
-                        return ('<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="/setqc/' + seq + '/web_summary.html" style="color:white" target="_blank"> Results</a></button >');
+                        return (tenx_results_button(seq));
                     } else if (status === "Error!") {
                         return ('<button type="button" class="badge badge-success badge-status-red" data-toggle="tooltip" data-placement="top" title="Contact bioinformatics group!">Error!</button>');
                     } else if (status === "No" && row['seq_status'] === "No") {
@@ -1543,7 +1663,7 @@ $(document).ready(function () {
                     } else if (status === ".status.processing") {
                         return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
                     } else {
-                        return '<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="' + status + '" style="color:white" target="_blank"> Results</a></button >'
+                        return '<a href="' + status + '" style="color:white" target="_blank" type="button" class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a>'
 
                     }
                 },
@@ -1559,6 +1679,12 @@ $(document).ready(function () {
                     }
                 }
             }
+            /*{// misc are for buttons
+                "targets": 8,
+                "render": function (data, type, row) {
+                    var share_pill = '<a href="#" class="badge badge-pill badge-info">Share</a>'
+                }
+            }*/
         ]
     });
 
