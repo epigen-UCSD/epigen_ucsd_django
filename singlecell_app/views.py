@@ -41,23 +41,6 @@ defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
 
 #TODO do rat for scRNA-seq plus option for hg19, we deafault to hg38 right now.
 #TODO also need option for mixed mouse and human
-genome_dict={
-    '10xATAC':{
-        'human':'hg38',
-        'mouse':'mm10',
-        'rat':'rn6'
-    },
-    'scRNA-seq':{
-        'human':'/projects/ps-epigen/GENOME/hg38/10x_Genomics3.0/refdata-cellranger-GRCh38-3.0.0',
-        'mouse':'/projects/ps-epigen/GENOME/mm10/10x_Genomics3.0/refdata-cellranger-mm10-3.0.0',
-        'rat':'rn6'
-    },
-    'snRNA-seq':{
-        'human':'/projects/ps-epigen/GENOME/hg38/10x_Genomics3.0/refdata-transcripts',
-        'mouse':'/projects/ps-epigen/GENOME/mm10/10x_Genomics3.0/refdata-transcripts',
-        'rat':'/projects/ps-epigen/platform2_outputs/spreissl/10xATAC/rn6_premrna_ENSEMBL_10x'
-    }
-}
 
 
 def AllSeqs(request):
@@ -69,11 +52,9 @@ def AllSeqs(request):
     }
     if request.user.groups.filter(name='bioinformatics').exists():
         context['BioUser'] = True
-        print(context)
         return render(request, 'singlecell_app/myseqs.html', context)
     else:
         context['BioUser'] = False
-        print(context)
         return render(request, 'singlecell_app/myseqs.html', context)
 
 
@@ -264,6 +245,16 @@ def get_cooladmin_status(seq_id, seq_pk):
 
 
 def submit_singlecell(request):
+    """ This method will be activated when 'clicktosubmit' button is clicked. 
+        This method will submit the sequence to be analyzed if the species only has
+        one refgenome. If there is more than one refgenome available the the method
+        returns the refgenomes availble for user to choose. The user will choose a 
+        refgenome and confirm choice and this will be submitted as POST reqeust.
+        request: seq - string representing a seq id
+        email -string that represents user who submitted job
+        POST - ref: string of refgenome chosen
+    """
+    #GET requests are from initial sc 'clicktosubmit'.  
     if request.method == 'GET':
         seq = request.GET.get('seq')
         if not SeqInfo.objects.filter(seq_id=seq).exists():
@@ -279,8 +270,9 @@ def submit_singlecell(request):
                 'libraryinfo__sampleinfo').values('seq_id',
                 'libraryinfo__sampleinfo__species','read_type',
                 'libraryinfo__experiment_type'))
+
             species =  seq_info[0]['libraryinfo__sampleinfo__species'] 
-            #set output dir
+
             experiment_type = seq_info[0]['libraryinfo__experiment_type']
             experiment_obj = ExperimentType.objects.get(experiment=experiment_type)
             #get all refrence genomes available for this experiment type.
@@ -294,13 +286,13 @@ def submit_singlecell(request):
                 submit_tenX(seq,ref,email)
 
                 data = {
-                    "success": True,
+                    'success': True,
                     'submitted' : True,
                 }
                 return JsonResponse(data)
 
             data = {
-                "success": True,
+                'success': True,
                 'refs' : refgenome_list,
                 'submitted' : False,
             }
@@ -316,7 +308,6 @@ def submit_singlecell(request):
         data = {
             'success' : True,
         }
-
         return JsonResponse(data)
 
 
@@ -354,22 +345,22 @@ def submit_cooladmin(request):
             submission.submitted = True
             submission.save()
     else:
-        print('submission dict: ', submission_dict)
+        #print('submission dict: ', submission_dict)
         if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
             submission_dict['refgenome'] = getReferenceUsed(seq)
         submission.date_submitted = datetime.now()
         submission.submitted = True
 
-    print(submission_dict)
-    print(submission)
+    #print(submission_dict)
+    #print(submission)
 
     seqString = f'"{seq}"'
 
     paramString = buildCoolAdminParameterString(
         submission_dict).replace('"', '\\"').replace(' ', '\\ ')
-    print('paramString: ', paramString)
+    #print('paramString: ', paramString)
     cmd1 = f'bash ./utility/coolAdmin.sh {email} {seqString} {paramString}'
-    print(cmd1)
+    #print(cmd1)
 
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -440,7 +431,6 @@ def edit_cooladmin_sub(request, seqinfo):
     # handle save of new submission form
     if request.method == 'POST':
         post = request.POST.copy()
-        print('post: ', post)
         post['seqinfo'] = seqinfo_id
 
         # overwrite refgenome to post data
@@ -450,7 +440,6 @@ def edit_cooladmin_sub(request, seqinfo):
         # if previous submission, compare to new submission
         if(submission != False):
             data = model_to_dict(submission)
-            print('refgenome: ', data['refgenome'], data)
             data['genome'] = data['refgenome']
             #print('\n data: ',data)
             #print('\n post: ',post)
@@ -460,7 +449,7 @@ def edit_cooladmin_sub(request, seqinfo):
                 if(form.has_changed()):
                     data = form.cleaned_data
                     data['submitted'] = False
-                    print('changed data: ', form.changed_data)
+                    #print('changed data: ', form.changed_data)
                     CoolAdminSubmission.objects.filter(
                         seqinfo=seqinfo_id).update(**data)
                     obj = CoolAdminSubmission.objects.get(seqinfo=seqinfo_id)
@@ -500,7 +489,7 @@ def get_cooladmin_link(seq):
         with open(json_file, 'r') as f:
             cool_data = f.read()
         cool_dict = json.loads(cool_data)
-        print('cooldict: ', cool_dict)
+        #print('cooldict: ', cool_dict)
         return (cool_dict['report_address'])
     except:
         return("")
@@ -518,7 +507,6 @@ def submit_tenX(seq, refgenome, email):
     """ This function should only be called by another fucntion that ensures the sequence is valid to be submitted
     This function submits a sequence to 10x cell ranger or 10x atac pipeline
     """
-    print('seq: ',seq)
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
         'libraryinfo__sampleinfo').values('seq_id',
         'libraryinfo__sampleinfo__species','read_type',
@@ -527,39 +515,19 @@ def submit_tenX(seq, refgenome, email):
     data['seqs'] = split_seqs(seq_info[0]['seq_id'])
     data['species'] =  seq_info[0]['libraryinfo__sampleinfo__species'] 
      
-    #set output dir
     experiment_type = seq_info[0]['libraryinfo__experiment_type']
     #get all refrence genomes available for this experiment type.
     
     refgenome = RefGenomeInfo.objects.get(species=data['species'],genome_name=refgenome,experiment_type__experiment=experiment_type)
     data['genome'] = str(refgenome)
     data['ref_path'] = refgenome.path
-    print('refgenomes present: ', str(refgenome))
-
+    #print('refgenomes present: ', str(refgenome))
+    
+    #set output dir based on experiment type
     if experiment_type == '10xATAC':
          dir = settings.TENX_DIR
-    #     #set genome to 10xATAC genomes available
-    #     if data['species'].lower() == 'human':
-    #         data['genome'] = 'hg38'
-    #     elif data['species'].lower() == 'mouse':
-    #         data['genome'] = 'mm10'
-
     else:
         dir = settings.SCRNA_DIR
-    #     species = data['species'].lower()
-       
-    #     #set genome to genome dictionary
-    #     refgenome_location = genome_dict[experiment_type][species]
-    #     print(refgenome_location)
-    #     #only humn: use
-    #     if data['species'].lower() == 'human':
-    #         data['genome'] = 'hg38'
-    #     #mouse
-    #     elif data['species'].lower() == 'mouse':
-    #         data['genome'] = 'mm10'
-    #     #mixed mouse and human
-    #     elif data['species'].lower() == 'mixed mouse and human':
-    #         data['genome'] = 'mixed-mm10-hg38'
 
     #write tsv samplesheet: filename = ".sequence.tsv"
     filename = '.'+str(seq)+'.tsv'
@@ -605,7 +573,7 @@ def split_seqs(seq):
 
 # TODO do param error checking?
 def buildCoolAdminParameterString(dict):
-    print('dict: ', dict)
+    #print('dict: ', dict)
     paramString = ''
     for key in SNAP_PARAM_DICT.keys():
         paramString += f'{SNAP_PARAM_DICT[key]}="{dict[key]}",'
@@ -704,7 +672,7 @@ def generate_tenx_link(request):
     print(request)
     LENGTH_OF_KEY = 9  # put this in the deploy or settings file?
     seq = request.GET.get('seq')
-    print('genertaing link for seq: ', seq)
+    #print('genertaing link for seq: ', seq)
     info = {}
     data = {}
     try:
@@ -720,8 +688,8 @@ def generate_tenx_link(request):
     info['experiment_type'] = library_info.experiment_type
     info['seq_owner'] = seq_object.team_member_initails
     info['seq_id'] = seq_object.seq_id
-    print(info)
-    print(request.user)
+    #print(info)
+    #print(request.user)
     if request.user.groups.filter(name='bioinformatics').exists() or info['seq_owner'] == request.user:
         # get all files in exposed outs folder
         exposed_outs_dir = settings.EXPOSED_OUTS_DIR
@@ -731,18 +699,15 @@ def generate_tenx_link(request):
         for i in range(len(listdir)):
             filenames_dict[basenames[i]] = listdir[i]
 
-        print(filenames_dict)
         # get directory that seq is in
         # check if symbolic link is present
         if(seq not in (basenames)):
-            print('making new symbolic')
             # Do symbolic linking
             if info['experiment_type'] == '10xATAC':
                 parent_dir = settings.TENX_DIR
             else:
                 parent_dir = settings.SCRNA_DIR
             output_dir = 'outs'
-            print(parent_dir)
             to_link_dir = os.path.join(parent_dir, info['seq_id'], output_dir)
 
             # create link name
@@ -755,8 +720,6 @@ def generate_tenx_link(request):
 
             link = os.path.join(os.path.basename(
                 os.path.split(exposed_outs_dir)[0]), link)
-            print(link)
-            print(fullpath_link)
             os.system("ln -s %s %s" % (to_link_dir, fullpath_link))
             # bash script process
 
