@@ -39,8 +39,8 @@ SINGLE_CELL_EXPS = ['10xATAC', 'scRNA-seq', 'snRNA-seq', 'scATAC-seq']
 defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
                  'rat': 'rn6', 'cattle': 'ARS-UCD1.2'}
 
-#TODO do rat for scRNA-seq plus option for hg19, we deafault to hg38 right now.
-#TODO also need option for mixed mouse and human
+# TODO do rat for scRNA-seq plus option for hg19, we deafault to hg38 right now.
+# TODO also need option for mixed mouse and human
 
 
 def AllSeqs(request):
@@ -254,47 +254,49 @@ def submit_singlecell(request):
         email -string that represents user who submitted job
         POST - ref: string of refgenome chosen
     """
-    #GET requests are from initial sc 'clicktosubmit'.  
+    # GET requests are from initial sc 'clicktosubmit'.
     if request.method == 'GET':
         seq = request.GET.get('seq')
         if not SeqInfo.objects.filter(seq_id=seq).exists():
             data = {
-                'success' : False,
+                'success': False,
                 error: "Seq does not exist!"
             }
         else:
             email = request.user.email
             seq_info = SeqInfo.objects.get(seq_id=seq)
-            
+
             seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
                 'libraryinfo__sampleinfo').values('seq_id',
-                'libraryinfo__sampleinfo__species','read_type',
-                'libraryinfo__experiment_type'))
+                                                  'libraryinfo__sampleinfo__species', 'read_type',
+                                                  'libraryinfo__experiment_type'))
 
-            species =  seq_info[0]['libraryinfo__sampleinfo__species'] 
+            species = seq_info[0]['libraryinfo__sampleinfo__species']
 
             experiment_type = seq_info[0]['libraryinfo__experiment_type']
-            experiment_obj = ExperimentType.objects.get(experiment=experiment_type)
-            #get all refrence genomes available for this experiment type.
-            
-            refgenomes = RefGenomeInfo.objects.filter(species=species,experiment_type=experiment_obj).values('genome_name')
+            experiment_obj = ExperimentType.objects.get(
+                experiment=experiment_type)
+            # get all refrence genomes available for this experiment type.
+
+            refgenomes = RefGenomeInfo.objects.filter(
+                species=species, experiment_type=experiment_obj).values('genome_name')
             refgenome_list = [n['genome_name'] for n in refgenomes]
-            
-            #submit seqeunce when only one ref genome availalbe, do not prompt user to choose.
+
+            # submit seqeunce when only one ref genome availalbe, do not prompt user to choose.
             if len(refgenome_list) == 1:
                 ref = refgenome_list[0]
-                submit_tenX(seq,ref,email)
+                submit_tenX(seq, ref, email)
 
                 data = {
                     'success': True,
-                    'submitted' : True,
+                    'submitted': True,
                 }
                 return JsonResponse(data)
 
             data = {
                 'success': True,
-                'refs' : refgenome_list,
-                'submitted' : False,
+                'refs': refgenome_list,
+                'submitted': False,
             }
         return JsonResponse(data)
     elif request.method == 'POST':
@@ -302,14 +304,13 @@ def submit_singlecell(request):
         ref = request.POST.get('ref')
         email = request.user.email
 
-        #run job
-        submit_tenX(seq,ref,email)
+        # run job
+        submit_tenX(seq, ref, email)
 
         data = {
-            'success' : True,
+            'success': True,
         }
         return JsonResponse(data)
-
 
 
 # TODO add a modify_submission_model() funciton to update submission date_submitted/modified and submitted fields
@@ -351,8 +352,8 @@ def submit_cooladmin(request):
         submission.date_submitted = datetime.now()
         submission.submitted = True
 
-    #print(submission_dict)
-    #print(submission)
+    # print(submission_dict)
+    # print(submission)
 
     seqString = f'"{seq}"'
 
@@ -360,7 +361,7 @@ def submit_cooladmin(request):
         submission_dict).replace('"', '\\"').replace(' ', '\\ ')
     #print('paramString: ', paramString)
     cmd1 = f'bash ./utility/coolAdmin.sh {email} {seqString} {paramString}'
-    #print(cmd1)
+    # print(cmd1)
 
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -500,8 +501,9 @@ def setup_submission(seq_object, data):
     experimental type and species/genome of the seq object. Will return the data dict so that the
     submission funtion can use the dict for bash script parameters.
     """
-    
+
     return data
+
 
 def submit_tenX(seq, refgenome, email):
     """ This function should only be called by another fucntion that ensures the sequence is valid to be submitted
@@ -509,32 +511,33 @@ def submit_tenX(seq, refgenome, email):
     """
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
         'libraryinfo__sampleinfo').values('seq_id',
-        'libraryinfo__sampleinfo__species','read_type',
-        'libraryinfo__experiment_type'))
+                                          'libraryinfo__sampleinfo__species', 'read_type',
+                                          'libraryinfo__experiment_type'))
     data = {}
     data['seqs'] = split_seqs(seq_info[0]['seq_id'])
-    data['species'] =  seq_info[0]['libraryinfo__sampleinfo__species'] 
-     
+    data['species'] = seq_info[0]['libraryinfo__sampleinfo__species']
+
     experiment_type = seq_info[0]['libraryinfo__experiment_type']
-    #get all refrence genomes available for this experiment type.
-    
-    refgenome = RefGenomeInfo.objects.get(species=data['species'],genome_name=refgenome,experiment_type__experiment=experiment_type)
+    # get all refrence genomes available for this experiment type.
+
+    refgenome = RefGenomeInfo.objects.get(
+        species=data['species'], genome_name=refgenome, experiment_type__experiment=experiment_type)
     data['genome'] = str(refgenome)
     data['ref_path'] = refgenome.path
     #print('refgenomes present: ', str(refgenome))
-    
-    #set output dir based on experiment type
+
+    # set output dir based on experiment type
     if experiment_type == '10xATAC':
-         dir = settings.TENX_DIR
+        dir = settings.TENX_DIR
     else:
         dir = settings.SCRNA_DIR
 
-    #write tsv samplesheet: filename = ".sequence.tsv"
+    # write tsv samplesheet: filename = ".sequence.tsv"
     filename = '.'+str(seq)+'.tsv'
-    tsv_writecontent = '\t'.join([seq, ','.join(data['seqs']), data['genome']]) 
+    tsv_writecontent = '\t'.join([seq, ','.join(data['seqs']), data['genome']])
     seqDir = os.path.join(dir, seq)
-   
-    #replace with db update that this seq status is inqueue
+
+    # replace with db update that this seq status is inqueue
     if not os.path.exists(seqDir):
         os.mkdir(seqDir)
     inqueue = os.path.join(seqDir, '.inqueue')
@@ -542,15 +545,15 @@ def submit_tenX(seq, refgenome, email):
         f.write('')
     tsv_file = os.path.join(seqDir, filename)
     with open(tsv_file, 'w') as f:
-        f.write(tsv_writecontent)
-        
-    #set command depedning on experiment
-    if( experiment_type == 'scRNA-seq' or experiment_type == 'snRNA-seq'):
-        cmd1 = ('./utility/runCellRanger.sh %s %s %s %s' %(seq,
-         data['ref_path'], dir, email))
+        f.write(tsv_writecontent+'\n')
+
+    # set command depedning on experiment
+    if(experiment_type == 'scRNA-seq' or experiment_type == 'snRNA-seq'):
+        cmd1 = ('bash ./utility/runCellRanger.sh %s %s %s %s' % (seq,
+                                                                 data['ref_path'], dir, email))
     else:
-        cmd1 = './utility/run10xOnly.sh %s %s %s' %(seq, dir, email)
-    print('cmd submitted: ',cmd1)
+        cmd1 = './utility/run10xOnly.sh %s %s %s' % (seq, dir, email)
+    print('cmd submitted: ', cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return True
@@ -572,6 +575,8 @@ def split_seqs(seq):
     return addlseqs
 
 # TODO do param error checking?
+
+
 def buildCoolAdminParameterString(dict):
     #print('dict: ', dict)
     paramString = ''
@@ -688,8 +693,8 @@ def generate_tenx_link(request):
     info['experiment_type'] = library_info.experiment_type
     info['seq_owner'] = seq_object.team_member_initails
     info['seq_id'] = seq_object.seq_id
-    #print(info)
-    #print(request.user)
+    # print(info)
+    # print(request.user)
     if request.user.groups.filter(name='bioinformatics').exists() or info['seq_owner'] == request.user:
         # get all files in exposed outs folder
         exposed_outs_dir = settings.EXPOSED_OUTS_DIR
@@ -730,9 +735,7 @@ def generate_tenx_link(request):
         data['link'] = link
 
         return JsonResponse(data, safe=False)
-        return JsonResponse(data, safe= False)
+        return JsonResponse(data, safe=False)
     else:
         data["error"] = "Permission denied"
-        return JsonResponse(data,safe=False)
-      
-
+        return JsonResponse(data, safe=False)
