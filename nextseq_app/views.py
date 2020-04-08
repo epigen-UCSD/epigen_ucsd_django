@@ -927,7 +927,7 @@ def DemultiplexingView2(request, run_pk):
             cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         elif runinfo.experiment_type == 'TR':
-            # write extra_parameters to disk
+            # write extra_parameters to disk 
             with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
             cmd1 = 'bash ./utility/runDemux10xRNA.sh ' + runinfo.Flowcell_ID + \

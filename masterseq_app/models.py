@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.models import CollaboratorPersonInfo
+
+from search_app.documents import SampleInfo as SampleDoc, SeqInfo as SeqDoc, LibraryInfo as LibDoc
 # Create your models here.
 
 
@@ -138,6 +140,7 @@ class SampleInfo(models.Model):
     #fiscal_person_index = models.ForeignKey(Person_Index,on_delete=models.CASCADE,blank=True,null=True)
     status = models.CharField(max_length=20, blank=True, null=True)
 
+
     def __str__(self):
         return self.sample_index+':'+self.sample_id
 
@@ -163,6 +166,7 @@ class LibraryInfo(models.Model):
     team_member_initails = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True)
     notes = models.TextField(blank=True)
+
 
     def __str__(self):
         return self.library_id
@@ -206,3 +210,21 @@ class SeqBioInfo(models.Model):
     mito_frac = models.FloatField(blank=True, null=True)
     tss_enrichment = models.FloatField(blank=True, null=True)
     frop = models.FloatField(blank=True, null=True)
+
+
+
+
+class ExperimentType(models.Model):
+    experiment = models.CharField(max_length=50)
+    def __str__(self):
+        return self.experiment
+
+
+class RefGenomeInfo(models.Model):
+    genome_name = models.CharField(max_length=50)
+    species = models.CharField(max_length=25)
+    experiment_type = models.ManyToManyField(ExperimentType)
+    path = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.genome_name

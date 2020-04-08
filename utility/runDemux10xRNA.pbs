@@ -43,7 +43,7 @@ cd $run_dir
 export PATH=/projects/ps-epigen/software/cellranger-3.0.2/:$PATH
 
 [[ -f ${out_dir}/extraPars.txt ]] && extraParsVal=$(cat ${out_dir}/extraPars.txt)
-echo -e "cellranger-atac mkfastq --run=$run_dir  --localcores=16 --csv $samplesheet --qc $extraParsVal #--use-bases-mask Y50,I8n*,Y16,Y50"
+echo -e "cellranger mkfastq --run=$run_dir  --localcores=16 --csv $samplesheet --qc $extraParsVal #--use-bases-mask Y50,I8n*,Y16,Y50"
 cellranger mkfastq --run=$run_dir  --localcores=16 --csv $samplesheet --qc $extraParsVal #--use-bases-mask Y50,I8n*,Y16,Y50
 
 ## transfer/link data
