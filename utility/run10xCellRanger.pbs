@@ -22,22 +22,7 @@ samplenames=(`cat $samples`)
 INPREFIX=${samplenames[${PBS_ARRAYID}*3]} #index start from 0
 SAMPLE=${samplenames[${PBS_ARRAYID}*3+1]}
 GENOME=${samplenames[${PBS_ARRAYID}*3+2]}
-
 cd $WORKDIR
-
-# determine genomes, docs say to use only hg38 if human only 
-case $GENOME in
-genome_dir=$REF_GEN_LOCATION
-    mm10)
-        genome_dir="/projects/ps-epigen/GENOME/mm10/10x_Genomics3.0/refdata-cellranger-mm10-3.0.0";;
-    hg38)
-        genome_dir="/projects/ps-epigen/GENOME/hg38/10x_Genomics3.0/refdata-cellranger-GRCh38-3.0.0";;
-    hg19)
-        genome_dir="/projects/ps-epigen/GENOME/hg19/10x_Genomics3.0/refdata-cellranger-hg19-3.0.0";;
-    *)
-        echo "wrong genome input: $GENOME"
-        exit 0;;
-esac
 
 # prepare fastqs, comma seperated values
 fastqs=$(echo $SAMPLE| awk -v FS=',' -v d="${FASTQDIR}" '{ for(i=1;i<=NF-1;i++) {printf "%s,", d$i};print d$NF;}')
@@ -51,7 +36,8 @@ fastqs=$(echo $SAMPLE| awk -v FS=',' -v d="${FASTQDIR}" '{ for(i=1;i<=NF-1;i++) 
 mkdir -p ~/data/outputs/scRNA/$INPREFIX
 [[ -f ~/data/outputs/scRNA/${INPREFIX}/.inqueue ]] && rm  ~/data/outputs/scRNA/${INPREFIX}/.inqueue 
 touch ~/data/outputs/scRNA/${INPREFIX}/.inprocess
-cellranger count --id=$INPREFIX --fastqs=$fastqs --sample $SAMPLE --transcriptome=$genome_dir --localcores=16  --mempercore=5
+echo "cellranger count --id=$INPREFIX --fastqs=${fastqs} --sample ${SAMPLE} --transcriptome=${genome_path} --localcores=16  --mempercore=5"
+cellranger count --id=$INPREFIX --fastqs=$fastqs --sample $SAMPLE --transcriptome=$genome_path --localcores=16  --mempercore=5
 wait
 
 # transfer results
