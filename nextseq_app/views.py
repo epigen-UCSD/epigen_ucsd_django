@@ -604,14 +604,14 @@ def DemultiplexingView(request, run_pk):
 
     dmpdir = settings.NEXTSEQAPP_DMPDIR
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
-    #print('expt type: %s. Flowcell ID: %s' %(runinfo.experiment_type, runinfo.Flowcell_ID))
+    # print('expt type: %s. Flowcell ID: %s' %(runinfo.experiment_type, runinfo.Flowcell_ID))
 
     if runinfo.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     data = {}
     # print(runinfo.Flowcell_ID)
     for fname in os.listdir(dmpdir):
-        # print(os.path.join(dmpdir,fname))
+        print(os.path.join(dmpdir, fname))
         if os.path.isdir(os.path.join(dmpdir, fname)) and fname.endswith(runinfo.Flowcell_ID):
             data['is_direxists'] = 1
             basedirname = os.path.join(dmpdir, fname)
@@ -668,7 +668,8 @@ def DemultiplexingView(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i2_file = open(filename.replace('.csv', '_I2.csv'), 'w')
-                elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR': #support for sc-RNA expts.
+                # support for sc-RNA expts.
+                elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR':
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i1_file.write(','.join(["Lane", "Sample", "Index"])+'\n')
 
@@ -752,22 +753,22 @@ def DemultiplexingView(request, run_pk):
         RunInfo.objects.filter(pk=run_pk).update(jobstatus='JobSubmitted')
 
         # runBcl2fastq
-        print('expt type: %s. Flowcell ID: %s' %(runinfo.experiment_type, runinfo.Flowcell_ID))
+        print('expt type: %s. Flowcell ID: %s' %
+              (runinfo.experiment_type, runinfo.Flowcell_ID))
         if runinfo.experiment_type == 'S2':
             cmd1 = './utility/runDemuxSnATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         elif runinfo.experiment_type == 'TA':
             # write extra_parameters to disk
-            with open( os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'),'w') as out:
+            with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
-                
+
             cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
-        elif  runinfo.experiment_type == 'TR':
+        elif runinfo.experiment_type == 'TR':
             # write extra_parameters to disk
-            with open( os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'),'w') as out:
+            with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
-                
             cmd1 = './utility/runDemux10xRNA.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         else:
@@ -775,7 +776,7 @@ def DemultiplexingView(request, run_pk):
                 ' ' + basedirname + ' ' + request.user.email
         print(cmd1)
 
-        p = subprocess.Popen( cmd1, shell=True)
+        p = subprocess.Popen(cmd1, shell=True)
         # thisjobid=p.pid
 
         data['writetosamplesheet'] = 1
@@ -920,23 +921,22 @@ def DemultiplexingView2(request, run_pk):
                 ' ' + basedirname + ' ' + request.user.email
         elif runinfo.experiment_type == 'TA':
             # write extra_parameters to disk
-            with open( os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'),'w') as out:
+            with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
-                
+
             cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         elif runinfo.experiment_type == 'TR':
-            # write extra_parameters to disk
-            with open( os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'),'w') as out:
+            # write extra_parameters to disk 
+            with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
-                
-            cmd1 = './utility/runDemux10xRNA.sh ' + runinfo.Flowcell_ID + \
+            cmd1 = 'bash ./utility/runDemux10xRNA.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         print(cmd1)
-        p = subprocess.Popen( cmd1, shell=True)
+        p = subprocess.Popen(cmd1, shell=True)
         # thisjobid=p.pid
 
         data['writetosamplesheet'] = 1
