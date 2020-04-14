@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.models import CollaboratorPersonInfo
 
-from search_app.documents import SampleInfo as SampleDoc, SeqInfo as SeqDoc, LibraryInfo as LibDoc
+# from search_app.documents import SampleInfo as SampleDoc, SeqInfo as SeqDoc, LibraryInfo as LibDoc
 # Create your models here.
 
 
@@ -43,12 +43,12 @@ choice_for_species = (
     ('human', 'human'),
     ('mouse', 'mouse'),
     ('rat', 'rat'),
-    ('cattle','cattle'),
-    ('green monkey','green monkey'),
-    ('pig-tailed macaque','pig-tailed macaque'),
-    ('fruit fly','fruit fly'),    
-    ('sheep','sheep'),
-    ('rabbit','rabbit'),    
+    ('cattle', 'cattle'),
+    ('green monkey', 'green monkey'),
+    ('pig-tailed macaque', 'pig-tailed macaque'),
+    ('fruit fly', 'fruit fly'),
+    ('sheep', 'sheep'),
+    ('rabbit', 'rabbit'),
     ('other (please explain in notes)', 'other (please explain in notes)')
 )
 choice_for_unit = (
@@ -111,7 +111,7 @@ class SampleInfo(models.Model):
     fixation = models.CharField(
         max_length=50, choices=choice_for_fixation, null=True)
     notes = models.TextField(blank=True)
-    internal_notes = models.TextField('Internal Notes',blank=True)
+    internal_notes = models.TextField('Internal Notes', blank=True)
     sample_amount = models.CharField(max_length=100, blank=True, null=True)
     unit_choice = choice_for_unit
     unit = models.CharField(max_length=50, choices=unit_choice, null=True)
@@ -140,7 +140,6 @@ class SampleInfo(models.Model):
     #fiscal_person_index = models.ForeignKey(Person_Index,on_delete=models.CASCADE,blank=True,null=True)
     status = models.CharField(max_length=20, blank=True, null=True)
 
-
     def __str__(self):
         return self.sample_index+':'+self.sample_id
 
@@ -156,7 +155,7 @@ class LibraryInfo(models.Model):
         max_length=50, choices=experiment_type_choice, null=True)
     protocalinfo = models.ForeignKey(
         ProtocalInfo, on_delete=models.CASCADE, null=True)
-    protocal_used = models.CharField(max_length=200,blank=True,null=True)
+    protocal_used = models.CharField(max_length=200, blank=True, null=True)
     reference_to_notebook_and_page_number = models.CharField(
         max_length=50, null=True)
     date_started = models.DateField(
@@ -166,7 +165,6 @@ class LibraryInfo(models.Model):
     team_member_initails = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True)
     notes = models.TextField(blank=True)
-
 
     def __str__(self):
         return self.library_id
@@ -212,10 +210,9 @@ class SeqBioInfo(models.Model):
     frop = models.FloatField(blank=True, null=True)
 
 
-
-
 class ExperimentType(models.Model):
     experiment = models.CharField(max_length=50)
+
     def __str__(self):
         return self.experiment
 
