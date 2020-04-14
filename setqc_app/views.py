@@ -1220,17 +1220,27 @@ This function opens and returns html webpage created by 10x ATAC pipeline for SE
 @Requirements: the 10x webpage requested is softlinked in the BASE_DIR/data/websummary directory
 '''
 
-
 def tenx_output(request, setqc_pk, outputname):
+    '''
+    This function opens and returns html webpage created by 10x ATAC pipeline for SETQC
+    @Requirements: the 10x webpage requested is softlinked in the BASE_DIR/data/websummary directory
+    '''
     html = ('/'+outputname+"/outs/web_summary.html")
     tenxdir = settings.TENX_DIR
     file = open(tenxdir+html)
-
     data = file.read()
-    if(data == None):
-        print('No data read in 10x Web_Summary.html File!')
-    return HttpResponse(data)
+    if(LINK_CLASS_NAME not in data):
+        #print('in tenx_output() for setqc, adding link to file')
+        file.close()
+        filename = tenxdir+html
+        insert_link(filename, outputname)
+        #reopen file and serve
+        file=open(tenxdir+html)
+        data = file.read()
 
+    if(data == None):
+        print('ERROR: No data read in 10x Web_Summary.html File! for ',outputname )
+    return HttpResponse(data)
 
 def tenx_output2(request, outputname):
     html = ('/'+outputname+settings.TENX_WEBSUMMARY)
@@ -1238,6 +1248,14 @@ def tenx_output2(request, outputname):
     file = open(tenxdir+html)
 
     data = file.read()
+
+    if(LINK_CLASS_NAME not in data):
+        #print('in tenxoutput2() for singlecell, adding link to file')
+        file.close()
+        filename = tenxdir+html
+        insert_link(filename, outputname)
+        file=open(tenxdir+html)
+        data = file.read()
     if(data == None):
-        print('No data read in 10x Web_Summary.html File!')
+        print('ERROR: No data read in 10x Web_Summary.html File! for ',outputname )
     return HttpResponse(data)
