@@ -736,3 +736,87 @@ def generate_tenx_link(request):
         return JsonResponse(data,safe=False)
       
 
+          
+def generate_link(seq):
+    """ return a link for files to be viewed with a share link
+    Will generate a link if needed. Will return the link in the response.
+    """
+    LENGTH_OF_KEY = 9  # put this in the deploy or settings file?
+    #print('genertaing link for seq: ', seq)
+    info = {}
+    data = {}
+    parent_dir = ""
+    try:
+        seq_object = SeqInfo.objects.select_related(
+            'libraryinfo').get(seq_id=seq)
+    except ObjectDoesNotExist:
+        print('SeqObject does not exist!')
+        return -1
+
+    # get seq owner:
+    library_info = seq_object.libraryinfo
+    info['experiment_type'] = library_info.experiment_type
+    info['seq_owner'] = seq_object.team_member_initails
+    info['seq_id'] = seq_object.seq_id
+    #print(info)
+    #print(request.user)
+    # get all files in exposed outs folder
+    exposed_outs_dir = settings.EXPOSED_OUTS_DIR
+    listdir = os.listdir(exposed_outs_dir)
+    basenames = [os.path.basename(fn)[LENGTH_OF_KEY:] for fn in listdir]
+    filenames_dict = {}
+    for i in range(len(listdir)):
+        filenames_dict[basenames[i]] = listdir[i]
+
+    # get directory that seq is in
+    # check if symbolic link is present
+    if(seq not in (basenames)):
+        # Do symbolic linking
+        if info['experiment_type'] == '10xATAC':
+            parent_dir = settings.TENX_DIR
+        else:
+            parent_dir = settings.SCRNA_DIR
+        output_dir = 'outs'
+        to_link_dir = os.path.join(parent_dir, info['seq_id'], output_dir)
+
+        # create link name
+        chars = (string.ascii_uppercase +
+                 string.digits + string.ascii_lowercase)
+        link = ''.join(random.choice(chars)
+                       for x in range(LENGTH_OF_KEY - 1))
+        link += '_' + seq
+        fullpath_link = os.path.join(settings.EXPOSED_OUTS_DIR, link)
+
+        link = os.path.join(os.path.basename(
+            os.path.split(exposed_outs_dir)[0]), link)
+        os.system("ln -s %s %s" % (to_link_dir, fullpath_link))
+        # bash script process
+
+    else:
+        link = filenames_dict[seq]
+        link = os.path.join(os.path.basename(
+            os.path.split(exposed_outs_dir)[0]), link)
+    link = 'http://epigenomics.sdsc.edu/zhc268'+ parent_dir + '/' + link
+    return(link)
+
+
+def insert_link(filename, seq):
+    """ Insert link into header of the web_summary.html 
+    """
+    #print('insert link:')
+    newdata = "" # will hold the old html + an inserted link at line 10
+    link = generate_link(seq) #generate a link to the output folder
+    if(link == -1):
+        print('error in generate_link!')
+    file_open = open(filename)
+    f1 = file_open.readlines()
+    for num, line in enumerate(f1, start=1):
+        if num == 10:
+            newdata = newdata + '<div><h3><a class="data-link-epigen" style="margin-left:3em;" href="'+link+'"> Link to Output Data</a></h3><div>'
+        newdata = newdata + line
+    file_open.close()
+
+    with open(filename, 'w') as overwrite:
+        overwrite.write(newdata)
+    
+
