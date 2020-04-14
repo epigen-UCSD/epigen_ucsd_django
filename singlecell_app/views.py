@@ -39,6 +39,8 @@ SINGLE_CELL_EXPS = ['10xATAC', 'scRNA-seq', 'snRNA-seq', 'scATAC-seq']
 defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
                  'rat': 'rn6', 'cattle': 'ARS-UCD1.2'}
 
+LINK_CLASS_NAME="data-link-epigen"
+
 #TODO do rat for scRNA-seq plus option for hg19, we deafault to hg38 right now.
 #TODO also need option for mixed mouse and human
 

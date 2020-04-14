@@ -18,7 +18,7 @@ from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from django.http import HttpResponse
 import re
-
+from singlecell_app.views import LINK_CLASS_NAME, insert_link
 # Create your views here.
 DisplayField1 = ['set_id', 'set_name',
                  'last_modified', 'experiment_type', 'url', 'version']
