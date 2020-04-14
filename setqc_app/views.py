@@ -1230,17 +1230,16 @@ def tenx_output(request, setqc_pk, outputname):
     file = open(tenxdir+html)
     data = file.read()
     if(LINK_CLASS_NAME not in data):
-        #print('in tenx_output() for setqc, adding link to file')
+        #print('in tenxoutput2() for singlecell, adding link to file')
         file.close()
         filename = tenxdir+html
         insert_link(filename, outputname)
-        #reopen file and serve
         file=open(tenxdir+html)
         data = file.read()
-
     if(data == None):
         print('ERROR: No data read in 10x Web_Summary.html File! for ',outputname )
     return HttpResponse(data)
+
 
 def tenx_output2(request, outputname):
     html = ('/'+outputname+settings.TENX_WEBSUMMARY)
