@@ -729,9 +729,8 @@ def generate_tenx_link(request):
             link = filenames_dict[seq]
             link = os.path.join(os.path.basename(
                 os.path.split(exposed_outs_dir)[0]), link)
+        
         data['link'] = link
-
-        return JsonResponse(data, safe=False)
         return JsonResponse(data, safe= False)
     else:
         data["error"] = "Permission denied"
@@ -796,9 +795,12 @@ def generate_link(seq):
 
     else:
         link = filenames_dict[seq]
+        print(link)
         link = os.path.join(os.path.basename(
             os.path.split(exposed_outs_dir)[0]), link)
-    link = 'http://epigenomics.sdsc.edu/zhc268'+ parent_dir + '/' + link
+        print(link)
+    link = 'http://epigenomics.sdsc.edu/zhc268/' + link
+
     return(link)
 
 
@@ -814,7 +816,7 @@ def insert_link(filename, seq):
     f1 = file_open.readlines()
     for num, line in enumerate(f1, start=1):
         if num == 10:
-            newdata = newdata + '<div><h3><a class="data-link-epigen" style="margin-left:3em;" href="'+link+'"> Link to Output Data</a></h3><div>'
+            newdata = newdata + '<div><h2><a class="data-link-epigen" style="margin-left:3em;" href="'+link+'"> Link to Output Data</a></h2><div>'
         newdata = newdata + line
     file_open.close()
 
