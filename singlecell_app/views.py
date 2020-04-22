@@ -74,9 +74,9 @@ def AllSingleCellData(request):
     """
     # make sure only bioinformatics group users allowed
 
-    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo',).order_by(
+    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo','libraryinfo__sampleinfo','libraryinfo__sampleinfo__group').order_by(
         '-date_submitted_for_sequencing').values('id', 'seq_id', 'libraryinfo__experiment_type', 'read_type',
-                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing')
+                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group')
 
     data = list(seqs_queryset)
     build_seq_list(data)
@@ -87,9 +87,9 @@ def UserSingleCellData(request):
     """async function to get hit by ajax, returns user only seqs
     """
 
-    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).select_related('libraryinfo', 'libraryinfo__sampleinfo').order_by(
+    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).select_related('libraryinfo','libraryinfo__sampleinfo__group', 'libraryinfo__sampleinfo').order_by(
         '-date_submitted_for_sequencing').values('id', 'seq_id', 'libraryinfo__experiment_type', 'read_type',
-                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing')
+                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group')
 
     data = list(seqs_queryset)
     build_seq_list(data)
@@ -107,8 +107,12 @@ def build_seq_list(seqs_list):
     """
     # optimize later
     cooladmin_objects = CoolAdminSubmission.objects.all()
-
+    groups = Group.objects.all()
+    print(groups)
     for entry in seqs_list:
+        group_id = entry['libraryinfo__sampleinfo__group']
+        group_name = get_group_name(groups, group_id)
+        entry['libraryinfo__sampleinfo__group'] = group_name        
         seq_id = entry['seq_id']
         experiment_type = entry['libraryinfo__experiment_type']
         entry['last_modified'] = get_latest_modified_time(
@@ -117,8 +121,15 @@ def build_seq_list(seqs_list):
         entry['10x_status'] = get_tenx_status(seq_id, experiment_type)
         entry['species'] = entry['libraryinfo__sampleinfo__species']
         entry['cooladmin_status'] = get_cooladmin_status(seq_id, entry['id'])
+        print(entry)
+        #entry['group'] = get_group_name(entry)
     return (seqs_list)
 
+def get_group_name(groups, group_id):
+    if group_id == None:
+        return 'None'
+    else:
+        return str(groups.get(pk=group_id))
 
 def get_tenx_status(seq, experiment_type):
     """This function returns a string that represents 
