@@ -6,6 +6,8 @@ from django.forms.models import model_to_dict
 from django.core import serializers
 from django.http import JsonResponse, FileResponse, HttpResponse
 from masterseq_app.models import LibraryInfo, SeqInfo, GenomeInfo, RefGenomeInfo, ExperimentType
+from epigen_ucsd_django.shared import is_member,is_in_multiple_groups
+
 from .forms import CoolAdminForm
 from .models import CoolAdminSubmission
 from django.conf import settings
@@ -52,6 +54,8 @@ def AllSeqs(request):
         'type': 'All Sequences',
         'AllSeq': True
     }
+    if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
+        raise PermissionDenied
     if request.user.groups.filter(name='bioinformatics').exists():
         context['BioUser'] = True
         return render(request, 'singlecell_app/myseqs.html', context)
@@ -108,7 +112,6 @@ def build_seq_list(seqs_list):
     # optimize later
     cooladmin_objects = CoolAdminSubmission.objects.all()
     groups = Group.objects.all()
-    print(groups)
     for entry in seqs_list:
         group_id = entry['libraryinfo__sampleinfo__group']
         group_name = get_group_name(groups, group_id)
