@@ -544,7 +544,7 @@ def submit_tenX(seq, refgenome, email):
         f.write('')
     tsv_file = os.path.join(seqDir, filename)
     with open(tsv_file, 'w') as f:
-        f.write(tsv_writecontent)
+        f.write(tsv_writecontent+'\n')
         
     #set command depedning on experiment
     if( experiment_type == 'scRNA-seq' or experiment_type == 'snRNA-seq'):
