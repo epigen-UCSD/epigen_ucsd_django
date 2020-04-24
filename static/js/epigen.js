@@ -1570,7 +1570,8 @@ $(document).ready(function () {
             { data: "seq_status" },
             { data: "10x_status" },
             { data: "cooladmin_status" },
-
+            { data: "cooladmin_edit" },
+            { data: "libraryinfo__sampleinfo__group" },
         ],
         "deferRender": true,
         "columnDefs": [
@@ -1664,7 +1665,8 @@ $(document).ready(function () {
             { data: "seq_status" },
             { data: "10x_status" },
             { data: "cooladmin_status" },
-
+            { data: "cooladmin_edit" },
+            { data: "libraryinfo__sampleinfo__group" },
         ],
         "deferRender": true,
         "columnDefs": [

@@ -6,6 +6,8 @@ from django.forms.models import model_to_dict
 from django.core import serializers
 from django.http import JsonResponse, FileResponse, HttpResponse
 from masterseq_app.models import LibraryInfo, SeqInfo, GenomeInfo, RefGenomeInfo, ExperimentType
+from epigen_ucsd_django.shared import is_member,is_in_multiple_groups
+
 from .forms import CoolAdminForm
 from .models import CoolAdminSubmission
 from django.conf import settings
@@ -52,6 +54,8 @@ def AllSeqs(request):
         'type': 'All Sequences',
         'AllSeq': True
     }
+    if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
+        raise PermissionDenied
     if request.user.groups.filter(name='bioinformatics').exists():
         context['BioUser'] = True
         return render(request, 'singlecell_app/myseqs.html', context)
@@ -74,9 +78,9 @@ def AllSingleCellData(request):
     """
     # make sure only bioinformatics group users allowed
 
-    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo',).order_by(
+    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo','libraryinfo__sampleinfo','libraryinfo__sampleinfo__group').order_by(
         '-date_submitted_for_sequencing').values('id', 'seq_id', 'libraryinfo__experiment_type', 'read_type',
-                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing')
+                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group')
 
     data = list(seqs_queryset)
     build_seq_list(data)
@@ -87,9 +91,9 @@ def UserSingleCellData(request):
     """async function to get hit by ajax, returns user only seqs
     """
 
-    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).select_related('libraryinfo', 'libraryinfo__sampleinfo').order_by(
+    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).select_related('libraryinfo','libraryinfo__sampleinfo__group', 'libraryinfo__sampleinfo').order_by(
         '-date_submitted_for_sequencing').values('id', 'seq_id', 'libraryinfo__experiment_type', 'read_type',
-                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing')
+                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group')
 
     data = list(seqs_queryset)
     build_seq_list(data)
@@ -107,8 +111,11 @@ def build_seq_list(seqs_list):
     """
     # optimize later
     cooladmin_objects = CoolAdminSubmission.objects.all()
-
+    groups = Group.objects.all()
     for entry in seqs_list:
+        group_id = entry['libraryinfo__sampleinfo__group']
+        group_name = get_group_name(groups, group_id)
+        entry['libraryinfo__sampleinfo__group'] = group_name        
         seq_id = entry['seq_id']
         experiment_type = entry['libraryinfo__experiment_type']
         entry['last_modified'] = get_latest_modified_time(
@@ -117,8 +124,14 @@ def build_seq_list(seqs_list):
         entry['10x_status'] = get_tenx_status(seq_id, experiment_type)
         entry['species'] = entry['libraryinfo__sampleinfo__species']
         entry['cooladmin_status'] = get_cooladmin_status(seq_id, entry['id'])
+        #entry['group'] = get_group_name(entry)
     return (seqs_list)
 
+def get_group_name(groups, group_id):
+    if group_id == None:
+        return 'None'
+    else:
+        return str(groups.get(pk=group_id))
 
 def get_tenx_status(seq, experiment_type):
     """This function returns a string that represents 
@@ -132,7 +145,7 @@ def get_tenx_status(seq, experiment_type):
         string 'Error' when an error occurs in pipeline
         string 'Yes' when the 10x pipeline is succesfully done
     """
-    if(experiment_type == 'snRNA-seq' or experiment_type == 'scRNA-seq'):
+    if(not experiment_type ==  '10xATAC'):
         dir_to_check = settings.SCRNA_DIR
     else:
         dir_to_check = settings.TENX_DIR
@@ -812,6 +825,7 @@ def insert_link(filename, seq):
     link = generate_link(seq) #generate a link to the output folder
     if(link == -1):
         print('error in generate_link!')
+        return
     file_open = open(filename)
     f1 = file_open.readlines()
     for num, line in enumerate(f1, start=1):
