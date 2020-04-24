@@ -124,7 +124,6 @@ def build_seq_list(seqs_list):
         entry['10x_status'] = get_tenx_status(seq_id, experiment_type)
         entry['species'] = entry['libraryinfo__sampleinfo__species']
         entry['cooladmin_status'] = get_cooladmin_status(seq_id, entry['id'])
-        print(entry)
         #entry['group'] = get_group_name(entry)
     return (seqs_list)
 
@@ -146,7 +145,7 @@ def get_tenx_status(seq, experiment_type):
         string 'Error' when an error occurs in pipeline
         string 'Yes' when the 10x pipeline is succesfully done
     """
-    if(experiment_type == 'snRNA-seq' or experiment_type == 'scRNA-seq'):
+    if(not experiment_type ==  '10xATAC'):
         dir_to_check = settings.SCRNA_DIR
     else:
         dir_to_check = settings.TENX_DIR
@@ -826,6 +825,7 @@ def insert_link(filename, seq):
     link = generate_link(seq) #generate a link to the output folder
     if(link == -1):
         print('error in generate_link!')
+        return
     file_open = open(filename)
     f1 = file_open.readlines()
     for num, line in enumerate(f1, start=1):

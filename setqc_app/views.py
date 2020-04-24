@@ -1226,15 +1226,22 @@ def tenx_output(request, setqc_pk, outputname):
     @Requirements: the 10x webpage requested is softlinked in the BASE_DIR/data/websummary directory
     '''
     html = ('/'+outputname+"/outs/web_summary.html")
-    tenxdir = settings.TENX_DIR
-    file = open(tenxdir+html)
+    dir = ""
+    seqinfo = SeqInfo.objects.select_related('libraryinfo').get(seq_id=outputname)
+    print(seqinfo)
+    if(seqinfo.libraryinfo.experiment_type == '10xATAC'):
+        dir = settings.TENX_DIR
+    else:
+        dir = settings.SCRNA_DIR
+
+    file = open(dir+html)
     data = file.read()
     if(LINK_CLASS_NAME not in data):
         #print('in tenxoutput2() for singlecell, adding link to file')
         file.close()
-        filename = tenxdir+html
+        filename = dir+html
         insert_link(filename, outputname)
-        file=open(tenxdir+html)
+        file=open(dir+html)
         data = file.read()
     if(data == None):
         print('ERROR: No data read in 10x Web_Summary.html File! for ',outputname )
@@ -1242,18 +1249,25 @@ def tenx_output(request, setqc_pk, outputname):
 
 
 def tenx_output2(request, outputname):
+    """ singlecell app uses this view function
+    """
     html = ('/'+outputname+settings.TENX_WEBSUMMARY)
-    tenxdir = settings.TENX_DIR
-    file = open(tenxdir+html)
+    seqinfo = SeqInfo.objects.select_related('libraryinfo').get(seq_id=outputname)
+    print(seqinfo)
 
+    if(seqinfo.libraryinfo.experiment_type == '10xATAC'):
+        dir = settings.TENX_DIR
+    else:
+        dir = settings.SCRNA_DIR
+
+    file = open(dir+html)
     data = file.read()
-
     if(LINK_CLASS_NAME not in data):
         #print('in tenxoutput2() for singlecell, adding link to file')
         file.close()
-        filename = tenxdir+html
+        filename = dir+html
         insert_link(filename, outputname)
-        file=open(tenxdir+html)
+        file=open(dir+html)
         data = file.read()
     if(data == None):
         print('ERROR: No data read in 10x Web_Summary.html File! for ',outputname )
