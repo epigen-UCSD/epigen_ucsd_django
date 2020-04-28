@@ -145,10 +145,12 @@ def get_tenx_status(seq, experiment_type):
         string 'Error' when an error occurs in pipeline
         string 'Yes' when the 10x pipeline is succesfully done
     """
-    if(not experiment_type ==  '10xATAC'):
-        dir_to_check = settings.SCRNA_DIR
-    else:
+    if(experiment_type ==  '10xATAC' or experiment_type ==  'scATAQ-seq' ):
         dir_to_check = settings.TENX_DIR
+    else:
+        dir_to_check = settings.SCRNA_DIR
+
+
 
     tenx_output_folder = 'outs'
     tenx_target_outfile = 'web_summary.html'
@@ -305,7 +307,16 @@ def submit_singlecell(request):
                     'submitted' : True,
                 }
                 return JsonResponse(data)
+            elif experiment_type == '10xATAC':
+                ref = -1
+                submit_tenX(seq,ref,email)
 
+                data = {
+                    'success': True,
+                    'submitted' : True,
+                }
+                return JsonResponse(data)
+            
             data = {
                 'success': True,
                 'refs' : refgenome_list,
@@ -533,16 +544,19 @@ def submit_tenX(seq, refgenome, email):
     experiment_type = seq_info[0]['libraryinfo__experiment_type']
     #get all refrence genomes available for this experiment type.
     
-    refgenome = RefGenomeInfo.objects.get(species=data['species'],genome_name=refgenome,experiment_type__experiment=experiment_type)
-    data['genome'] = str(refgenome)
-    data['ref_path'] = refgenome.path
+    
     #print('refgenomes present: ', str(refgenome))
     
     #set output dir based on experiment type
     if experiment_type == '10xATAC':
-         dir = settings.TENX_DIR
+        dir = settings.TENX_DIR
+        data['genome'] = data['species']
+
     else:
         dir = settings.SCRNA_DIR
+        refgenome = RefGenomeInfo.objects.get(species=data['species'],genome_name=refgenome,experiment_type__experiment=experiment_type)
+        data['genome'] = str(refgenome)
+        data['ref_path'] = refgenome.path
 
     #write tsv samplesheet: filename = ".sequence.tsv"
     filename = '.'+str(seq)+'.tsv'
