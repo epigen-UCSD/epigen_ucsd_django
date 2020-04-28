@@ -1452,14 +1452,14 @@ $(document).ready(function () {
     function tenx_results_button(seq) {
         if (seq === -1) {
             var href = "#"
-            var share_button = '<a class="shareButtonSc btn btn-sm" disabled><i disabled class="fas fa-link"></i></a>'
+            //var share_button = '<a class="shareButtonSc btn btn-sm" disabled><i disabled class="fas fa-link"></i></a>'
         }
         else {
             href = ("/singlecell/websummary/" + seq);
-            share_button = '<a style="display:inline-block;" class="shareButtonSc btn btn-sm" data-toggle="tooltip" data-placement="top" title="Copy link to share to clipboard." value="' + seq + '" ><i class="fas fa-link"></i></a>'
+            //share_button = '<a style="display:inline-block;" class="shareButtonSc btn btn-sm" data-toggle="tooltip" data-placement="top" title="Copy link to share to clipboard." value="' + seq + '" ><i class="fas fa-link"></i></a>'
         }
 
-        return ('<a style="display:inline-block;" type="button" href=' + href + ' class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a> ' + share_button);
+        return ('<a style="display:inline-block;" type="button" href=' + href + ' class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a>');
     }
 
     //popup btn will make popup visible

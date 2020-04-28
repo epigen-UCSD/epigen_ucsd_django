@@ -764,8 +764,8 @@ def generate_tenx_link(request):
         return JsonResponse(data,safe=False)
       
 
-          
-def generate_link(seq):
+#TODO check where generate link is called, ensure expt_type is passed in
+def generate_link(seq, expt_type):
     """ return a link for files to be viewed with a share link
     Will generate a link if needed. Will return the link in the response.
     """
@@ -774,20 +774,7 @@ def generate_link(seq):
     info = {}
     data = {}
     parent_dir = ""
-    try:
-        seq_object = SeqInfo.objects.select_related(
-            'libraryinfo').get(seq_id=seq)
-    except ObjectDoesNotExist:
-        print('SeqObject does not exist!')
-        return -1
-
-    # get seq owner:
-    library_info = seq_object.libraryinfo
-    info['experiment_type'] = library_info.experiment_type
-    info['seq_owner'] = seq_object.team_member_initails
-    info['seq_id'] = seq_object.seq_id
-    #print(info)
-    #print(request.user)
+    
     # get all files in exposed outs folder
     exposed_outs_dir = settings.EXPOSED_OUTS_DIR
     listdir = os.listdir(exposed_outs_dir)
@@ -800,12 +787,9 @@ def generate_link(seq):
     # check if symbolic link is present
     if(seq not in (basenames)):
         # Do symbolic linking
-        if info['experiment_type'] == '10xATAC':
-            parent_dir = settings.TENX_DIR
-        else:
-            parent_dir = settings.SCRNA_DIR
+        parent_dir = settings.TENX_DIR if expt_type == "10x_ATAC" else settings.SCRNA_DIR
         output_dir = 'outs'
-        to_link_dir = os.path.join(parent_dir, info['seq_id'], output_dir)
+        to_link_dir = os.path.join(parent_dir, seq, output_dir)
 
         # create link name
         chars = (string.ascii_uppercase +
@@ -826,31 +810,36 @@ def generate_link(seq):
         link = os.path.join(os.path.basename(
             os.path.split(exposed_outs_dir)[0]), link)
         print(link)
-    link = 'http://epigenomics.sdsc.edu/zhc268/' + link
+    url = 'http://epigenomics.sdsc.edu/zhc268/' + link
 
-    return(link)
+    return(url)
 
 
-def insert_link(filename, seq):
-    """ Insert link into header of the web_summary.html 
+def insert_link(filename, seq, expt_type):
+    """ Insert link into header of the web_summary.html
+        for scRNA experiments, insert at line 1430.
     """
-    #print('insert link:')
-    newdata = "" # will hold the old html + an inserted link at line 10
-    link = generate_link(seq) #generate a link to the output folder
+    #magic numbers, where we will insert link in web_summary.html
+    TENXATAC_LINE = 10
+    SCRNA_LINE = 1430
+    print('inserting link for ')
+    line_to_insert_at = TENXATAC_LINE if expt_type == '10xATAC' else SCRNA_LINE
+    
+    newdata = "" # will hold the old html + an inserted link at specified line
+    link = generate_link(seq, expt_type) #generate a link to the output folder
     if(link == -1):
         print('error in generate_link!')
         return
     file_open = open(filename)
     f1 = file_open.readlines()
     for num, line in enumerate(f1, start=1):
-        if num == 10:
+        if num == line_to_insert_at:
             newdata = newdata + '<div><h2><a class="data-link-epigen" style="margin-left:3em;" href="'+link+'"> Link to Output Data</a></h2><div>'
         newdata = newdata + line
     file_open.close()
-
+    #may be too much data in memory
     with open(filename, 'w') as overwrite:
         overwrite.write(newdata)
-    
 
 
 def view_websummary(request, seq_id):
@@ -869,18 +858,21 @@ def view_websummary(request, seq_id):
     
     dir = ""
     print(seqinfo)
-    if(seqinfo.libraryinfo.experiment_type == '10xATAC'):
+    expt_type = seqinfo.libraryinfo.experiment_type
+    if(expt_type == '10xATAC'):
         dir = settings.TENX_DIR
     else:
         dir = settings.SCRNA_DIR
 
     path = '{dir}/{seq_id}/outs/web_summary.html'.format(seq_id=seq_id,dir=dir)
+    print('reading: ',path)
     file = open(path)
     data = file.read()
+    print('link in data? :',LINK_CLASS_NAME not in data)
     if(LINK_CLASS_NAME not in data):
         #print('in tenxoutput2() for singlecell, adding link to file')
         file.close()
-        insert_link(path, outputname)
+        insert_link(path, seq_id, expt_type)
         file=open(path)
         data = file.read()
     if(data == None):

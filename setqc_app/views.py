@@ -1229,7 +1229,8 @@ def tenx_output(request, setqc_pk, outputname):
     dir = ""
     seqinfo = SeqInfo.objects.select_related('libraryinfo').get(seq_id=outputname)
     print(seqinfo)
-    if(seqinfo.libraryinfo.experiment_type == '10xATAC'):
+    expt_type = seqinfo.libraryinfo.experiment_type
+    if(expt_type == '10xATAC'):
         dir = settings.TENX_DIR
     else:
         dir = settings.SCRNA_DIR
@@ -1240,7 +1241,7 @@ def tenx_output(request, setqc_pk, outputname):
         #print('in tenxoutput2() for singlecell, adding link to file')
         file.close()
         filename = dir+html
-        insert_link(filename, outputname)
+        insert_link(filename, outputname, expt_type)
         file=open(dir+html)
         data = file.read()
     if(data == None):
