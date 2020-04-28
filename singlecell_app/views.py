@@ -575,10 +575,10 @@ def submit_tenX(seq, refgenome, email):
         
     #set command depedning on experiment
     if( experiment_type == 'scRNA-seq' or experiment_type == 'snRNA-seq'):
-        cmd1 = ('./utility/runCellRanger.sh %s %s %s %s' %(seq,
+        cmd1 = ('bash ./utility/runCellRanger.sh %s %s %s %s' %(seq,
          data['ref_path'], dir, email))
     else:
-        cmd1 = './utility/run10xOnly.sh %s %s %s' %(seq, dir, email)
+        cmd1 = 'bash ./utility/run10xOnly.sh %s %s %s' %(seq, dir, email)
     print('cmd submitted: ',cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
