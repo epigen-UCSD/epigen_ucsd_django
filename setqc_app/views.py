@@ -1246,29 +1246,3 @@ def tenx_output(request, setqc_pk, outputname):
     if(data == None):
         print('ERROR: No data read in 10x Web_Summary.html File! for ',outputname )
     return HttpResponse(data)
-
-
-def tenx_output2(request, outputname):
-    """ singlecell app uses this view function
-    """
-    html = ('/'+outputname+settings.TENX_WEBSUMMARY)
-    seqinfo = SeqInfo.objects.select_related('libraryinfo').get(seq_id=outputname)
-    print(seqinfo)
-
-    if(seqinfo.libraryinfo.experiment_type == '10xATAC'):
-        dir = settings.TENX_DIR
-    else:
-        dir = settings.SCRNA_DIR
-
-    file = open(dir+html)
-    data = file.read()
-    if(LINK_CLASS_NAME not in data):
-        #print('in tenxoutput2() for singlecell, adding link to file')
-        file.close()
-        filename = dir+html
-        insert_link(filename, outputname)
-        file=open(dir+html)
-        data = file.read()
-    if(data == None):
-        print('ERROR: No data read in 10x Web_Summary.html File! for ',outputname )
-    return HttpResponse(data)

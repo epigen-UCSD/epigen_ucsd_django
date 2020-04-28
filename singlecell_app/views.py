@@ -852,3 +852,48 @@ def insert_link(filename, seq):
         overwrite.write(newdata)
     
 
+
+def view_websummary(request, seq_id):
+    '''
+    This function opens and returns html webpage created by 10x pipelines for singlecell app
+    @Requirements: the 10x webpage requested is softlinked in the BASE_DIR/data/websummary 
+    directory, where BASE_DIR is either settings.TENX_DIR or settings.SCRNA_DIR.
+    '''
+    user = request.user
+    seqinfo = SeqInfo.objects.select_related('libraryinfo','libraryinfo__sampleinfo','libraryinfo__sampleinfo__group').get(seq_id=seq_id)
+    permission = check_permissions(user=user, seqinfo=seqinfo)
+
+    if permission == False:
+        print('Access is denied to seq {seq_id} for user {user}'.format(seq_id=seq_id,user=user))
+        raise PermissionDenied
+    
+    dir = ""
+    print(seqinfo)
+    if(seqinfo.libraryinfo.experiment_type == '10xATAC'):
+        dir = settings.TENX_DIR
+    else:
+        dir = settings.SCRNA_DIR
+
+    path = '{dir}/{seq_id}/outs/web_summary.html'.format(seq_id=seq_id,dir=dir)
+    file = open(path)
+    data = file.read()
+    if(LINK_CLASS_NAME not in data):
+        #print('in tenxoutput2() for singlecell, adding link to file')
+        file.close()
+        insert_link(path, outputname)
+        file=open(path)
+        data = file.read()
+    if(data == None):
+        print('ERROR: No data read in 10x Web_Summary.html File! for {seq_id}'.format(seq_id=seq_id) )
+    return HttpResponse(data)
+
+def check_permissions(seqinfo, user):
+    """ If user is staff or bioinformatics let them view, if the user is 
+    collaborator then they must be part of the group. Return True if permission
+    is granted.bi
+    """
+    #get group that seq is assigned to
+    seq_group = seqinfo.libraryinfo.sampleinfo.group
+    #check if user is staff,bioinformatics, or in seq_group
+    
+    return True if is_in_multiple_groups(user, ['bioinformatics','staff','wetlab',seq_group]) else False
