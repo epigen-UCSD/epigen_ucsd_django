@@ -291,11 +291,11 @@ def CollaboratorSingleCellData(request):
 
     seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, libraryinfo__sampleinfo__group__in=group_name ).select_related('libraryinfo','libraryinfo__sampleinfo__group', 'libraryinfo__sampleinfo').order_by(
         '-date_submitted_for_sequencing').values('id', 'seq_id', 'libraryinfo__experiment_type', 'read_type',
-                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group')
+                                                 'libraryinfo__sampleinfo__species','libraryinfo__sampleinfo__sample_id', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group')
     
     data = list(seqs_queryset)
     print('data:',data)
-    build_seq_list(data)
+    build_seq_list(data, collab=True)
     return JsonResponse(data, safe=False)
 
 
