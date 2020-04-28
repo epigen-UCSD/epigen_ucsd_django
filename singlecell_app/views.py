@@ -100,7 +100,7 @@ def UserSingleCellData(request):
     return JsonResponse(data, safe=False)
 
 
-def build_seq_list(seqs_list, collab=False):
+def build_seq_list(seqs_list):
     """ This function is used to build seq lists to be returned to the from an 
     AJAX call for AllSeqs2.
     @params

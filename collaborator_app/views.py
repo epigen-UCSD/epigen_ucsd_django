@@ -295,7 +295,7 @@ def CollaboratorSingleCellData(request):
     
     data = list(seqs_queryset)
     print('data:',data)
-    build_seq_list(data, collab=True)
+    build_seq_list(data)
     return JsonResponse(data, safe=False)
 
 

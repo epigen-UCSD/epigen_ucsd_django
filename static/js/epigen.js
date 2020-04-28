@@ -1791,7 +1791,7 @@ $(document).ready(function () {
                     } else if (status === "No" && row['seq_status'] === "No") {
                         return ('<button type="button" class="btn btn-sm badge-status-blue" style="color:white" data-toggle="tooltip" data-placement="top" title="No FASTQ files available">ClickToSubmit</button>');
                     } else if (status === "No" && row['seq_status'] === "Yes") {
-                        return ('<button type="button" disabled class="runsinglecell btn btn-danger btn-sm btn-status-orange" value=' + seq + '> ReadyForSubmission </button>');
+                        return ('<button type="button" disabled class="runsinglecell btn btn-danger btn-sm btn-status-orange" value=' + seq + '> Submit </button>');
                     } else {
                         return ('<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>' + status + '</button>');
                     }
@@ -1807,11 +1807,11 @@ $(document).ready(function () {
                         //check fastq seq status
                         if (row["seq_status"] === "Yes") {
                             if (row['libraryinfo__experiment_type'] == "10xATAC" && (row['10x_status'] === "Yes" || row['10x_status'] === "Results")) {
-                                return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange  cooladmin-submit" disabled value="' + seq_id + '"> ReadyForSubmission </button>');
+                                return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange  cooladmin-submit" disabled value="' + seq_id + '"> Submit </button>');
                             } else if (row['libraryinfo__experiment_type'] === "10xATAC" && !(row['10x_status'] === "Yes" || row['10x_status'] === "Results")) {
                                 return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
                             } else {
-                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange cooladmin-submit" value="' + seq_id + '"> ClickToSubmit</button>');
+                                return ('<button type="submit" disabled class="btn btn-danger btn-sm btn-status-orange cooladmin-submit" value="#"> Submit</button>');
                             }
                         }
                         else { //no fastq file present
