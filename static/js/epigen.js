@@ -1553,7 +1553,7 @@ $(document).ready(function () {
     var singlecellurl = $('#datatable-all-sc').attr("data-href");
     $('#datatable-all-sc').DataTable({
         //dom: 'lBfrtip',
-        "order": [[3, "desc"], [0, "asc"]],
+        "order": [[4, "desc"], [0, "asc"]],
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
         "processing": true,
@@ -1564,6 +1564,7 @@ $(document).ready(function () {
         },
         "columns": [
             { data: "seq_id" },
+            { data: "libraryinfo__sampleinfo__sample_id" },
             { data: "libraryinfo__experiment_type" },
             { data: "species" },
             { data: "last_modified" },
@@ -1584,7 +1585,7 @@ $(document).ready(function () {
             },
             // 10x pipeline check
             {
-                "targets": 5,
+                "targets": 6,
                 "render": function (data, type, row) {
                     var status = data;
                     var seq = row['seq_id'];
@@ -1603,7 +1604,7 @@ $(document).ready(function () {
             },
             {
                 //cooladmin status
-                "targets": 6,
+                "targets": 7,
                 "render": function (data, type, row) {
                     var status = data;
                     var seq_id = row['seq_id'];
@@ -1632,7 +1633,7 @@ $(document).ready(function () {
                 },
             },
             {
-                "targets": 7,
+                "targets": 8,
                 "render": function (data, type, row) {
                     var seq_id = row['seq_id']
                     if (row['libraryinfo__experiment_type'] !== "10xATAC" || row['10x_status'] === "Yes") {
@@ -1647,7 +1648,7 @@ $(document).ready(function () {
     //user sequences
     var singlecellurl_user = $('#datatable-user-sc').attr("data-href");
     $('#datatable-user-sc').DataTable({
-        "order": [[3, "desc"], [0, "asc"]],
+        "order": [[4, "desc"], [0, "asc"]],
         //dom: 'lBfrtip',
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
@@ -1659,6 +1660,7 @@ $(document).ready(function () {
         },
         "columns": [
             { data: "seq_id" },
+            { data: "libraryinfo__sampleinfo__sample_id" },
             { data: "libraryinfo__experiment_type" },
             { data: "species" },
             { data: "last_modified" },
@@ -1679,7 +1681,7 @@ $(document).ready(function () {
             },
             // 10x pipeline check
             {
-                "targets": 5,
+                "targets": 6,
                 "render": function (data, type, row) {
                     var status = data;
                     var seq = row['seq_id'];
@@ -1698,7 +1700,7 @@ $(document).ready(function () {
             },
             {
                 //cooladmin status
-                "targets": 6,
+                "targets": 7,
                 "render": function (data, type, row) {
                     var status = data;
                     var seq_id = row['seq_id'];
@@ -1727,7 +1729,7 @@ $(document).ready(function () {
                 },
             },
             {//cooladmin edit button- links to edit page
-                "targets": 7,
+                "targets": 8,
                 "render": function (data, type, row) {
                     var seq_id = row['seq_id']
                     if (row['libraryinfo__experiment_type'] !== "10xATAC" || row['10x_status'] === "Yes") {
@@ -1749,7 +1751,7 @@ $(document).ready(function () {
     //user sequences
     var singlecellurl_user = $('#datatable-collab-sc').attr("data-href");
     $('#datatable-collab-sc').DataTable({
-        "order": [[3, "desc"], [0, "asc"]],
+        "order": [[4, "desc"], [0, "asc"]],
         //dom: 'lBfrtip',
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
@@ -1771,13 +1773,13 @@ $(document).ready(function () {
         ],
         "deferRender": true,
         "columnDefs": [
-            {
-                "targets": 0,
-                "render": function (data, type, row) {
-                    var itemID = row["id"];
-                    return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
-                }
-            },
+            // {
+            //     "targets": 0,
+            //     "render": function (data, type, row) {
+            //         var itemID = row["id"];
+            //         return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+            //     }
+            // },
             // 10x pipeline check
             {
                 "targets": 6,
