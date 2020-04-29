@@ -529,6 +529,7 @@ def setup_submission(seq_object, data):
     
     return data
 
+
 def submit_tenX(seq, refgenome, email):
     """ This function should only be called by another fucntion that ensures the sequence is valid to be submitted
     This function submits a sequence to 10x cell ranger or 10x atac pipeline
@@ -550,7 +551,8 @@ def submit_tenX(seq, refgenome, email):
     #set output dir based on experiment type
     if experiment_type == '10xATAC':
         dir = settings.TENX_DIR
-        data['genome'] = data['species']
+        #set genome that run10xPipeline.pbs will use
+        data['genome'] = 'mm10' if data['species'].lower() == 'mouse' else 'hg38'
 
     else:
         dir = settings.SCRNA_DIR
@@ -574,11 +576,14 @@ def submit_tenX(seq, refgenome, email):
         f.write(tsv_writecontent+'\n')
         
     #set command depedning on experiment
-    if( experiment_type == 'scRNA-seq' or experiment_type == 'snRNA-seq'):
+
+    if( experiment_type == '10xATAC'):
+        cmd1 = 'bash ./utility/run10xOnly.sh %s %s %s' %(seq, dir, email)
+    else:
         cmd1 = ('bash ./utility/runCellRanger.sh %s %s %s %s' %(seq,
          data['ref_path'], dir, email))
-    else:
-        cmd1 = 'bash ./utility/run10xOnly.sh %s %s %s' %(seq, dir, email)
+
+
     print('cmd submitted: ',cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -878,6 +883,7 @@ def view_websummary(request, seq_id):
     if(data == None):
         print('ERROR: No data read in 10x Web_Summary.html File! for {seq_id}'.format(seq_id=seq_id) )
     return HttpResponse(data)
+
 
 def check_permissions(seqinfo, user):
     """ If user is staff or bioinformatics let them view, if the user is 

@@ -10,20 +10,18 @@
             {{ type }}
         </div><!-- /.card-header -->
         <div class="card-body">
-            <table id="datatable-user-sc" data-href="{% url 'collaborator_app:get_seqs' %}"
+            <table id="datatable-collab-sc" data-href="{% url 'collaborator_app:get_seqs' %}"
                 class="table table-striped table-sm text-center table-responsive-xl">
                 <thead>
                     <tr>
                         <th scope="col">Sequence</th>
+                        <th scope="col">Sample Info</th>
                         <th scope="col">Experiment Type</th>
                         <th scope="col">Species</th>
                         <th scope="col">Last Modified</th>
                         <th scope="col">Sequence Status</th>
                         <th scope="col">10x Pipeline Status</th>
                         <th scope="col">CoolAdmin Status</th>
-                        <th scope="col">CoolAdmin Edit</th>
-                        <th scope="col">Group</th>
-
                     </tr>
                 </thead>
             </table>
@@ -31,19 +29,6 @@
     </div>
 </div>
 <div>
-    <!-- pop overlay to display misc. items-->
-    <!--Creates the popup body-->
-    <div class="popup-overlay">
-        <!--Creates the popup content-->
-        <div class="popup-content">
-
-            <h3>Confirm Reference Option</h3>
-            <form class="refgenomes">
-            </form>
-            <button class="btn btn-md btn-primary m-3 runsinglecell-confirm">Confirm</button>
-            <button class="btn btn-md btn-primary m-3 closePopup">Close</button>
-        </div>
-    </div>
 </div>
 </div>
 
