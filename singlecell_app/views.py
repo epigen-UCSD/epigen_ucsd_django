@@ -551,7 +551,8 @@ def submit_tenX(seq, refgenome, email):
     #set output dir based on experiment type
     if experiment_type == '10xATAC':
         dir = settings.TENX_DIR
-        data['genome'] = data['species']
+        #set genome that run10xPipeline.pbs will use
+        data['genome'] = 'mm10' if data['species'].lower() == 'mouse' else 'hg38'
 
     else:
         dir = settings.SCRNA_DIR
