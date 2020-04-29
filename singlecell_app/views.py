@@ -573,14 +573,16 @@ def submit_tenX(seq, refgenome, email):
         f.write('')
     tsv_file = os.path.join(seqDir, filename)
     with open(tsv_file, 'w') as f:
-        f.write(tsv_writecontent)
+        f.write(tsv_writecontent+'\n')
         
     #set command depedning on experiment
+
     if( experiment_type == '10xATAC'):
-        cmd1 = './utility/run10xOnly.sh %s %s %s' %(seq, dir, email)
+        cmd1 = 'bash ./utility/run10xOnly.sh %s %s %s' %(seq, dir, email)
     else:
-        cmd1 = ('./utility/runCellRanger.sh %s %s %s %s' %(seq,
+        cmd1 = ('bash ./utility/runCellRanger.sh %s %s %s %s' %(seq,
          data['ref_path'], dir, email))
+
 
     print('cmd submitted: ',cmd1)
     p = subprocess.Popen(
