@@ -1,9 +1,23 @@
+[django]
+SECRET_KEY: '+(dwzth-qiw^g#hcn5gx5oj^=s9*rzp^e&zx^mk*=&!%%_pm=80'
+
 [database]
 DATABASE_USER: test
 DATABASE_PASSWORD: 123456
 DATABASE_HOST: 127.0.0.1
 DATABASE_PORT: 5432
 DATABASE_ENGINE: django.db.backends.postgresql_psycopg2
-DATABASE_NAME: django_data
-NEXTSEQAPP_DMPDIR: /home/User/github/epigen_app/NEXTSEQAPPDMP_DIR
+DATABASE_NAME: nextseqapp
+NEXTSEQAPP_DMPDIR: C:\projects\ps-epigen\nextSEQ
+LIBQC_DIR: C:\projects\ps-epigen\outputs\libQCs
+SETQC_DIR: C:\projects\ps-epigen\outputs\setQCs
+FASTQ_DIR: C:\projects\ps-epigen\seqdata
+MEDIA_ROOT: C:\Users\Michael\Desktop\epigen_ucsd_django\data\masterseq_app
+TENX_DIR: C:\projects\ps-epigen\outputs\10xATAC
+ENCODE_TM_DIR: C:\projects\ps-epigen\seqdata\ENCODE
 
+[snapp]
+TENX_WEBSUMMARY: C:\outs\web_summary.html
+COOLADMIN_DIR: C:\projects\ps-epigen\datasets\opoirion\output_LIMS
+SCRNA_DIR: C:\projects\ps-epigen\outputs\scRNA
+EXPOSED_OUTS_DIR: C:\Users\Michael\Desktop\www\lims_singlecell

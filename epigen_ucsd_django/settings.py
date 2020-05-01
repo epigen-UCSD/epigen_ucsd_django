@@ -15,14 +15,13 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+template_dir = os.path.join(BASE_DIR,'templates')
+static_dir = os.path.join(BASE_DIR, "static")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 config = configparser.ConfigParser()
-config.read('deploy.ini')
-
-
+config.read('deploy.ini.eg')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config['django']['SECRET_KEY']
 
@@ -52,6 +51,7 @@ INSTALLED_APPS = [
     'collaborator_app',
     'singlecell_app',
     'debug_toolbar',
+    'bootstrap4',
 ]
 
 if 'extra_app' in dict(config.items('database')).keys():
@@ -80,7 +80,7 @@ ROOT_URLCONF = 'epigen_ucsd_django.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [template_dir,],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'epigen_ucsd_django.wsgi.application'
 
 STATICFILES_DIRS = [
 
-    os.path.join(BASE_DIR, 'static'),
+    static_dir,
 
 ]
 
@@ -211,4 +211,3 @@ COOLADMIN_DIR = config['snapp']['COOLADMIN_DIR']
 ENCODE_TM_DIR = config['database']['ENCODE_TM_DIR']
 SCRNA_DIR = config['snapp']['SCRNA_DIR']
 EXPOSED_OUTS_DIR = config['snapp']['EXPOSED_OUTS_DIR']
-
