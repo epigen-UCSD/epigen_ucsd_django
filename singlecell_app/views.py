@@ -80,7 +80,7 @@ def AllSingleCellData(request):
 
     seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo','libraryinfo__sampleinfo','libraryinfo__sampleinfo__group').order_by(
         '-date_submitted_for_sequencing').values('id', 'seq_id', 'libraryinfo__experiment_type', 'read_type',
-                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group')
+                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group','libraryinfo__sampleinfo__sample_id')
 
     data = list(seqs_queryset)
     build_seq_list(data)
@@ -93,7 +93,7 @@ def UserSingleCellData(request):
 
     seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).select_related('libraryinfo','libraryinfo__sampleinfo__group', 'libraryinfo__sampleinfo').order_by(
         '-date_submitted_for_sequencing').values('id', 'seq_id', 'libraryinfo__experiment_type', 'read_type',
-                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group')
+                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group','libraryinfo__sampleinfo__sample_id')
 
     data = list(seqs_queryset)
     build_seq_list(data)
@@ -792,7 +792,7 @@ def generate_link(seq, expt_type):
     # check if symbolic link is present
     if(seq not in (basenames)):
         # Do symbolic linking
-        parent_dir = settings.TENX_DIR if expt_type == "10x_ATAC" else settings.SCRNA_DIR
+        parent_dir = settings.TENX_DIR if expt_type == "10xATAC" else settings.SCRNA_DIR
         output_dir = 'outs'
         to_link_dir = os.path.join(parent_dir, seq, output_dir)
 
@@ -827,9 +827,7 @@ def insert_link(filename, seq, expt_type):
     #magic numbers, where we will insert link in web_summary.html
     TENXATAC_LINE = 10
     SCRNA_LINE = 1430
-    print('inserting link for ')
     line_to_insert_at = TENXATAC_LINE if expt_type == '10xATAC' else SCRNA_LINE
-    
     newdata = "" # will hold the old html + an inserted link at specified line
     link = generate_link(seq, expt_type) #generate a link to the output folder
     if(link == -1):
@@ -873,7 +871,6 @@ def view_websummary(request, seq_id):
     print('reading: ',path)
     file = open(path)
     data = file.read()
-    print('link in data? :',LINK_CLASS_NAME not in data)
     if(LINK_CLASS_NAME not in data):
         #print('in tenxoutput2() for singlecell, adding link to file')
         file.close()
