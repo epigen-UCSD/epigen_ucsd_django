@@ -751,13 +751,11 @@ def generate_tenx_link(request):
                            for x in range(LENGTH_OF_KEY - 1))
             link += '_' + seq
             fullpath_link = os.path.join(settings.EXPOSED_OUTS_DIR, link)
-            print('link made: ',fullpath_link)
 
             link = os.path.join(os.path.basename(
                 os.path.split(exposed_outs_dir)[0]), link)
             os.system("ln -s %s %s" % (to_link_dir, fullpath_link))
             # bash script process
-            print('link made2: ',link)
 
         else:
             link = filenames_dict[seq]
