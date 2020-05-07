@@ -9,7 +9,7 @@ from masterseq_app.models import LibraryInfo, SeqInfo, GenomeInfo, RefGenomeInfo
 from epigen_ucsd_django.shared import is_member,is_in_multiple_groups
 
 from .forms import CoolAdminForm
-from .models import CoolAdminSubmission
+from .models import CoolAdminSubmission, SingleCellObject
 from django.conf import settings
 import os
 import random
@@ -43,6 +43,10 @@ defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
 
 LINK_CLASS_NAME="data-link-epigen"
 
+INQUEUE = 'InQueue'
+
+
+
 #TODO do rat for scRNA-seq plus option for hg19, we deafault to hg38 right now.
 #TODO also need option for mixed mouse and human
 
@@ -72,6 +76,15 @@ def MySeqs(request):
     return render(request, 'singlecell_app/myseqs.html', context)
 
 
+
+def MySeqs2(request):
+    context = {
+        'type': 'My Sequences',
+        'AllSeq': False
+    }
+    return render(request, 'singlecell_app/myseqs2.html', context)
+
+'''
 def AllSingleCellData(request):
     """ async function to get hit by ajax. Returns json of all single cell data dict
     in db
@@ -85,20 +98,72 @@ def AllSingleCellData(request):
     data = list(seqs_queryset)
     build_seq_list(data)
     return JsonResponse(data, safe=False)
+'''
+
+def AllSingleCellData(request):
+    """ async function to get hit by ajax. Returns json of all single cell data dict
+    in db
+    """
+    # make sure only bioinformatics group users allowed
+
+    seqs_queryset = SingleCellObject.objects.all().select_related('seqinfo',
+    'cooladminsubmission','libraryinfo','sampleinfo',
+    'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
+        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified', 
+        'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species', 
+        'seqinfo__libraryinfo__sampleinfo__group','tenx_pipeline_status',
+        'seqinfo__libraryinfo__sampleinfo__sample_id','cooladminsubmission__pipeline_status',
+        'seqinfo__date_submitted_for_sequencing','cooladminsubmission__link')
+
+    data = list(seqs_queryset)
+    build_seq_list_modified(data)
+
+    return JsonResponse(data, safe=False)
+
 
 
 def UserSingleCellData(request):
     """async function to get hit by ajax, returns user only seqs
     """
-
-    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, team_member_initails=request.user).select_related('libraryinfo','libraryinfo__sampleinfo__group', 'libraryinfo__sampleinfo').order_by(
-        '-date_submitted_for_sequencing').values('id', 'seq_id', 'libraryinfo__experiment_type', 'read_type',
-                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group','libraryinfo__sampleinfo__sample_id')
+    seqs_queryset = SingleCellObject.objects.filter(seqinfo__team_member_initails=request.user).select_related('seqinfo',
+        'cooladminsubmission','libraryinfo','sampleinfo',
+        'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
+        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified', 
+        'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species', 
+        'seqinfo__libraryinfo__sampleinfo__group','tenx_pipeline_status',
+        'seqinfo__libraryinfo__sampleinfo__sample_id','cooladminsubmission__pipeline_status',
+        'seqinfo__date_submitted_for_sequencing','cooladminsubmission__link')
 
     data = list(seqs_queryset)
-    build_seq_list(data)
+    build_seq_list_modified(data)
+
     return JsonResponse(data, safe=False)
 
+#TODO Think about when cooladmin being modified and submitted should affect the date of the singlecell seq
+def build_seq_list_modified(seqs_list):
+    """ This function is used to build seq lists to be returned to the from an 
+    AJAX call for AllSeqs2.
+    @params
+        seqs_list is a list of dictionaires where each has the seq_id and experiment_type for a single cell sample sequence.
+    @returns
+        returns a list of dictionaries with more information describing the sequence.
+        #TODO clean this function up, library IDs not necessary anymore
+    """
+    # optimize later
+    groups = Group.objects.all()
+    for entry in seqs_list:
+        group_id = entry['seqinfo__libraryinfo__sampleinfo__group']
+        group_name = get_group_name(groups, group_id)
+        entry['seqinfo__libraryinfo__sampleinfo__group'] = group_name  
+        seq_id = entry['seqinfo__seq_id']
+        experiment_type = entry['seqinfo__libraryinfo__experiment_type']
+        #need to move FASTQ file status to db
+        entry['seq_status'] = get_seq_status(seq_id, entry['seqinfo__read_type'])
+        entry['species'] = entry['seqinfo__libraryinfo__sampleinfo__species']
+        ca_status = entry['cooladminsubmission__pipeline_status']
+        entry['cooladmin_status'] = entry['cooladminsubmission__link'] if ca_status == 'Yes' else ca_status
+
+    return (seqs_list)
 
 def build_seq_list(seqs_list):
     """ This function is used to build seq lists to be returned to the from an 
@@ -145,12 +210,10 @@ def get_tenx_status(seq, experiment_type):
         string 'Error' when an error occurs in pipeline
         string 'Yes' when the 10x pipeline is succesfully done
     """
-    if(experiment_type ==  '10xATAC' or experiment_type ==  'scATAQ-seq' ):
+    if(experiment_type ==  '10xATAC'):
         dir_to_check = settings.TENX_DIR
     else:
         dir_to_check = settings.SCRNA_DIR
-
-
 
     tenx_output_folder = 'outs'
     tenx_target_outfile = 'web_summary.html'
@@ -281,16 +344,13 @@ def submit_singlecell(request):
             }
         else:
             email = request.user.email
-            seq_info = SeqInfo.objects.get(seq_id=seq)
-            
-            seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
-                'libraryinfo__sampleinfo').values('seq_id',
-                'libraryinfo__sampleinfo__species','read_type',
-                'libraryinfo__experiment_type'))
-
-            species =  seq_info[0]['libraryinfo__sampleinfo__species'] 
-
-            experiment_type = seq_info[0]['libraryinfo__experiment_type']
+            seq_info = SingleCellObject.objects.select_related(
+                'seqinfo__libraryinfo__sampleinfo').values('seqinfo__seq_id',
+                'seqinfo__libraryinfo__sampleinfo__species',
+                'seqinfo__libraryinfo__experiment_type').get(seqinfo__seq_id=seq)
+            print(seq_info)
+            species =  seq_info['seqinfo__libraryinfo__sampleinfo__species'] 
+            experiment_type = seq_info['seqinfo__libraryinfo__experiment_type']
             experiment_obj = ExperimentType.objects.get(experiment=experiment_type)
             #get all refrence genomes available for this experiment type.
             
@@ -367,19 +427,17 @@ def submit_cooladmin(request):
         else:  # set ref genome to default species
             submission_dict['refgenome'] = species
             submission.date_modified = datetime.now()
-            submission.date_submitted = datetime.now()
-            submission.submitted = True
-            submission.save()
     else:
         #print('submission dict: ', submission_dict)
         if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
             submission_dict['refgenome'] = getReferenceUsed(seq)
-        submission.date_submitted = datetime.now()
-        submission.submitted = True
+    
+    submission.date_submitted = datetime.now() 
+    submission.pipeline_status = INQUEUE
+    submission.submitted = True
+    submission.save()
 
-    #print(submission_dict)
-    #print(submission)
-
+    
     seqString = f'"{seq}"'
 
     paramString = buildCoolAdminParameterString(
@@ -534,6 +592,11 @@ def submit_tenX(seq, refgenome, email):
     """ This function should only be called by another fucntion that ensures the sequence is valid to be submitted
     This function submits a sequence to 10x cell ranger or 10x atac pipeline
     """
+    #update singlecell model
+    sc_obj = SingleCellObject.objects.get(seqinfo__seq_id=seq)
+    sc_obj.tenx_pipeline_status = INQUEUE
+    sc_obj.date_last_modified = datetime.datetime.now()
+    sc_obj.save()
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
         'libraryinfo__sampleinfo').values('seq_id',
         'libraryinfo__sampleinfo__species','read_type',

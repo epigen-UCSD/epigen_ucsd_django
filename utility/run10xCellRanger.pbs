@@ -33,6 +33,12 @@ fastqs=$(echo $SAMPLE| awk -v FS=',' -v d="${FASTQDIR}" '{ for(i=1;i<=NF-1;i++) 
 
 
 # run pipeline
+
+# update status from InQueue to InProcess
+cmd="source activate django; python \$(which updateSingleCellStatus.py) -seqid $INPREFIX -status InProcess;"
+job1=$(ssh zhc268@epigenomics.sdsc.edu $cmd)
+
+
 mkdir -p ~/data/outputs/scRNA/$INPREFIX
 [[ -f ~/data/outputs/scRNA/${INPREFIX}/.inqueue ]] && rm  ~/data/outputs/scRNA/${INPREFIX}/.inqueue 
 touch ~/data/outputs/scRNA/${INPREFIX}/.inprocess
@@ -43,16 +49,21 @@ wait
 # transfer results
 rsync -azr ${WORKDIR}${INPREFIX} ~/data/outputs/scRNA/
 rm  ~/data/outputs/scRNA/${INPREFIX}/.inprocess
+
+
+wait
+
+
+#!!!!! TODO add a check to see if error file present if so then pass Error! to status
 ## addtional check
 #[[ -z $(find ${OUTDIR}/qc/rep1 -name "*_qc.txt") ]]  && { echo  "pipeline interrupted"; exit 0; }
 
 
-# runFastQC & fastq_screen
-#runFastQC_screen.sh  $INPREFIX
-#results_transfer.sh $INPREFIX $(whoami)
 
-# add .finished.txt tag
-
-
-#qsub -t 0-3 -v samples=$(pwd)/run_2019-04-25_10xatac.txt $(which run10xPipeline.pbs)
+############################################################
+# update status to finish or warning @ VM
+############################################################
+cmd="source activate django; python \$(which updateSingleCellStatus.py) -seqid $INPREFIX -status Yes;"
+job1=$(ssh zhc268@epigenomics.sdsc.edu $cmd)
+#update status in 
 

@@ -2,9 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.models import CollaboratorPersonInfo
-
+from singlecell_app.models import SingleCellObject
+#from singlecell_app.models import SingleCellObject
 # from search_app.documents import SampleInfo as SampleDoc, SeqInfo as SeqDoc, LibraryInfo as LibDoc
 # Create your models here.
+SINGLE_CELL_EXPS = ['10xATAC', 'scRNA-seq', 'snRNA-seq', 'scATAC-seq']
 
 
 choice_for_experiment_type = (
@@ -196,7 +198,19 @@ class SeqInfo(models.Model):
 
     def __str__(self):
         return self.seq_id
-
+        
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        #check if single cell type expt.
+        lib = LibraryInfo.objects.get(library_id=str(self.libraryinfo))
+        if(lib.experiment_type in SINGLE_CELL_EXPS and not SingleCellObject.objects.all().filter(seqinfo=self).exists()):
+            self.make_singlecell_object(lib.experiment_type)
+    
+    def make_singlecell_object(self, experiment_type):
+        #create single cell obj
+        scobj = SingleCellObject(seqinfo=self,experiment_type=experiment_type,date_last_modified=self.date_submitted_for_sequencing)
+        scobj.save()
+        #print('created scobj: ',scobj.id)
 
 class SeqBioInfo(models.Model):
     seqinfo = models.ForeignKey(SeqInfo, on_delete=models.CASCADE)
@@ -225,3 +239,4 @@ class RefGenomeInfo(models.Model):
 
     def __str__(self):
         return self.genome_name
+
