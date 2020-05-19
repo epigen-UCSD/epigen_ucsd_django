@@ -349,14 +349,15 @@ def submit_singlecell(request):
                 'seqinfo__libraryinfo__sampleinfo__species',
                 'seqinfo__libraryinfo__experiment_type').get(seqinfo__seq_id=seq)
             print(seq_info)
-            species =  seq_info['seqinfo__libraryinfo__sampleinfo__species'] 
+            species =  seq_info['seqinfo__libraryinfo__sampleinfo__species'].rstrip("\n")
             experiment_type = seq_info['seqinfo__libraryinfo__experiment_type']
             experiment_obj = ExperimentType.objects.get(experiment=experiment_type)
+            print('refgenome submission: ',species, experiment_type, experiment_obj)
             #get all refrence genomes available for this experiment type.
             
             refgenomes = RefGenomeInfo.objects.filter(species=species,experiment_type=experiment_obj).values('genome_name')
             refgenome_list = [n['genome_name'] for n in refgenomes]
-            
+            print(refgenome_list)
             #submit seqeunce when only one ref genome availalbe, do not prompt user to choose.
             if len(refgenome_list) == 1:
                 ref = refgenome_list[0]
@@ -592,18 +593,14 @@ def submit_tenX(seq, refgenome, email):
     """ This function should only be called by another fucntion that ensures the sequence is valid to be submitted
     This function submits a sequence to 10x cell ranger or 10x atac pipeline
     """
-    #update singlecell model
-    sc_obj = SingleCellObject.objects.get(seqinfo__seq_id=seq)
-    sc_obj.tenx_pipeline_status = INQUEUE
-    sc_obj.date_last_modified = datetime.datetime.now()
-    sc_obj.save()
+    
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
         'libraryinfo__sampleinfo').values('seq_id',
         'libraryinfo__sampleinfo__species','read_type',
         'libraryinfo__experiment_type'))
     data = {}
     data['seqs'] = split_seqs(seq_info[0]['seq_id'])
-    data['species'] =  seq_info[0]['libraryinfo__sampleinfo__species'] 
+    data['species'] =  seq_info[0]['libraryinfo__sampleinfo__species'].rstrip("\n")
      
     experiment_type = seq_info[0]['libraryinfo__experiment_type']
     #get all refrence genomes available for this experiment type.
@@ -646,10 +643,15 @@ def submit_tenX(seq, refgenome, email):
         cmd1 = ('bash ./utility/runCellRanger.sh %s %s %s %s' %(seq,
          data['ref_path'], dir, email))
 
-
     print('cmd submitted: ',cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    #update singlecellobject db entry that seq is inq
+    sc_obj = SingleCellObject.objects.get(seqinfo__seq_id=seq)
+    sc_obj.tenx_pipeline_status = INQUEUE
+    sc_obj.date_last_modified = datetime.now()
+    sc_obj.save()
     return True
 
 

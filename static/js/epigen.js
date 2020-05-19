@@ -1593,10 +1593,10 @@ $(document).ready(function () {
                         return (tenx_results_button(seq));
                     } else if (status === "Error!") {
                         return ('<button type="button" class="badge badge-success badge-status-red" data-toggle="tooltip" data-placement="top" title="Contact bioinformatics group!">Error!</button>');
-                    } else if (status === "ClickToSubmit" && row['seq_status'] === "No") {
+                    } else if ((status === "ClickToSubmit" || status === "No") && row['seq_status'].toLowerCase() === "no") {
                         return ('<button type="button" class="btn btn-sm badge-status-blue" style="color:white" data-toggle="tooltip" data-placement="top" title="No FASTQ files available">ClickToSubmit</button>');
-                    } else if (status === "ClickToSubmit" && row['seq_status'] === "Yes") {
-                        return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange" value=' + seq + '> ClickToSubmit </button>');
+                    } else if ((status === "ClickToSubmit" || status === "No") && row['seq_status'].toLowerCase() === "yes") {
+                        return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange" disabled value=' + seq + '> ClickToSubmit </button>');
                     } else {
                         return ('<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>' + status + '</button>');
                     }
@@ -1608,15 +1608,15 @@ $(document).ready(function () {
                 "render": function (data, type, row) {
                     var status = data;
                     var seq_id = row['seqinfo__seq_id'];
-                    if (status === "ClickToSubmit") {
+                    if (status === "ClickToSubmit" || status == null) {
                         //check fastq seq status
                         if (row["seq_status"] === "Yes") {
-                            if (row['libraryinfo__experiment_type'] == "10xATAC" && (row['10x_status'] === "Yes" || row['10x_status'] === "Results")) {
-                                return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange" value="' + seq_id + '"> ClickToSubmit </button>');
-                            } else if (row['libraryinfo__experiment_type'] === "10xATAC" && !(row['10x_status'] === "Yes" || row['10x_status'] !== "Results")) {
+                            if (row['libraryinfo__experiment_type'] == "10xATAC" && (row['10x_status'].toLowerCase() === "yes" || row['10x_status'].toLowerCase() === "results")) {
+                                return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange" disabled value="' + seq_id + '"> ClickToSubmit </button>');
+                            } else if (row['seqinfo__libraryinfo__experiment_type'] === "10xATAC" && row['tenx_pipeline_status'].toLowerCase() !== "results") {
                                 return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
                             } else {
-                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange  value="' + seq_id + '"> ClickToSubmit</button>');
+                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange disabled value="' + seq_id + '"> ClickToSubmit</button>');
                             }
                         }
                         else { //no fastq file present
