@@ -18,7 +18,7 @@ class UserForm(forms.ModelForm):
 class CollaboratorPersonForm(forms.ModelForm):
 	class Meta:
 		model = CollaboratorPersonInfo
-		fields = ('email','phone','index')
+		fields = ('email','phone')
 
 class GroupForm(forms.Form):
 	name = forms.CharField(\

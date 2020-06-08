@@ -79,6 +79,35 @@ def CollaboratorListView(request):
 #         return render(request, 'manager_app/profile_add_nogroup.html', context)
 
 @transaction.atomic
+def CollaboratorCreateView(request):
+    user_form = UserForm(request.POST or None)
+    profile_form = CollaboratorPersonForm(request.POST or None)
+    group_form = GroupForm(request.POST or None)
+
+    if request.method=='POST':
+        if user_form.is_valid() and profile_form.is_valid() and group_form.is_valid():
+            this_user = user_form.save()
+            this_profile = profile_form.save(commit=False)
+            this_profile.person_id = this_user
+            this_profile.save()
+            this_group = Group.objects.get(name=group_form.clean_name()) 
+            this_group.user_set.add(this_user)
+
+            messages.success(request,'Your profile was successfully added!')
+            return redirect('manager_app:collab_list')
+        else:
+            messages.error(request,'Please correct the error below.')
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'group_form':group_form,
+    }
+    return render(request, 'manager_app/collab_add.html', context)
+
+
+
+@transaction.atomic
 def GroupAccountCreateView(request):
     user_form = UserForm(request.POST or None)
     profile_form = CollaboratorPersonForm(request.POST or None)
@@ -332,3 +361,14 @@ def ServiceRequestCreateView(request):
     }
 
     return render(request, 'manager_app/manager_feeforservice_servicerequestcreate.html', context)
+
+
+def ServiceRequestDataView(request):
+    ServiceRequest_list = SeqInfo.objects.all.select_related('group').values('group_name','date','quote_number','status','notes')
+    data = list(ServiceRequest_list)
+
+    return JsonResponse(data, safe=False)
+
+
+
+
