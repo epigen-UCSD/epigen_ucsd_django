@@ -364,7 +364,7 @@ def ServiceRequestCreateView(request):
 
 
 def ServiceRequestDataView(request):
-    ServiceRequest_list = SeqInfo.objects.all.select_related('group').values('group_name','date','quote_number','status','notes')
+    ServiceRequest_list = SeqInfo.objects.all.select_related('group','research_contact__person_id').prefetch_related(Prefetch('group__group_institution_set')).values('pk','quote_number','date','group__name','research_contact__person_id__first_name','research_contact__person_id__last_name','status','notes','group_institution__institution')
     data = list(ServiceRequest_list)
 
     return JsonResponse(data, safe=False)

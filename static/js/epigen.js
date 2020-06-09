@@ -457,9 +457,48 @@ $(document).ready(function () {
 
 
 
+    var servicerequesturl = $('#service_request_all').attr("data-href");
+    $('#service_request_all').DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[2, "desc"]],
+        "processing": true,
+        "ajax": {
+            url: servicerequesturl,
+            dataSrc: ''
+        },
+        "columns": [
+            { "data": "quote_number" },
+            { "data": "date" },
+            { "data": "group__name" },
+            { "data": "group_institution__institution" },
+            { "data": "research_contact__person_id__first_name" },
+            { "data": "status" },
+        ],
+        "deferRender": true,
+        "select": false,
 
+        "columnDefs": [
 
-
+        {
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 4,
+            "render": function (data, type, row) {
+                if (row["research_contact__person_id__first_name"] == null) {
+                    return ''
+                }
+                else {
+                    return row["research_contact__person_id__first_name"] + '_' + row["research_contact__person_id__last_name"];
+                }
+            }
+        }],
+    });
 
 
     var metasampsurl = $('#metadata_samples').attr("data-href");
