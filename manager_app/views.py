@@ -87,10 +87,12 @@ def CollaboratorCreateView(request):
     if request.method=='POST':
         if user_form.is_valid() and profile_form.is_valid() and group_form.is_valid():
             this_user = user_form.save()
+            this_group = Group.objects.get(name=group_form.clean_name())
             this_profile = profile_form.save(commit=False)
             this_profile.person_id = this_user
+            this_profile.initial_password = user_form.cleaned_data['password']
+            this_profile.group = this_group
             this_profile.save()
-            this_group = Group.objects.get(name=group_form.clean_name()) 
             this_group.user_set.add(this_user)
 
             messages.success(request,'Your profile was successfully added!')
@@ -273,11 +275,17 @@ def ServiceRequestCreateView(request):
         servicerequest_form = ServiceRequestCreationForm(request.POST)
         if servicerequest_form.is_valid() and contact_form.is_valid():
             group_name = contact_form.cleaned_data['group']
+            research_contact = contact_form.cleaned_data['research_contact']
+            research_contact_name = research_contact.person_id.first_name+' '+research_contact.person_id.last_name
+            research_contact_email = contact_form.cleaned_data['research_contact_email']
+            print(research_contact_email)
             groupinfo = Group.objects.get(name=group_name)
             data_request = {
                 'date':str(today),
                 'group':group_name,
                 'status':'initiate',
+                'research_contact':research_contact_name,
+                'research_contact_email':research_contact_email,
                 'notes':servicerequest_form.cleaned_data['notes'],
             }
             try:
@@ -317,7 +325,7 @@ def ServiceRequestCreateView(request):
                         displayorde_requestitem = ['rate(uc users)','quantity']
                     else:
                         displayorde_requestitem = ['rate(non-uc users)','quantity']
-                    displayorder_request = ['date','group','notes','status']
+                    displayorder_request = ['date','group','research_contact','research_contact_email','notes','status']
                     #print(data_request)  
 
                     context = {
@@ -337,6 +345,8 @@ def ServiceRequestCreateView(request):
                     thisrequest = ServiceRequest.objects.create(
                         group=groupinfo,
                         date=data_request['date'],
+                        research_contact=research_contact,
+                        research_contact_email=data_request['research_contact_email'],
                         notes=data_request['notes'],
                         status=data_request['status'],
                         )
@@ -364,7 +374,7 @@ def ServiceRequestCreateView(request):
 
 
 def ServiceRequestDataView(request):
-    ServiceRequest_list = SeqInfo.objects.all.select_related('group','research_contact__person_id').prefetch_related(Prefetch('group__group_institution_set')).values('pk','quote_number','date','group__name','research_contact__person_id__first_name','research_contact__person_id__last_name','status','notes','group_institution__institution')
+    ServiceRequest_list = ServiceRequest.objects.all().select_related('group','research_contact__person_id').prefetch_related(Prefetch('group__group_institution_set')).values('pk','quote_number','date','group__name','research_contact__person_id__first_name','research_contact__person_id__last_name','research_contact_email','status','notes','group__group_institution__institution')
     data = list(ServiceRequest_list)
 
     return JsonResponse(data, safe=False)

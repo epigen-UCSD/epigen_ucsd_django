@@ -40,8 +40,8 @@ class ContactForm(forms.Form):
 		label='Group Name',
 		widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
 		)
-	research_contact = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),required=False)
-	research_contact_email = forms.ChoiceField(required=False)
+	research_contact = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),required=True)
+	research_contact_email = forms.ChoiceField(required=True)
 	# def __init__(self, *args, **kwargs):
 	# 	super().__init__(*args, **kwargs)
 	# 	self.fields['name'].label = "Group name"
@@ -65,7 +65,7 @@ class ContactForm(forms.Form):
 			obj.person_id.last_name)
 			if 'research_contact' in self.data:
 				research_contact = self.data.get('research_contact')
-				self.fields['research_contact_email'] = forms.ChoiceField(choices=[(email,email) for email in CollaboratorPersonInfo.objects.get(id=research_contact).email],required=False)
+				self.fields['research_contact_email'] = forms.ChoiceField(choices=[(email,email) for email in CollaboratorPersonInfo.objects.get(id=research_contact).email],required=True)
 
 
 class GroupCreateForm(forms.ModelForm):
