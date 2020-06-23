@@ -162,6 +162,15 @@ def AllSetQCView(request):
         return render(request, 'setqc_app/setqcinfo_bio.html', context)
 
 
+def AllSetQCAJAXView(request):
+
+    Setqcs_list = LibrariesSetQC.objects.all().select_related('request').values(
+        'pk','notes','set_id','set_name','last_modified','experiment_type','url','version','status')
+    data = list(Setqcs_list)
+
+    return JsonResponse(data, safe=False)
+
+
 def UserSetQCView(request):
     SetQC_list = LibrariesSetQC.objects.filter(requestor=request.user)
     context = {

@@ -477,6 +477,85 @@ $(document).ready(function () {
 
 
 
+var allsetqcsurl = $('#all_setqcs_ajax').attr("data-href");
+    $('#all_setqcs_ajax').DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[2, "desc"]],
+        "processing": true,
+        "ajax": {
+            url: allsetqcsurl,
+            dataSrc: ''
+        },
+        "columns": [
+            { "data": "notes" },
+            { "data": "set_id" },
+            { "data": "set_name" },
+            { "data": "last_modified" },
+            { "data": "experiment_type" },
+            { "data": "url" },
+            { "data": "version" },
+            { "data": "status" },
+        ],
+        "deferRender": true,
+        "select": false,
+
+        "columnDefs": [{
+            "targets": 0,
+            "createdCell": function (td, data, row, col) {
+                var itemID = row["pk"];
+                var n = row["notes"];
+                if(n){
+                    $(td).addClass('details-control');
+                    $(td).attr('data-href', '{% url \'setqc_app:setqc_getnotes\' '+itemID+' %}');
+                    $(td).text('');
+
+                }
+                else{
+                    $(td).text('');
+                }
+
+            }
+
+        },
+        {
+            "targets": 1,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                var node = document.createElement("a");
+                $(node).attr('href', '{% url \'setqc_app:setqc_detail\' '+itemID+' %}');
+                $(node).text(data);
+                $(td).appendChild(node);
+                
+            }
+        },
+        {
+            "targets": 3,
+            "render": function (data, type, row){
+                var date = row["last_modified"];
+                var dt = new Date(date);
+                var y = dt.getFullYear();
+                var m = dt.getMonth()+1;
+                var d = dt.getDate();
+                return y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+
+
+            }
+        },
+        {
+            "targets": 5,
+            "render": function (data, type, row) {
+                var reporturl = row["url"];
+                if (reporturl) {
+                    return '<a href="'+reporturl+'" target="_blank"><i class="fas fa-file-alt" style="font-size: 17px;color:#26D07C"></i></a>'
+                }
+                else{
+                    return ''
+                }
+
+            }
+        }],
+    });
 
 
 
