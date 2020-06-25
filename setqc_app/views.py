@@ -164,8 +164,8 @@ def AllSetQCView(request):
 
 def AllSetQCAJAXView(request):
 
-    Setqcs_list = LibrariesSetQC.objects.all().select_related('request').values(
-        'pk','notes','set_id','set_name','last_modified','experiment_type','url','version','status')
+    Setqcs_list = LibrariesSetQC.objects.all().select_related('requestor').values(
+        'pk','notes','set_id','set_name','last_modified','requestor__username','experiment_type','url','version','status')
     data = list(Setqcs_list)
 
     return JsonResponse(data, safe=False)

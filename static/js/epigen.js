@@ -166,6 +166,38 @@ $(document).ready(function () {
 
     });
 
+
+
+
+    $('#all_setqcs_ajax').on('click', 'td.details-control', function () {
+        var thisurl = $(this).attr("data-href");
+        var tr = $(this).closest('tr');
+        if ($(this).hasClass("closing")) {
+            $(this).removeClass("closing")
+            tr.next().closest(".detailnotes").remove()
+        }
+        else {
+            $(this).addClass("closing")
+
+            $.ajax({
+                url: thisurl,
+                cache: false,
+                dataType: 'json',
+                success: function (data) {
+
+                    if (data.notes) {
+                        tr.after('<tr class="detailnotes"><td class="detailnotes" colspan="8"><div class="detailnotes">Notes:' + data.notes + '</div></td></tr>')
+
+
+                    }
+                }
+            })
+
+        }
+
+    });
+
+
     $('select#nextseq_app_machine').on('change', function () {
         console.log(this.value);
         if (this.value.startsWith('IGM_')) {
@@ -179,6 +211,51 @@ $(document).ready(function () {
     });
 
 
+    $(".runsetqc").on("click", function (e) {
+        console.log('kkkk');
+        e.preventDefault();
+        that = $(this)
+        var url1 = $(this).attr("data-href");
+        var url2 = url1.replace("runsetqc", "runsetqc2")
+        var errorname = ['notfinishederror', 'libdirnotexisterror', 'writeseterror', 'fastqerror']
+        $.ajax({
+            url: url1,
+            cache: false,
+            dataType: 'json',
+            success: function (data) {
+                $.each(errorname, function (index, value) {
+                    if (value in data) {
+                        alert(data[value])
+                        return
+                    }
+                });
+                if (data.setidexisterror) {
+
+                    if (!confirm(data.setidexisterror)) {
+                        return
+                    } else {
+
+                        $.ajax({
+                            type: "POST",
+                            url: url2,
+                            cache: false,
+                            data: { somedata: 'somedata' }
+                        })
+                        $(that).replaceWith('<span class="badge badge-success badge-status-blue">JobSubmitted</span>')
+                        return
+                    }
+
+                }
+                if (data.writesetdone) {
+                    $(that).replaceWith('<span class="badge badge-success badge-status-blue">JobSubmitted</span>')
+
+                }
+
+
+            }
+
+        })
+    });
 
     var samplesurl = $('#collab_samples').attr("data-href");
     $('#collab_samples').DataTable({
@@ -478,10 +555,11 @@ $(document).ready(function () {
 
 
 var allsetqcsurl = $('#all_setqcs_ajax').attr("data-href");
+    console.log(allsetqcsurl);
     $('#all_setqcs_ajax').DataTable({
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
-        "order": [[2, "desc"]],
+        "order": [[3, "desc"]],
         "processing": true,
         "ajax": {
             url: allsetqcsurl,
@@ -492,6 +570,7 @@ var allsetqcsurl = $('#all_setqcs_ajax').attr("data-href");
             { "data": "set_id" },
             { "data": "set_name" },
             { "data": "last_modified" },
+            { "data": "requestor__username"},
             { "data": "experiment_type" },
             { "data": "url" },
             { "data": "version" },
@@ -507,7 +586,7 @@ var allsetqcsurl = $('#all_setqcs_ajax').attr("data-href");
                 var n = row["notes"];
                 if(n){
                     $(td).addClass('details-control');
-                    $(td).attr('data-href', '{% url \'setqc_app:setqc_getnotes\' '+itemID+' %}');
+                    $(td).attr('data-href', '/setqc/'+itemID+'/getmynotes/');
                     $(td).text('');
 
                 }
@@ -519,13 +598,10 @@ var allsetqcsurl = $('#all_setqcs_ajax').attr("data-href");
 
         },
         {
-            "targets": 1,
+            "targets": 2,
             "render": function (data, type, row) {
                 var itemID = row["pk"];
-                var node = document.createElement("a");
-                $(node).attr('href', '{% url \'setqc_app:setqc_detail\' '+itemID+' %}');
-                $(node).text(data);
-                $(td).appendChild(node);
+                return '<a href="/setqc/' + itemID + '">' + data + '</a>';
                 
             }
         },
@@ -543,7 +619,7 @@ var allsetqcsurl = $('#all_setqcs_ajax').attr("data-href");
             }
         },
         {
-            "targets": 5,
+            "targets": 6,
             "render": function (data, type, row) {
                 var reporturl = row["url"];
                 if (reporturl) {
@@ -554,7 +630,31 @@ var allsetqcsurl = $('#all_setqcs_ajax').attr("data-href");
                 }
 
             }
-        }],
+        },
+        {
+            "targets": 8,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                if (row["status"] == 'Done') {
+                    return '<span class="badge badge-success badge-status-green">Done</span>'
+                }
+                else if (row["status"] == 'ClickToSubmit') {
+                    return '<a class="btn btn-danger btn-sm btn-status-orange runsetqc" href="" data-href="/setqc/'+itemID +'/runsetqc/" id='+row['set_id']+'>ClickToSubmit</a>'
+                }
+                else {
+                    return ''
+                }
+            }
+        },
+        {
+            "targets": 9,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                return '<a class="spacing" href="/setqc/' + itemID + '/update/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete ' + row["set_name"] + '?\');" href="/setqc/' + itemID + '/delete/"><i class="fas fa-trash-alt"></i></a>';
+            }
+
+        }
+        ],
     });
 
 
@@ -1338,50 +1438,6 @@ var allsetqcsurl = $('#all_setqcs_ajax').attr("data-href");
 
     })
 
-    $(".runsetqc").on("click", function (e) {
-        e.preventDefault();
-        that = $(this)
-        var url1 = $(this).attr("data-href");
-        var url2 = url1.replace("runsetqc", "runsetqc2")
-        var errorname = ['notfinishederror', 'libdirnotexisterror', 'writeseterror', 'fastqerror']
-        $.ajax({
-            url: url1,
-            cache: false,
-            dataType: 'json',
-            success: function (data) {
-                $.each(errorname, function (index, value) {
-                    if (value in data) {
-                        alert(data[value])
-                        return
-                    }
-                });
-                if (data.setidexisterror) {
-
-                    if (!confirm(data.setidexisterror)) {
-                        return
-                    } else {
-
-                        $.ajax({
-                            type: "POST",
-                            url: url2,
-                            cache: false,
-                            data: { somedata: 'somedata' }
-                        })
-                        $(that).replaceWith('<span class="badge badge-success badge-status-blue">JobSubmitted</span>')
-                        return
-                    }
-
-                }
-                if (data.writesetdone) {
-                    $(that).replaceWith('<span class="badge badge-success badge-status-blue">JobSubmitted</span>')
-
-                }
-
-
-            }
-
-        })
-    });
 
     function add_radio_buttons(refs, seq) {
         var divtoadd = $('<div value=' + seq + ' class="radio-buttons-sc"></div>')
