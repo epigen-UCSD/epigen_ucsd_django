@@ -416,7 +416,7 @@ def SamplesCreateView(request):
                     user_first_name = resname.split(' ')[0]
                     user_last_name = resname.split(' ')[-1]
                     if resphone:
-                        if resphone not in resperson.phone:
+                        if not resperson.phone or resphone not in resperson.phone:
                             newinforequired = 1
                             newresinfoflag = 1
                             new_phone = resphone
@@ -433,7 +433,7 @@ def SamplesCreateView(request):
                         newresinfoflag = 1
                         new_email = resemail
                         if resphone:
-                            if resphone not in resperson.phone:
+                            if not resperson.phone or resphone not in resperson.phone:
                                 new_phone = resphone
 
                     except:
@@ -460,7 +460,7 @@ def SamplesCreateView(request):
                     newresinfoflag = 1
                     new_email = ''
                     if resphone:
-                        if resphone not in resperson.phone:
+                        if not resperson.phone or resphone not in resperson.phone:
                             new_phone = resphone
                 except:
                     newuserrequired = 1
@@ -489,7 +489,7 @@ def SamplesCreateView(request):
                     fisuser_first_name = fisname.split(' ')[0]
                     fisuser_last_name = fisname.split(' ')[-1]
                     if indname:
-                        if indname not in fisperson.index:
+                        if not fisperson.index or indname not in fisperson.index:
                             newinforequired = 1
                             newfisinfoflag = 1
                             fisnew_index = indname
@@ -506,7 +506,7 @@ def SamplesCreateView(request):
                         newfisinfoflag = 1
                         fisnew_email = fisemail
                         if indname:
-                            if indname not in fisperson.index:
+                            if not fisperson.index or indname not in fisperson.index:
                                 fisnew_index = indname
 
                     except:
@@ -533,7 +533,7 @@ def SamplesCreateView(request):
                     newfisinfoflag = 1
                     fisnew_email = ''
                     if indname:
-                        if indname not in fisperson.index:
+                        if not fisperson.index or indname not in fisperson.index:
                             fisnew_index = indname
                 except:
                     newuserrequired = 1
