@@ -30,7 +30,7 @@ class RunCreationForm(ModelForm):
     class Meta:
         model = RunInfo
         fields = ['Flowcell_ID', 'date', 'read_type',
-                  'read_length', 'experiment_type', 'machine', 'extra_parameters']
+                  'read_length', 'experiment_type', 'machine','number_of_lane','extra_parameters']
         widgets = {
             'date': forms.DateInput(),
             'experiment_type': forms.Select(attrs={'id': 'nextseq_app_experiment_type'}),

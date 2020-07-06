@@ -30,6 +30,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.core import serializers
 from django.forms.models import model_to_dict
 from setqc_app.forms import libraryparse
+from masterseq_app.models import SeqInfo
 
 
 def BarcodeDic():
@@ -251,6 +252,7 @@ def RunCreateView6(request):
         runinfo = run_form.save(commit=False)
         runinfo.operator = request.user
         print(runinfo.experiment_type)
+        sumlane = runinfo.number_of_lane
 
         samplestocreat = form.cleaned_data['samplestocreat']
         tosave_list = []
@@ -258,121 +260,165 @@ def RunCreateView6(request):
         i7index_list = {}
         i5index_list = {}
         libraryid_list = []
+        lanesum = 0
+        portion_of_lane_list = {}
+        nometa_list = []
         for samples in samplestocreat.strip().split('\n'):
-            samples_info = re.split(r'[\s]', samples+' ')
+            samples_info = re.split(r'[\s]', samples+'  ')
 
-            # handle snATAC_v2, i7 in range(1-4), i5 in range(1-8)
-            if runinfo.experiment_type == "S2" and samples != '\r' and samples_info[0] != 'Sequencing_ID':
-                try:
-                    if samples_info[3]:
-                        lane_tm = samples_info[3]
-                    else:
-                        lane_tm = None
-
-                    if samples_info[1] and samples_info[2]:
-                        i7 = libraryparse(samples_info[1])
-                        i5 = libraryparse(samples_info[2])
-                        print(i7, i5)
-                        # check ranges
-                        if int(i7[0]) in range(1, 5) and int(i7[-1]) in range(1, 5) and int(i5[0]) in range(1, 9) and int(i5[-1]) in range(1, 9):
-                            tosave_sample = LibrariesInRun(
-                                Library_ID=samples_info[0],
-                                i7index=Barcode.objects.get(
-                                    indexid=','.join(i7)),
-                                i5index=Barcode.objects.get(
-                                    indexid=','.join(i5)),
-                                lane=lane_tm,
-                            )
-                        else:
-                            context = {
-                                'run_form': run_form,
-                                'form': form,
-                                'error_message': 'either both i7 not in range(1,4) or  i5 in range(1-8) for library input '+'\t'.join(samples_info)
-                            }
-                            return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
-
-                    else:  # require 2 barcodes
-                        context = {
+            
+            if samples != '\r' and samples_info[0] != 'Sequencing_ID':
+                if samples_info[3]==' ':
+                     context = {
+                        'run_form': run_form,
+                        'form': form,
+                        'error_message': 'Portion_of_Lane should not be blank'
+                    }
+                    return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
+                else:
+                    try:
+                        this_portion = samples_info[3]
+                        lanesum+=float(this_portion)
+                    except:
+                         context = {
                             'run_form': run_form,
                             'form': form,
-                            'error_message': 'Need both i7 and i5 for snATAC for this library: '+'\t'.join(samples_info)
+                            'error_message': 'Portion_of_lane should be float number'
                         }
                         return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
-                    if lane_tm not in i7index_list.keys():
-                        i7index_list[lane_tm] = []
-                        i5index_list[lane_tm] = []
-                    i7index_list[lane_tm].append(samples_info[1])
-                    i5index_list[lane_tm].append(samples_info[2])
-                    libraryid_list.append(samples_info[0])
+                    portion_of_lane_list[samples_info[0]] =  this_portion
 
-                except ObjectDoesNotExist:
-                    context = {
-                        'run_form': run_form,
-                        'form': form,
-                        'error_message': 'There are indexes that are not stored in the database for this library: '+'\t'.join(samples_info)
-                    }
+                if samples_info[4]:
+                    lane_tm = samples_info[4]
+                else:
+                    lane_tm = None
 
-                    return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
+                # handle snATAC_v2, i7 in range(1-4), i5 in range(1-8)
+                if runinfo.experiment_type == "S2":
+                    try:
+                        if samples_info[1] and samples_info[2]:
+                            i7 = libraryparse(samples_info[1])
+                            i5 = libraryparse(samples_info[2])
+                            print(i7, i5)
+                            # check ranges
+                            if int(i7[0]) in range(1, 5) and int(i7[-1]) in range(1, 5) and int(i5[0]) in range(1, 9) and int(i5[-1]) in range(1, 9):
+                                tosave_sample = LibrariesInRun(
+                                    Library_ID=samples_info[0],
+                                    i7index=Barcode.objects.get(
+                                        indexid=','.join(i7)),
+                                    i5index=Barcode.objects.get(
+                                        indexid=','.join(i5)),
+                                    lane=lane_tm,
+                                )
+                            else:
+                                context = {
+                                    'run_form': run_form,
+                                    'form': form,
+                                    'error_message': 'either both i7 not in range(1,4) or  i5 in range(1-8) for library input '+'\t'.join(samples_info)
+                                }
+                                return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)    
 
-                tosave_list.append(tosave_sample)
+                        else:  # require 2 barcodes
+                            context = {
+                                'run_form': run_form,
+                                'form': form,
+                                'error_message': 'Need both i7 and i5 for snATAC for this library: '+'\t'.join(samples_info)
+                            }
+                            return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)    
 
-            # handle bulk barcodes
-            if runinfo.experiment_type != 'S2' and samples != '\r' and samples_info[0] != 'Sequencing_ID':
+                        if lane_tm not in i7index_list.keys():
+                            i7index_list[lane_tm] = []
+                            i5index_list[lane_tm] = []
+                        i7index_list[lane_tm].append(samples_info[1])
+                        i5index_list[lane_tm].append(samples_info[2])
+                        libraryid_list.append(samples_info[0])  
+
+                    except ObjectDoesNotExist:
+                        context = {
+                            'run_form': run_form,
+                            'form': form,
+                            'error_message': 'There are indexes that are not stored in the database for this library: '+'\t'.join(samples_info)
+                        }   
+
+                        return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)    
+
+                    tosave_list.append(tosave_sample)
+                # handle bulk barcodes 
+                else:
+                    try:
+
+            
+                        if samples_info[1] and samples_info[2]:
+                            tosave_sample = LibrariesInRun(
+                                Library_ID=samples_info[0],
+                                i7index=Barcode.objects.get(
+                                    indexid=samples_info[1]),
+                                i5index=Barcode.objects.get(
+                                    indexid=samples_info[2]),
+                                lane=lane_tm,
+                            )
+                        elif samples_info[1] and not samples_info[2]:
+                            tosave_sample = LibrariesInRun( 
+
+                                Library_ID=samples_info[0],
+                                i7index=Barcode.objects.get(
+                                    indexid=samples_info[1]),
+                                lane=lane_tm,
+                            )
+                        elif not samples_info[1] and samples_info[2]:
+                            tosave_sample = LibrariesInRun( 
+
+                                Library_ID=samples_info[0],
+                                i5index=Barcode.objects.get(
+                                    indexid=samples_info[2]),
+                                lane=lane_tm,
+                            )
+                        else:
+                            tosave_sample = LibrariesInRun( 
+
+                                Library_ID=samples_info[0],
+                                lane=lane_tm,
+                            )
+                        if lane_tm not in i7index_list.keys():
+                            i7index_list[lane_tm] = []
+                            i5index_list[lane_tm] = []
+                        i7index_list[lane_tm].append(samples_info[1])
+                        i5index_list[lane_tm].append(samples_info[2])
+                        libraryid_list.append(samples_info[0])  
+
+                    except ObjectDoesNotExist:
+                        context = {
+                            'run_form': run_form,
+                            'form': form,
+                            'error_message': 'There are indexes that are not stored in the database for this library: '+'\t'.join(samples_info)
+                        }   
+
+                        return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)    
+
+                    tosave_list.append(tosave_sample)
+        if round(lanesum) != sumlane:
+            context = {
+                'run_form': run_form,
+                'form': form,
+                'error_message': 'The sum of portion_of_lane is not equal to'+' '+str(sumlane)
+            }
+            return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
+        else:
+            for k in portion_of_lane_list.keys():
                 try:
-                    # print(':'.join(samples_info))
-                    if samples_info[3]:
-                        lane_tm = samples_info[3]
-                    else:
-                        lane_tm = None
-                    if samples_info[1] and samples_info[2]:
-                        tosave_sample = LibrariesInRun(
-                            Library_ID=samples_info[0],
-                            i7index=Barcode.objects.get(
-                                indexid=samples_info[1]),
-                            i5index=Barcode.objects.get(
-                                indexid=samples_info[2]),
-                            lane=lane_tm,
-                        )
-                    elif samples_info[1] and not samples_info[2]:
-                        tosave_sample = LibrariesInRun(
+                    this_seq = SeqInfo.objects.get(seq_id=k)
+                    this_seq.portion_of_lane = portion_of_lane_list[k]
+                except:
+                    nometa_list.append(k)
 
-                            Library_ID=samples_info[0],
-                            i7index=Barcode.objects.get(
-                                indexid=samples_info[1]),
-                            lane=lane_tm,
-                        )
-                    elif not samples_info[1] and samples_info[2]:
-                        tosave_sample = LibrariesInRun(
-
-                            Library_ID=samples_info[0],
-                            i5index=Barcode.objects.get(
-                                indexid=samples_info[2]),
-                            lane=lane_tm,
-                        )
-                    else:
-                        tosave_sample = LibrariesInRun(
-
-                            Library_ID=samples_info[0],
-                            lane=lane_tm,
-                        )
-                    if lane_tm not in i7index_list.keys():
-                        i7index_list[lane_tm] = []
-                        i5index_list[lane_tm] = []
-                    i7index_list[lane_tm].append(samples_info[1])
-                    i5index_list[lane_tm].append(samples_info[2])
-                    libraryid_list.append(samples_info[0])
-
-                except ObjectDoesNotExist:
-                    context = {
-                        'run_form': run_form,
-                        'form': form,
-                        'error_message': 'There are indexes that are not stored in the database for this library: '+'\t'.join(samples_info)
-                    }
-
-                    return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
-
-                tosave_list.append(tosave_sample)
+            if nometa_list:
+                context = {
+                    'run_form': run_form,
+                    'form': form,
+                    'error_message': 'Not found in metadata app: '+','.join(nometa_list)
+                }
+                return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
         libraryselfduplicate = SelfUniqueValidation(libraryid_list)
         if len(libraryselfduplicate) > 0:
