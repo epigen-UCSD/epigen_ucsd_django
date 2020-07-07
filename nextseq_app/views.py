@@ -252,7 +252,7 @@ def RunCreateView6(request):
         runinfo = run_form.save(commit=False)
         runinfo.operator = request.user
         print(runinfo.experiment_type)
-        sumlane = runinfo.number_of_lane
+        sumlane = runinfo.total_lanes
 
         samplestocreat = form.cleaned_data['samplestocreat']
         tosave_list = []
@@ -261,36 +261,19 @@ def RunCreateView6(request):
         i5index_list = {}
         libraryid_list = []
         lanesum = 0
-        portion_of_lane_list = {}
+        samples_list = []
         nometa_list = []
+        lane_blank_list = []
+        data = {}
+
         for samples in samplestocreat.strip().split('\n'):
             samples_info = re.split(r'[\s]', samples+'  ')
 
             
             if samples != '\r' and samples_info[0] != 'Sequencing_ID':
-                if samples_info[3]==' ':
-                     context = {
-                        'run_form': run_form,
-                        'form': form,
-                        'error_message': 'Portion_of_Lane should not be blank'
-                    }
-                    return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
-                else:
-                    try:
-                        this_portion = samples_info[3]
-                        lanesum+=float(this_portion)
-                    except:
-                         context = {
-                            'run_form': run_form,
-                            'form': form,
-                            'error_message': 'Portion_of_lane should be float number'
-                        }
-                        return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
-                    portion_of_lane_list[samples_info[0]] =  this_portion
-
-                if samples_info[4]:
-                    lane_tm = samples_info[4]
+                if samples_info[3]:
+                    lane_tm = samples_info[3]
                 else:
                     lane_tm = None
 
@@ -346,9 +329,7 @@ def RunCreateView6(request):
                     tosave_list.append(tosave_sample)
                 # handle bulk barcodes 
                 else:
-                    try:
-
-            
+                    try:           
                         if samples_info[1] and samples_info[2]:
                             tosave_sample = LibrariesInRun(
                                 Library_ID=samples_info[0],
@@ -397,28 +378,8 @@ def RunCreateView6(request):
                         return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)    
 
                     tosave_list.append(tosave_sample)
-        if round(lanesum) != sumlane:
-            context = {
-                'run_form': run_form,
-                'form': form,
-                'error_message': 'The sum of portion_of_lane is not equal to'+' '+str(sumlane)
-            }
-            return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
-        else:
-            for k in portion_of_lane_list.keys():
-                try:
-                    this_seq = SeqInfo.objects.get(seq_id=k)
-                    this_seq.portion_of_lane = portion_of_lane_list[k]
-                except:
-                    nometa_list.append(k)
 
-            if nometa_list:
-                context = {
-                    'run_form': run_form,
-                    'form': form,
-                    'error_message': 'Not found in metadata app: '+','.join(nometa_list)
-                }
-                return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
+                samples_list.append(samples_info[0])
 
         libraryselfduplicate = SelfUniqueValidation(libraryid_list)
         if len(libraryselfduplicate) > 0:
@@ -459,6 +420,48 @@ def RunCreateView6(request):
 
                 }
                 return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
+
+        for k in samples_list:
+            try:
+                this_seq = SeqInfo.objects.get(seq_id=k)
+                if this_seq.portion_of_lane:
+                    data[k] = {
+                        'portion_of_lane':this_seq.portion_of_lane,
+                    }
+                    lanesum += this_seq.portion_of_lane
+                else:
+                    lane_blank_list.append(k)
+            except ObjectDoesNotExist:
+                nometa_list.append(k)
+
+        if nometa_list:
+            context = {
+                'run_form': run_form,
+                'form': form,
+                'error_message': 'Not found in metadata app: '+','.join(nometa_list)+'. Please add them in metadata app first.'
+            }
+            return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
+
+        if lane_blank_list:
+            context = {
+                'run_form': run_form,
+                'form': form,
+                'error_message': 'The portion of lane is blank of sequncings: '+','.join(lane_blank_list)+'. Please add them in metadata app first.'
+            }
+            return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
+
+
+        if lanesum != sumlane:
+            context = {
+                'run_form': run_form,
+                'form': form,
+                'data':data,
+                'modalshow': 1,
+                'lanesum':lanesum,
+
+            }
+            return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
+
 
         runinfo.save()
         for samples in tosave_list:

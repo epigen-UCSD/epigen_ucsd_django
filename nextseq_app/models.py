@@ -49,7 +49,7 @@ class RunInfo(models.Model):
     # machine = models.ForeignKey('masterseq_app.SeqMachineInfo', on_delete=models.CASCADE, null=True)
     machine = models.CharField(
         max_length=50, choices=choice_for_machine, default='EPIGEN_NextSeq550', null=True)
-    number_of_lane = models.FloatField(blank=True, null=True,default='1')
+    total_lanes = models.FloatField(blank=True, null=True,default='1')
     extra_parameters = models.TextField(
         blank=True, help_text='Default: blank; or like "--use-bases-mask Y50,I8n*,Y16,Y50"')
     jobstatus = models.CharField(
