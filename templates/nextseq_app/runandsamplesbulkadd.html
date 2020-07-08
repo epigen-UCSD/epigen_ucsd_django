@@ -82,15 +82,14 @@
           {% for key,value in data.items%}
           <tr>
             <td>{{ key }}</td>
-            <td>{{ value }}</td>
-            {% endfor %}
+            <td>{{ value|key:'portion_of_lane' }}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>  
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+        <button type="button" class="btn btn-blue" data-dismiss="modal">Back</button>
       </div>
     </div>
   </div>

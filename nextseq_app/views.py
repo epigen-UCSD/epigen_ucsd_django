@@ -184,7 +184,7 @@ def UserSamplesView(request):
 class RunDetailView2(DetailView):
     model = RunInfo
     template_name = 'nextseq_app/details.html'
-    summaryfield = ['jobstatus', 'date', 'operator', 'machine', 'experiment_type', 'read_type', 'total_libraries', 'total_reads',
+    summaryfield = ['jobstatus', 'date', 'operator', 'machine', 'experiment_type', 'read_type', 'total_lanes','total_libraries', 'total_reads',
                     'percent_of_reads_demultiplexed', 'read_length', 'nextseqdir', 'extra_parameters']
     # object = FooForm(data=model_to_dict(Foo.objects.get(pk=object_id)))
 
@@ -245,7 +245,7 @@ def RunCreateView4(request):
 
 @transaction.atomic
 def RunCreateView6(request):
-    run_form = RunCreationForm(request.POST or None)
+    run_form = RunCreationForm(request.POST or None,initial={'total_lanes': 1.00})
     form = SamplesToCreatForm(request.POST or None)
 
     if run_form.is_valid() and form.is_valid():
