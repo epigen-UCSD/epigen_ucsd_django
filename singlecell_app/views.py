@@ -18,6 +18,7 @@ import subprocess
 import json
 from epigen_ucsd_django.shared import *
 import shutil
+import re
 
 
 # keys in snap param dict should be the same as the fields in the model and form.
@@ -824,25 +825,31 @@ def insert_link(filename, seq, expt_type):
     """ Insert link into header of the web_summary.html
         for scRNA experiments, insert at line 1430.
     """
-    #magic numbers, where we will insert link in web_summary.html
-    TENXATAC_LINE = 10
-    SCRNA_LINE = 1430
-    line_to_insert_at = TENXATAC_LINE if expt_type == '10xATAC' else SCRNA_LINE
-    newdata = "" # will hold the old html + an inserted link at specified line
+    #links 
     link = generate_link(seq, expt_type) #generate a link to the output folder
     if(link == -1):
         print('error in generate_link!')
         return
-    file_open = open(filename)
-    f1 = file_open.readlines()
-    for num, line in enumerate(f1, start=1):
-        if num == line_to_insert_at:
-            newdata = newdata + '<div><h2><a class="data-link-epigen" style="margin-left:3em;" href="'+link+'"> Link to Output Data</a></h2><div>'
-        newdata = newdata + line
-    file_open.close()
-    #may be too much data in memory
-    with open(filename, 'w') as overwrite:
-        overwrite.write(newdata)
+    #backup original file 
+    shutil.copyfile(filename,filename+'.bak')
+
+    #for atac, insert at lines magic numbers, where we will insert link in web_summary.html
+    if expt_type == '10xATAC':
+        line_to_insert_at = 10
+        newdata = "" # will hold the old html + an inserted link at specified line
+        with open(filename,'r') as f: f1 = f.readlines() #f1 is list
+        for num, line in enumerate(f1, start=1):
+            if num == line_to_insert_at:
+                newdata = newdata + '<div><h2><a class="data-link-epigen" style="margin-left:3em;" href="'+link+'"> Link to Output Data</a></h2><div>'
+            newdata = newdata + line
+    else: #for 10xRNA using search pattern to insert
+        pattern='</span> &middot;'
+        inserts='<a class="data-link-epigen" href="'+link+'"> Downloads </a>'
+        with open(filename,'r') as f: f1 = f.read() # f1 is str
+        newdata=re.sub(pattern,pattern+inserts,f1)
+    
+    # write to file
+    with open(filename, 'w') as overwrite: overwrite.write(newdata)
 
 
 def view_websummary(request, seq_id):
