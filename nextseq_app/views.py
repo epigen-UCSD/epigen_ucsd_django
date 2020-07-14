@@ -456,10 +456,16 @@ def RunUpdateView2(request, username, run_pk):
                 except KeyError:
                     pass
 
-        duplicate = IndexValidation(
-            [x.indexid if x is not None else None for x in i7index_list],
-            [x.indexid if x is not None else None for x in i5index_list]
-        )
+        if runinfo.experiment_type in ["TA","TR"]:
+            duplicate = IndexValidation2(
+                [x.indexid if x is not None else None for x in i7index_list],
+                [x.indexid if x is not None else None for x in i5index_list]
+            )
+        else:
+            duplicate = IndexValidation(
+                [x.indexid if x is not None else None for x in i7index_list],
+                [x.indexid if x is not None else None for x in i5index_list]
+            )
         if len(duplicate) > 0:
             context = {
                 'run_form': run_form,
