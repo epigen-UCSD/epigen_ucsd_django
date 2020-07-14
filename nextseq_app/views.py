@@ -421,7 +421,7 @@ def RunCreateView6(request):
                 }
                 return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
-        for k in samples_list:
+        for k in sorted(samples_list):
             try:
                 this_seq = SeqInfo.objects.get(seq_id=k)
                 if this_seq.portion_of_lane:
