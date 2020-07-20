@@ -294,9 +294,11 @@ def ServiceRequestCreateView(request):
             if all_quote_number:
                 max_quote = max(all_quote_number)
             else:
-                max_quote = 1
+                max_quote = 0
+            this_serive_request_id = ' '.join([group_name.split(' ')[0][0].upper()+group_name.split(' ')[-1][0].upper(),datesplit[1]+datesplit[2]+datesplit[0][-2:]])
             this_quote_nunmber = ' '.join([group_name.split(' ')[0][0].upper()+group_name.split(' ')[-1][0].upper(),datesplit[1]+datesplit[2]+datesplit[0][-2:],str(max_quote+1).zfill(4)])
             data_request = {
+                'serive_request_id':this_serive_request_id,
                 'quote_number':this_quote_nunmber,
                 'date':str(today),
                 'group':group_name,
@@ -342,7 +344,7 @@ def ServiceRequestCreateView(request):
                         displayorde_requestitem = ['rate(uc users)','quantity']
                     else:
                         displayorde_requestitem = ['rate(non-uc users)','quantity']
-                    displayorder_request = ['quote_number','date','group','research_contact','research_contact_email','notes','status']
+                    displayorder_request = ['serive_request_id','quote_number','date','group','research_contact','research_contact_email','notes','status']
                     #print(data_request)  
 
                     context = {
@@ -361,7 +363,8 @@ def ServiceRequestCreateView(request):
                 if 'Save' in request.POST:
                     thisrequest = ServiceRequest.objects.create(
                         group=groupinfo,
-                        quote_number=data_request['quote_number'],
+                        serive_request_id=data_request['serive_request_id'],
+                        quote_number=[data_request['quote_number']],
                         date=data_request['date'],
                         research_contact=research_contact,
                         research_contact_email=data_request['research_contact_email'],
@@ -392,7 +395,7 @@ def ServiceRequestCreateView(request):
 
 
 def ServiceRequestDataView(request):
-    ServiceRequest_list = ServiceRequest.objects.all().select_related('group','research_contact__person_id').prefetch_related(Prefetch('group__group_institution_set')).values('pk','quote_number','date','group__name','research_contact__person_id__first_name','research_contact__person_id__last_name','research_contact_email','status','notes','group__group_institution__institution')
+    ServiceRequest_list = ServiceRequest.objects.all().select_related('group','research_contact__person_id').prefetch_related(Prefetch('group__group_institution_set')).values('pk','serive_request_id','quote_number','date','group__name','research_contact__person_id__first_name','research_contact__person_id__last_name','research_contact_email','status','notes','group__group_institution__institution')
     data = list(ServiceRequest_list)
 
     return JsonResponse(data, safe=False)
@@ -400,7 +403,7 @@ def ServiceRequestDataView(request):
 
 def html_to_pdf_view(request):
     paragraphs = ['first paragraph', 'second paragraph', 'third paragraph']
-    html_string = render_to_string('manager_app/pdf_template.html', {'paragraphs': paragraphs})
+    html_string = render_to_string('manager_app/quote_pdf_template.html', {'paragraphs': paragraphs})
 
     html = HTML(string=html_string)
     html.write_pdf(target='/Users/liyuxin/mypdf.pdf');

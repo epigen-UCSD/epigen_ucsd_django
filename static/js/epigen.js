@@ -468,12 +468,13 @@ $(document).ready(function () {
             dataSrc: ''
         },
         "columns": [
-            { "data": "quote_number" },
+            { "data": "serive_request_id" },
             { "data": "date" },
             { "data": "group__name" },
             { "data": "group__group_institution__institution" },
             { "data": "research_contact__person_id__first_name" },
             { "data": "research_contact_email" },
+            { "data": "quote_number" },
             { "data": "status" },
         ],
         "deferRender": true,
@@ -497,6 +498,26 @@ $(document).ready(function () {
                 else {
                     return row["research_contact__person_id__first_name"] + '_' + row["research_contact__person_id__last_name"];
                 }
+            }
+        },
+        {
+            "targets": 6,
+            "render": function (data, type, row) {
+                for (i = 0; i < data.length; i++) {
+                  return '<a href="/manager_app/pdf_test/",data-toggle="tooltip" data-placement="right" title="'+data[i]+'"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>';
+                }
+                 return '<a class="spacing" href="/manager_app/quote_number/' + data[data.length] + '/update/"><i class="fas fa-edit"></i></a>'
+                
+
+            }
+        },
+        {
+            "targets": 8,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                return '<a class="spacing" href="/manager_app/service_request/' + itemID + '/update/"><i class="fas fa-edit"></i></a>'
+                
+
             }
         }],
     });
