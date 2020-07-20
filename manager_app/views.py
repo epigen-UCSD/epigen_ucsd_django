@@ -15,6 +15,12 @@ from django.forms import formset_factory
 from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm
 import datetime
 from collaborator_app.models import ServiceInfo,ServiceRequest,ServiceRequestItem
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+
+from weasyprint import HTML
+
 # Create your views here.
 
 
@@ -270,6 +276,9 @@ def ServiceRequestCreateView(request):
     servicerequestitems_formset = ServiceRequestItemFormSet(request.POST or None)
     
     today = datetime.date.today()
+    datesplit = str(datetime.date.today()).split('-')
+
+
 
     if request.method == 'POST':
         servicerequest_form = ServiceRequestCreationForm(request.POST)
@@ -280,7 +289,15 @@ def ServiceRequestCreateView(request):
             research_contact_email = contact_form.cleaned_data['research_contact_email']
             print(research_contact_email)
             groupinfo = Group.objects.get(name=group_name)
+            all_quote = list(ServiceRequest.objects.values_list('quote_number', flat=True))
+            all_quote_number = [int(x.split(' ')[-1]) for x in all_quote if x]
+            if all_quote_number:
+                max_quote = max(all_quote_number)
+            else:
+                max_quote = 1
+            this_quote_nunmber = ' '.join([group_name.split(' ')[0][0].upper()+group_name.split(' ')[-1][0].upper(),datesplit[1]+datesplit[2]+datesplit[0][-2:],str(max_quote+1).zfill(4)])
             data_request = {
+                'quote_number':this_quote_nunmber,
                 'date':str(today),
                 'group':group_name,
                 'status':'initiate',
@@ -325,7 +342,7 @@ def ServiceRequestCreateView(request):
                         displayorde_requestitem = ['rate(uc users)','quantity']
                     else:
                         displayorde_requestitem = ['rate(non-uc users)','quantity']
-                    displayorder_request = ['date','group','research_contact','research_contact_email','notes','status']
+                    displayorder_request = ['quote_number','date','group','research_contact','research_contact_email','notes','status']
                     #print(data_request)  
 
                     context = {
@@ -344,6 +361,7 @@ def ServiceRequestCreateView(request):
                 if 'Save' in request.POST:
                     thisrequest = ServiceRequest.objects.create(
                         group=groupinfo,
+                        quote_number=data_request['quote_number'],
                         date=data_request['date'],
                         research_contact=research_contact,
                         research_contact_email=data_request['research_contact_email'],
@@ -380,5 +398,17 @@ def ServiceRequestDataView(request):
     return JsonResponse(data, safe=False)
 
 
+def html_to_pdf_view(request):
+    paragraphs = ['first paragraph', 'second paragraph', 'third paragraph']
+    html_string = render_to_string('manager_app/pdf_template.html', {'paragraphs': paragraphs})
 
+    html = HTML(string=html_string)
+    html.write_pdf(target='/Users/liyuxin/mypdf.pdf');
+
+    with open('/Users/liyuxin/mypdf.pdf','rb') as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="mypdf.pdf"'
+        return response
+
+    return response
 
