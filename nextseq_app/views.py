@@ -455,18 +455,16 @@ def RunUpdateView2(request, username, run_pk):
                     i5index_list.append(form.cleaned_data['i5index'])
                 except KeyError:
                     pass
-
         duplicate = IndexValidation(
             [x.indexid if x is not None else None for x in i7index_list],
             [x.indexid if x is not None else None for x in i5index_list]
-        )
+            )
         if len(duplicate) > 0:
             context = {
                 'run_form': run_form,
                 'sample_formset': sample_formset,
                 'error_message': 'Duplicates:\t' + str(duplicate),
                 'runinfo': runinfo,
-
             }
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
         if run_form.has_changed() or sample_formset.has_changed():
@@ -771,6 +769,13 @@ def DemultiplexingView(request, run_pk):
                 out.write(runinfo.extra_parameters)
             cmd1 = './utility/runDemux10xRNA.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
+        elif runinfo.experiment_type == 'TM':
+            # write extra_parameters to disk
+            with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
+                out.write(runinfo.extra_parameters)
+            cmd1 = './utility/runDemux10xATAC_RNA.sh ' + runinfo.Flowcell_ID + \
+                ' ' + basedirname + ' ' + request.user.email
+
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
