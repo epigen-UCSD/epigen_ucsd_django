@@ -468,7 +468,7 @@ $(document).ready(function () {
             dataSrc: ''
         },
         "columns": [
-            { "data": "serive_request_id" },
+            { "data": "service_request_id" },
             { "data": "date" },
             { "data": "group__name" },
             { "data": "group__group_institution__institution" },
@@ -476,6 +476,7 @@ $(document).ready(function () {
             { "data": "research_contact_email" },
             { "data": "quote_number" },
             { "data": "status" },
+
         ],
         "deferRender": true,
         "select": false,
@@ -503,10 +504,13 @@ $(document).ready(function () {
         {
             "targets": 6,
             "render": function (data, type, row) {
+                var returnvalue = ''
+                
                 for (i = 0; i < data.length; i++) {
-                  return '<a href="/manager_app/pdf_test/",data-toggle="tooltip" data-placement="right" title="'+data[i]+'"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>';
+                  var returnvalue = returnvalue.concat('<a class="spacing-big" href="/manager/pdf_test/",data-toggle="tooltip" data-placement="right" title="'+data[i]+'" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>')
                 }
-                 return '<a class="spacing" href="/manager_app/quote_number/' + data[data.length] + '/update/"><i class="fas fa-edit"></i></a>'
+                console.log(returnvalue)
+                return returnvalue.concat('<a href="/metadata/sample/' + data[i-1] + '/update/"><i class="fas fa-edit"></i></a>')
                 
 
             }

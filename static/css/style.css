@@ -275,6 +275,9 @@ table a, .linkblue{
 .spacing {
   letter-spacing: 5px;
 }
+.spacing-big {
+  letter-spacing: 10px;
+}
 #sidebar {
 
   border-radius: 5px;

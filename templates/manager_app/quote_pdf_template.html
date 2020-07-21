@@ -3,14 +3,17 @@
   <title>Test</title>
   <style>
     body {
-      background-color: #f7f7f7;
+      
     }
   </style>
+  {% load static %}
 </head>
 <body>
+  <img src="{% static 'images/CFE_Brandmark-01.png' %}" alt="Center Logo" style="width:250px;margin-left:-30px;margin-top:-30px;">
   <h1>Test Template</h1>
   {% for paragraph in paragraphs %}
     <p>{{ paragraph }}</p>
   {% endfor %}
+      
 </body>
 </html>

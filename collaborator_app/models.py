@@ -19,9 +19,9 @@ class ServiceInfo(models.Model):
 
 
 class ServiceRequest(models.Model):
-    #service_request_id = models.CharField( max_length=100,unique=True,blank=True, null=True)
+    service_request_id = models.CharField( max_length=100,unique=True,blank=True, null=True)
     #quote_number= models.CharField('quote number', max_length=100,unique=True,blank=True, null=True)
-    #quote_number = ArrayField(models.CharField(max_length=200), blank=True, null=True)
+    quote_number = ArrayField(models.CharField(max_length=200), blank=True, null=True)
     #service_request = models.ManyToManyField(ServiceRequest)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
     research_contact = models.ForeignKey(CollaboratorPersonInfo, on_delete=models.CASCADE, blank=True, null=True)
