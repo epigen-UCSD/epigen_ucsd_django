@@ -1,6 +1,8 @@
 from django import template
 from django.contrib.auth.models import Group
 from epigen_ucsd_django.settings import DEBUG
+from masterseq_app.models import SeqInfo
+from nextseq_app.models import RunInfo,LibrariesInRun
 register = template.Library()
 print(f'debug status: {DEBUG}')
 
@@ -76,4 +78,24 @@ def linktrackingsheet(stringtext):
 	for k,v in linktrans.items():
 		stringtext = stringtext.replace(k,v)
 	return stringtext
+
+@register.filter
+def get_portion_of_lane(sequencing_id):
+	try:
+		obj = SeqInfo.objects.get(seq_id=sequencing_id)
+		return obj.portion_of_lane
+	except:
+		return 'NA'
+
+@register.filter
+def get_sum_of_portion_of_lane(runinfo):
+	s = 0
+	try:
+		for seqs in runinfo.librariesinrun_set.all():
+			obj = SeqInfo.objects.get(seq_id=seqs.Library_ID)
+			s += obj.portion_of_lane
+		return round(s,1)
+
+	except:
+		return ''
 
