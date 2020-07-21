@@ -14,7 +14,7 @@ class Barcode(models.Model):
     indexseq = models.CharField(max_length=200)
     kit_choice = (('BK', 'bulk'), ('S2', 'snATAC_v2'),
                   ('TA', '10xATAC'), ('TR', '10xRNA'),
-                  ('BT', 'bulk_10xATAC'))
+                  ('BT', 'bulk_10xATAC'),('TM','10x_mix_RNA_ATAC'))
     kit = models.CharField(
         max_length=2, choices=kit_choice, default='BK', help_text='bulk (default), snATAC_v2:combinatory barcode v2, 10xATAC, 10xRNAseq')
 
@@ -34,11 +34,11 @@ class RunInfo(models.Model):
                             help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03', blank=True, null=True)
     read_type_choice = (('SE', 'Single-end'), ('PE', 'Paired-end'))
     exp_type_choice = (('BK', 'bulk'), ('S2', 'snATAC_v2'),
-                       ('TA', '10xATAC'), ('TR', '10xRNA'), ('BT', 'bulk_10xATAC'))
+                       ('TA', '10xATAC'), ('TR', '10xRNA'), ('BT', 'bulk_10xATAC'),('TM','10x_mix_RNA_ATAC'))
     read_type = models.CharField(
         max_length=2, choices=read_type_choice, default='PE', help_text='default:PE')
     experiment_type = models.CharField(max_length=2, choices=exp_type_choice,
-                                       default='BK', help_text='bulk (default), snATAC_v2:combinatory barcode v2, 10xATAC, 10xRNAseq, bulk_10xATAC')
+                                       default='BK', help_text='bulk (default), snATAC_v2:combinatory barcode v2, 10xATAC, 10xRNAseq, bulk_10xATAC, 10x_mix_RNA_ATAC')
     total_reads = models.BigIntegerField(blank=True, null=True)
     total_libraries = models.IntegerField(blank=True, null=True)
     percent_of_reads_demultiplexed = models.IntegerField(blank=True, null=True)
