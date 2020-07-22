@@ -95,10 +95,17 @@ class ServiceRequestItemCreationForm(forms.ModelForm):
 		self.fields['service'].queryset = ServiceInfo.objects.all().exclude(service_name__in=excludes)
 
 
+# class ServiceRequestCreationForm(forms.ModelForm):
+# 	class Meta:
+# 		model = ServiceRequest
+# 		fields = ['notes']
+# 		widgets = {
+# 			'notes': forms.Textarea(attrs={'cols': 60, 'rows': 3}),
+# 		}
 class ServiceRequestCreationForm(forms.ModelForm):
 	class Meta:
 		model = ServiceRequest
-		fields = ['notes']
+		fields = ['group','institute','research_contact','research_contact_email','notes']
 		widgets = {
 			'notes': forms.Textarea(attrs={'cols': 60, 'rows': 3}),
 		}

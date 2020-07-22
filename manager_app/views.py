@@ -19,6 +19,8 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
+import os
+from django.conf import settings
 
 # Create your views here.
 
@@ -269,6 +271,330 @@ def ServiceRequestCreateView(request):
     data_requestitem = {}
     data_request = {}
 
+    ServiceRequestItemFormSet = formset_factory(
+        ServiceRequestItemCreationForm, can_delete=True)
+    servicerequestitems_formset = ServiceRequestItemFormSet(request.POST or None)
+    
+    today = datetime.date.today()
+    datesplit = str(datetime.date.today()).split('-')
+
+
+
+    if request.method == 'POST':
+        servicerequest_form = ServiceRequestCreationForm(request.POST)
+        if servicerequest_form.is_valid():
+            group_name = servicerequest_form.cleaned_data['group']
+            institute = servicerequest_form.cleaned_data['institute']
+            research_contact = servicerequest_form.cleaned_data['research_contact']
+            research_contact_email = servicerequest_form.cleaned_data['research_contact_email']
+ 
+            all_quote_list = ServiceRequest.objects.values_list('quote_number', flat=True)
+            all_quote = []
+            for qs in all_quote_list:
+                for q in qs:
+                    all_quote.append(q)
+
+            print(all_quote)
+            all_quote_number = [int(x.split(' ')[-1]) for x in all_quote if x]
+            if all_quote_number:
+                max_quote = max(all_quote_number)
+            else:
+                max_quote = 0
+            this_service_request_id = ' '.join([group_name.split(' ')[0][0].upper()+group_name.split(' ')[-1][0].upper(),datesplit[1]+datesplit[2]+datesplit[0][-2:]])
+            this_quote_nunmber = ' '.join([group_name.split(' ')[0][0].upper()+group_name.split(' ')[-1][0].upper(),datesplit[1]+datesplit[2]+datesplit[0][-2:],str(max_quote+1).zfill(4)])
+            data_request = {
+                'service_request_id':this_service_request_id,
+                'quote_number':this_quote_nunmber,
+                'date':str(today),
+                'group':group_name,
+                'institute':institute,
+                'status':'initiate',
+                'research_contact':research_contact,
+                'research_contact_email':research_contact_email,
+                'notes':servicerequest_form.cleaned_data['notes'],
+            }
+            #print(institute)
+            if servicerequestitems_formset.is_valid():
+                for form in servicerequestitems_formset.forms:
+                    if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
+                        service = form.cleaned_data['service']
+                        quantity = form.cleaned_data['quantity']
+                        if service.service_name == 'ATAC-seq':
+                            if float(quantity) >= 24 and float(quantity) < 96:
+                                service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
+                            elif float(quantity) >= 96:
+                                service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
+                        #print(service.service_name)
+
+                        if institute == 'uc':
+                            data_requestitem[service.service_name] = {
+                                'rate(uc users)':str(service.uc_rate)+'/'+service.rate_unit,
+                                'rate_number':service.uc_rate,
+                                'quantity':quantity,
+                                'rate_unit':service.rate_unit,
+                            }
+                        elif institute == 'non_uc':
+                            data_requestitem[service.service_name] = {
+                                'rate(non-uc users)':str(service.nonuc_rate)+'/'+service.rate_unit,
+                                'rate_number':service.nonuc_rate,
+                                'quantity':quantity,
+                                'rate_unit':service.rate_unit,
+                            }                            
+                total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
+                total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity'])+' '+x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
+
+                if 'Preview' in request.POST:
+                    if institute == 'uc':
+                        displayorde_requestitem = ['rate(uc users)','quantity']
+                    elif institute == 'non_uc':
+                        displayorde_requestitem = ['rate(non-uc users)','quantity']
+                    displayorder_request = ['service_request_id','quote_number','date','group','institute','research_contact','research_contact_email','notes','status']
+                    #print(data_request)  
+
+                    context = {
+                        'servicerequest_form': servicerequest_form,
+                        'servicerequestitems_formset': servicerequestitems_formset,
+                        'modalshow': 1,
+                        'displayorde_requestitem': displayorde_requestitem,
+                        'displayorder_request': displayorder_request,
+                        'data_requestitem':data_requestitem,
+                        'data_request':data_request,
+                        'total_expression':total_expression
+                    }        
+                    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate.html', context)
+
+                if 'Save' in request.POST:
+                    thisrequest = ServiceRequest.objects.create(
+                        group=group_name,
+                        institute=data_request['institute'],
+                        service_request_id=data_request['service_request_id'],
+                        quote_number=[data_request['quote_number']],
+                        date=data_request['date'],
+                        research_contact=data_request['research_contact'],
+                        research_contact_email=data_request['research_contact_email'],
+                        notes=data_request['notes'],
+                        status=data_request['status'],
+                        )
+                    service_items = []
+                    service_breakdown = []
+                    for item in data_requestitem.keys():
+                        print(item)
+                        print(data_requestitem[item]['quantity'])
+                        ServiceRequestItem.objects.create(
+                            request=thisrequest, 
+                            service=ServiceInfo.objects.get(service_name=item),
+                            quantity=data_requestitem[item]['quantity'],
+                            )
+                        service_items.append(item)
+                        this_service_item = ServiceInfo.objects.get(service_name=item)
+                        service_breakdown.append(':'.join([this_service_item.description_brief,str(data_requestitem[item]['rate_number'])+'/'+this_service_item.rate_unit]))
+                    quote_compact = ''.join(data_request['quote_number'].split(' '))
+                    collab_info = [group_name,research_contact,research_contact_email]
+                    dear = 'Dr. '+ group_name.split(' ')[-1]
+                    service_items = ','.join(set(service_items))
+
+
+                    pdf_context = {
+                        'quote_id':quote_compact,
+                        'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
+                        'collab_info':collab_info,
+                        'dear':dear,
+                        'service_items':service_items,
+                        'service_breakdown':service_breakdown,
+                        'total_expression':total_expression,
+
+                    }
+
+                    paragraphs = ['first paragraph', 'second paragraph', 'third paragraph']
+                    html_string = render_to_string('manager_app/quote_pdf_template.html', pdf_context)
+                    pdf_name = quote_compact+'.pdf'    
+                    html = HTML(string=html_string,base_url=request.build_absolute_uri())
+                    html.write_pdf(target=os.path.join(settings.QUOTE_DIR,pdf_name));
+
+                    return redirect('manager_app:servicerequests_list')
+
+
+    else:
+        servicerequest_form = ServiceRequestCreationForm(None)
+
+    context = {
+        'servicerequest_form': servicerequest_form,
+        'servicerequestitems_formset': servicerequestitems_formset,
+    }
+
+    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate.html', context)
+
+@transaction.atomic
+def ServiceRequestUpdateView(request,pk):
+    thiservicerequest = get_object_or_404(ServiceRequest, pk=pk)
+    print(thiservicerequest)
+
+    data_requestitem = {}
+    data_request = {}
+
+    servicerequest_form = ServiceRequestCreationForm(request.POST or None,instance=thiservicerequest)
+    
+    ServiceRequestItemFormSet = formset_factory(
+        ServiceRequestItemCreationForm, can_delete=True)
+    servicerequestitems_formset = ServiceRequestItemFormSet(request.POST or None)
+    
+    
+    today = datetime.date.today()
+    datesplit = str(datetime.date.today()).split('-')
+
+
+
+    if request.method == 'POST':
+        
+        if servicerequest_form.is_valid():
+            group_name = servicerequest_form.cleaned_data['group']
+            institute = servicerequest_form.cleaned_data['institute']
+            research_contact = servicerequest_form.cleaned_data['research_contact']
+            research_contact_email = servicerequest_form.cleaned_data['research_contact_email']
+ 
+            all_quote_list = ServiceRequest.objects.values_list('quote_number', flat=True)
+            all_quote = []
+            for qs in all_quote_list:
+                for q in qs:
+                    all_quote.append(q)
+
+            print(all_quote)
+            all_quote_number = [int(x.split(' ')[-1]) for x in all_quote if x]
+            if all_quote_number:
+                max_quote = max(all_quote_number)
+            else:
+                max_quote = 0
+            this_service_request_id = ' '.join([group_name.split(' ')[0][0].upper()+group_name.split(' ')[-1][0].upper(),datesplit[1]+datesplit[2]+datesplit[0][-2:]])
+            this_quote_nunmber = ' '.join([group_name.split(' ')[0][0].upper()+group_name.split(' ')[-1][0].upper(),datesplit[1]+datesplit[2]+datesplit[0][-2:],str(max_quote+1).zfill(4)])
+            data_request = {
+                'service_request_id':this_service_request_id,
+                'quote_number':this_quote_nunmber,
+                'date':str(today),
+                'group':group_name,
+                'institute':institute,
+                'status':'initiate',
+                'research_contact':research_contact,
+                'research_contact_email':research_contact_email,
+                'notes':servicerequest_form.cleaned_data['notes'],
+            }
+            #print(institute)
+            if servicerequestitems_formset.is_valid():
+                for form in servicerequestitems_formset.forms:
+                    if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
+                        service = form.cleaned_data['service']
+                        quantity = form.cleaned_data['quantity']
+                        if service.service_name == 'ATAC-seq':
+                            if float(quantity) >= 24 and float(quantity) < 96:
+                                service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
+                            elif float(quantity) >= 96:
+                                service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
+                        #print(service.service_name)
+
+                        if institute == 'uc':
+                            data_requestitem[service.service_name] = {
+                                'rate(uc users)':str(service.uc_rate)+'/'+service.rate_unit,
+                                'rate_number':service.uc_rate,
+                                'quantity':quantity,
+                                'rate_unit':service.rate_unit,
+                            }
+                        elif institute == 'non_uc':
+                            data_requestitem[service.service_name] = {
+                                'rate(non-uc users)':str(service.nonuc_rate)+'/'+service.rate_unit,
+                                'rate_number':service.nonuc_rate,
+                                'quantity':quantity,
+                                'rate_unit':service.rate_unit,
+                            }                            
+                total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
+                total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity'])+' '+x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
+
+                if 'Preview' in request.POST:
+                    if institute == 'uc':
+                        displayorde_requestitem = ['rate(uc users)','quantity']
+                    elif institute == 'non_uc':
+                        displayorde_requestitem = ['rate(non-uc users)','quantity']
+                    displayorder_request = ['service_request_id','quote_number','date','group','institute','research_contact','research_contact_email','notes','status']
+                    #print(data_request)  
+
+                    context = {
+                        'servicerequest_form': servicerequest_form,
+                        'servicerequestitems_formset': servicerequestitems_formset,
+                        'modalshow': 1,
+                        'displayorde_requestitem': displayorde_requestitem,
+                        'displayorder_request': displayorder_request,
+                        'data_requestitem':data_requestitem,
+                        'data_request':data_request,
+                        'total_expression':total_expression
+                    }        
+                    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate.html', context)
+
+                if 'Save' in request.POST:
+                    thisrequest = ServiceRequest.objects.create(
+                        group=group_name,
+                        institute=data_request['institute'],
+                        service_request_id=data_request['service_request_id'],
+                        quote_number=[data_request['quote_number']],
+                        date=data_request['date'],
+                        research_contact=data_request['research_contact'],
+                        research_contact_email=data_request['research_contact_email'],
+                        notes=data_request['notes'],
+                        status=data_request['status'],
+                        )
+                    service_items = []
+                    service_breakdown = []
+                    for item in data_requestitem.keys():
+                        print(item)
+                        print(data_requestitem[item]['quantity'])
+                        ServiceRequestItem.objects.create(
+                            request=thisrequest, 
+                            service=ServiceInfo.objects.get(service_name=item),
+                            quantity=data_requestitem[item]['quantity'],
+                            )
+                        service_items.append(item)
+                        this_service_item = ServiceInfo.objects.get(service_name=item)
+                        service_breakdown.append(':'.join([this_service_item.description_brief,str(data_requestitem[item]['rate_number'])+'/'+this_service_item.rate_unit]))
+                    quote_compact = ''.join(data_request['quote_number'].split(' '))
+                    collab_info = [group_name,research_contact,research_contact_email]
+                    dear = 'Dr. '+ group_name.split(' ')[-1]
+                    service_items = ','.join(set(service_items))
+
+
+                    pdf_context = {
+                        'quote_id':quote_compact,
+                        'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
+                        'collab_info':collab_info,
+                        'dear':dear,
+                        'service_items':service_items,
+                        'service_breakdown':service_breakdown,
+                        'total_expression':total_expression,
+
+                    }
+
+                    paragraphs = ['first paragraph', 'second paragraph', 'third paragraph']
+                    html_string = render_to_string('manager_app/quote_pdf_template.html', pdf_context)
+                    pdf_name = quote_compact+'.pdf'    
+                    html = HTML(string=html_string,base_url=request.build_absolute_uri())
+                    html.write_pdf(target=os.path.join(settings.QUOTE_DIR,pdf_name));
+
+                    return redirect('manager_app:servicerequests_list')
+
+
+    else:
+        servicerequest_form = ServiceRequestCreationForm(None)
+
+    context = {
+        'servicerequest_form': servicerequest_form,
+        'servicerequestitems_formset': servicerequestitems_formset,
+    }
+
+    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate.html', context)
+
+
+@transaction.atomic
+def ServiceRequestCreateViewOld(request):
+
+    data_requestitem = {}
+    data_request = {}
+
     contact_form = ContactForm(request.POST or None)
     ServiceRequestItemFormSet = formset_factory(
         ServiceRequestItemCreationForm, can_delete=True)
@@ -288,7 +614,13 @@ def ServiceRequestCreateView(request):
             research_contact_email = contact_form.cleaned_data['research_contact_email']
             print(research_contact_email)
             groupinfo = Group.objects.get(name=group_name)
-            all_quote = list(ServiceRequest.objects.values_list('quote_number', flat=True))
+            all_quote_list = ServiceRequest.objects.values_list('quote_number', flat=True)
+            all_quote = []
+            for qs in all_quote_list:
+                for q in qs:
+                    all_quote.append(q)
+
+            print(all_quote)
             all_quote_number = [int(x.split(' ')[-1]) for x in all_quote if x]
             if all_quote_number:
                 max_quote = max(all_quote_number)
@@ -338,7 +670,7 @@ def ServiceRequestCreateView(request):
                                 'rate_unit':service.rate_unit,
                             }                            
                 total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
-                total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity']+' '+x['rate_unit']) for x in data_requestitem.values()])+' = $'+str(total_price)
+                total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity'])+' '+x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
 
                 if 'Preview' in request.POST:
                     if institute == 'ucsd':
@@ -372,6 +704,7 @@ def ServiceRequestCreateView(request):
                         notes=data_request['notes'],
                         status=data_request['status'],
                         )
+                    service_items = []
                     service_breakdown = []
                     for item in data_requestitem.keys():
                         print(item)
@@ -383,7 +716,7 @@ def ServiceRequestCreateView(request):
                             )
                         service_items.append(item)
                         this_service_item = ServiceInfo.objects.get(service_name=item)
-                        service_breakdown.append(':'.join([this_service_item.description_brief,data_requestitem[item]['rate_number']+'/'+this_service_item.rate_unit]))
+                        service_breakdown.append(':'.join([this_service_item.description_brief,str(data_requestitem[item]['rate_number'])+'/'+this_service_item.rate_unit]))
                     quote_compact = ''.join(data_request['quote_number'].split(' '))
                     collab_info = [group_name,research_contact_name,research_contact_email]
                     dear = 'Dr. '+ group_name.split(' ')[-1]
@@ -405,7 +738,7 @@ def ServiceRequestCreateView(request):
                     html_string = render_to_string('manager_app/quote_pdf_template.html', pdf_context)
                     pdf_name = quote_compact+'.pdf'    
                     html = HTML(string=html_string,base_url=request.build_absolute_uri())
-                    html.write_pdf(target=os.path.join(settings.NEXTSEQAPP_DMPDIR,pdf_name));
+                    html.write_pdf(target=os.path.join(settings.QUOTE_DIR,pdf_name));
 
                     return redirect('manager_app:servicerequests_list')
 
@@ -419,11 +752,17 @@ def ServiceRequestCreateView(request):
         'servicerequestitems_formset': servicerequestitems_formset,
     }
 
-    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate.html', context)
+    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate_old.html', context)
 
+
+def ServiceRequestDataViewOld(request):
+    ServiceRequest_list = ServiceRequest.objects.all().select_related('group','research_contact__person_id').prefetch_related(Prefetch('group__group_institution_set')).values('pk','service_request_id','quote_number','date','group__name','research_contact__person_id__first_name','research_contact__person_id__last_name','research_contact_email','status','notes','group__group_institution__institution')
+    data = list(ServiceRequest_list)
+
+    return JsonResponse(data, safe=False)
 
 def ServiceRequestDataView(request):
-    ServiceRequest_list = ServiceRequest.objects.all().select_related('group','research_contact__person_id').prefetch_related(Prefetch('group__group_institution_set')).values('pk','service_request_id','quote_number','date','group__name','research_contact__person_id__first_name','research_contact__person_id__last_name','research_contact_email','status','notes','group__group_institution__institution')
+    ServiceRequest_list = ServiceRequest.objects.all().values('pk','service_request_id','quote_number','date','group','institute','research_contact','research_contact_email','status','notes')
     data = list(ServiceRequest_list)
 
     return JsonResponse(data, safe=False)
@@ -431,7 +770,7 @@ def ServiceRequestDataView(request):
 
 def QuotePdfView(request,quoteid):
     pdf_name = quoteid+'.pdf'
-    pdf_path = os.path.join(settings.NEXTSEQAPP_DMPDIR,pdf_name)
+    pdf_path = os.path.join(settings.QUOTE_DIR,pdf_name)
     with open(pdf_path,'rb') as pdf:
         response = HttpResponse(pdf, content_type='application/pdf')
         response['Content-Disposition'] = 'inline; filename="mypdf.pdf"'

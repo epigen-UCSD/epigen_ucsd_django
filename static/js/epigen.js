@@ -470,9 +470,9 @@ $(document).ready(function () {
         "columns": [
             { "data": "service_request_id" },
             { "data": "date" },
-            { "data": "group__name" },
-            { "data": "group__group_institution__institution" },
-            { "data": "research_contact__person_id__first_name" },
+            { "data": "group" },
+            { "data": "institute" },
+            { "data": "research_contact" },
             { "data": "research_contact_email" },
             { "data": "quote_number" },
             { "data": "status" },
@@ -490,24 +490,15 @@ $(document).ready(function () {
                 return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
             }
         },
-        {
-            "targets": 4,
-            "render": function (data, type, row) {
-                if (row["research_contact__person_id__first_name"] == null) {
-                    return ''
-                }
-                else {
-                    return row["research_contact__person_id__first_name"] + '_' + row["research_contact__person_id__last_name"];
-                }
-            }
-        },
+
         {
             "targets": 6,
             "render": function (data, type, row) {
                 var returnvalue = ''
                 
                 for (i = 0; i < data.length; i++) {
-                  var returnvalue = returnvalue.concat('<a class="spacing-big" href="/manager/pdf_test/",data-toggle="tooltip" data-placement="right" title="'+data[i]+'" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>')
+                  var qid = data[i].replace(/ /g, "");
+                  var returnvalue = returnvalue.concat('<a class="spacing-big" href="/manager/quote/'+qid+'/",data-toggle="tooltip" data-placement="right" title="'+data[i]+'" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>')
                 }
                 console.log(returnvalue)
                 return returnvalue.concat('<a href="/metadata/sample/' + data[i-1] + '/update/"><i class="fas fa-edit"></i></a>')
@@ -519,7 +510,7 @@ $(document).ready(function () {
             "targets": 8,
             "render": function (data, type, row) {
                 var itemID = row["pk"];
-                return '<a class="spacing" href="/manager_app/service_request/' + itemID + '/update/"><i class="fas fa-edit"></i></a>'
+                return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a>'
                 
 
             }

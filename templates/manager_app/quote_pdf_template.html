@@ -16,9 +16,12 @@
 
   <p>{{ date }}</p>
 
-  {% for line in collab_info %}
-    <p>{{ line }}</p>
-  {% endfor %}
+  <p>{% for line in collab_info %}
+       <br>{{ line }}
+    {% endfor %}
+  </p>
+  <br>
+  <br>
 
   <p>Dear {{ dear }},</p>
   <p>We are excited to work with you. This quote is for our {{ service_items }} Service. The costs are for library preparation, which includes all reagents and labor costs associated with library preparation, quality control shallow sequencing, and basic data processing. The estimated costs for your project are:
@@ -28,10 +31,11 @@
   {% endfor %}
 
   <p>Total Estimate:{{ total_expression }}</p>
-  <p>Sincerely,</p>
-  <p>Lauren Thomas</p>
-  <p>Epigenomic Program Analyst</p>
-  <p>Center for Epigenomics</p>
+  <p>Sincerely,
+  <br>Lauren Thomas
+  <br>Epigenomic Program Analyst
+  <br>Center for Epigenomics
+  </p>
       
 </body>
 </html>

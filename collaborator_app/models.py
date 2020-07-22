@@ -20,18 +20,22 @@ class ServiceInfo(models.Model):
 
 
 class ServiceRequest(models.Model):
-    service_request_id = models.CharField( max_length=100,unique=True,blank=True, null=True)
+    service_request_id = models.CharField(max_length=100,unique=True,blank=True, null=True)
     #quote_number= models.CharField('quote number', max_length=100,unique=True,blank=True, null=True)
     quote_number = ArrayField(models.CharField(max_length=200), blank=True, null=True)
     #service_request = models.ManyToManyField(ServiceRequest)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
-    research_contact = models.ForeignKey(CollaboratorPersonInfo, on_delete=models.CASCADE, blank=True, null=True)
-    research_contact_email = models.CharField(max_length=100, blank=True, null=True)
+    # group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
+    # research_contact = models.ForeignKey(CollaboratorPersonInfo, on_delete=models.CASCADE, blank=True, null=True)
+    # research_contact_email = models.CharField(max_length=100, blank=True, null=True)
+    group = models.CharField(max_length=200,blank=True, null=True)
+    institute_choice = (('uc', 'uc'), ('non_uc', 'non_uc'))
+    institute = models.CharField(max_length=50, choices=institute_choice, default='UC')
+    research_contact = models.CharField(max_length=200,blank=True, null=True)
+    research_contact_email = models.CharField(max_length=200,blank=True, null=True)
     date =  models.DateField(blank=True, null=True)
     notes = models.TextField(blank=True)
     status = models.CharField(max_length=50, blank=True, null=True)
-
-
+ 
 class ServiceRequestItem(models.Model):
     request = models.ForeignKey(ServiceRequest, on_delete=models.CASCADE)
     service = models.ForeignKey(ServiceInfo, on_delete=models.CASCADE)
