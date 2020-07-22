@@ -23,3 +23,6 @@ def SelfUniqueValidation(tosavelist):
         if tosavelist[i] in tosavelist[i+1:]:
             duplicate.append(tosavelist[i])
     return duplicate
+
+def daysuffix(d):
+    return 'th' if 11<=d<=13 else {1:'st',2:'nd',3:'rd'}.get(d%10, 'th')

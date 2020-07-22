@@ -10,10 +10,28 @@
 </head>
 <body>
   <img src="{% static 'images/CFE_Brandmark-01.png' %}" alt="Center Logo" style="width:250px;margin-left:-30px;margin-top:-30px;">
-  <h1>Test Template</h1>
-  {% for paragraph in paragraphs %}
-    <p>{{ paragraph }}</p>
+  <p>Quote # {{ quote_id }}
+  <br> Note this quote will expire 60 days from the date below
+  </p>
+
+  <p>{{ date }}</p>
+
+  {% for line in collab_info %}
+    <p>{{ line }}</p>
   {% endfor %}
+
+  <p>Dear {{ dear }},</p>
+  <p>We are excited to work with you. This quote is for our {{ service_items }} Service. The costs are for library preparation, which includes all reagents and labor costs associated with library preparation, quality control shallow sequencing, and basic data processing. The estimated costs for your project are:
+  </p>
+  {% for line in service_breakdown %}
+    <p>{{ line }}</p>
+  {% endfor %}
+
+  <p>Total Estimate:{{ total_expression }}</p>
+  <p>Sincerely,</p>
+  <p>Lauren Thomas</p>
+  <p>Epigenomic Program Analyst</p>
+  <p>Center for Epigenomics</p>
       
 </body>
 </html>

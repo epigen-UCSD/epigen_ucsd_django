@@ -9,7 +9,7 @@ from django.contrib.auth.models import User,Group
 from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models import Prefetch
-from epigen_ucsd_django.shared import is_member
+from epigen_ucsd_django.shared import is_member,daysuffix
 from masterseq_app.views import nonetolist,removenone
 from django.forms import formset_factory
 from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm
@@ -18,7 +18,6 @@ from collaborator_app.models import ServiceInfo,ServiceRequest,ServiceRequestIte
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-
 from weasyprint import HTML
 
 # Create your views here.
@@ -329,15 +328,17 @@ def ServiceRequestCreateView(request):
                                 'rate(uc users)':str(service.uc_rate)+'/'+service.rate_unit,
                                 'rate_number':service.uc_rate,
                                 'quantity':quantity,
+                                'rate_unit':service.rate_unit,
                             }
                         else:
                             data_requestitem[service.service_name] = {
                                 'rate(non-uc users)':str(service.nonuc_rate)+'/'+service.rate_unit,
                                 'rate_number':service.nonuc_rate,
                                 'quantity':quantity,
+                                'rate_unit':service.rate_unit,
                             }                            
                 total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
-                total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity']) for x in data_requestitem.values()])+' = $'+str(total_price)
+                total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity']+' '+x['rate_unit']) for x in data_requestitem.values()])+' = $'+str(total_price)
 
                 if 'Preview' in request.POST:
                     if institute == 'ucsd':
@@ -371,6 +372,7 @@ def ServiceRequestCreateView(request):
                         notes=data_request['notes'],
                         status=data_request['status'],
                         )
+                    service_breakdown = []
                     for item in data_requestitem.keys():
                         print(item)
                         print(data_requestitem[item]['quantity'])
@@ -379,6 +381,32 @@ def ServiceRequestCreateView(request):
                             service=ServiceInfo.objects.get(service_name=item),
                             quantity=data_requestitem[item]['quantity'],
                             )
+                        service_items.append(item)
+                        this_service_item = ServiceInfo.objects.get(service_name=item)
+                        service_breakdown.append(':'.join([this_service_item.description_brief,data_requestitem[item]['rate_number']+'/'+this_service_item.rate_unit]))
+                    quote_compact = ''.join(data_request['quote_number'].split(' '))
+                    collab_info = [group_name,research_contact_name,research_contact_email]
+                    dear = 'Dr. '+ group_name.split(' ')[-1]
+                    service_items = ','.join(set(service_items))
+
+
+                    pdf_context = {
+                        'quote_id':quote_compact,
+                        'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
+                        'collab_info':collab_info,
+                        'dear':dear,
+                        'service_items':service_items,
+                        'service_breakdown':service_breakdown,
+                        'total_expression':total_expression,
+
+                    }
+
+                    paragraphs = ['first paragraph', 'second paragraph', 'third paragraph']
+                    html_string = render_to_string('manager_app/quote_pdf_template.html', pdf_context)
+                    pdf_name = quote_compact+'.pdf'    
+                    html = HTML(string=html_string,base_url=request.build_absolute_uri())
+                    html.write_pdf(target=os.path.join(settings.NEXTSEQAPP_DMPDIR,pdf_name));
+
                     return redirect('manager_app:servicerequests_list')
 
 
@@ -401,18 +429,12 @@ def ServiceRequestDataView(request):
     return JsonResponse(data, safe=False)
 
 
-def html_to_pdf_view(request):
-    paragraphs = ['first paragraph', 'second paragraph', 'third paragraph']
-    html_string = render_to_string('manager_app/quote_pdf_template.html', {'paragraphs': paragraphs})
-
-    html = HTML(string=html_string,base_url=request.build_absolute_uri())
-    html.write_pdf(target='/Users/liyuxin/mypdf.pdf');
-
-    with open('/Users/liyuxin/mypdf.pdf','rb') as pdf:
+def QuotePdfView(request,quoteid):
+    pdf_name = quoteid+'.pdf'
+    pdf_path = os.path.join(settings.NEXTSEQAPP_DMPDIR,pdf_name)
+    with open(pdf_path,'rb') as pdf:
         response = HttpResponse(pdf, content_type='application/pdf')
         response['Content-Disposition'] = 'inline; filename="mypdf.pdf"'
         return response
-    
 
-    return response
 

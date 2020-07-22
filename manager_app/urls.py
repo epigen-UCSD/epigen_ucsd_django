@@ -18,6 +18,6 @@ urlpatterns = [
     path('servicerequest_add/', views.ServiceRequestCreateView, name='collab_servicerequest_add'),
     path('servicerequests/', TemplateView.as_view(template_name="manager_app/servicerequests_list.html"), name='servicerequests_list'),
     path('servicerequests_list/', views.ServiceRequestDataView, name='service_request_display'),
-    path('pdf_test/', views.html_to_pdf_view, name='html_to_pdf'),
+    path('quote/<slug:quoteid>/', views.QuotePdfView, name='quote_pdf'),
 
 ]

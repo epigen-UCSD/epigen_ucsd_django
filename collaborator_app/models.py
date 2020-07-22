@@ -10,6 +10,7 @@ class ServiceInfo(models.Model):
     uc_rate = models.FloatField(blank=True, null=True)
     nonuc_rate = models.FloatField(blank=True, null=True)
     rate_unit = models.CharField(max_length=50)
+    description_brief = models.TextField(blank=True)
     description = models.TextField(blank=True)
     #start_date =  models.DateField(blank=True, null=True)
     #end_date =  models.DateField(blank=True, null=True)
