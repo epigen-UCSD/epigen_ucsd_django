@@ -724,7 +724,7 @@ def DemultiplexingView(request, run_pk):
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i2_file = open(filename.replace('.csv', '_I2.csv'), 'w')
                 # support for sc-RNA expts.
-                elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR':
+                elif runinfo.experiment_type in ['TA','TR','TM']:
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i1_file.write(','.join(["Lane", "Sample", "Index"])+'\n')
 
@@ -771,9 +771,9 @@ def DemultiplexingView(request, run_pk):
                             if runinfo.experiment_type == 'S2':
                                 i1_file.write(i7seq+'\n')
                                 i2_file.write(i5seq+'\n')
-                            elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR':
+                            elif runinfo.experiment_type in ['TA','TR','TM']:
                                 i1_file.write(
-                                    ','.join(['*', samples.Library_ID, i7seq])+'\n')
+                                    ','.join(['*', samples.Library_ID, i7id])+'\n')
                         else:
                             if not samples.i5index:
                                 if filename == os.path.join(basedirname, 'Data/Fastqs/OnePrimer', 'SampleSheet.csv'):
@@ -795,7 +795,7 @@ def DemultiplexingView(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file.close()
                     i2_file.close()
-                elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR':
+                elif runinfo.experiment_type in ['TA','TR','TM']:
                     i1_file.close()
 
         except Exception as e:
@@ -893,7 +893,7 @@ def DemultiplexingView2(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i2_file = open(filename.replace('.csv', '_I2.csv'), 'w')
-                elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR':
+                elif runinfo.experiment_type in ['TA','TR','TM']:
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i1_file.write(','.join(["Lane", "Sample", "Index"])+'\n')
 
@@ -940,9 +940,9 @@ def DemultiplexingView2(request, run_pk):
                             if runinfo.experiment_type == 'S2':
                                 i1_file.write(i7seq+'\n')
                                 i2_file.write(i5seq+'\n')
-                            elif runinfo.experiment_type == 'TA' or runinfo.experiment_type == 'TR':
+                            elif runinfo.experiment_type in ['TA', 'TR', 'TM']:
                                 i1_file.write(
-                                    ','.join(['*', samples.Library_ID, i7seq]) + '\n')
+                                    ','.join(['*', samples.Library_ID, i7id]) + '\n')
 
                         else:
                             if not samples.i5index:
@@ -966,7 +966,7 @@ def DemultiplexingView2(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file.close()
                     i2_file.close()
-                elif runinfo.experiment_type == "TA" or runinfo.experiment_type == "TR":
+                elif runinfo.experiment_type in ["TA" ,'TR',"TM"]:
                     i1_file.close()
         except Exception as e:
             data['writesamplesheeterror'] = 'Unexpected writing to SampleSheet.csv Error!'
