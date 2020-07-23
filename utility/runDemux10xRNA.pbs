@@ -23,7 +23,6 @@ out_dir=${run_dir}/Data/Fastqs/
 ## samplesheet
 samplesheet="${out_dir}/SampleSheet_I1.csv"
 
-
 ############################################################
 ## run RNA-seq
 ############################################################

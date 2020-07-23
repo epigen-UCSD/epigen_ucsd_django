@@ -773,7 +773,7 @@ def DemultiplexingView(request, run_pk):
                                 i2_file.write(i5seq+'\n')
                             elif runinfo.experiment_type in ['TA','TR','TM']:
                                 i1_file.write(
-                                    ','.join(['*', samples.Library_ID, i7id])+'\n')
+                                    ','.join(['*', samples.Library_ID, i7id.indexid])+'\n')
                         else:
                             if not samples.i5index:
                                 if filename == os.path.join(basedirname, 'Data/Fastqs/OnePrimer', 'SampleSheet.csv'):
@@ -942,7 +942,7 @@ def DemultiplexingView2(request, run_pk):
                                 i2_file.write(i5seq+'\n')
                             elif runinfo.experiment_type in ['TA', 'TR', 'TM']:
                                 i1_file.write(
-                                    ','.join(['*', samples.Library_ID, i7id]) + '\n')
+                                    ','.join(['*', samples.Library_ID, i7id.indexid]) + '\n')
 
                         else:
                             if not samples.i5index:
@@ -993,6 +993,12 @@ def DemultiplexingView2(request, run_pk):
             with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
             cmd1 = 'bash ./utility/runDemux10xRNA.sh ' + runinfo.Flowcell_ID + \
+                ' ' + basedirname + ' ' + request.user.email
+        elif runinfo.experiment_type == 'TM':
+            # write extra_parameters to disk
+            with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
+                out.write(runinfo.extra_parameters)
+            cmd1 = './utility/runDemux10xATAC_RNA.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \

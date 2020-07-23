@@ -13,60 +13,97 @@
 ############################################################
 ## update status to job submitted @VM
 ############################################################
+export PATH=/projects/ps-epigen/software/cellranger-3.0.2/:$PATH
+export PATH=/projects/ps-epigen/software/cellranger-atac-1.2.0/:$PATH
+
+
 cmd="source activate django;python \$(which updateRunStatus.py) -s '1' -f $flowcell_id"
 ssh zhc268@epigenomics.sdsc.edu $cmd
 
 
 
 ############################################################
-## run bcl2fastq @TSCC
+## prepare
 ############################################################
-## delete last demux info 
-[[ -d ${run_dir}/${flowcell_id} ]] && rm -r ${run_dir}/${flowcell_id}  # delete existing folder
-[[ -f ${run_dir}/__${flowcell_id}.mro ]] && rm ${run_dir}/__${flowcell_id}.mro  # delete existing folder
-
 ## prepare variables & directories
-out_dir_sys=${run_dir}/${flowcell_id}/outs/fastq_path/
 out_dir=${run_dir}/Data/Fastqs/
 mkdir -p ${out_dir}
 
-## prepair reads_cnt_file
+## prepare reads_cnt_file
 reads_cnt_file="${out_dir}/reads_cnt.tsv"
 >$reads_cnt_file
 
 ## samplesheet
 samplesheet="${out_dir}/SampleSheet_I1.csv"
-libs=$(awk -v FS=',' '(NR>1){print $2}' $samplesheet)
+samplesheet_rna="${out_dir}/SampleSheet_rna.csv"
+samplesheet_atac="${out_dir}/SampleSheet_atac.csv"
+grep -v "SI-NA" $samplesheet > $samplesheet_rna
+grep -v "SI-GA" $samplesheet > $samplesheet_atac
 
 ## run mkfastq 
 cd $run_dir
-export PATH=/projects/ps-epigen/software/cellranger-3.0.2/:$PATH
 
+
+############################################################
+## 01.atac
+############################################################
+## delete last demux info 
+[[ -d ${run_dir}/atac ]] && rm -r ${run_dir}/atac  # delete existing folder
+[[ -f ${run_dir}/__atac.mro ]] && rm ${run_dir}/__atac.mro # delete existing folder
+
+## assign output folder -id
+out_dir_sys=${run_dir}/atac/outs/fastq_path/ 
+
+## cmd
 [[ -f ${out_dir}/extraPars.txt ]] && extraParsVal=$(cat ${out_dir}/extraPars.txt)
-echo -e "cellranger mkfastq --run=$run_dir  --localcores=16 --csv $samplesheet --qc $extraParsVal #--use-bases-mask Y50,I8n*,Y16,Y50"
-cellranger mkfastq --run=$run_dir  --localcores=16 --csv $samplesheet --qc $extraParsVal #--use-bases-mask Y50,I8n*,Y16,Y50
+echo -e "cellranger-atac mkfastq --run=$run_dir  --localcores=16 --csv $samplesheet_atac --qc $extraParsVal  --id atac #--use-bases-mask Y50,I8n*,Y16,Y50"
+cellranger-atac mkfastq --run=$run_dir  --localcores=16 --csv $samplesheet_atac --qc $extraParsVal --id atac #--use-bases-mask Y50,I8n*,Y16,Y50
 
 ## transfer/link data
-ln -sf ${out_dir_sys}/Stats $out_dir
-ln -sf ${out_dir_sys}/Stats $out_dir
-for i in $libs
+ln -sf ${out_dir_sys}/Stats $out_dir # for getting total reads 
+
+for i in $(awk -v FS=',' '(NR>1){print $2}' $samplesheet_atac)
 do
     #cp -r ${out_dir_sys}/$flowcell_id/${i} ~/data/seqdata/
     ln -sf ${out_dir_sys}/${flowcell_id}/${i} ~/data/seqdata/
-    cat ~/data/seqdata/${i}/${i}*R2*fastq.gz > ~/data/seqdata/${i}_R2.fastq.gz & sleep 1
+    cat ~/data/seqdata/${i}/${i}*R3*fastq.gz > ~/data/seqdata/${i}_R2.fastq.gz & sleep 1
     cat ~/data/seqdata/${i}/${i}*R1*fastq.gz > ~/data/seqdata/${i}_R1.fastq.gz & sleep 1
     wait 
     nreads=$(zcat ~/data/seqdata/${i}_R1.fastq.gz | wc -l ) && echo -e "$i\t$[nreads/4]" >> $reads_cnt_file & sleep 1
 done 
+wait
+
+############################################################
+## 02.rna, use bcl2fastq 
+############################################################
+## delete last demux info 
+[[ -d ${run_dir}/rna ]] && rm -r ${run_dir}/rna  # delete existing folder
+[[ -f ${run_dir}/__rna.mro ]] && rm ${run_dir}/__rna.mro # delete existing folder
+
+## assign output folder -id
+out_dir_sys=${run_dir}/rna/outs/fastq_path/ 
+
+## cmd
+[[ -f ${out_dir}/extraPars.txt ]] && extraParsVal=$(cat ${out_dir}/extraPars.txt)
+echo -e "cellranger mkfastq --run=$run_dir  --localcores=16 --csv $samplesheet_rna --qc $extraParsVal --id rna --ignore-dual-index --use-bases-mask Y28n*,I8,N16,Y91n* "
+cellranger mkfastq --run=$run_dir  --localcores=16 --csv $samplesheet_rna --qc $extraParsVal --id rna --ignore-dual-index --use-bases-mask Y28n*,I8,N16,Y91n* 
+
+## transfer/link data
+#ln -sf ${out_dir_sys}/Stats $out_dir # for getting total reads 
+
+for i in $(awk -v FS=',' '(NR>1){print $2}' $samplesheet_rna)
+do
+    ln -sf ${out_dir_sys}/${flowcell_id}/${i} ~/data/seqdata/
+    #cat ~/data/seqdata/${i}/${i}*R2*fastq.gz > ~/data/seqdata/${i}_R2.fastq.gz & sleep 1
+    #cat ~/data/seqdata/${i}/${i}*R1*fastq.gz > ~/data/seqdata/${i}_R1.fastq.gz & sleep 1
+    #wait 
+    nreads=$(cat ~/data/seqdata/${i}/${i}*R1*fastq.gz | wc -l ) && echo -e "$i\t$[nreads/4]" >> $reads_cnt_file & sleep 1
+done 
 wait 
+
+
 ############################################################
 # update status to finish or warning @ VM
 ############################################################
 cmd="source activate django; python \$(which updateReadsNumberPerRun.py) -f $flowcell_id -i $reads_cnt_file; python \$(which updateRunReads.py) -f $flowcell_id"
 job1=$(ssh zhc268@epigenomics.sdsc.edu $cmd)
-
-############################################################
-# run 10x pipeline
-############################################################
-
-#qsub -t 0-1 -v samples=${HOME}/runlogs/run_2019-01-22_10xatac_modifiedPeakPar.txt $(which run10xPipeline.pbs)
