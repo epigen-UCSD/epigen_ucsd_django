@@ -16,19 +16,19 @@
 cmd="source activate django;python \$(which updateRunStatus.py) -s '1' -f $flowcell_id"
 ssh zhc268@epigenomics.sdsc.edu $cmd
 
-
-
-############################################################
-## run bcl2fastq @TSCC
-############################################################
-## delete last demux info 
-[[ -d ${run_dir}/${flowcell_id} ]] && rm -r ${run_dir}/${flowcell_id}  # delete existing folder
-[[ -f ${run_dir}/__${flowcell_id}.mro ]] && rm ${run_dir}/__${flowcell_id}.mro  # delete existing folder
-
-## prepare variables & directories
-out_dir_sys=${run_dir}/${flowcell_id}/outs/fastq_path/
-out_dir=${run_dir}/Data/Fastqs/
+## prepare directory 
 mkdir -p ${out_dir}
+out_dir=${run_dir}/Data/Fastqs/
+
+## samplesheet
+samplesheet="${out_dir}/SampleSheet_I1.csv"
+
+############################################################
+## run RNA-seq
+############################################################
+## prepare variables & directories
+out_dir_sys=${run_dir}/RNA/outs/fastq_path/
+
 
 ## prepair reads_cnt_file
 reads_cnt_file="${out_dir}/reads_cnt.tsv"

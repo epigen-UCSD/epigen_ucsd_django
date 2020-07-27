@@ -1,0 +1,105 @@
+#!/bin/bash
+#PBS -q condo
+#PBS -N django_bcl2fastq
+#PBS -l nodes=1:ppn=16
+#PBS -l walltime=2:00:00
+#PBS -o /home/zhc268/logs/run_bcl2fastq_c.out
+#PBS -e /home/zhc268/logs/run_bcl2fastq_c.err
+#PBS -V
+#PBS -m abe
+#PBS -A epigen-group
+
+# -v pass parameters: flowcell_id, run_dir
+############################################################
+## update status to job submitted @VM
+############################################################
+cmd="source activate django;python \$(which updateRunStatus.py) -s '1' -f $flowcell_id"
+ssh zhc268@epigenomics.sdsc.edu $cmd
+
+
+############################################################
+## run bcl2fastq @TSCC
+############################################################
+## prepare variables & directories 
+s="--no-lane-splitting"
+[[ "$split" = true ]] &&  s=""
+[[ "$idx" = true ]] && c="--create-fastq-for-index-reads"
+
+samplesheets=($(find ${run_dir}/ -name "SampleSheet.csv" ))
+reads_cnt_file="${run_dir}/Data/Fastqs/reads_cnt.tsv"
+>$reads_cnt_file
+
+# count for mix 1 and 2 primers 
+for samplesheet in ${samplesheets[@]}
+do
+    cd $run_dir 
+    out_dir=${samplesheet%/*}
+    
+    ## run bcl2fastq
+    samplesheet_exp=${samplesheet/SampleSheet.csv/SampleSheet_expand.csv}
+    if [ -f $samplesheet_exp ] # check if expanded 10x barcodes 
+    then
+        bcl2fastq --runfolder-dir $run_dir --output-dir $out_dir $s $c -p 16 --min-log-level TRACE --sample-sheet $samplesheet_exp
+    else
+        bcl2fastq --runfolder-dir $run_dir --output-dir $out_dir $s $c -p 16 --min-log-level TRACE --sample-sheet $samplesheet        
+    fi
+    
+
+    ## simlink fastqs & count reads number 
+    n=$(grep -n Data $samplesheet|cut -d':' -f1)
+    libs=($(sed -n "$[n+2]"',$p' $samplesheet|cut -d',' -f 1))
+    barcode_names=($(sed -n "$[n+2]"',$p' $samplesheet|cut -d',' -f 5))
+    cd $out_dir
+
+    i=0    
+    for l in ${libs[@]}
+    do
+        # paired ended
+	if [ -f Undetermined*R2* ]
+	then
+	    find . -name "${l}*.gz" |xargs -n1 -I '{}' echo "cp -pfs $(pwd)/{} /home/zhc268/data/seqdata/{}" | sed "s/_S[0-9]*_/_/2;s/\/\.//g;s/_001.fastq/.fastq/2" |bash
+
+            # contain 10x barcodes 
+            if [[ ${barcode_names[$i]} == "SI-NA"* ]]
+            then
+                echo -e "cat paired-ended 10x lib $l"
+                cat /home/zhc268/data/seqdata/${l}_[0-3]_R1.fastq.gz > /home/zhc268/data/seqdata/${l}_R1.fastq.gz & sleep 1
+                cat /home/zhc268/data/seqdata/${l}_[0-3]_R2.fastq.gz > /home/zhc268/data/seqdata/${l}_R2.fastq.gz & sleep 1
+                wait
+                rm /home/zhc268/data/seqdata/${l}_[0-3]_R[1-2].fastq.gz
+            fi
+
+            
+            ## count the reads
+            nreads=$(zcat /home/zhc268/data/seqdata/${l}_R1.fastq.gz| wc -l ) && echo -e "$l\t$[nreads/4]" >> $reads_cnt_file & sleep 1
+                                                                            
+        # single-ended
+	else
+	    find . -name "${l}*.gz" |xargs -n1 -I '{}' echo "cp -pfs $(pwd)/{} /home/zhc268/data/seqdata/{}" | sed "s/_S[0-9]*_/_/2;s/\/\.//g;s/_001.fastq/.fastq/2;s/_R1//2" |bash
+
+            # contain 10x barcodes 
+            if [[ ${barcode_names[$i]} == "SI-NA"* ]]
+            then
+                echo -e "cat single-ended 10x lib $l"                
+                cat /home/zhc268/data/seqdata/${l}_[0-3].fastq.gz > /home/zhc268/data/seqdata/${l}.fastq.gz 
+                rm /home/zhc268/data/seqdata/${l}_[0-3].fastq.gz                            
+            fi
+
+            ## count the reads
+	    nreads=$(zcat /home/zhc268/data/seqdata/${l}.fastq.gz| wc -l ) && echo -e "$l\t$[nreads/4]" >> $reads_cnt_file & sleep 1
+	fi
+        
+
+        ## mv index
+        i=$[i+1]
+        
+    done
+done
+
+wait
+
+############################################################
+# update status to finish or warning @ VM
+############################################################
+cmd="source activate django; python \$(which updateReadsNumberPerRun.py) -f $flowcell_id -i $reads_cnt_file; python \$(which updateRunReads.py) -f $flowcell_id"
+ssh zhc268@epigenomics.sdsc.edu $cmd
