@@ -37,7 +37,7 @@ def main():
         for l in lines:
             ks = [k for k in barcode_dic.keys() if k in l]
             if (len(ks) > 0):
-                i = 0
+                i = 1
                 for b in barcode_dic[ks[0]]:
                     ll = l.split(',')
                     ll[0] += '_'+str(i)
