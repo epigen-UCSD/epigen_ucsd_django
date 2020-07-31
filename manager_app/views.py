@@ -3,7 +3,7 @@ from epigen_ucsd_django.models import CollaboratorPersonInfo,Group_Institution
 from django.db import transaction
 from .forms import UserForm,CollaboratorPersonForm,GroupForm,\
 GroupCreateForm,CollabInfoAddForm,\
-GroupInstitutionCreateForm
+GroupInstitutionCreateForm,QuoteTextForm
 from django.contrib import messages
 from django.contrib.auth.models import User,Group
 from django.http import JsonResponse
@@ -441,8 +441,7 @@ def ServiceRequestUpdateView(request,pk):
     
     today = datetime.date.today()
     datesplit = str(datetime.date.today()).split('-')
-
-
+    writelines = []
 
     if request.method == 'POST':
         
@@ -556,24 +555,38 @@ def ServiceRequestUpdateView(request,pk):
                     collab_info = [group_name,research_contact,research_contact_email]
                     dear = 'Dr. '+ group_name.split(' ')[-1]
                     service_items = ','.join(set(service_items))
+                    writelines = writelines+collab_info
+                    writelines.append('Dear '+dear+',')
+                    writelines.append('We are excited to work with you. This quote is for our'+ service_items+' Service. The costs are for library preparation, which includes all reagents and labor costs associated with library preparation, quality control shallow sequencing, and basic data processing. The estimated costs for your project are:')
+                    writelines = writelines+service_breakdown
+                    writelines.append('Total Estimate:'+total_expression)
 
+                    # pdf_context = {
+                    #     'quote_id':quote_compact,
+                    #     'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
+                    #     'collab_info':collab_info,
+                    #     'dear':dear,
+                    #     'service_items':service_items,
+                    #     'service_breakdown':service_breakdown,
+                    #     'total_expression':total_expression,
 
+                    # }
                     pdf_context = {
                         'quote_id':quote_compact,
                         'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
-                        'collab_info':collab_info,
-                        'dear':dear,
-                        'service_items':service_items,
-                        'service_breakdown':service_breakdown,
-                        'total_expression':total_expression,
+                        'body':'\n'.join(writelines),
 
                     }
 
-                    paragraphs = ['first paragraph', 'second paragraph', 'third paragraph']
-                    html_string = render_to_string('manager_app/quote_pdf_template.html', pdf_context)
+                    html_string = render_to_string('manager_app/quote_pdf_text_update_template.html', pdf_context)
                     pdf_name = quote_compact+'.pdf'    
                     html = HTML(string=html_string,base_url=request.build_absolute_uri())
                     html.write_pdf(target=os.path.join(settings.QUOTE_DIR,pdf_name));
+                    
+  
+                    with open(os.path.join(settings.QUOTE_DIR,quote_compact+'.txt'),'w') as fw:
+                        fw.write('\n'.join(writelines))
+
 
                     return redirect('manager_app:servicerequests_list')
 
@@ -776,4 +789,40 @@ def QuotePdfView(request,quoteid):
         response['Content-Disposition'] = 'inline; filename="mypdf.pdf"'
         return response
 
+
+def QuoteTextUpdateView(request,quoteid):
+    quote_compact = ''.join(quoteid.split(' '))
+    initial_body = ''
+    with open(os.path.join(settings.QUOTE_DIR,quote_compact+'.txt'),'r') as f:
+        for line in f:
+            initial_body = initial_body+line+'\n'
+
+    text_form = QuoteTextForm(request.POST or None,initial={'body':initial_body})
+    today = datetime.date.today()
+    
+
+    if text_form.is_valid():
+        body = text_form.cleaned_data['body']
+        pdf_context = {
+            'quote_id':quote_compact,
+            'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
+            'body':body,
+        }
+
+        html_string = render_to_string('manager_app/quote_pdf_text_update_template.html', pdf_context)
+        pdf_name = quote_compact+'.pdf'    
+        html = HTML(string=html_string,base_url=request.build_absolute_uri())
+        html.write_pdf(target=os.path.join(settings.QUOTE_DIR,pdf_name));
+        with open(os.path.join(settings.QUOTE_DIR,quote_compact+'.txt'),'w') as fw:
+            fw.write(body)
+
+
+        return redirect('manager_app:servicerequests_list')
+    context = {
+        'quote_id':quote_compact,
+        'text_form': text_form,
+        'quoteid':quoteid,
+    }
+
+    return render(request, 'manager_app/quote_pdf_text_update.html', context)
 

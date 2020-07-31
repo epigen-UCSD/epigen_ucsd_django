@@ -1,0 +1,28 @@
+<html>
+<head>
+  <title>Test</title>
+  <style>
+    body {
+      
+    }
+  </style>
+  {% load static %}
+</head>
+<body>
+  <img src="{% static 'images/CFE_Brandmark-01.png' %}" alt="Center Logo" style="width:250px;margin-left:-30px;margin-top:-30px;">
+  <p>Quote # {{ quote_id }}
+  <br> Note this quote will expire 60 days from the date below
+  </p>
+
+  <p>{{ date }}</p>
+  
+  {{ body }}
+
+  <p>Sincerely,
+  <br>Lauren Thomas
+  <br>Epigenomic Program Analyst
+  <br>Center for Epigenomics
+  </p>
+      
+</body>
+</html>

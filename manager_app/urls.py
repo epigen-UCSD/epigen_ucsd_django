@@ -20,5 +20,6 @@ urlpatterns = [
     path('servicerequests/', TemplateView.as_view(template_name="manager_app/servicerequests_list.html"), name='servicerequests_list'),
     path('servicerequests_list/', views.ServiceRequestDataView, name='service_request_display'),
     path('quote/<slug:quoteid>/', views.QuotePdfView, name='quote_pdf'),
+    path('quote/<slug:quoteid>/text_update/', views.QuoteTextUpdateView, name='quote_text_update'),
 
 ]
