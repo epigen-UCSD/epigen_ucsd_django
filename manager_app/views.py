@@ -21,6 +21,7 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 import os
 from django.conf import settings
+from django.utils.safestring import mark_safe
 
 # Create your views here.
 
@@ -277,6 +278,7 @@ def ServiceRequestCreateView(request):
     
     today = datetime.date.today()
     datesplit = str(datetime.date.today()).split('-')
+    writelines = []
 
 
 
@@ -394,24 +396,42 @@ def ServiceRequestCreateView(request):
                     service_items = ','.join(set(service_items))
 
 
+                    writelines = writelines+collab_info
+                    writelines.append('Dear '+dear+',')
+                    writelines.append('We are excited to work with you. This quote is for our'+ service_items+' Service. The costs are for library preparation, which includes all reagents and labor costs associated with library preparation, quality control shallow sequencing, and basic data processing. The estimated costs for your project are:')
+                    writelines = writelines+service_breakdown
+                    writelines.append('Total Estimate:'+total_expression)
+
+                    # pdf_context = {
+                    #     'quote_id':quote_compact,
+                    #     'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
+                    #     'collab_info':collab_info,
+                    #     'dear':dear,
+                    #     'service_items':service_items,
+                    #     'service_breakdown':service_breakdown,
+                    #     'total_expression':total_expression,
+
+                    # }
                     pdf_context = {
                         'quote_id':quote_compact,
                         'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
-                        'collab_info':collab_info,
-                        'dear':dear,
-                        'service_items':service_items,
-                        'service_breakdown':service_breakdown,
-                        'total_expression':total_expression,
+                        'body':'\n'.join(writelines),
 
                     }
 
-                    paragraphs = ['first paragraph', 'second paragraph', 'third paragraph']
-                    html_string = render_to_string('manager_app/quote_pdf_template.html', pdf_context)
+                    html_string = render_to_string('manager_app/quote_pdf_text_update_template.html', pdf_context)
                     pdf_name = quote_compact+'.pdf'    
                     html = HTML(string=html_string,base_url=request.build_absolute_uri())
                     html.write_pdf(target=os.path.join(settings.QUOTE_DIR,pdf_name));
+                    
+  
+                    with open(os.path.join(settings.QUOTE_DIR,quote_compact+'.txt'),'w') as fw:
+                        print(os.path.join(settings.QUOTE_DIR,quote_compact+'.txt'))
+                        fw.write('\n'.join(writelines))
+
 
                     return redirect('manager_app:servicerequests_list')
+
 
 
     else:
@@ -585,6 +605,7 @@ def ServiceRequestUpdateView(request,pk):
                     
   
                     with open(os.path.join(settings.QUOTE_DIR,quote_compact+'.txt'),'w') as fw:
+                        print(os.path.join(settings.QUOTE_DIR,quote_compact+'.txt'))
                         fw.write('\n'.join(writelines))
 
 
@@ -795,7 +816,7 @@ def QuoteTextUpdateView(request,quoteid):
     initial_body = ''
     with open(os.path.join(settings.QUOTE_DIR,quote_compact+'.txt'),'r') as f:
         for line in f:
-            initial_body = initial_body+line+'\n'
+            initial_body = initial_body+line
 
     text_form = QuoteTextForm(request.POST or None,initial={'body':initial_body})
     today = datetime.date.today()

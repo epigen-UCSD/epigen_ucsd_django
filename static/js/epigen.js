@@ -498,10 +498,10 @@ $(document).ready(function () {
                 
                 for (i = 0; i < data.length; i++) {
                   var qid = data[i].replace(/ /g, "");
-                  var returnvalue = returnvalue.concat('<a class="spacing-big" href="/manager/quote/'+qid+'/text_update/",data-toggle="tooltip" data-placement="right" title="'+data[i]+'" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>')
+                  var returnvalue = returnvalue.concat('<a class="spacing-big" href="/manager/quote/'+qid+'/",data-toggle="tooltip" data-placement="right" title="'+data[i]+'" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>')
                 }
                 console.log(returnvalue)
-                return returnvalue.concat('<a href="/metadata/sample/' + data[i-1] + '/update/"><i class="fas fa-edit"></i></a>')
+                return returnvalue.concat('<a href="/manager/quote/' + qid + '/text_update/"><i class="fas fa-edit"></i></a>')
                 
 
             }

@@ -113,6 +113,6 @@ class ServiceRequestCreationForm(forms.ModelForm):
 class QuoteTextForm(forms.Form):
 	body = forms.CharField(\
 		label='Body',
-		widget = forms.Textarea(attrs={'cols': 60, 'rows': 100}),
+		widget = forms.Textarea(attrs={'cols': 150, 'rows': 40}),
 		)
 
