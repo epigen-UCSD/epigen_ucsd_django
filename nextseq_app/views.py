@@ -488,9 +488,14 @@ def RunUpdateView2(request, username, run_pk):
         'Library_ID', 'i7index', 'i5index'], extra=3)
     sample_formset = SamplesInlineFormSet(
         request.POST or None, instance=runinfo)
+    lanesum = 0
+    data = {}
+    lane_blank_list = []
+    nometa_list = []
 
     if run_form.is_valid() and sample_formset.is_valid():
         runinfo = run_form.save(commit=False)
+        sumlane = runinfo.total_lanes
         # runinfo.operator = request.user
         sample_formset.save(commit=False)
         Library_ID_list = []
@@ -504,6 +509,34 @@ def RunUpdateView2(request, username, run_pk):
                     i5index_list.append(form.cleaned_data['i5index'])
                 except KeyError:
                     pass
+
+        libraryselfduplicate = SelfUniqueValidation(Library_ID_list)
+        if len(libraryselfduplicate) > 0:
+
+            context = {
+                'run_form': run_form,
+                'sample_formset': sample_formset,
+                'runinfo': runinfo,
+                'error_message': 'Duplicate Library within this run:\t' + ';\t'.join(list(libraryselfduplicate))
+
+            }
+            return render(request, 'nextseq_app/runandsamplesupdate.html', context)
+
+        existinglibray = list(
+            LibrariesInRun.objects.exclude(singlerun=runinfo).values_list('Library_ID', flat=True))
+        libraynotuniq = UniqueValidation(Library_ID_list, existinglibray)
+
+        if len(libraynotuniq) > 0:
+
+            context = {
+                'run_form': run_form,
+                'sample_formset': sample_formset,
+                'runinfo': runinfo,
+                'error_message': 'Libraries already exit:\t' + ';\t'.join(list(libraynotuniq))
+
+            }
+            return render(request, 'nextseq_app/runandsamplesupdate.html', context)
+
 
         if runinfo.experiment_type in ["TA","TR"]:
             duplicate = IndexValidation2(
@@ -524,6 +557,51 @@ def RunUpdateView2(request, username, run_pk):
                 'runinfo': runinfo,
             }
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
+
+        for k in sorted(Library_ID_list):
+            try:
+                this_seq = SeqInfo.objects.get(seq_id=k)
+                if this_seq.portion_of_lane:
+                    data[k] = {
+                        'portion_of_lane':this_seq.portion_of_lane,
+                    }
+                    lanesum += this_seq.portion_of_lane
+                else:
+                    lane_blank_list.append(k)
+            except ObjectDoesNotExist:
+                nometa_list.append(k)
+
+        if nometa_list:
+            context = {
+                'run_form': run_form,
+                'sample_formset': sample_formset,
+                'runinfo': runinfo,
+                'error_message': 'Not found in metadata app: '+','.join(nometa_list)+'. Please add them in metadata app first.'
+            }
+            return render(request, 'nextseq_app/runandsamplesupdate.html', context)
+
+        if lane_blank_list:
+            context = {
+                'run_form': run_form,
+                'sample_formset': sample_formset,
+                'runinfo': runinfo,
+                'error_message': 'The portion of lane is blank of sequncings: '+','.join(lane_blank_list)+'. Please add them in metadata app first.'
+            }
+            return render(request, 'nextseq_app/runandsamplesupdate.html', context)
+
+
+        if lanesum != sumlane:
+            context = {
+                'run_form': run_form,
+                'sample_formset': sample_formset,
+                'runinfo': runinfo,
+                'data':data,
+                'modalshow': 1,
+                'lanesum':lanesum,
+
+            }
+            return render(request, 'nextseq_app/runandsamplesupdate.html', context)
+
         if run_form.has_changed() or sample_formset.has_changed():
             # dmpdir = settings.NEXTSEQAPP_DMPDIR
             # for fname in os.listdir(dmpdir):
