@@ -489,7 +489,7 @@ def RunUpdateView2(request, username, run_pk):
     sample_formset = SamplesInlineFormSet(
         request.POST or None, instance=runinfo)
     lanesum = 0
-    data = []
+    data = {}
     lane_blank_list = []
     nometa_list = []
 
@@ -523,7 +523,7 @@ def RunUpdateView2(request, username, run_pk):
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
 
         existinglibray = list(
-            LibrariesInRun.objects.exclude(pk=run_pk).values_list('Library_ID', flat=True))
+            LibrariesInRun.objects.exclude(singlerun=runinfo).values_list('Library_ID', flat=True))
         libraynotuniq = UniqueValidation(Library_ID_list, existinglibray)
 
         if len(libraynotuniq) > 0:
