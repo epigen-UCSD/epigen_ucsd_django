@@ -116,3 +116,10 @@ class QuoteTextForm(forms.Form):
 		widget = forms.Textarea(attrs={'cols': 150, 'rows': 40}),
 		)
 
+class QuoteCreationForm(forms.ModelForm):
+	class Meta:
+		model = ServiceRequest
+		fields = ['group','research_contact','quote_amount']
+
+
+

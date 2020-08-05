@@ -461,7 +461,7 @@ $(document).ready(function () {
     $('#service_request_all').DataTable({
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
-        "order": [[2, "desc"]],
+        "order": [[1, "desc"]],
         "processing": true,
         "ajax": {
             url: servicerequesturl,
@@ -487,7 +487,12 @@ $(document).ready(function () {
             "targets": 0,
             "render": function (data, type, row) {
                 var itemID = row["pk"];
-                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+                if (data == null) {
+                    return ''
+                }
+                else {
+                    return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+                }
             }
         },
 
@@ -516,6 +521,56 @@ $(document).ready(function () {
             }
         }],
     });
+
+
+    var quotesurl = $('#quotes_all').attr("data-href");
+    $('#quotes_all').DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[2, "desc"]],
+        "processing": true,
+        "ajax": {
+            url: quotesurl,
+            dataSrc: ''
+        },
+        "columns": [
+            { "data": "quote_number" },
+            { "data": "service_request_id" },
+            { "data": "date" },
+            { "data": "group" },
+            { "data": "research_contact" },
+            { "data": "quote_amount" },
+        ],
+        "deferRender": true,
+        "select": false,
+
+        "columnDefs": [
+
+        {
+            "targets": 1,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                if (data == null) {
+                    return ''
+                }
+                else {
+                    return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+                }
+                
+            }
+        },
+
+        {
+            "targets": 6,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a>'
+                
+
+            }
+        }],
+    });
+
 
 
     var metasampsurl = $('#metadata_samples').attr("data-href");
