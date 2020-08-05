@@ -506,7 +506,7 @@ $(document).ready(function () {
                   var returnvalue = returnvalue.concat('<a class="spacing-big" href="/manager/quote/'+qid+'/",data-toggle="tooltip" data-placement="right" title="'+data[i]+'" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>')
                 }
                 console.log(returnvalue)
-                return returnvalue.concat('<a href="/manager/quote/' + qid + '/text_update/"><i class="fas fa-edit"></i></a>')
+                return returnvalue.concat('<a class="spacing" href="/manager/quote/' + qid + '/text_update/"><i class="fas fa-edit"></i></a><a href="/manager/quote/' + qid + '/text_update/"><i class="fas fa-plus"></i></a>')
                 
 
             }
