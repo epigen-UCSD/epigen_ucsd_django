@@ -23,6 +23,7 @@
               <th>i5index</th>
               <th>i5sequence</th>
               <th>#Reads</th>
+              <th>portion_of_lane</th>
             </tr>
             </thead>                  
           {% for samples in runinfo.librariesinrun_set.all %}
@@ -34,6 +35,7 @@
               <td>{{ barcode|key:samples.i5index }}</td>
               {% with firstfilter=samples.numberofreads|default_if_none:"" %}
               <td>{{ firstfilter|intcomma }}</td>
+              <td>{{ samples.Library_ID|get_portion_of_lane|default_if_none:"" }}</td>
               {% endwith %}
             </tr>
           {% endfor %}                  

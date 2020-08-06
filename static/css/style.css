@@ -121,6 +121,11 @@ div.detailnotes {
   background-color: orange;
   color: white;
 }
+.btn-blue {
+  background-color: #00B5E2;
+  color: white;
+}
+
 .borderline {
   border-bottom: "3px solid";
 }

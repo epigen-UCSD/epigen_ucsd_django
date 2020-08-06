@@ -1,0 +1,110 @@
+#!/bin/bash
+#PBS -q condo
+#PBS -N django_10xDemuxATAC_RNA
+#PBS -l nodes=1:ppn=16
+#PBS -l walltime=8:00:00
+#PBS -o /home/zhc268/logs/runDemux10xATAC_RNA.out
+#PBS -e /home/zhc268/logs/runDemux10xATAC_RNA.err
+#PBS -V
+#PBS -m abe
+#PBS -A epigen-group
+
+# -v pass parameters: flowcell_id, run_dir
+############################################################
+## update status to job submitted @VM
+############################################################
+export PATH=/projects/ps-epigen/software/cellranger-3.0.2/:$PATH
+export PATH=/projects/ps-epigen/software/cellranger-atac-1.2.0/:$PATH
+
+
+cmd="source activate django;python \$(which updateRunStatus.py) -s '1' -f $flowcell_id"
+ssh zhc268@epigenomics.sdsc.edu $cmd
+
+
+
+############################################################
+## prepare
+############################################################
+## prepare variables & directories
+out_dir=${run_dir}/Data/Fastqs/
+mkdir -p ${out_dir}
+
+## prepare reads_cnt_file
+reads_cnt_file="${out_dir}/reads_cnt.tsv"
+#>$reads_cnt_file
+
+## samplesheet
+samplesheet="${out_dir}/SampleSheet_I1.csv"
+samplesheet_rna_expand="${out_dir}/SampleSheet_rna_expand.csv"
+samplesheet_rna="${out_dir}/SampleSheet_rna.csv"
+samplesheet_atac="${out_dir}/SampleSheet_atac.csv"
+grep -v "SI-NA" $samplesheet > $samplesheet_rna 
+grep -v "SI-GA" $samplesheet > $samplesheet_atac
+
+## run mkfastq 
+cd $run_dir
+
+
+############################################################
+## 01.atac
+############################################################
+if false
+then
+    ## delete last demux info 
+    [[ -d ${run_dir}/atac ]] && rm -r ${run_dir}/atac  # delete existing folder
+    [[ -f ${run_dir}/__atac.mro ]] && rm ${run_dir}/__atac.mro # delete existing folder
+
+    ## assign output folder -id
+    out_dir_sys=${run_dir}/atac/outs/fastq_path/ 
+
+    ## cmd
+    [[ -f ${out_dir}/extraPars.txt ]] && extraParsVal=$(cat ${out_dir}/extraPars.txt)
+    echo -e "cellranger-atac mkfastq --run=$run_dir  --localcores=16 --csv $samplesheet_atac --qc $extraParsVal  --id atac #--use-bases-mask Y50,I8n*,Y16,Y50"
+    cellranger-atac mkfastq --run=$run_dir  --localcores=16 --csv $samplesheet_atac --qc $extraParsVal --id atac #--use-bases-mask Y50,I8n*,Y16,Y50
+
+    ## transfer/link data
+    #ln -sf ${out_dir_sys}/Stats $out_dir # for getting total reads 
+
+    for i in $(awk -v FS=',' '(NR>1){print $2}' $samplesheet_atac)
+    do
+        #cp -r ${out_dir_sys}/$flowcell_id/${i} ~/data/seqdata/
+        ln -sf ${out_dir_sys}/${flowcell_id}/${i} ~/data/seqdata/
+        cat ~/data/seqdata/${i}/${i}*R3*fastq.gz > ~/data/seqdata/${i}_R2.fastq.gz & sleep 1
+        cat ~/data/seqdata/${i}/${i}*R1*fastq.gz > ~/data/seqdata/${i}_R1.fastq.gz & sleep 1
+        wait 
+        nreads=$(zcat ~/data/seqdata/${i}_R1.fastq.gz | wc -l ) && echo -e "$i\t$[nreads/4]" >> $reads_cnt_file & sleep 1
+    done 
+    wait
+fi
+
+############################################################
+## 02.rna, use bcl2fastq 
+############################################################
+## expand 10x barcode
+cd $out_dir
+## cmd
+cmd="bcl2fastq --runfolder-dir $run_dir --output-dir $out_dir --no-lane-splitting \
+    --create-fastq-for-index-reads -p 16 --min-log-level TRACE \
+    --sample-sheet $samplesheet_rna_expand \
+     --use-bases-mask Y28n*,I8,N16,Y91n* "
+echo $cmd|bash     
+
+## transfer/link data
+for i in $(awk -v FS=',' '(NR>1){print $2}' $samplesheet_rna)
+do
+    #rm -r $out_dir/$i
+    mkdir -p $out_dir/$i
+    for x in  ${i}*_R*fastq.gz ; do echo -e "mv $x ${i}/${x/_R/_L001_R}"|bash;done
+    for x in  ${i}*_I*fastq.gz ; do echo -e "mv $x ${i}/${x/_I/_L001_I}"|bash;done
+    ln -sf $out_dir/$i ~/data/seqdata/
+
+    nreads=$(zcat ~/data/seqdata/${i}/${i}*I1*fastq.gz | wc -l ) && echo -e "$i\t$[nreads/4]" >> $reads_cnt_file & sleep 1
+done 
+wait 
+
+
+############################################################
+# update status to finish or warning @ VM
+############################################################
+cmd="source activate django; python \$(which updateReadsNumberPerRun.py) -f $flowcell_id -i $reads_cnt_file; python \$(which updateRunReads.py) -f $flowcell_id"
+job1=$(ssh zhc268@epigenomics.sdsc.edu $cmd)
