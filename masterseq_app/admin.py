@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ProtocalInfo, SeqMachineInfo, GenomeInfo, SampleInfo, SeqInfo, SeqBioInfo, LibraryInfo
+from .models import ProtocalInfo, SeqMachineInfo, GenomeInfo, SampleInfo, SeqInfo, SeqBioInfo, LibraryInfo, RefGenomeInfo, ExperimentType
 
 # Register your models here.
 
@@ -38,3 +38,11 @@ class SeqInfoAdmin(admin.ModelAdmin):
 @admin.register(LibraryInfo)
 class LibraryInfoAdmin(admin.ModelAdmin):
     list_display = ('library_id', 'library_description', 'sampleinfo', 'experiment_type','team_member_initails')
+
+@admin.register(RefGenomeInfo)
+class RefGenomeInfoAdmin(admin.ModelAdmin):
+    list_display = ('species', 'genome_name','path')
+
+@admin.register(ExperimentType)
+class ExperimentTypeAdmin(admin.ModelAdmin):
+    list_display = ['experiment']

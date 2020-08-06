@@ -11,5 +11,6 @@ urlpatterns = [
     path('ajax/submitcooladmin/',views.submit_cooladmin, name='submitcooladmin'),
     path('ajax/submit/', views.submit_singlecell, name='submitsinglecell'),
     path('ajax/generate_link', views.generate_tenx_link, name='generate_link'),
+    path('websummary/<str:seq_id>',views.view_websummary,name="view_websummart")
 
 ]

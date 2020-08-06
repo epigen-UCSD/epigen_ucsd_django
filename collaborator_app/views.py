@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from collaborator_app.models import ServiceInfo, ServiceRequest, ServiceRequestItem
 from setqc_app.models import LibrariesSetQC,LibraryInSet
 from masterseq_app.models import SampleInfo
+from singlecell_app.views import build_seq_list, SINGLE_CELL_EXPS
 from epigen_ucsd_django.models import CollaboratorPersonInfo,Group_Institution
 from django.core import serializers
 from masterseq_app.models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
@@ -114,8 +115,6 @@ def UserProfileView(request):
     }
 
     return render(request, 'collaborator_app/collab_user_profile.html', context)
-
-
 
 
 def collab_change_password(request):
@@ -283,3 +282,45 @@ def ServiceRequestCreateView(request):
     }
 
     return render(request, 'collaborator_app/collab_feeforservice_servicerequestcreate.html', context)
+
+
+def singlecell_view(request):
+    context = {
+        'type': 'My Sequences',
+        'AllSeq': False,
+        'collabuser': True
+    }
+    return render(request, 'singlecell_app/myseqs_collab.html', context)
+
+
+def CollaboratorSingleCellData(request):
+    """async function to get hit by ajax, returns user only seqs
+    """
+    print('in collab sc data request')
+    #get group that user is in
+    group_name = request.user.groups.all()
+    print('group name: ',group_name)
+
+    user = request.user
+
+    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS, libraryinfo__sampleinfo__group__in=group_name ).select_related('libraryinfo','libraryinfo__sampleinfo__group', 'libraryinfo__sampleinfo').order_by(
+        '-date_submitted_for_sequencing').values('id', 'seq_id', 'libraryinfo__experiment_type', 'read_type',
+                                                 'libraryinfo__sampleinfo__species','libraryinfo__sampleinfo__sample_id', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group')
+    
+    data = list(seqs_queryset)
+    print('data:',data)
+    build_seq_list(data)
+    return JsonResponse(data, safe=False)
+
+
+
+
+
+
+
+
+
+
+
+
+

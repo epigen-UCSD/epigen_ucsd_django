@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm, Textarea
 from django.db import models
-from masterseq_app.models import SeqInfo, GenomeInfo
+from masterseq_app.models import SeqInfo, GenomeInfo, RefGenomeInfo
 from .models import CoolAdminSubmission
 
 class CoolAdminForm(ModelForm):
@@ -17,3 +17,4 @@ class CoolAdminForm(ModelForm):
     class Meta:
         model = CoolAdminSubmission
         exclude = ['seqinfo','submitted','link']
+

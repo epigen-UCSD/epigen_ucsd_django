@@ -68,8 +68,6 @@ MIDDLEWARE = [
     'epigen_ucsd_django.middleware.LoginRequiredMiddleware',
     'epigen_ucsd_django.middleware.InternalRequiredMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-
-
 ]
 
 if 'extra_middleware' in dict(config.items('database')).keys():
@@ -181,6 +179,7 @@ INTERNAL_EXEMPT_URLS = (
     r'admin/',
     r'register/',
     r'changepassword/',
+    r'singlecell/'
 
 )
 

@@ -1,8 +1,7 @@
 {% extends 'singlecell_app/base.html' %}
-{% block content %}
 {% load nextseq_app_tags %}
 {% load singlecell_extras %}
-
+{% block content %}
 <div id="content" class="col-sm-10 col-md-10 col-lg-10">
     <div class="card">
         <div class="card-header fortable">
@@ -22,6 +21,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">Sequence</th>
+                                <th scope="col">Sample Info</th>
                                 <th scope="col">Experiment Type</th>
                                 <th scope="col">Species</th>
                                 <th scope="col">Last Modified</th>
@@ -29,6 +29,8 @@
                                 <th scope="col">10x Pipeline Status</th>
                                 <th scope="col">CoolAdmin Status</th>
                                 <th scope="col">CoolAdmin Edit</th>
+                                <th scope="col">Group</th>
+
                             </tr>
                         </thead>
                     </table>
@@ -40,16 +42,16 @@
     <!--Creates the popup body-->
     <div class="popup-overlay">
         <!--Creates the popup content-->
-        <div class="popup-content modal-content">
-            <div class="modal-body">
+        <div class="popup-content">
 
-                <h3>More Options</h3>
-                <ul class="list-group popup-options-sc">
-                </ul>
-                <button class="btn btn-md btn-primary m-3 closePopup">Close</button>
-            </div>
+            <h3>Confirm Reference Option</h3>
+            <form class="refgenomes">
+            </form>
+            <button class="btn btn-md btn-primary m-3 runsinglecell-confirm">Confirm</button>
+            <button class="btn btn-md btn-primary m-3 closePopup">Close</button>
         </div>
     </div>
+</div>
 </div>
 
 

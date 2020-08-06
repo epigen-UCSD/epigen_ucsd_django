@@ -18,7 +18,7 @@ from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from django.http import HttpResponse
 import re
-
+from singlecell_app.views import LINK_CLASS_NAME, insert_link
 # Create your views here.
 DisplayField1 = ['set_id', 'set_name',
                  'last_modified', 'experiment_type', 'url', 'version']
@@ -27,7 +27,7 @@ DisplayField2 = ['set_id', 'set_name', 'last_modified',
 defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
                  'rat': 'rn6', 'cattle': 'ARS-UCD1.2', 'sheep': 'oar_v3.1',
                  'green monkey': 'chlSab2', 'pig-tailed macaque': 'Mnem1.0',
-                 'fruit fly': 'dm6','rabbit':'OryCun2.0'}
+                 'fruit fly': 'dm6', 'rabbit': 'oryCun2'}
 
 
 def groupnumber(datalist):
@@ -1222,22 +1222,30 @@ This function opens and returns html webpage created by 10x ATAC pipeline for SE
 
 
 def tenx_output(request, setqc_pk, outputname):
+    '''
+    This function opens and returns html webpage created by 10x ATAC pipeline for SETQC
+    @Requirements: the 10x webpage requested is softlinked in the BASE_DIR/data/websummary directory
+    '''
     html = ('/'+outputname+"/outs/web_summary.html")
-    tenxdir = settings.TENX_DIR
-    file = open(tenxdir+html)
+    dir = ""
+    seqinfo = SeqInfo.objects.select_related(
+        'libraryinfo').get(seq_id=outputname)
+    print(seqinfo)
+    expt_type = seqinfo.libraryinfo.experiment_type
+    if(expt_type == '10xATAC'):
+        dir = settings.TENX_DIR
+    else:
+        dir = settings.SCRNA_DIR
 
+    file = open(dir+html)
     data = file.read()
+    if(LINK_CLASS_NAME not in data):
+        #print('in tenxoutput2() for singlecell, adding link to file')
+        file.close()
+        filename = dir+html
+        insert_link(filename, outputname, expt_type)
+        file = open(dir+html)
+        data = file.read()
     if(data == None):
-        print('No data read in 10x Web_Summary.html File!')
-    return HttpResponse(data)
-
-
-def tenx_output2(request, outputname):
-    html = ('/'+outputname+settings.TENX_WEBSUMMARY)
-    tenxdir = settings.TENX_DIR
-    file = open(tenxdir+html)
-
-    data = file.read()
-    if(data == None):
-        print('No data read in 10x Web_Summary.html File!')
+        print('ERROR: No data read in 10x Web_Summary.html File! for ', outputname)
     return HttpResponse(data)
