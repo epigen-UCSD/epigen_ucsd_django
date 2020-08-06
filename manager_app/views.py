@@ -15,6 +15,9 @@ from django.forms import formset_factory
 from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm
 import datetime
 from collaborator_app.models import ServiceInfo,ServiceRequest,ServiceRequestItem
+from collaborator_app.views import ServiceRequestListView
+from django.views.generic import (View, TemplateView, DetailView, ListView,
+                                    CreateView, UpdateView, DeleteView)
 # Create your views here.
 
 
@@ -28,7 +31,7 @@ def CollaboratorListView(request):
     group_institute_dict = {}
     for item in group_institute_list:
         group_institute_dict[item['group__name']]=item['institution']
- 
+
     context = {
         'collab_list':collabs_list,
         'group_institute_dict':group_institute_dict,
@@ -53,7 +56,7 @@ def CollaboratorListView(request):
 #             this_profile = profile_form.save(commit=False)
 #             this_profile.person_id = this_user
 #             this_profile.save()
-#             this_group = Group.objects.get(name=group_form.clean_name()) 
+#             this_group = Group.objects.get(name=group_form.clean_name())
 #             this_group.user_set.add(this_user)
 #             this_person_index = person_index_form.save(commit=False)
 #             this_person_index.person = this_profile
@@ -89,7 +92,7 @@ def GroupAccountCreateView(request):
         if user_form.is_valid() and profile_form.is_valid() and group_form.is_valid() and institution_form.is_valid():
             this_user = user_form.save()
             this_profile = profile_form.save(commit=False)
-            this_profile.person_id = this_user            
+            this_profile.person_id = this_user
             this_group = group_form.save()
             this_group.user_set.add(this_user)
             this_profile.group = this_group
@@ -107,7 +110,7 @@ def GroupAccountCreateView(request):
         'group_form':group_form,
         'institution_form':institution_form,
     }
- 
+
     return render(request, 'manager_app/collab_group_account_add.html', context)
 
 @transaction.atomic
@@ -237,7 +240,7 @@ def ServiceRequestCreateView(request):
     ServiceRequestItemFormSet = formset_factory(
         ServiceRequestItemCreationForm, can_delete=True)
     servicerequestitems_formset = ServiceRequestItemFormSet(request.POST or None)
-    
+
     today = datetime.date.today()
 
     if request.method == 'POST':
@@ -279,7 +282,7 @@ def ServiceRequestCreateView(request):
                                 'rate(non-uc users)':str(service.nonuc_rate)+'/'+service.rate_unit,
                                 'rate_number':service.nonuc_rate,
                                 'quantity':quantity,
-                            }                            
+                            }
                 total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
                 total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity']) for x in data_requestitem.values()])+' = $'+str(total_price)
 
@@ -289,7 +292,7 @@ def ServiceRequestCreateView(request):
                     else:
                         displayorde_requestitem = ['rate(non-uc users)','quantity']
                     displayorder_request = ['date','group','notes','status']
-                    #print(data_request)  
+                    #print(data_request)
 
                     context = {
                         'contact_form':contact_form,
@@ -301,7 +304,7 @@ def ServiceRequestCreateView(request):
                         'data_requestitem':data_requestitem,
                         'data_request':data_request,
                         'total_expression':total_expression
-                    }        
+                    }
                     return render(request, 'manager_app/manager_feeforservice_servicerequestcreate.html', context)
 
                 if 'Save' in request.POST:
@@ -315,7 +318,7 @@ def ServiceRequestCreateView(request):
                         print(item)
                         print(data_requestitem[item]['quantity'])
                         ServiceRequestItem.objects.create(
-                            request=thisrequest, 
+                            request=thisrequest,
                             service=ServiceInfo.objects.get(service_name=item),
                             quantity=data_requestitem[item]['quantity'],
                             )

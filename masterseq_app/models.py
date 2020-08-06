@@ -49,6 +49,7 @@ choice_for_species = (
     ('fruit fly', 'fruit fly'),
     ('sheep', 'sheep'),
     ('rabbit', 'rabbit'),
+
     ('other (please explain in notes)', 'other (please explain in notes)')
 )
 choice_for_unit = (

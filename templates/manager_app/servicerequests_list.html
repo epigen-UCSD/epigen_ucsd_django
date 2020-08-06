@@ -5,16 +5,16 @@
       <div id="content" class="col-sm-10 col-md-10 col-lg-10">
         <div class="card">
           <div class="card-header fortable">
-            Alll of the ServiceRequests
+            All of the ServiceRequests
           </div><!-- /.card-header -->
           <div class="card-body">
             <table class="table table-striped table-sm text-left table-responsive-xl datatable">
               <thead>
                 <tr>
-                  <th scope="col">quote_number</th>
-                  <th scope="col">date</th>                  
+                  <th scope="col">service_request_id</th>
+                  <th scope="col">date</th>
                   <th scope="col">group</th>
-                  <th scope="col">institute</th>                  
+                  <th scope="col">institute</th>
                   <th scope="col">research_contact</th>
                   <th scope="col">research_contact_email</th>
                   <th scope="col">status</th>
@@ -22,9 +22,21 @@
                 </tr>
               </thead>
               <tbody>
+                {% for serv in service_request %}
+                <tr>
+                  <td>{{serv.quote_number | default_if_none:""}}</td>
+                  <td>{{serv.date | default_if_none:""}}</td>
+                  <td>{{serv.group | default_if_none:""}}</td>
+                  <td>{{serv.institute | default_if_none:""}}</td>
+                  <td>{{serv.research_contact | default_if_none:""}}</td>
+                  <td>{{serv.research_contact_email | default_if_none:""}}</td>
+                  <td>{{serv.status | default_if_none:""}}</td>
+                  <td>{{serv.action | default_if_none:""}}</td>
+                </tr>
+                {% endfor %}
               </tbody>
             </table>
-          </div><!-- /.card-body -->              
-        </div><!-- /.card --> 
-      </div><!-- /#content --> 
+          </div><!-- /.card-body -->
+        </div><!-- /.card -->
+      </div><!-- /#content -->
 {% endblock %}

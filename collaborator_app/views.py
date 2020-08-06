@@ -3,6 +3,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from epigen_ucsd_django.shared import is_in_multiple_groups
 from django.http import JsonResponse
+from collaborator_app.models import ServiceInfo, ServiceRequest, ServiceRequestItem
 from setqc_app.models import LibrariesSetQC,LibraryInSet
 from masterseq_app.models import SampleInfo
 from singlecell_app.views import build_seq_list, SINGLE_CELL_EXPS
@@ -16,6 +17,8 @@ from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm
 import datetime
 from django.forms import formset_factory
 from django.db import transaction
+from django.views.generic import (View, TemplateView, DetailView, ListView,
+                                    CreateView, UpdateView, DeleteView)
 # Create your views here.
 
 DisplayFieldforcollab = ['set_name','date_requested','experiment_type','url']
@@ -103,7 +106,7 @@ def UserProfileView(request):
     group_institute_dict = {}
     for item in group_institute_list:
         group_institute_dict[item['group__name']]=item['institution']
- 
+
     context = {
         'user_name':request.user.username,
         'group_name': group.name,
@@ -111,7 +114,7 @@ def UserProfileView(request):
         'group_institute_dict':group_institute_dict,
     }
 
-    return render(request, 'collaborator_app/collab_user_profile.html', context)   
+    return render(request, 'collaborator_app/collab_user_profile.html', context)
 
 
 def collab_change_password(request):
@@ -186,12 +189,21 @@ def CollaboratorSampleComView(request):
 	return render(request, 'collaborator_app/collaboratorsetqcinfocom.html', context)
 
 
-def ServiceRequestListView(request):
+#def ServiceRequestListView(request):
+    #service_request = ServiceRequest.objects.all()
+    #service_request_list = service_request.values(\
+    #'quote_number','date','group','institute',\
+    #'research_contact','research_contact_email',\
+    #'status')
+    #context = {
+        #'service_request_list':service_request_list,
 
-    context = {
-
-    }
-    return render(request, 'collaborator_app/collab_feeforservice_quote.html', context)
+    #}
+    #return render(request, 'collaborator_app/collab_feeforservice_quote.html', context)
+class ServiceRequestListView(ListView):
+    context_object_name = 'service_request'
+    model = ServiceRequest
+    template_name = 'manager_app/servicerequests_list.html'
 
 @transaction.atomic
 def ServiceRequestCreateView(request):
@@ -230,7 +242,7 @@ def ServiceRequestCreateView(request):
                 if 'Preview' in request.POST:
                     displayorde_requestitem = ['rate','quantity']
                     displayorder_request = ['date','group','notes','status']
-                    #print(data_request)  
+                    #print(data_request)
 
                     context = {
                         'servicerequest_form': servicerequest_form,
@@ -241,7 +253,7 @@ def ServiceRequestCreateView(request):
                         'data_requestitem':data_requestitem,
                         'data_request':data_request,
                         'total_expression':total_expression
-                    }        
+                    }
                     return render(request, 'collaborator_app/collab_feeforservice_servicerequestcreate.html', context)
 
                 if 'Save' in request.POST:
@@ -251,6 +263,7 @@ def ServiceRequestCreateView(request):
                         notes=data_request['notes'],
                         status=data_request['status'],
                         )
+                    thisrequest.save()
                     for item in data_requestitem:
                         ServiceRequestItem.objects.create(
                             request=thisrequest,
@@ -269,6 +282,7 @@ def ServiceRequestCreateView(request):
     }
 
     return render(request, 'collaborator_app/collab_feeforservice_servicerequestcreate.html', context)
+
 
 def singlecell_view(request):
     context = {
@@ -297,6 +311,7 @@ def CollaboratorSingleCellData(request):
     print('data:',data)
     build_seq_list(data)
     return JsonResponse(data, safe=False)
+
 
 
 

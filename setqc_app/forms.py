@@ -152,6 +152,7 @@ class SeqLabelGenomeCreationForm(forms.Form):
     sequencingid = forms.CharField(label='Sequencing ID', disabled=True)
     speciesbelong = forms.CharField(
         label='Species', disabled=True, widget=forms.TextInput(attrs={'size': '8'}))
+    #genomeinthisset = forms.ChoiceField(label='Genome', choices=[('hg38','hg38')])  # [('hg38','hg38')])
     genomeinthisset = forms.ChoiceField(label='Genome', choices=[(
         x.genome_name, x.genome_name) for x in GenomeInfo.objects.all()])  # [('hg38','hg38')])
 
@@ -205,11 +206,3 @@ class EncodeSetForm(forms.Form):
             if set_name == '':
                 msg = 'Fill out Set name'
                 self.add_error('set_name', msg)
-
-
-
-
-
-
-
-
