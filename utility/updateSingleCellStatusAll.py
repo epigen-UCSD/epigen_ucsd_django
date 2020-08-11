@@ -35,9 +35,9 @@ status_types = ['Yes', 'No', 'InQueue', 'InProcess', 'Error!', 'ClickToSubmit']
 
 
 def check_status(entry):
-    group_id = entry['libraryinfo__sampleinfo__group']
-    group_name = get_group_name(groups, group_id)
-    entry['libraryinfo__sampleinfo__group'] = group_name
+    #group_id = entry['libraryinfo__sampleinfo__group']
+    #group_name = get_group_name(groups, group_id)
+    #entry['libraryinfo__sampleinfo__group'] = group_name
     seq_id = entry['seq_id']
     experiment_type = entry['libraryinfo__experiment_type']
     entry['last_modified'] = get_latest_modified_time(
@@ -59,29 +59,20 @@ def main():
     groups = Group.objects.all()
     data = list(seqs_queryset)
 
-    entry = check_status(data[0])
-
-    sc_obj = SingleCellObject.objects.get_or_create(
-        seqinfo__seq_id=entry['seq_id'],)
-    sc_obj.tenx_pipeline_status = status
-    if(status == 'Yes' or status == 'Error!'):
-        sc_obj.date_last_modified = datetime.now()
-    if(status == 'Yes'):
-        # check if there is an error file that exists
-        dir_to_expts = settings.TENX_DIR if sc_obj.experiment_type == "10xATAC" else settings.SCRNA_DIR
-        error_file = sc_obj.experiment_type
-        # if()
-        # make qc metrics table and save it to SCmodel's generic foreign key
-        sc_obj.content_object = generate_qc_metrics_table(
-            seq_id, sc_obj.experiment_type)
-    sc_obj.save()
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-seqid', help='Sequence Seq_id like MM_130')
-    parser.add_argument(
-        '-status', help='Status to update to such as "InProcess" or "Yes"')
-    seq_id = parser.parse_args().seqid
-    status = parser.parse_args().status
-    main(seq_id, status)
+    i = 0
+    for entry in data:
+        seq_obj = SeqInfo.objects.get(seq_id=entry['seq_id'])
+        entry = check_status(entry)
+        # seq_obj.save()
+        sc_obj, _ = SingleCellObject.objects.get_or_create(seqinfo=seq_obj,
+                                                           date_last_modified=entry['date_submitted_for_sequencing'],
+                                                           experiment_type=entry['libraryinfo__experiment_type'],
+                                                           tenx_pipeline_status=entry['10x_status'])
+        if(entry['10x_status'] == 'Yes'):
+            try:
+                sc_obj.content_object = generate_qc_metrics_table(
+                    seq_obj.seq_id, sc_obj.experiment_type)
+                sc_obj.save()
+            except:
+                a = 0
+        i += 1

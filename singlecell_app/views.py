@@ -165,7 +165,6 @@ def build_seq_list_modified(seqs_list):
         entry['species'] = entry['seqinfo__libraryinfo__sampleinfo__species']
         ca_status = entry['cooladminsubmission__pipeline_status']
         entry['cooladmin_status'] = entry['cooladminsubmission__link'] if ca_status == 'Yes' else ca_status
-
     return (seqs_list)
 
 
@@ -226,8 +225,8 @@ def get_tenx_status(seq, experiment_type):
     path = os.path.join(dir_to_check, str(seq))
     # first check if there is an .inqueue then an .inprocess
 
-    if not os.path.isdir(path):
-        seqstatus = 'No'
+    if os.path.isfile(os.path.join(path, tenx_output_folder, tenx_target_outfile)):
+        seqstatus = 'Yes'
     elif os.path.isfile(path + '/.inqueue'):
         seqstatus = 'InQueue'
     elif os.path.isfile(path + '/.inprocess'):
@@ -235,13 +234,7 @@ def get_tenx_status(seq, experiment_type):
     elif os.path.isfile(path + '/outs/_errors'):
         seqstatus = 'Error!'
     else:
-        if not os.path.isfile(os.path.join(path,
-                                           tenx_output_folder, tenx_target_outfile)):
-            seqstatus = 'No'
-        elif os.path.isfile(os.path.join(path, tenx_output_folder, tenx_target_outfile)):
-            seqstatus = 'Yes'
-        else:
-            seqstatus = 'No'
+        seqstatus = 'ClickToSubmit'
     return seqstatus
 
 
