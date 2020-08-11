@@ -38,24 +38,27 @@ samplesheet="${out_dir}/SampleSheet_I1.csv"
 samplesheet_rna_expand="${out_dir}/SampleSheet_rna_expand.csv"
 samplesheet_rna="${out_dir}/SampleSheet_rna.csv"
 samplesheet_atac="${out_dir}/SampleSheet_atac.csv"
-grep -v "SI-NA" $samplesheet > $samplesheet_rna 
+grep -v "SI-NA" $samplesheet > $samplesheet_rna  # GA- atac
 grep -v "SI-GA" $samplesheet > $samplesheet_atac
 
 ## run mkfastq 
 cd $run_dir
 
+## debug
+demux_atac='true'
+demux_rna='true'
 
 ############################################################
 ## 01.atac
 ############################################################
-if false
+if $demux_atac #control debug 
 then
     ## delete last demux info 
     [[ -d ${run_dir}/atac ]] && rm -r ${run_dir}/atac  # delete existing folder
     [[ -f ${run_dir}/__atac.mro ]] && rm ${run_dir}/__atac.mro # delete existing folder
 
     ## assign output folder -id
-    out_dir_sys=${run_dir}/atac/outs/fastq_path/ 
+    out_dir_sys=${run_dir}/atac/outs/fastq_path/$flowcell_id
 
     ## cmd
     [[ -f ${out_dir}/extraPars.txt ]] && extraParsVal=$(cat ${out_dir}/extraPars.txt)
@@ -67,11 +70,12 @@ then
 
     for i in $(awk -v FS=',' '(NR>1){print $2}' $samplesheet_atac)
     do
-        #cp -r ${out_dir_sys}/$flowcell_id/${i} ~/data/seqdata/
-        ln -sf ${out_dir_sys}/${flowcell_id}/${i} ~/data/seqdata/
+        #cp -r ${out_dir_sys}/${i} ~/data/seqdata/
+        ln -sf ${out_dir_sys}/${i} ~/data/seqdata/
         cat ~/data/seqdata/${i}/${i}*R3*fastq.gz > ~/data/seqdata/${i}_R2.fastq.gz & sleep 1
         cat ~/data/seqdata/${i}/${i}*R1*fastq.gz > ~/data/seqdata/${i}_R1.fastq.gz & sleep 1
-        wait 
+        wait
+        sed -i  "/$i\t/d" $reads_cnt_file  # remove existed record        
         nreads=$(zcat ~/data/seqdata/${i}_R1.fastq.gz | wc -l ) && echo -e "$i\t$[nreads/4]" >> $reads_cnt_file & sleep 1
     done 
     wait
@@ -81,27 +85,29 @@ fi
 ## 02.rna, use bcl2fastq 
 ############################################################
 ## expand 10x barcode
-cd $out_dir
-## cmd
-cmd="bcl2fastq --runfolder-dir $run_dir --output-dir $out_dir --no-lane-splitting \
+if $demux_rna #control debug 
+then
+    cd $out_dir
+    ## cmd
+    cmd="bcl2fastq --runfolder-dir $run_dir --output-dir $out_dir --no-lane-splitting \
     --create-fastq-for-index-reads -p 16 --min-log-level TRACE \
     --sample-sheet $samplesheet_rna_expand \
      --use-bases-mask Y28n*,I8,N16,Y91n* "
-echo $cmd|bash     
+    echo $cmd|bash     
 
-## transfer/link data
-for i in $(awk -v FS=',' '(NR>1){print $2}' $samplesheet_rna)
-do
-    #rm -r $out_dir/$i
-    mkdir -p $out_dir/$i
-    for x in  ${i}*_R*fastq.gz ; do echo -e "mv $x ${i}/${x/_R/_L001_R}"|bash;done
-    for x in  ${i}*_I*fastq.gz ; do echo -e "mv $x ${i}/${x/_I/_L001_I}"|bash;done
-    ln -sf $out_dir/$i ~/data/seqdata/
-
-    nreads=$(zcat ~/data/seqdata/${i}/${i}*I1*fastq.gz | wc -l ) && echo -e "$i\t$[nreads/4]" >> $reads_cnt_file & sleep 1
-done 
-wait 
-
+    ## transfer/link data
+    for i in $(awk -v FS=',' '(NR>1){print $2}' $samplesheet_rna)
+    do
+        #rm -r $out_dir/$i
+        mkdir -p $out_dir/$i
+        for x in  ${i}*_R*fastq.gz ; do echo -e "mv $x ${i}/${x/_R/_L001_R}"|bash;done
+        for x in  ${i}*_I*fastq.gz ; do echo -e "mv $x ${i}/${x/_I/_L001_I}"|bash;done
+        ln -sf $out_dir/$i ~/data/seqdata/
+        sed -i  "/$i\t/d" $reads_cnt_file  # remove existed record
+        nreads=$(zcat ~/data/seqdata/${i}/${i}*I1*fastq.gz | wc -l ) && echo -e "$i\t$[nreads/4]" >> $reads_cnt_file & sleep 1
+    done 
+    wait 
+fi
 
 ############################################################
 # update status to finish or warning @ VM
