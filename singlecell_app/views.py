@@ -6,7 +6,7 @@ from django.forms.models import model_to_dict
 from django.core import serializers
 from django.http import JsonResponse, FileResponse, HttpResponse
 from masterseq_app.models import LibraryInfo, SeqInfo, GenomeInfo, RefGenomeInfo, ExperimentType
-from epigen_ucsd_django.shared import is_member,is_in_multiple_groups
+from epigen_ucsd_django.shared import is_member, is_in_multiple_groups
 
 from .forms import CoolAdminForm
 from .models import CoolAdminSubmission, SingleCellObject
@@ -42,14 +42,13 @@ SINGLE_CELL_EXPS = ['10xATAC', 'scRNA-seq', 'snRNA-seq', 'scATAC-seq']
 defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
                  'rat': 'rn6', 'cattle': 'ARS-UCD1.2'}
 
-LINK_CLASS_NAME="data-link-epigen"
+LINK_CLASS_NAME = "data-link-epigen"
 
 INQUEUE = 'InQueue'
 
 
-
-#TODO do rat for scRNA-seq plus option for hg19, we deafault to hg38 right now.
-#TODO also need option for mixed mouse and human
+# TODO do rat for scRNA-seq plus option for hg19, we deafault to hg38 right now.
+# TODO also need option for mixed mouse and human
 
 
 def AllSeqs(request):
@@ -59,7 +58,7 @@ def AllSeqs(request):
         'type': 'All Sequences',
         'AllSeq': True
     }
-    if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
+    if not is_in_multiple_groups(request.user, ['wetlab', 'bioinformatics']):
         raise PermissionDenied
     if request.user.groups.filter(name='bioinformatics').exists():
         context['BioUser'] = True
@@ -77,13 +76,13 @@ def MySeqs(request):
     return render(request, 'singlecell_app/myseqs.html', context)
 
 
-
 def MySeqs2(request):
     context = {
         'type': 'My Sequences',
         'AllSeq': False
     }
     return render(request, 'singlecell_app/myseqs2.html', context)
+
 
 '''
 def AllSingleCellData(request):
@@ -101,6 +100,7 @@ def AllSingleCellData(request):
     return JsonResponse(data, safe=False)
 '''
 
+
 def AllSingleCellData(request):
     """ async function to get hit by ajax. Returns json of all single cell data dict
     in db
@@ -108,39 +108,40 @@ def AllSingleCellData(request):
     # make sure only bioinformatics group users allowed
 
     seqs_queryset = SingleCellObject.objects.all().select_related('seqinfo',
-    'cooladminsubmission','libraryinfo','sampleinfo',
-    'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified', 
-        'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species', 
-        'seqinfo__libraryinfo__sampleinfo__group','tenx_pipeline_status',
-        'seqinfo__libraryinfo__sampleinfo__sample_id','cooladminsubmission__pipeline_status',
-        'seqinfo__date_submitted_for_sequencing','cooladminsubmission__link')
+                                                                  'cooladminsubmission', 'libraryinfo', 'sampleinfo',
+                                                                  'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
+        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
+        'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species',
+        'seqinfo__libraryinfo__sampleinfo__group', 'tenx_pipeline_status',
+        'seqinfo__libraryinfo__sampleinfo__sample_id', 'cooladminsubmission__pipeline_status',
+        'seqinfo__date_submitted_for_sequencing', 'cooladminsubmission__link')
 
     data = list(seqs_queryset)
     build_seq_list_modified(data)
 
     return JsonResponse(data, safe=False)
-
 
 
 def UserSingleCellData(request):
     """async function to get hit by ajax, returns user only seqs
     """
     seqs_queryset = SingleCellObject.objects.filter(seqinfo__team_member_initails=request.user).select_related('seqinfo',
-        'cooladminsubmission','libraryinfo','sampleinfo',
-        'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified', 
-        'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species', 
-        'seqinfo__libraryinfo__sampleinfo__group','tenx_pipeline_status',
-        'seqinfo__libraryinfo__sampleinfo__sample_id','cooladminsubmission__pipeline_status',
-        'seqinfo__date_submitted_for_sequencing','cooladminsubmission__link')
+                                                                                                               'cooladminsubmission', 'libraryinfo', 'sampleinfo',
+                                                                                                               'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
+        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
+        'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species',
+        'seqinfo__libraryinfo__sampleinfo__group', 'tenx_pipeline_status',
+        'seqinfo__libraryinfo__sampleinfo__sample_id', 'cooladminsubmission__pipeline_status',
+        'seqinfo__date_submitted_for_sequencing', 'cooladminsubmission__link')
 
     data = list(seqs_queryset)
     build_seq_list_modified(data)
 
     return JsonResponse(data, safe=False)
 
-#TODO Think about when cooladmin being modified and submitted should affect the date of the singlecell seq
+# TODO Think about when cooladmin being modified and submitted should affect the date of the singlecell seq
+
+
 def build_seq_list_modified(seqs_list):
     """ This function is used to build seq lists to be returned to the from an 
     AJAX call for AllSeqs2.
@@ -155,16 +156,18 @@ def build_seq_list_modified(seqs_list):
     for entry in seqs_list:
         group_id = entry['seqinfo__libraryinfo__sampleinfo__group']
         group_name = get_group_name(groups, group_id)
-        entry['seqinfo__libraryinfo__sampleinfo__group'] = group_name  
+        entry['seqinfo__libraryinfo__sampleinfo__group'] = group_name
         seq_id = entry['seqinfo__seq_id']
         experiment_type = entry['seqinfo__libraryinfo__experiment_type']
-        #need to move FASTQ file status to db
-        entry['seq_status'] = get_seq_status(seq_id, entry['seqinfo__read_type'])
+        # need to move FASTQ file status to db
+        entry['seq_status'] = get_seq_status(
+            seq_id, entry['seqinfo__read_type'])
         entry['species'] = entry['seqinfo__libraryinfo__sampleinfo__species']
         ca_status = entry['cooladminsubmission__pipeline_status']
         entry['cooladmin_status'] = entry['cooladminsubmission__link'] if ca_status == 'Yes' else ca_status
 
     return (seqs_list)
+
 
 def build_seq_list(seqs_list):
     """ This function is used to build seq lists to be returned to the from an 
@@ -181,7 +184,7 @@ def build_seq_list(seqs_list):
     for entry in seqs_list:
         group_id = entry['libraryinfo__sampleinfo__group']
         group_name = get_group_name(groups, group_id)
-        entry['libraryinfo__sampleinfo__group'] = group_name        
+        entry['libraryinfo__sampleinfo__group'] = group_name
         seq_id = entry['seq_id']
         experiment_type = entry['libraryinfo__experiment_type']
         entry['last_modified'] = get_latest_modified_time(
@@ -193,11 +196,13 @@ def build_seq_list(seqs_list):
         #entry['group'] = get_group_name(entry)
     return (seqs_list)
 
+
 def get_group_name(groups, group_id):
-    if group_id == None:
+    if group_id == None or group_id == 'None':
         return 'None'
     else:
         return str(groups.get(pk=group_id))
+
 
 def get_tenx_status(seq, experiment_type):
     """This function returns a string that represents 
@@ -211,7 +216,7 @@ def get_tenx_status(seq, experiment_type):
         string 'Error' when an error occurs in pipeline
         string 'Yes' when the 10x pipeline is succesfully done
     """
-    if(experiment_type ==  '10xATAC'):
+    if(experiment_type == '10xATAC'):
         dir_to_check = settings.TENX_DIR
     else:
         dir_to_check = settings.SCRNA_DIR
@@ -335,54 +340,58 @@ def submit_singlecell(request):
         email -string that represents user who submitted job
         POST - ref: string of refgenome chosen
     """
-    #GET requests are from initial sc 'clicktosubmit'.  
+    # GET requests are from initial sc 'clicktosubmit'.
     if request.method == 'GET':
         seq = request.GET.get('seq')
         if not SeqInfo.objects.filter(seq_id=seq).exists():
             data = {
-                'success' : False,
+                'success': False,
                 error: "Seq does not exist!"
             }
         else:
             email = request.user.email
             seq_info = SingleCellObject.objects.select_related(
                 'seqinfo__libraryinfo__sampleinfo').values('seqinfo__seq_id',
-                'seqinfo__libraryinfo__sampleinfo__species',
-                'seqinfo__libraryinfo__experiment_type').get(seqinfo__seq_id=seq)
+                                                           'seqinfo__libraryinfo__sampleinfo__species',
+                                                           'seqinfo__libraryinfo__experiment_type').get(seqinfo__seq_id=seq)
             print(seq_info)
-            species =  seq_info['seqinfo__libraryinfo__sampleinfo__species'].rstrip("\n")
+            species = seq_info['seqinfo__libraryinfo__sampleinfo__species'].rstrip(
+                "\n")
             experiment_type = seq_info['seqinfo__libraryinfo__experiment_type']
-            experiment_obj = ExperimentType.objects.get(experiment=experiment_type)
-            print('refgenome submission: ',species, experiment_type, experiment_obj)
-            #get all refrence genomes available for this experiment type.
-            
-            refgenomes = RefGenomeInfo.objects.filter(species=species,experiment_type=experiment_obj).values('genome_name')
+            experiment_obj = ExperimentType.objects.get(
+                experiment=experiment_type)
+            print('refgenome submission: ', species,
+                  experiment_type, experiment_obj)
+            # get all refrence genomes available for this experiment type.
+
+            refgenomes = RefGenomeInfo.objects.filter(
+                species=species, experiment_type=experiment_obj).values('genome_name')
             refgenome_list = [n['genome_name'] for n in refgenomes]
             print(refgenome_list)
-            #submit seqeunce when only one ref genome availalbe, do not prompt user to choose.
+            # submit seqeunce when only one ref genome availalbe, do not prompt user to choose.
             if len(refgenome_list) == 1:
                 ref = refgenome_list[0]
-                submit_tenX(seq,ref,email)
+                submit_tenX(seq, ref, email)
 
                 data = {
                     'success': True,
-                    'submitted' : True,
+                    'submitted': True,
                 }
                 return JsonResponse(data)
             elif experiment_type == '10xATAC':
                 ref = -1
-                submit_tenX(seq,ref,email)
+                submit_tenX(seq, ref, email)
 
                 data = {
                     'success': True,
-                    'submitted' : True,
+                    'submitted': True,
                 }
                 return JsonResponse(data)
-            
+
             data = {
                 'success': True,
-                'refs' : refgenome_list,
-                'submitted' : False,
+                'refs': refgenome_list,
+                'submitted': False,
             }
         return JsonResponse(data)
     elif request.method == 'POST':
@@ -390,14 +399,13 @@ def submit_singlecell(request):
         ref = request.POST.get('ref')
         email = request.user.email
 
-        #run job
-        submit_tenX(seq,ref,email)
+        # run job
+        submit_tenX(seq, ref, email)
 
         data = {
-            'success' : True,
+            'success': True,
         }
         return JsonResponse(data)
-
 
 
 # TODO add a modify_submission_model() funciton to update submission date_submitted/modified and submitted fields
@@ -433,20 +441,19 @@ def submit_cooladmin(request):
         #print('submission dict: ', submission_dict)
         if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
             submission_dict['refgenome'] = getReferenceUsed(seq)
-    
-    submission.date_submitted = datetime.now() 
+
+    submission.date_submitted = datetime.now()
     submission.pipeline_status = INQUEUE
     submission.submitted = True
     submission.save()
 
-    
     seqString = f'"{seq}"'
 
     paramString = buildCoolAdminParameterString(
         submission_dict).replace('"', '\\"').replace(' ', '\\ ')
     #print('paramString: ', paramString)
     cmd1 = f'bash ./utility/coolAdmin.sh {email} {seqString} {paramString}'
-    #print(cmd1)
+    # print(cmd1)
 
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -586,7 +593,7 @@ def setup_submission(seq_object, data):
     experimental type and species/genome of the seq object. Will return the data dict so that the
     submission funtion can use the dict for bash script parameters.
     """
-    
+
     return data
 
 
@@ -594,39 +601,40 @@ def submit_tenX(seq, refgenome, email):
     """ This function should only be called by another fucntion that ensures the sequence is valid to be submitted
     This function submits a sequence to 10x cell ranger or 10x atac pipeline
     """
-    
+
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
         'libraryinfo__sampleinfo').values('seq_id',
-        'libraryinfo__sampleinfo__species','read_type',
-        'libraryinfo__experiment_type'))
+                                          'libraryinfo__sampleinfo__species', 'read_type',
+                                          'libraryinfo__experiment_type'))
     data = {}
     data['seqs'] = split_seqs(seq_info[0]['seq_id'])
-    data['species'] =  seq_info[0]['libraryinfo__sampleinfo__species'].rstrip("\n")
-     
+    data['species'] = seq_info[0]['libraryinfo__sampleinfo__species'].rstrip(
+        "\n")
+
     experiment_type = seq_info[0]['libraryinfo__experiment_type']
-    #get all refrence genomes available for this experiment type.
-    
-    
+    # get all refrence genomes available for this experiment type.
+
     #print('refgenomes present: ', str(refgenome))
-    
-    #set output dir based on experiment type
+
+    # set output dir based on experiment type
     if experiment_type == '10xATAC':
         dir = settings.TENX_DIR
-        #set genome that run10xPipeline.pbs will use
+        # set genome that run10xPipeline.pbs will use
         data['genome'] = 'mm10' if data['species'].lower() == 'mouse' else 'hg38'
 
     else:
         dir = settings.SCRNA_DIR
-        refgenome = RefGenomeInfo.objects.get(species=data['species'],genome_name=refgenome,experiment_type__experiment=experiment_type)
+        refgenome = RefGenomeInfo.objects.get(
+            species=data['species'], genome_name=refgenome, experiment_type__experiment=experiment_type)
         data['genome'] = str(refgenome)
         data['ref_path'] = refgenome.path
 
-    #write tsv samplesheet: filename = ".sequence.tsv"
+    # write tsv samplesheet: filename = ".sequence.tsv"
     filename = '.'+str(seq)+'.tsv'
-    tsv_writecontent = '\t'.join([seq, ','.join(data['seqs']), data['genome']]) 
+    tsv_writecontent = '\t'.join([seq, ','.join(data['seqs']), data['genome']])
     seqDir = os.path.join(dir, seq)
-   
-    #replace with db update that this seq status is inqueue
+
+    # replace with db update that this seq status is inqueue
     if not os.path.exists(seqDir):
         os.mkdir(seqDir)
     inqueue = os.path.join(seqDir, '.inqueue')
@@ -635,20 +643,20 @@ def submit_tenX(seq, refgenome, email):
     tsv_file = os.path.join(seqDir, filename)
     with open(tsv_file, 'w') as f:
         f.write(tsv_writecontent+'\n')
-        
-    #set command depedning on experiment
 
-    if( experiment_type == '10xATAC'):
-        cmd1 = 'bash ./utility/run10xOnly.sh %s %s %s' %(seq, dir, email)
+    # set command depedning on experiment
+
+    if(experiment_type == '10xATAC'):
+        cmd1 = 'bash ./utility/run10xOnly.sh %s %s %s' % (seq, dir, email)
     else:
-        cmd1 = ('bash ./utility/runCellRanger.sh %s %s %s %s' %(seq,
-         data['ref_path'], dir, email))
+        cmd1 = ('bash ./utility/runCellRanger.sh %s %s %s %s' % (seq,
+                                                                 data['ref_path'], dir, email))
 
-    print('cmd submitted: ',cmd1)
+    print('cmd submitted: ', cmd1)
     p = subprocess.Popen(
         cmd1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-    #update singlecellobject db entry that seq is inq
+    # update singlecellobject db entry that seq is inq
     sc_obj = SingleCellObject.objects.get(seqinfo__seq_id=seq)
     sc_obj.tenx_pipeline_status = INQUEUE
     sc_obj.date_last_modified = datetime.now()
@@ -672,6 +680,8 @@ def split_seqs(seq):
     return addlseqs
 
 # TODO do param error checking?
+
+
 def buildCoolAdminParameterString(dict):
     #print('dict: ', dict)
     paramString = ''
@@ -788,8 +798,8 @@ def generate_tenx_link(request):
     info['experiment_type'] = library_info.experiment_type
     info['seq_owner'] = seq_object.team_member_initails
     info['seq_id'] = seq_object.seq_id
-    #print(info)
-    #print(request.user)
+    # print(info)
+    # print(request.user)
     if request.user.groups.filter(name='bioinformatics').exists() or info['seq_owner'] == request.user:
         # get all files in exposed outs folder
         exposed_outs_dir = settings.EXPOSED_OUTS_DIR
@@ -827,15 +837,15 @@ def generate_tenx_link(request):
             link = filenames_dict[seq]
             link = os.path.join(os.path.basename(
                 os.path.split(exposed_outs_dir)[0]), link)
-        
+
         data['link'] = link
-        return JsonResponse(data, safe= False)
+        return JsonResponse(data, safe=False)
     else:
         data["error"] = "Permission denied"
-        return JsonResponse(data,safe=False)
-      
+        return JsonResponse(data, safe=False)
 
-#TODO check where generate link is called, ensure expt_type is passed in
+
+# TODO check where generate link is called, ensure expt_type is passed in
 def generate_link(seq, expt_type):
     """ return a link for files to be viewed with a share link
     Will generate a link if needed. Will return the link in the response.
@@ -845,7 +855,7 @@ def generate_link(seq, expt_type):
     info = {}
     data = {}
     parent_dir = ""
-    
+
     # get all files in exposed outs folder
     exposed_outs_dir = settings.EXPOSED_OUTS_DIR
     listdir = os.listdir(exposed_outs_dir)
@@ -890,31 +900,36 @@ def insert_link(filename, seq, expt_type):
     """ Insert link into header of the web_summary.html
         for scRNA experiments, insert at line 1430.
     """
-    #links 
-    link = generate_link(seq, expt_type) #generate a link to the output folder
+    # links
+    # generate a link to the output folder
+    link = generate_link(seq, expt_type)
     if(link == -1):
         print('error in generate_link!')
         return
-    #backup original file 
-    shutil.copyfile(filename,filename+'.bak')
+    # backup original file
+    shutil.copyfile(filename, filename+'.bak')
 
-    #for atac, insert at lines magic numbers, where we will insert link in web_summary.html
+    # for atac, insert at lines magic numbers, where we will insert link in web_summary.html
     if expt_type == '10xATAC':
         line_to_insert_at = 10
-        newdata = "" # will hold the old html + an inserted link at specified line
-        with open(filename,'r') as f: f1 = f.readlines() #f1 is list
+        newdata = ""  # will hold the old html + an inserted link at specified line
+        with open(filename, 'r') as f:
+            f1 = f.readlines()  # f1 is list
         for num, line in enumerate(f1, start=1):
             if num == line_to_insert_at:
-                newdata = newdata + '<div><h2><a class="data-link-epigen" style="margin-left:3em;" href="'+link+'"> Link to Output Data</a></h2><div>'
+                newdata = newdata + '<div><h2><a class="data-link-epigen" style="margin-left:3em;" href="' + \
+                    link+'"> Link to Output Data</a></h2><div>'
             newdata = newdata + line
-    else: #for 10xRNA using search pattern to insert
-        pattern='</span> &middot;'
-        inserts='<a class="data-link-epigen" href="'+link+'"> Downloads </a>'
-        with open(filename,'r') as f: f1 = f.read() # f1 is str
-        newdata=re.sub(pattern,pattern+inserts,f1)
-    
+    else:  # for 10xRNA using search pattern to insert
+        pattern = '</span> &middot;'
+        inserts = '<a class="data-link-epigen" href="'+link+'"> Downloads </a>'
+        with open(filename, 'r') as f:
+            f1 = f.read()  # f1 is str
+        newdata = re.sub(pattern, pattern+inserts, f1)
+
     # write to file
-    with open(filename, 'w') as overwrite: overwrite.write(newdata)
+    with open(filename, 'w') as overwrite:
+        overwrite.write(newdata)
 
 
 def view_websummary(request, seq_id):
@@ -924,13 +939,15 @@ def view_websummary(request, seq_id):
     directory, where BASE_DIR is either settings.TENX_DIR or settings.SCRNA_DIR.
     '''
     user = request.user
-    seqinfo = SeqInfo.objects.select_related('libraryinfo','libraryinfo__sampleinfo','libraryinfo__sampleinfo__group').get(seq_id=seq_id)
+    seqinfo = SeqInfo.objects.select_related(
+        'libraryinfo', 'libraryinfo__sampleinfo', 'libraryinfo__sampleinfo__group').get(seq_id=seq_id)
     permission = check_permissions(user=user, seqinfo=seqinfo)
 
     if permission == False:
-        print('Access is denied to seq {seq_id} for user {user}'.format(seq_id=seq_id,user=user))
+        print('Access is denied to seq {seq_id} for user {user}'.format(
+            seq_id=seq_id, user=user))
         raise PermissionDenied
-    
+
     dir = ""
     print(seqinfo)
     expt_type = seqinfo.libraryinfo.experiment_type
@@ -939,18 +956,20 @@ def view_websummary(request, seq_id):
     else:
         dir = settings.SCRNA_DIR
 
-    path = '{dir}/{seq_id}/outs/web_summary.html'.format(seq_id=seq_id,dir=dir)
-    print('reading: ',path)
+    path = '{dir}/{seq_id}/outs/web_summary.html'.format(
+        seq_id=seq_id, dir=dir)
+    print('reading: ', path)
     file = open(path)
     data = file.read()
     if(LINK_CLASS_NAME not in data):
         #print('in tenxoutput2() for singlecell, adding link to file')
         file.close()
         insert_link(path, seq_id, expt_type)
-        file=open(path)
+        file = open(path)
         data = file.read()
     if(data == None):
-        print('ERROR: No data read in 10x Web_Summary.html File! for {seq_id}'.format(seq_id=seq_id) )
+        print('ERROR: No data read in 10x Web_Summary.html File! for {seq_id}'.format(
+            seq_id=seq_id))
     return HttpResponse(data)
 
 
@@ -959,8 +978,8 @@ def check_permissions(seqinfo, user):
     collaborator then they must be part of the group. Return True if permission
     is granted.bi
     """
-    #get group that seq is assigned to
+    # get group that seq is assigned to
     seq_group = seqinfo.libraryinfo.sampleinfo.group
-    #check if user is staff,bioinformatics, or in seq_group
-    
-    return True if is_in_multiple_groups(user, ['bioinformatics','staff','wetlab',seq_group]) else False
+    # check if user is staff,bioinformatics, or in seq_group
+
+    return True if is_in_multiple_groups(user, ['bioinformatics', 'staff', 'wetlab', seq_group]) else False
