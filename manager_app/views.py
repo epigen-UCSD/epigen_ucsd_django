@@ -9,7 +9,7 @@ from django.contrib.auth.models import User,Group
 from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models import Prefetch
-from epigen_ucsd_django.shared import is_member,daysuffix
+from epigen_ucsd_django.shared import is_member,daysuffix,quotebody
 from masterseq_app.views import nonetolist,removenone
 from django.forms import formset_factory,inlineformset_factory
 from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm
@@ -382,7 +382,7 @@ def ServiceRequestCreateView(request):
                         status=data_request['status'],
                         )
                     service_items = []
-                    service_breakdown = []
+                    service_quantities = []
                     for item in data_requestitem.keys():
                         print(item)
                         print(data_requestitem[item]['quantity'])
@@ -393,7 +393,7 @@ def ServiceRequestCreateView(request):
                             )
                         service_items.append(item)
                         this_service_item = ServiceInfo.objects.get(service_name=item)
-                        service_breakdown.append(':'.join([this_service_item.description_brief,str(data_requestitem[item]['rate_number'])+'/'+this_service_item.rate_unit]))
+                        service_quantities.append(data_requestitem[item]['quantity'])
                     quote_compact = ''.join(data_request['quote_number'].split(' '))
                     collab_info = [group_name,research_contact,research_contact_email,'\n']
                     dear = 'Dr. '+ group_name.split(' ')[-1]
@@ -403,21 +403,8 @@ def ServiceRequestCreateView(request):
                     writelines = writelines+collab_info
                     writelines.append('Dear '+dear+',')
                     writelines.append('\n')
-                    writelines.append('We are excited to work with you. This quote is for our'+ service_items+' Service. The costs are for library preparation, which includes all reagents and labor costs associated with library preparation, quality control shallow sequencing, and basic data processing. The estimated costs for your project are:')
-                    writelines.append('\n')
-                    writelines = writelines+service_breakdown
-                    writelines.append('Total Estimate:'+total_expression)
+                    writelines.append(quotebody(service_items,service_quantities,institute))
 
-                    # pdf_context = {
-                    #     'quote_id':quote_compact,
-                    #     'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
-                    #     'collab_info':collab_info,
-                    #     'dear':dear,
-                    #     'service_items':service_items,
-                    #     'service_breakdown':service_breakdown,
-                    #     'total_expression':total_expression,
-
-                    # }
                     pdf_context = {
                         'quote_id':quote_compact,
                         'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
