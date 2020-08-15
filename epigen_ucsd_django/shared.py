@@ -1,4 +1,4 @@
-
+from collaborator_app.models import ServiceInfo
 
 def is_member(user,group):
     return user.groups.filter(name=group).exists()
@@ -28,6 +28,8 @@ def daysuffix(d):
     return 'th' if 11<=d<=13 else {1:'st',2:'nd',3:'rd'}.get(d%10, 'th')
 
 def quotebody(serviceitems, quantities,institute):
+	print(serviceitems)
+	print(quantities)
 	service_breakdown = []
 	service_detail = []
 	servicename = []
@@ -35,11 +37,12 @@ def quotebody(serviceitems, quantities,institute):
 	subtotals = []
 	outlines = []
 
-	fixedpart1 = 'We are excited to work with you.'
-	fixedpart4 = 'The estimated costs for your project are:'
+	fixedpart1 = 'We are excited to work with you'
+	fixedpart4 = 'The estimated costs for your project are:\n'
 	for value in zip(serviceitems,quantities):
 		item = value[0]
 		quantity = value[1]
+		print(item)
 
 		thisitem = ServiceInfo.objects.get(service_name=item)
 		if thisitem.description_brief:
@@ -54,6 +57,8 @@ def quotebody(serviceitems, quantities,institute):
 			rate_value = thisitem.uc_rate
 		elif institute.lower() == 'non_uc':
 			rate_value = thisitem.nonuc_rate
+		elif institute.lower() == 'industry':
+			rate_value = thisitem.industry_rate
 		service_breakdown_help = ''
 		if item == 'ATAC-seq':
 			this_name = 'ATAC-seq'
@@ -72,30 +77,33 @@ def quotebody(serviceitems, quantities,institute):
 		subtotal = float(rate_value)*float(quantity)
 		total += subtotal
 		if len(serviceitems) > 1:
-			this_breakdown = this_breakdown+'\nSubtotal:$'+str(rate_value)+'*'+str(quantity)+' '+thisitem.rate_unit+' = $'+str(subtotal)
+			this_breakdown = this_breakdown+'\nSubtotal:$'+str(rate_value)+'*'+str(quantity)+' '+thisitem.rate_unit+'s = $'+str(subtotal)+'\n'
 			if thisitem.description_brief:
-				this_detail = brief[0].lower()+ brief[1:]+'in'+this_name+', which includes '+detail
+				this_detail = brief[0].lower()+ brief[1:]+' in '+this_name+', which includes '+detail
 			else:
-				this_detail = brief[0].lower()+ brief[1:]+', which includes '+detail
+				this_detail = brief+', which includes '+detail
 
 		else:
-			this_detail = brief+', which includes '+detail
+			if thisitem.description_brief:
+				this_detail = brief[0].lower()+ brief[1:]+', which includes '+detail
+			else:
+				this_detail = brief+', which includes '+detail
 		service_detail.append(this_detail)
 		service_breakdown.append(this_breakdown)
 		subtotals.append('$'+str(subtotal))
 	
 	if len(serviceitems) > 1:
-		fixedpart2 = 'This quote is for our'+','.join(servicename[0:-1])+' and '+servicename[-1]
+		fixedpart2 = 'This quote is for our '+','.join(servicename[0:-1])+' and '+servicename[-1]
 		fixedpart3 = 'The costs are for '+','.join(service_detail)
 		outlines.append('.'.join([fixedpart1,fixedpart2,fixedpart3,fixedpart4]))
 		outlines.append('\n'.join(service_breakdown))
-		outlines.append('Total Estimate: '+'+'.join(subtotals)+' = '+'$'+str(total))
+		outlines.append('\nTotal Estimate: '+'+'.join(subtotals)+' = '+'$'+str(total))
 	else:
-		fixedpart2 = 'This quote is for our '+','.join(servicename)+' service.'
+		fixedpart2 = 'This quote is for our '+','.join(servicename)+' service'
 		fixedpart3 = 'The costs are for '+','.join(service_detail)
 		outlines.append('.'.join([fixedpart1,fixedpart2,fixedpart3,fixedpart4]))
 		outlines.append('\n'.join(service_breakdown))
-		outlines.append('Total Estimate: $'+str(rate_value)+'*'+str(quantity)+' '+thisitem.rate_unit+' = $'+str(subtotal))
+		outlines.append('Total Estimate: $'+str(rate_value)+'*'+str(quantity)+' '+thisitem.rate_unit+'s = $'+str(subtotal))
 
 	return '\n'.join(outlines)
 

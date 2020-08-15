@@ -296,7 +296,7 @@ def ServiceRequestCreateView(request):
                 for q in qs:
                     all_quote.append(q)
 
-            print(all_quote)
+            #print(all_quote)
             all_quote_number = [int(x.split(' ')[-1]) for x in all_quote if x]
             if all_quote_number:
                 max_quote = max(all_quote_number)
@@ -316,7 +316,7 @@ def ServiceRequestCreateView(request):
                                 service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
                             elif float(quantity) >= 96:
                                 service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
-                        #print(service.service_name)
+                        print(institute)
 
                         if institute == 'uc':
                             data_requestitem[service.service_name] = {
@@ -331,7 +331,14 @@ def ServiceRequestCreateView(request):
                                 'rate_number':service.nonuc_rate,
                                 'quantity':quantity,
                                 'rate_unit':service.rate_unit,
-                            }                            
+                            }
+                        elif institute == 'industry':
+                            data_requestitem[service.service_name] = {
+                                'rate(industry users)':str(service.industry_rate)+'/'+service.rate_unit,
+                                'rate_number':service.industry_rate,
+                                'quantity':quantity,
+                                'rate_unit':service.rate_unit,
+                            }                        
                 total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
                 total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity'])+' '+x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
 
@@ -353,6 +360,8 @@ def ServiceRequestCreateView(request):
                         displayorde_requestitem = ['rate(uc users)','quantity']
                     elif institute == 'non_uc':
                         displayorde_requestitem = ['rate(non-uc users)','quantity']
+                    elif institute == 'industry':
+                        displayorde_requestitem = ['rate(industry users)','quantity']
                     displayorder_request = ['service_request_id','quote_number','quote_amount','date','group','institute','research_contact','research_contact_email','notes','status']
                     #print(data_request)  
 
@@ -384,8 +393,6 @@ def ServiceRequestCreateView(request):
                     service_items = []
                     service_quantities = []
                     for item in data_requestitem.keys():
-                        print(item)
-                        print(data_requestitem[item]['quantity'])
                         ServiceRequestItem.objects.create(
                             request=thisrequest, 
                             service=ServiceInfo.objects.get(service_name=item),
@@ -395,14 +402,11 @@ def ServiceRequestCreateView(request):
                         this_service_item = ServiceInfo.objects.get(service_name=item)
                         service_quantities.append(data_requestitem[item]['quantity'])
                     quote_compact = ''.join(data_request['quote_number'].split(' '))
-                    collab_info = [group_name,research_contact,research_contact_email,'\n']
+                    collab_info = [group_name,research_contact,research_contact_email+'\n']
                     dear = 'Dr. '+ group_name.split(' ')[-1]
-                    service_items = ','.join(set(service_items))
-
 
                     writelines = writelines+collab_info
-                    writelines.append('Dear '+dear+',')
-                    writelines.append('\n')
+                    writelines.append('Dear '+dear+',\n')
                     writelines.append(quotebody(service_items,service_quantities,institute))
 
                     pdf_context = {
