@@ -28,8 +28,6 @@ def daysuffix(d):
     return 'th' if 11<=d<=13 else {1:'st',2:'nd',3:'rd'}.get(d%10, 'th')
 
 def quotebody(serviceitems, quantities,institute):
-	print(serviceitems)
-	print(quantities)
 	service_breakdown = []
 	service_detail = []
 	servicename = []
@@ -42,7 +40,6 @@ def quotebody(serviceitems, quantities,institute):
 	for value in zip(serviceitems,quantities):
 		item = value[0]
 		quantity = value[1]
-		print(item)
 
 		thisitem = ServiceInfo.objects.get(service_name=item)
 		if thisitem.description_brief:

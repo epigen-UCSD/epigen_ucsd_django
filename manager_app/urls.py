@@ -18,6 +18,7 @@ urlpatterns = [
     path('servicerequest_add/', views.ServiceRequestCreateView, name='collab_servicerequest_add'),
     #path('servicerequest_add/', views.ServiceRequestCreateView, name='quote_add'),
     path('servicerequest_update/<int:pk>/', views.ServiceRequestUpdateView, name='collab_servicerequest_update'),
+    path('add_new_quote/<int:pk>/', views.ServiceRequestAddNewQuoteView, name='collab_servicerequest_add_new_quote'),
     path('servicerequests/', TemplateView.as_view(template_name="manager_app/servicerequests_list.html"), name='servicerequests_list'),
     path('servicerequests_list/', views.ServiceRequestDataView, name='service_request_display'),
     path('quote/<slug:quoteid>/', views.QuotePdfView, name='quote_pdf'),
