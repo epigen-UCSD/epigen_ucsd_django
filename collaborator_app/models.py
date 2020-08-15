@@ -29,7 +29,7 @@ class ServiceRequest(models.Model):
     # group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
     # research_contact = models.ForeignKey(CollaboratorPersonInfo, on_delete=models.CASCADE, blank=True, null=True)
     # research_contact_email = models.CharField(max_length=100, blank=True, null=True)
-    group = models.CharField(max_length=200,blank=True, null=True)
+    group = models.CharField('PI',max_length=200,blank=True, null=True)
     institute_choice = (('uc', 'uc'), ('non_uc', 'non_uc'),('industry', 'industry'))
     institute = models.CharField(max_length=50, choices=institute_choice)
     research_contact = models.CharField(max_length=200,blank=True, null=True)

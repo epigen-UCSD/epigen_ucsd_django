@@ -5,7 +5,7 @@
 <div id="content" class="col-sm-10 col-md-10 col-lg-10">
   <div class="card">
     <div class="card-header fortable">
-     Service Request {{thiservicerequest.service_request_id}} Update:
+     Quote {{ this_quote_nunmber }} Update:
     </div><!-- /.card-header -->
     <div class="card-body">
   {% if error_message %}
@@ -66,7 +66,8 @@
               </tr>
           {% endfor %}
       </table>
-      <input type="submit" value="Save" name='Preview'/>
+        <input id="bindtomodalok" type="submit" value="Save" name='Save' hidden='hidden'/>
+        <input type="submit" value="Save" name='Preview'/>
     </form>
     </div><!-- /.card-body -->              
   </div><!-- /.card -->      
@@ -126,7 +127,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button id="confirmtosave" type="button" name="save" class="btn confirm-btn-orange">Save and Generate PDF</button>
+        <button id="confirmtosave" type="button" class="btn confirm-btn-orange">Save and Update PDF</button>
       </div>
     </div>
   </div>
