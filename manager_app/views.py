@@ -279,6 +279,8 @@ def ServiceRequestCreateView(request):
     
     today = datetime.date.today()
     datesplit = str(datetime.date.today()).split('-')
+    now = datetime.datetime.now()
+
     writelines = []
 
 
@@ -302,7 +304,7 @@ def ServiceRequestCreateView(request):
                 max_quote = max(all_quote_number)
             else:
                 max_quote = 0
-            this_service_request_id = ' '.join([group_name.split(' ')[0][0].upper()+group_name.split(' ')[-1][0].upper(),datesplit[1]+datesplit[2]+datesplit[0][-2:]])
+            this_service_request_id = ' '.join([group_name.split(' ')[0][0].upper()+group_name.split(' ')[-1][0].upper(),datesplit[1]+datesplit[2]+datesplit[0][-2:],str(now.hour).zfill(2)+str(now.minute).zfill(2)])
             this_quote_nunmber = ' '.join([group_name.split(' ')[0][0].upper()+group_name.split(' ')[-1][0].upper(),datesplit[1]+datesplit[2]+datesplit[0][-2:],str(max_quote+1).zfill(4)])
 
             #print(institute)
