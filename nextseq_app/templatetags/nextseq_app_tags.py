@@ -81,6 +81,8 @@ def linktrackingsheet(stringtext):
 
 @register.filter
 def linkemail(text):
+	print(emailcheck('Ron@ucsd.edu'))
+	print(emailcheck('ee@gmail.com'))
 	outtext = []
 	lines = text.split('\n')
 	for line in lines:
@@ -88,10 +90,11 @@ def linkemail(text):
 		words = line.split(' ')
 		for word in words:
 			if emailcheck(word):
-				outline.append('<a href="'+word+'">'+word+'</a>')
+				outline.append('<a href="mailto:'+word+'">'+word+'</a>')
 			else:
 				outline.append(word)
 		outtext.append(' '.join(outline))
+	print('\n'.join(outtext))
 	return '\n'.join(outtext)	
 
 

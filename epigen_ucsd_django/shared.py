@@ -29,7 +29,7 @@ def daysuffix(d):
     return 'th' if 11<=d<=13 else {1:'st',2:'nd',3:'rd'}.get(d%10, 'th')
 
 def emailcheck(email):  
-	regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
     if(re.search(regex,email)):  
         return True     
     else:  
@@ -83,14 +83,15 @@ def quotebody(serviceitems, quantities,institute):
 		subtotal = float(rate_value)*float(quantity)
 		total += subtotal
 		if len(serviceitems) > 1:
-			i += 1
+			
 			this_breakdown = this_breakdown+'\nSubtotal:$'+str(rate_value)+'*'+str(quantity)+' '+thisitem.rate_unit+'s = $'+str(subtotal)+'\n'
 			if '(pilot)' not in item:
+				i += 1
 				if thisitem.description_brief:
 					this_detail = brief[0].lower()+ brief[1:]+' in '+this_name+', which includes '+detail
 				else:
 					this_detail = brief+', which includes '+detail
-				service_detail.append('('+str(i)+')'+this_detail)
+				service_detail.append('('+str(i)+') '+this_detail)
 
 		else:
 			if thisitem.description_brief:
@@ -108,6 +109,11 @@ def quotebody(serviceitems, quantities,institute):
 			fixedpart2 = 'This quote is for our '+','.join(servicename[0:-1])+' and '+servicename[-1]
 		else:
 			fixedpart2 = 'This quote is for our '+','.join(servicename)+' service'
+			service_detail_tm = []
+			for item in service_detail:
+				service_detail_tm.append(item.split(')',1)[1])
+			service_detail = service_detail_tm
+
 		fixedpart3 = 'The costs are for '+'.'.join(service_detail)
 		outlines.append('.'.join([fixedpart1,fixedpart2,fixedpart3,fixedpart4]))
 		outlines.append('\n'.join(service_breakdown))

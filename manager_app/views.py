@@ -476,7 +476,6 @@ def ServiceRequestUpdateView(request,pk):
                             service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
                         elif float(quantity) >= 96:
                             service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
-                    print(institute)
 
                     if institute == 'uc':
                         data_requestitem[service.service_name] = {
@@ -499,7 +498,7 @@ def ServiceRequestUpdateView(request,pk):
                             'quantity':quantity,
                             'rate_unit':service.rate_unit,
                         }
-            print(data_requestitem.values())                        
+                      
             total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
             total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity'])+' '+x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
 
