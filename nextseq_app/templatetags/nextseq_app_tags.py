@@ -1,6 +1,8 @@
 from django import template
 from django.contrib.auth.models import Group
 from epigen_ucsd_django.settings import DEBUG
+from epigen_ucsd_django.shared import emailcheck
+
 register = template.Library()
 print(f'debug status: {DEBUG}')
 
@@ -76,4 +78,23 @@ def linktrackingsheet(stringtext):
 	for k,v in linktrans.items():
 		stringtext = stringtext.replace(k,v)
 	return stringtext
+
+@register.filter
+def linkemail(text):
+	outtext = []
+	lines = text.split('\n')
+	for line in lines:
+		outline = []
+		words = line.split(' ')
+		for word in words:
+			if emailcheck(word):
+				outline.append('<a href="'+word+'">'+word+'</a>')
+			else:
+				outline.append(word)
+		outtext.append(' '.join(outline))
+	return '\n'.join(outtext)	
+
+
+
+
 

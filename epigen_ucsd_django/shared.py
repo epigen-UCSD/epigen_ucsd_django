@@ -1,4 +1,5 @@
 from collaborator_app.models import ServiceInfo
+import re
 
 def is_member(user,group):
     return user.groups.filter(name=group).exists()
@@ -26,6 +27,13 @@ def SelfUniqueValidation(tosavelist):
 
 def daysuffix(d):
     return 'th' if 11<=d<=13 else {1:'st',2:'nd',3:'rd'}.get(d%10, 'th')
+
+def emailcheck(email):  
+	regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    if(re.search(regex,email)):  
+        return True     
+    else:  
+        return False
 
 def quotebody(serviceitems, quantities,institute):
 	service_breakdown = []
