@@ -58,7 +58,7 @@ def quotebody(serviceitems, quantities,institute):
 		elif institute.lower() == 'industry':
 			rate_value = thisitem.industry_rate
 		service_breakdown_help = ''
-		if item == 'ATAC-seq':
+		if item in ['ATAC-seq','ATAC-seq(pilot)']:
 			this_name = 'ATAC-seq'
 			service_breakdown_help = ' (up to 23 samples)'
 		elif item == 'ATAC-seq_24':
@@ -77,11 +77,12 @@ def quotebody(serviceitems, quantities,institute):
 		if len(serviceitems) > 1:
 			i += 1
 			this_breakdown = this_breakdown+'\nSubtotal:$'+str(rate_value)+'*'+str(quantity)+' '+thisitem.rate_unit+'s = $'+str(subtotal)+'\n'
-			if thisitem.description_brief:
-				this_detail = brief[0].lower()+ brief[1:]+' in '+this_name+', which includes '+detail
-			else:
-				this_detail = brief+', which includes '+detail
-			service_detail.append('('+str(i)+')'+this_detail)
+			if '(pilot)' not in item:
+				if thisitem.description_brief:
+					this_detail = brief[0].lower()+ brief[1:]+' in '+this_name+', which includes '+detail
+				else:
+					this_detail = brief+', which includes '+detail
+				service_detail.append('('+str(i)+')'+this_detail)
 
 		else:
 			if thisitem.description_brief:
@@ -92,8 +93,13 @@ def quotebody(serviceitems, quantities,institute):
 		service_breakdown.append(this_breakdown)
 		subtotals.append('$'+str(subtotal))
 	
+	
 	if len(serviceitems) > 1:
-		fixedpart2 = 'This quote is for our '+','.join(servicename[0:-1])+' and '+servicename[-1]
+		servicename = list(set(servicename))
+		if len(servicename) > 1:
+			fixedpart2 = 'This quote is for our '+','.join(servicename[0:-1])+' and '+servicename[-1]
+		else:
+			fixedpart2 = 'This quote is for our '+','.join(servicename)+' service'
 		fixedpart3 = 'The costs are for '+'.'.join(service_detail)
 		outlines.append('.'.join([fixedpart1,fixedpart2,fixedpart3,fixedpart4]))
 		outlines.append('\n'.join(service_breakdown))
