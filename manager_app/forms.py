@@ -3,8 +3,10 @@ from django.contrib.auth.models import User,Group
 from epigen_ucsd_django.models import CollaboratorPersonInfo,Group_Institution
 import secrets
 import string
+import os
 from collaborator_app.models import ServiceInfo,ServiceRequest,ServiceRequestItem
 from django.db.models import Prefetch
+from django.conf import settings
 
 class UserForm(forms.ModelForm):
 	class Meta:
@@ -120,6 +122,47 @@ class QuoteCreationForm(forms.ModelForm):
 	class Meta:
 		model = ServiceRequest
 		fields = ['group','research_contact','quote_amount']
+
+class QuoteBulkImportForm(forms.Form):
+	quotesinfo = forms.CharField(
+			label='QuoteInfo(Please copy and paste all of the columns from quote tracking sheet)',
+			widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
+			required=True,
+					)
+	def clean_quotesinfo(self):
+		data = self.cleaned_data['quotesinfo']
+		cleaneddata = []
+		invalidquote = []
+
+		all_quote_list = ServiceRequest.objects.values_list('quote_number', flat=True)
+		all_quote = []
+		for qs in all_quote_list:
+			for q in qs:
+				all_quote.append(q)
+
+		for lineitem in data.strip().split('\n'):
+			if lineitem != '\r':
+				fields = lineitem.split('\t')
+				this_quote = fields[4]
+				if this_quote in all_quote:
+					invalidquote.append(this_quote)
+				cleaneddata.append(lineitem)
+		if len(invalidquote) > 0:
+			raise forms.ValidationError('Quotes are already exist in database:'+','.join(invalidquote))   
+		return '\n'.join(cleaneddata)
+
+class QuoteUploadFileForm(forms.Form):
+	quote_number = forms.CharField(max_length=50,help_text='Please input the quote number without blank, like JR0816200047, AB0722200002')
+	file = forms.FileField()
+
+	def clean_quote_number(self):
+		data = self.cleaned_data['quote_number']
+		if ' ' in data:
+			raise forms.ValidationError('Blank is not allowed in quote number')
+		existquotes = os.listdir(settings.QUOTE_DIR)
+		if data+'.pdf' in existquotes:
+			raise forms.ValidationError(data+'.pdf is already in LIMS')
+
 
 
 

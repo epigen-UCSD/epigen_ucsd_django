@@ -9,10 +9,10 @@ from django.contrib.auth.models import User,Group
 from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models import Prefetch
-from epigen_ucsd_django.shared import is_member,daysuffix,quotebody
+from epigen_ucsd_django.shared import is_member,daysuffix,quotebody,datetransform2
 from masterseq_app.views import nonetolist,removenone
 from django.forms import formset_factory,inlineformset_factory
-from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm
+from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm,QuoteBulkImportForm,QuoteUploadFileForm
 import datetime
 from collaborator_app.models import ServiceInfo,ServiceRequest,ServiceRequestItem
 from django.core.files.storage import FileSystemStorage
@@ -20,8 +20,10 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import os
+import subprocess
 from django.conf import settings
 from django.utils.safestring import mark_safe
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 
@@ -1069,4 +1071,56 @@ def QuoteListView(request):
         quote_list.append(this_data)
     data = quote_list
     return JsonResponse(data, safe=False)
+
+@transaction.atomic
+def QuoteBulkAddView(request):
+    quotes_form = QuoteBulkImportForm(request.POST or None)
+    if quotes_form.is_valid():
+        quotesinfo = quotes_form.cleaned_data['quotesinfo']
+        for lineitem in quotesinfo.strip().split('\n'):
+            fields = lineitem.split('\t')
+            contact_info = fields[1].split('/')
+            if len(contact_info) == 2:
+                group_name = contact_info[0].strip()
+                research_contact = contact_info[1].strip()
+            elif len(contact_info) == 1:
+                group_name = contact_info[0].strip()
+                research_contact = ''
+            this_date = datetransform2(fields[3].strip())
+
+            thisrequest = ServiceRequest.objects.create(
+                group=group_name,
+                quote_number=[fields[4].strip()],
+                quote_amount=[fields[5].strip()],
+                date=this_date,
+                research_contact=research_contact,
+                status='sent',
+                )
+        return redirect('manager_app:quote_list')
+    context = {
+        'quotes_form': quotes_form,
+    }
+
+    return render(request, 'manager_app/manager_feeforservice_quotebulkimport.html', context)
+
+
+def QuotePdfUpload(request):
+    if request.method == 'POST':
+        quotes_upload_form = QuoteUploadFileForm(request.POST, request.FILES)
+        if quotes_upload_form.is_valid():
+            file = request.FILES['file']
+            file_name = quotes_upload_form.cleaned_data['quote_number']+'.pdf'
+            fs = FileSystemStorage()
+            filename = fs.save(file_name, file)
+            subprocess.call("ln -s "+os.path.join(settings.MEDIA_ROOT,file_name)+" "+os.path.join(settings.QUOTE_DIR,file_name), shell=True)
+            return redirect('manager_app:quote_list')
+    else:
+        quotes_upload_form = QuoteUploadFileForm()
+
+    context = {
+        'quotes_upload_form': quotes_upload_form,
+    }
+
+    return render(request, 'manager_app/manager_feeforservice_quotepdfupload.html',context)
+
 

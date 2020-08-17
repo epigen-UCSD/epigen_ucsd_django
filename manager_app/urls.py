@@ -24,7 +24,9 @@ urlpatterns = [
     path('quote/<slug:quoteid>/', views.QuotePdfView, name='quote_pdf'),
     path('quote/<slug:quoteid>/text_update/', views.QuoteTextUpdateView, name='quote_text_update'),
     path('quote_add/', views.QuoteAddView, name='quote_add'),
+    path('quote_bulk_add/', views.QuoteBulkAddView, name='quotes_bulk_add'),
     path('quotes/', TemplateView.as_view(template_name="manager_app/quotes_list.html"), name='quote_list'),
     path('quote_list/', views.QuoteListView, name='quote_display'),
+    path('quote_upload/', views.QuotePdfUpload, name='quote_upload'),
 
 ]

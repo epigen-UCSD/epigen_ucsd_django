@@ -18,6 +18,19 @@ def datetransform(inputdate):
 	if len(year) == 2:
 		year = '20'+year
 	return '-'.join([year,month,date])
+
+def datetransform2(inputdate):
+	#from 031620 to 2020-03-16
+	#from 31620 to 2020-03-16
+	if inputdate == '':
+		return None
+	tm = inputdate.split('/')
+	year = '20'+inputdate[-2:]
+	month = inputdate[:-4].zfill(2)
+	date = inputdate[-4:-2]
+	return '-'.join([year,month,date])
+
+
 def SelfUniqueValidation(tosavelist):
     duplicate = []
     for i in range(0, len(tosavelist)):
