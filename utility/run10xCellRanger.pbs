@@ -12,7 +12,7 @@
 
 # -v pass parameters: samples
 
-export PATH=/projects/ps-epigen/software/cellranger-3.0.2/cellranger/:$PATH
+export PATH=/projects/ps-epigen/software/cellranger-3.0.2/:$PATH
 WORKDIR="/oasis/tscc/scratch/$(whoami)/outputs_TA/"
 FASTQDIR="/projects/ps-epigen/seqdata/"
 
@@ -41,10 +41,14 @@ job1=$(ssh zhc268@epigenomics.sdsc.edu $cmd)
 
 mkdir -p ~/data/outputs/scRNA/$INPREFIX
 [[ -f ~/data/outputs/scRNA/${INPREFIX}/.inqueue ]] && rm  ~/data/outputs/scRNA/${INPREFIX}/.inqueue 
-[[ -f ~/data/outputs/scRNA/${INPREFIX}/.inprocess ]] && rm  ~/data/outputs/scRNA/${INPREFIX}/.inprocess 
+[[ -f ~/data/outputs/scRNA/${INPREFIX}/.inprocess ]] && rm  ~/data/outputs/scRNA/${INPREFIX}/.inprocess
 
-echo "cellranger count --id=$INPREFIX --fastqs=${fastqs} --sample ${SAMPLE} --transcriptome=${genome_path} --localcores=16  --mempercore=5"
-cellranger count --id=$INPREFIX --fastqs=$fastqs --sample $SAMPLE --transcriptome=$genome_path --localcores=16  --mempercore=5
+## handle mixing RNA-ATAC outputs
+sample_args=${SAMPLE}
+[[ $(ls -1 ${fastqs}/${SAMPLE}_[1-4]_S*_R1_*fastq.gz|wc -l) -eq 4 ]] && sample_args="${SAMPLE}_1,${SAMPLE}_2,${SAMPLE}_3,${SAMPLE}_4"
+cmd="cellranger count --id=$INPREFIX --fastqs=${fastqs} --sample $sample_args --transcriptome=${genome_path} --localcores=16  --mempercore=5"
+echo $cmd
+echo $cmd |bash 
 wait
 
 # transfer results
