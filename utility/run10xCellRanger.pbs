@@ -4,8 +4,8 @@
 #PBS -l nodes=1:ppn=16
 #PBS -l walltime=24:00:00
 #PBS -l mem=96gb
-#PBS -o /home/zhc/logs/run_10xMkpipeline.out
-#PBS -e /home/zhc/logs/run_10xMkpipeline.err
+#PBS -o /home/zhc268/logs/run_10xRNA.out
+#PBS -e /home/zhc268/logs/run_10xRNA.err
 #PBS -V
 #PBS -m abe
 #PBS -A epigen-group
@@ -41,15 +41,14 @@ job1=$(ssh zhc268@epigenomics.sdsc.edu $cmd)
 
 mkdir -p ~/data/outputs/scRNA/$INPREFIX
 [[ -f ~/data/outputs/scRNA/${INPREFIX}/.inqueue ]] && rm  ~/data/outputs/scRNA/${INPREFIX}/.inqueue 
-touch ~/data/outputs/scRNA/${INPREFIX}/.inprocess
+[[ -f ~/data/outputs/scRNA/${INPREFIX}/.inprocess ]] && rm  ~/data/outputs/scRNA/${INPREFIX}/.inprocess 
+
 echo "cellranger count --id=$INPREFIX --fastqs=${fastqs} --sample ${SAMPLE} --transcriptome=${genome_path} --localcores=16  --mempercore=5"
 cellranger count --id=$INPREFIX --fastqs=$fastqs --sample $SAMPLE --transcriptome=$genome_path --localcores=16  --mempercore=5
 wait
 
 # transfer results
 rsync -azr ${WORKDIR}${INPREFIX} ~/data/outputs/scRNA/
-rm  ~/data/outputs/scRNA/${INPREFIX}/.inprocess
-
 
 wait
 
