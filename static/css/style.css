@@ -612,7 +612,7 @@ a[aria-expanded=false] .fa-caret-down {
 
 
 .navsiebar > .list-group-item[aria-expanded="true"]{
-  background-color: #00B5E2 !important;
+  background-color: #0a2a66 !important;
   color: white;
   margin-left: 8px;
 

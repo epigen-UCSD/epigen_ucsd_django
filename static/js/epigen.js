@@ -1000,6 +1000,21 @@ $(document).ready(function () {
         })
     });
 
+    if(document.getElementById("error-message-bulk")){
+        console.log(document.getElementById("error-message-bulk").innerHTML);
+        $('#link-bulk').addClass('active');
+        $('#link-single').removeClass('active');
+        $('#single_add').removeClass('active');
+        $('#single_add').removeClass('show');
+        $('#bulk_add').addClass('active');
+        $('#bulk_add').addClass('show');
+
+
+
+    }
+
+    
+
 
 
     // $('#id_group').change(function (){

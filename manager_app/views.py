@@ -983,10 +983,12 @@ def QuoteTextUpdateView(request,quoteid):
 def QuoteAddView(request):
 
     quotecreate_form = QuoteCreationForm(request.POST or None)
+    quotes_form = QuoteBulkImportForm(None)
     today = datetime.date.today()
     datesplit = str(datetime.date.today()).split('-')
 
-    if request.method == 'POST':
+    if 'Preview' in request.POST or 'Save' in request.POST:
+        print('ssss')
         if quotecreate_form.is_valid():
             group_name = quotecreate_form.cleaned_data['group']
             research_contact = quotecreate_form.cleaned_data['research_contact']
@@ -1031,8 +1033,9 @@ def QuoteAddView(request):
                     'modalshow': 1,
                     'displayorder_request': displayorder_request,
                     'data_request':data_request,
+                    'quotes_form': quotes_form,
                 }        
-                return render(request, 'manager_app/manager_feeforservice_quotecreate.html', context)
+                return render(request, 'manager_app/manager_feeforservice_quotecreate_import.html', context)
 
             if 'Save' in request.POST:
                 thisrequest = ServiceRequest.objects.create(
@@ -1046,11 +1049,37 @@ def QuoteAddView(request):
 
                 return redirect('manager_app:quote_list')
 
+    elif 'BulkSave' in request.POST:
+        quotes_form = QuoteBulkImportForm(request.POST)
+        if quotes_form.is_valid():
+            quotesinfo = quotes_form.cleaned_data['quotesinfo']
+            for lineitem in quotesinfo.strip().split('\n'):
+                fields = lineitem.split('\t')
+                contact_info = fields[1].split('/')
+                if len(contact_info) == 2:
+                    group_name = contact_info[0].strip()
+                    research_contact = contact_info[1].strip()
+                elif len(contact_info) == 1:
+                    group_name = contact_info[0].strip()
+                    research_contact = ''
+                this_date = datetransform2(fields[3].strip())       
+
+                thisrequest = ServiceRequest.objects.create(
+                    group=group_name,
+                    quote_number=[fields[4].strip()],
+                    quote_amount=[fields[5].strip()],
+                    date=this_date,
+                    research_contact=research_contact,
+                    status='sent',
+                    )
+            return redirect('manager_app:quote_list')
+
     context = {
         'quotecreate_form': quotecreate_form,
+        'quotes_form': quotes_form,
     }
 
-    return render(request, 'manager_app/manager_feeforservice_quotecreate.html', context)
+    return render(request, 'manager_app/manager_feeforservice_quotecreate_import.html', context)
 
 def QuoteListView(request):
     quote_list = []
