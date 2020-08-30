@@ -12,7 +12,7 @@ from django.db.models import Prefetch
 from epigen_ucsd_django.shared import is_member,daysuffix,quotebody,datetransform2
 from masterseq_app.views import nonetolist,removenone
 from django.forms import formset_factory,inlineformset_factory
-from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm,QuoteBulkImportForm,QuoteUploadFileForm
+from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm,QuoteBulkImportForm,QuoteUploadFileForm,QuoteUploadByQidFileForm
 import datetime
 from collaborator_app.models import ServiceInfo,ServiceRequest,ServiceRequestItem
 from django.core.files.storage import FileSystemStorage
@@ -1042,6 +1042,7 @@ def QuoteAddView(request):
                     group=group_name,
                     quote_number=[data_request['quote_number']],
                     quote_amount=[data_request['quote_amount']],
+                    quote_pdf=False,
                     date=data_request['date'],
                     research_contact=data_request['research_contact'],
                     )
@@ -1068,6 +1069,7 @@ def QuoteAddView(request):
                     group=group_name,
                     quote_number=[fields[4].strip()],
                     quote_amount=[fields[5].strip()],
+                    quote_pdf=False,
                     date=this_date,
                     research_contact=research_contact,
                     status='sent',
@@ -1095,6 +1097,7 @@ def QuoteListView(request):
                 'group':S['group'],
                 'research_contact':S['research_contact'],
                 'quote_amount':S['quote_amount'][i]
+                'quote_pdf':S['quote_pdf'][i]
             }
             i += 1
         quote_list.append(this_data)
@@ -1153,4 +1156,89 @@ def QuotePdfUpload(request):
 
     return render(request, 'manager_app/manager_feeforservice_quotepdfupload.html',context)
 
+def QuotePdfByQidUpload(request,requestid,quoteid):
+    qid = quoteid
+    requestid = requestid
+    this_request = ServiceRequest.objects.get(id=requestid)
+    index = this_request.quote_number.index(qid)
 
+    if request.method == 'POST':
+        quotes_upload_form = QuoteUploadByQidFileForm(request.POST, request.FILES)
+        if quotes_upload_form.is_valid():
+            file = request.FILES['file']
+            print(qid)
+            file_name = qid+'.pdf'
+            fs = FileSystemStorage()
+            filename = fs.save(file_name, file)
+            subprocess.call("ln -s "+os.path.join(settings.MEDIA_ROOT,file_name)+" "+os.path.join(settings.QUOTE_DIR,file_name), shell=True)
+            this_request.quote_pdf[index] = True
+            this_request.save()
+            return redirect('manager_app:quote_list')
+    else:
+        quotes_upload_form = QuoteUploadByQidFileForm()
+
+    context = {
+        'qid':qid,
+        'quotes_upload_form': quotes_upload_form,
+    }
+
+    return render(request, 'manager_app/manager_feeforservice_quotepdfbyqidupload.html',context)
+
+@transaction.atomic
+def QuoteUpdateView(request,requestid,quoteid):
+    this_request = get_object_or_404(ServiceRequest, pk=requestid)
+    quotecreate_form = QuoteCreationForm(request.POST or None,instance=thiservicerequest)
+    index = this_request.quote_number.index(quoteid)
+
+    if 'Preview' in request.POST or 'Save' in request.POST:
+
+        if quotecreate_form.is_valid():
+            group_name = quotecreate_form.cleaned_data['group']
+            research_contact = quotecreate_form.cleaned_data['research_contact']
+            this_amount = ''.join(quotecreate_form.cleaned_data['quote_amount'])
+            if not this_amount.startswith('$'):
+                this_amount = '$'+this_amount
+            if '-' in this_amount:
+                tm = []
+                for x in this_amount.split('-'):
+                    if not x.startswith('$'):
+                        tm.append('$'+x)
+                    else:
+                        tm.append('$'+x)
+                this_amount = '-'.join(tm)
+ 
+           data_request = {
+                'quote_number':quoteid,
+                'group':group_name,
+                'research_contact':research_contact,
+                'quote_amount':this_amount,
+            }
+
+            if 'Preview' in request.POST:
+                displayorder_request = ['quote_number','group','research_contact','quote_amount']
+                #print(data_request)  
+
+                context = {
+                    'quotecreate_form': quotecreate_form,
+                    'modalshow': 1,
+                    'displayorder_request': displayorder_request,
+                    'data_request':data_request,
+                    'qid':quoteid,
+                }        
+                return render(request, 'manager_app/manager_feeforservice_quoteupdate.html', context)
+
+            if 'Save' in request.POST:
+                this_request.group = group_name
+                this_request.research_contact = data_request['research_contact']
+                this_request.quote_amount[index] = data_request['quote_amount']
+                this_request.save()
+                return redirect('manager_app:quote_list')
+
+
+    context = {
+        'quotecreate_form': quotecreate_form,
+        'qid':quoteid,
+
+    }
+
+    return render(request, 'manager_app/manager_feeforservice_quoteupdate.html', context)

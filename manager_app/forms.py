@@ -164,6 +164,8 @@ class QuoteUploadFileForm(forms.Form):
 			raise forms.ValidationError(data+'.pdf is already in LIMS')
 		return data
 
+class QuoteUploadByQidFileForm(forms.Form):
+	file = forms.FileField()
 
 
 

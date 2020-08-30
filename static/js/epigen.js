@@ -545,6 +545,7 @@ $(document).ready(function () {
             { "data": "group" },
             { "data": "research_contact" },
             { "data": "quote_amount" },
+            { "data": "quote_pdf" },
         ],
         "deferRender": true,
         "select": false,
@@ -564,12 +565,27 @@ $(document).ready(function () {
                 
             }
         },
-
         {
             "targets": 6,
             "render": function (data, type, row) {
                 var itemID = row["pk"];
-                return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a>'
+                var qid = row["quote_number"].replace(/ /g, "")
+                if (data) {
+                    return '<a class="spacing-big" href="/manager/quote/'+qid+'/" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>'
+                }
+                else {
+                    return '';
+                }
+                
+            }
+        },
+
+        {
+            "targets": 7,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                var qid = row["quote_number"].replace(/ /g, "")
+                return '<a class="spacing" href="/manager/quote_upload/' + itemID + '/' qid + '/"><i class="fas fa-upload"></i></a><a class="spacing" href="/manager/servicerequest_update/' + qid + '/"><i class="fas fa-edit"></i></a>'
                 
 
             }
