@@ -162,6 +162,7 @@ class QuoteUploadFileForm(forms.Form):
 		existquotes = os.listdir(settings.QUOTE_DIR)
 		if data+'.pdf' in existquotes:
 			raise forms.ValidationError(data+'.pdf is already in LIMS')
+		return data
 
 
 

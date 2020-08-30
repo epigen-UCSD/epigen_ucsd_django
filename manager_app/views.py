@@ -1109,6 +1109,7 @@ def QuotePdfUpload(request):
         quotes_upload_form = QuoteUploadFileForm(request.POST, request.FILES)
         if quotes_upload_form.is_valid():
             file = request.FILES['file']
+            print(quotes_upload_form.cleaned_data['quote_number'])
             file_name = quotes_upload_form.cleaned_data['quote_number']+'.pdf'
             fs = FileSystemStorage()
             filename = fs.save(file_name, file)
