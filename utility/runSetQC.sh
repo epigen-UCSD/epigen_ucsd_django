@@ -14,8 +14,11 @@ LOG_DIR="/projects/ps-epigen/logs/app/"
 RUN_LOG_PIP=${LOG_DIR}$(date +%Y%m%d)"_"${SET_ID}".txt"
 TYPE="atac"
 ##################################################
-## Step 1. construct set_xxx.txt
+## Step 1. construct set_xxx.txt/download fastq if needed
 ##################################################
+[[ -z $STATUS_FILE ]] && { echo "$STATUS_FILE not found"; exit 1; }
+echo "downloading encode files" 
+python encode_step2_rt_rl_correction_and_fq_transfering.py -f $STATUS_FILE
 awk '(NR>1){print $1}' $STATUS_FILE > $SETQC_FILE
 
 ##################################################
@@ -67,3 +70,21 @@ ssh zhc268@tscc-login.sdsc.edu $cmd2
 #ver=$(ssh zhc268@tscc-login.sdsc.edu $cmd)
 #url="http://epigenomics.sdsc.edu:8088/${SET_ID}/$(cat ${SETQC_FILE/.txt/.rstr.txt})/setQC_report.html" 
 #python updateLibrariesSetQC.py -s '3' -url $url -v $ver -id $SET_ID
+
+
+##################################################
+##  Step 4. (optional) delete ENCODE raw fastq files
+##################################################
+SEQ_DIR='/projects/ps-epigen/seqdata/'
+libs=($(awk -v FS='\t' '(NR>1){print $1}' $STATUS_FILE))
+for lib in ${libs[@]}
+do
+    if [ $lib = "ENCODE_"* ]
+    then
+        echo $lib
+        for lib_link in ${SEQ_DIR}/${lib}.fastq.gz ${SEQ_DIR}/${lib}_R1.fastq.gz ${SEQ_DIR}/${lib}_R2.fastq.gz
+        do
+            [[ ! -z ${lib_link} ]] && rm "$(readlink -f $lib_link)"
+        done
+    fi
+done

@@ -2,6 +2,7 @@ from django.conf.urls import url
 from django.urls import path
 from . import views
 from django.views.generic import TemplateView
+from django.urls import path, include
 
 app_name = 'collaborator_app'
 urlpatterns = [
@@ -14,8 +15,8 @@ urlpatterns = [
     #path('userscseqs', views.UserSingleCellSeqs, name='user_scseqs_display'),
     path('myprofile/',views.UserProfileView, name='user_profile'),  
 
-
-
+    path('singlecell/ajax/getSeqs', views.CollaboratorSingleCellData, name='get_seqs'),
+    path('singlecell/MySeqs', views.singlecell_view, name='myseqs'),
     path('setqc/usersetqcs/',views.UserSetqcView, name='user_setqcs_display'),
 
     path('changepassword/', views.collab_change_password, name='collab_change_password'),
@@ -24,7 +25,6 @@ urlpatterns = [
     path('setqc/<int:setqc_pk>/getnotes/',views.CollaboratorGetNotesView, name='setqc_collaboratorgetnotes'),
     path('mysamples/', views.CollaboratorSampleView, name='collab_samples'),
     path('mysamples_com/', views.CollaboratorSampleComView, name='collab_samples_compare'),
-
     path('feeforservice/servicerequest/', views.ServiceRequestListView, name='collab_servicerequest_list'),
     path('feeforservice/servicerequest_add/', views.ServiceRequestCreateView, name='collab_servicerequest_add'),
 

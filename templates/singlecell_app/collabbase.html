@@ -1,0 +1,21 @@
+{% extends 'collaborator_app/collab_base.html' %}
+
+{% block title %}
+<title>SingleCell App</title>
+{% endblock %}
+
+{% block sidebar %}
+<div id="sidebar" class="col-sm-2 col-md-2 col-lg-2" role="navigation">
+    <div class="list-group navsiebar">
+        <li class="sidebar-header">Single Cell App</li>
+        <a href="{% url 'collaborator_app:myseqs' %}" class="list-group-item list-group-item-action-custom-gold">
+            My Sequences
+        </a>
+        </a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block content %}
+{% endblock %}
