@@ -101,6 +101,44 @@ def AllSingleCellData(request):
 '''
 
 
+def All10xAtacQcData(request):
+    """ async function to get hit by ajax. Returns json of all single cell data dict
+    in db
+    """
+    # make sure only bioinformatics group users allowed
+
+    seqs_queryset = SingleCellObject.objects.all().select_related('seqinfo',
+                                                                  'cooladminsubmission', 'libraryinfo', 'sampleinfo',
+                                                                  'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
+        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
+        'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species',
+        'seqinfo__libraryinfo__sampleinfo__group', 'tenx_pipeline_status',
+        'seqinfo__libraryinfo__sampleinfo__sample_id', 'cooladminsubmission__pipeline_status',
+        'seqinfo__date_submitted_for_sequencing', 'cooladminsubmission__link')
+
+    data = list(seqs_queryset)
+    build_seq_list_modified(data)
+
+    return JsonResponse(data, safe=False)
+
+def User10xAtacQcData(request):
+    """async function to get hit by ajax, returns user only seqs
+    """
+    seqs_queryset = SingleCellObject.objects.filter(seqinfo__team_member_initails=request.user).select_related('seqinfo',
+                                                                                                               'cooladminsubmission', 'libraryinfo', 'sampleinfo',
+                                                                                                               'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
+        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
+        'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species',
+        'seqinfo__libraryinfo__sampleinfo__group', 'tenx_pipeline_status',
+        'seqinfo__libraryinfo__sampleinfo__sample_id', 'cooladminsubmission__pipeline_status',
+        'seqinfo__date_submitted_for_sequencing', 'cooladminsubmission__link')
+
+    data = list(seqs_queryset)
+    build_seq_list_modified(data)
+
+    return JsonResponse(data, safe=False)
+
+
 def AllSingleCellData(request):
     """ async function to get hit by ajax. Returns json of all single cell data dict
     in db

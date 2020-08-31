@@ -1549,6 +1549,19 @@ $(document).ready(function () {
     /* Start Singlecell functions
     *
     */
+    //all 10xATAC QC datatable 
+    var qcUrl_10xATAC = $('#datatable-all-scATAC-qc').attr("data-href");
+    $("#datatable-all-scATAC-qc").DataTable({
+        "ajax": {
+            url: qcUrl_10xATAC,
+            dataSrc: ''
+        },
+        "columns": [
+            { data: 'seqinfo_seq_id' },
+            { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' }
+        ]
+    })
+
     //all seqs datatable
     var singlecellurl = $('#datatable-all-sc').attr("data-href");
     $('#datatable-all-sc').DataTable({
@@ -1648,9 +1661,9 @@ $(document).ready(function () {
 
     //user sequences
     var singlecellurl_user = $('#datatable-user-sc').attr("data-href");
-    $('#datatable-user-sc').DataTable({
+    var sc_table = $('#datatable-user-sc').DataTable({
         "order": [[4, "desc"], [0, "asc"]],
-        //dom: 'lBfrtip',
+        dom: 'lBfrtip',
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
         "processing": true,
@@ -1659,6 +1672,10 @@ $(document).ready(function () {
             url: singlecellurl_user,
             dataSrc: ''
         },
+        select: {
+            style: 'multi'
+        },
+
         "columns": [
             { data: "seqinfo__seq_id" },
             { data: "seqinfo__libraryinfo__sampleinfo__sample_id" },
@@ -1670,6 +1687,19 @@ $(document).ready(function () {
             { data: "cooladminsubmission__pipeline_status" },
             { data: "cooladmin_edit" },
             { data: "seqinfo__libraryinfo__sampleinfo__group" },
+        ],
+        buttons: [{
+            text: 'Export',
+            action: function (e, dt, type, indexes) {
+                if (type === 'row') {
+                    var data = sc_table.rows(indexes).data();
+                    var itemID = data["seqinfo__seq_id"]
+
+                    // do something with the ID of the selected items
+                    console.log(itemID)
+                }
+            }
+        }
         ],
         "deferRender": true,
         "columnDefs": [
@@ -1842,6 +1872,17 @@ $(document).ready(function () {
         ]
     });
 
+    //Add on selection functions 
+    sc_table.on('select', function (e, dt, type, indexes) {
+        if (type === 'row') {
+            var data = sc_table.rows(indexes).data().pluck('id');
+            var itemID = data["seqinfo__seq_id"]
+
+            // do something with the ID of the selected items
+            console.log(data)
+
+        }
+    });
 
     //Cool admin form edit page details 
     $('#id_date_submitted').attr("readonly", true);
