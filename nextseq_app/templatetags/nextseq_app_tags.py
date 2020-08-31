@@ -1,8 +1,10 @@
 from django import template
 from django.contrib.auth.models import Group
 from epigen_ucsd_django.settings import DEBUG
+from epigen_ucsd_django.shared import emailcheck
 from masterseq_app.models import SeqInfo
 from nextseq_app.models import RunInfo,LibrariesInRun
+
 register = template.Library()
 print(f'debug status: {DEBUG}')
 
@@ -80,6 +82,23 @@ def linktrackingsheet(stringtext):
 	return stringtext
 
 @register.filter
+def linkemail(text):
+	outtext = []
+	lines = text.split('\n')
+	for line in lines:
+		outline = []
+		words = line.split(' ')
+		for word in words:
+			#print(repr(word))
+			if emailcheck(word.strip('\r')):
+				outline.append('<a href="mailto:'+word.strip('\r')+'">'+word.strip('\r')+'</a>')
+			else:
+				outline.append(word)
+		outtext.append(' '.join(outline))
+	#print('\n'.join(outtext))
+	return '\n'.join(outtext)	
+
+@register.filter
 def get_portion_of_lane(sequencing_id):
 	try:
 		obj = SeqInfo.objects.get(seq_id=sequencing_id)
@@ -98,4 +117,5 @@ def get_sum_of_portion_of_lane(runinfo):
 
 	except:
 		return ''
+
 

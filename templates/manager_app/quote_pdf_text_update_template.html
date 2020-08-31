@@ -1,0 +1,37 @@
+<html>
+<head>
+  <title>Test</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size:13px;
+      line-height: 1.7;
+
+      
+    }
+  </style>
+  {% load static %}
+  {% load nextseq_app_tags %}
+</head>
+<body>
+  <img src="{% static 'images/CFE_Brandmark-01.png' %}" alt="Center Logo" style="width:300px;margin-left:-30px;margin-top:-30px;">
+  <p style="margin-top: 50px;">Quote # {{ quote_id }}
+  <br>
+  <span style="font-style: italic;"> Note: This quote will expire 60 days from the date below </span>
+  </p>
+
+  <p>{{ date }}</p>
+  
+  {{ body | linkemail | safe | linebreaksbr }}
+
+  <br>
+  <br>
+  <p>Sincerely,
+  <br>Lauren Thomas
+  <br>Epigenomic Program Analyst
+  <br>Center for Epigenomics
+  <br><a href="mailto:L7thomas@health.ucsd.edu">L7thomas@health.ucsd.edu</a>
+  </p>
+      
+</body>
+</html>

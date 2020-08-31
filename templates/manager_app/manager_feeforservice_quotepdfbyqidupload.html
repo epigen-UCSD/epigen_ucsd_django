@@ -1,0 +1,45 @@
+{% extends 'manager_app/base_collabor_internal.html' %}
+
+{% block content %}
+{% load nextseq_app_tags %}
+
+
+<div id="content" class="col-sm-10 col-md-10 col-lg-10">
+  <div class="card">
+    <div class="card-header fortable">
+      Upload PDF file for Quote <em style="color: #FF6A39">{{ qid }}</em>
+    </div><!-- /.card-header -->
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data">{% csrf_token %}  
+        {% for field in quotes_upload_form %}
+        <div class="fieldWrapper">
+          <p>
+            <ul>
+            {% for error in field.errors %}
+            <li class="error-message" >
+              {{error |safe }}
+            </li>
+            {% endfor %}
+            </ul>
+            {% if field.field.widget|get_class == "Textarea" %}
+            <p class="textarea">
+            {% with tagtex=field.label_tag %}
+            {{ tagtex | linktrackingsheet |safe }}
+            {% endwith %}
+            </p>
+               {{ field }}
+            {% else %}
+              {{ field.label_tag }} {{ field }}
+            {% endif %}
+            {% if field.help_text %}
+            <span class="fontsize-sm" >{{ field.help_text|safe }}</span>
+            {% endif %}
+          </p>              
+        </div>
+        {% endfor %}   
+        <input type="submit" value="Save" name='Save'/>
+      </form>
+    </div><!-- /.card-body -->              
+  </div><!-- /.card -->      
+</div><!-- /#content --> 
+{% endblock %}

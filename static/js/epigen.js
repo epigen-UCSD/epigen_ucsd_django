@@ -478,8 +478,140 @@ $(document).ready(function () {
 
 
 
+    var servicerequesturl = $('#service_request_all').attr("data-href");
+    $('#service_request_all').DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[1, "desc"]],
+        "processing": true,
+        "ajax": {
+            url: servicerequesturl,
+            dataSrc: ''
+        },
+        "columns": [
+            { "data": "service_request_id" },
+            { "data": "date" },
+            { "data": "group" },
+            { "data": "institute" },
+            { "data": "research_contact" },
+            { "data": "research_contact_email" },
+            { "data": "quote_number" },
+            { "data": "status" },
+
+        ],
+        "deferRender": true,
+        "select": false,
+
+        "columnDefs": [
+
+        {
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                if (data == null) {
+                    return ''
+                }
+                else {
+                    return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+                }
+            }
+        },
+
+        {
+            "targets": 6,
+            "render": function (data, type, row) {
+                var returnvalue = ''
+                
+                for (i = 0; i < data.length; i++) {
+                  var qid = data[i].replace(/ /g, "");
+                  var returnvalue = returnvalue.concat('<a class="spacing-big" href="/manager/quote/'+qid+'/",data-toggle="tooltip" data-placement="right" title="'+data[i]+'" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>')
+                }
+
+                if (row["status"] == 'initiate'){
+                    return returnvalue.concat('<a class="spacing" href="/manager/quote/' + qid + '/text_update/"><i class="fas fa-edit"></i></a>')
+                }
+                else{
+                    return returnvalue
+                }   
+                
+
+            }
+        },
+        {
+            "targets": 8,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a><a class="spacing" href="/manager/add_new_quote/' + itemID + '/"><i class="fas fa-plus"></i></a>'
+                
+
+            }
+        }],
+    });
 
 
+    var quotesurl = $('#quotes_all').attr("data-href");
+    $('#quotes_all').DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[2, "desc"]],
+        "processing": true,
+        "ajax": {
+            url: quotesurl,
+            dataSrc: ''
+        },
+        "columns": [
+            { "data": "quote_number" },
+            { "data": "service_request_id" },
+            { "data": "date" },
+            { "data": "group" },
+            { "data": "research_contact" },
+            { "data": "quote_amount" },
+            { "data": "quote_pdf" },
+        ],
+        "deferRender": true,
+        "select": false,
+
+        "columnDefs": [
+
+        {
+            "targets": 1,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                if (data == null) {
+                    return ''
+                }
+                else {
+                    return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+                }
+                
+            }
+        },
+        {
+            "targets": 6,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                var qid = row["quote_number"].replace(/ /g, "")
+                if (data) {
+                    return '<a class="spacing-big" href="/manager/quote/'+qid+'/" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>'
+                }
+                else {
+                    return '';
+                }
+                
+            }
+        },
+
+        {
+            "targets": 7,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                var qid = row["quote_number"].replace(/ /g, "")
+                return '<a class="spacing" href="/manager/quote_upload/' + itemID + '/' + qid + '/"><i class="fas fa-upload"></i></a><a class="spacing" href="/manager/quote_update/' + itemID + '/'+ qid + '/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete quote ' + row["quote_number"] + '?\');" href="/manager/quote_delete/' + itemID + '/'+ qid + '/"><i class="fas fa-trash-alt"></i></a>'
+                
+
+            }
+        }],
+    });
 
 
 
@@ -904,6 +1036,21 @@ $(document).ready(function () {
             }
         })
     });
+
+    if(document.getElementById("error-message-bulk")){
+        console.log(document.getElementById("error-message-bulk").innerHTML);
+        $('#link-bulk').addClass('active');
+        $('#link-single').removeClass('active');
+        $('#single_add').removeClass('active');
+        $('#single_add').removeClass('show');
+        $('#bulk_add').addClass('active');
+        $('#bulk_add').addClass('show');
+
+
+
+    }
+
+    
 
 
 

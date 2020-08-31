@@ -1,3 +1,4 @@
+
 .navbar-default {
   border-bottom: 1px solid #dee2e6 !important; 
   /*padding:0;*/
@@ -7,6 +8,12 @@
 /* .bg-light {
   background-color: #e9ecef !important;
  }*/
+
+@page {
+  size: Letter !important;
+  margin: 0in 0.44in 0.2in 0.44in;
+}
+
 #contentlogin {
   margin-top: 60px;
 }
@@ -279,6 +286,9 @@ table a, .linkblue{
 }
 .spacing {
   letter-spacing: 5px;
+}
+.spacing-big {
+  letter-spacing: 10px;
 }
 #sidebar {
 
@@ -607,7 +617,7 @@ a[aria-expanded=false] .fa-caret-down {
 
 
 .navsiebar > .list-group-item[aria-expanded="true"]{
-  background-color: #00B5E2 !important;
+  background-color: #0a2a66 !important;
   color: white;
   margin-left: 8px;
 
