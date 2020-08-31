@@ -11,23 +11,22 @@
   <div class="list-group navsiebar">
     <li class="sidebar-header">Collaborators App</li>
     <a href="{% url 'manager_app:collab_list' %}" class="list-group-item list-group-item-action-custom-darkblue">All Collaborators</a>
-    <a href="{% url 'manager_app:servicerequests_list' %}" class="list-group-item list-group-item-action-custom-darkblue editable">All ServiceRequests</a>
+<!--     <a href="{% url 'manager_app:servicerequests_list' %}" class="list-group-item list-group-item-action-custom-darkblue editable">All ServiceRequests</a> -->
     <a href="{% url 'manager_app:quote_list' %}" class="list-group-item list-group-item-action-custom-darkblue ">All Quotes</a>   
 <!--     {% if request.user|has_group:"manager" %} 
     <a href="{% url 'manager_app:group_account_add' %}" class="list-group-item list-group-item-action-custom-darkblue ">Add a new group account</a> 
     {% endif %}
     <a href="{% url 'manager_app:collab_add' %}" class="list-group-item list-group-item-action-custom-darkblue ">Add a new collaborator</a>
      <a href="{% url 'manager_app:collabinfo_add' %}" class="list-group-item list-group-item-action-custom-darkblue ">Add new info to collaborator</a> -->
-     <a href="{% url 'manager_app:collab_servicerequest_add' %}" class="list-group-item list-group-item-action-custom-darkblue ">Add a new ServiceRequest</a>
-     <a href="{% url 'manager_app:quote_upload' %}" class="list-group-item list-group-item-action-custom-darkblue ">Upload a quote pdf</a> 
-     {% if request.user|has_group:"manager" %} 
+<!--      <a href="{% url 'manager_app:collab_servicerequest_add' %}" class="list-group-item list-group-item-action-custom-darkblue ">Add a new ServiceRequest</a> -->
+<!--      <a href="{% url 'manager_app:quote_upload' %}" class="list-group-item list-group-item-action-custom-darkblue ">Upload a quote pdf</a>  -->
+     
      <a href="#manageaccounts" class="list-group-item list-group-item-action-custom-darkblue" data-toggle="collapse" > Manage Accounts <i class="fa fa-caret-down"></i></a>
       <div class="collapse" id="manageaccounts">
         <a href="{% url 'manager_app:group_account_add' %}" class="list-group-item list-group-item-action-custom-darkblue submenu">Add a new group account</a>
         <a href="{% url 'manager_app:collab_add' %}" class="list-group-item list-group-item-action-custom-darkblue submenu">Add a new collaborator</a>
         <a href="{% url 'manager_app:collabinfo_add' %}" class="list-group-item list-group-item-action-custom-darkblue submenu">Add new info to collaborator</a>
-      </div>
-    {% endif %}
+      </div> 
      <a href="{% url 'manager_app:quote_add' %}" class="list-group-item list-group-item-action-custom-darkblue ">Add new Quotes</a>
 
 
