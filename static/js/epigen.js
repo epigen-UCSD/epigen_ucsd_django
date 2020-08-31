@@ -585,7 +585,7 @@ $(document).ready(function () {
             "render": function (data, type, row) {
                 var itemID = row["pk"];
                 var qid = row["quote_number"].replace(/ /g, "")
-                return '<a class="spacing" href="/manager/quote_upload/' + itemID + '/' qid + '/"><i class="fas fa-upload"></i></a><a class="spacing" href="/manager/servicerequest_update/' + qid + '/"><i class="fas fa-edit"></i></a>'
+                return '<a class="spacing" href="/manager/quote_upload/' + itemID + '/' + qid + '/"><i class="fas fa-upload"></i></a><a class="spacing" href="/manager/quote_update/' + itemID + '/'+ qid + '/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete quote ' + row["quote_number"] + '?\');" href="/manager/quote_delete/' + itemID + '/'+ qid + '/"><i class="fas fa-trash-alt"></i></a>'
                 
 
             }

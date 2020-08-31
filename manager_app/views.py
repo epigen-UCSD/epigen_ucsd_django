@@ -1042,7 +1042,7 @@ def QuoteAddView(request):
                     group=group_name,
                     quote_number=[data_request['quote_number']],
                     quote_amount=[data_request['quote_amount']],
-                    quote_pdf=False,
+                    quote_pdf=[False],
                     date=data_request['date'],
                     research_contact=data_request['research_contact'],
                     )
@@ -1069,7 +1069,7 @@ def QuoteAddView(request):
                     group=group_name,
                     quote_number=[fields[4].strip()],
                     quote_amount=[fields[5].strip()],
-                    quote_pdf=False,
+                    quote_pdf=[False],
                     date=this_date,
                     research_contact=research_contact,
                     status='sent',
@@ -1085,20 +1085,33 @@ def QuoteAddView(request):
 
 def QuoteListView(request):
     quote_list = []
-    ServiceRequest_list = ServiceRequest.objects.all().values('pk','service_request_id','quote_number','date','group','research_contact','quote_amount')
+    ServiceRequest_list = ServiceRequest.objects.all().values('pk','service_request_id','quote_number','date','group','research_contact','quote_amount','quote_pdf')
     for S in ServiceRequest_list:
         i = 0
         for quote in S['quote_number']:
-            this_data = {
-                'pk':S['pk'],
-                'service_request_id':S['service_request_id'],
-                'quote_number':quote,
-                'date':S['date'],
-                'group':S['group'],
-                'research_contact':S['research_contact'],
-                'quote_amount':S['quote_amount'][i]
-                'quote_pdf':S['quote_pdf'][i]
-            }
+            if S['quote_pdf']:
+                this_data = {
+                    'pk':S['pk'],
+                    'service_request_id':S['service_request_id'],
+                    'quote_number':quote,
+                    'date':S['date'],
+                    'group':S['group'],
+                    'research_contact':S['research_contact'],
+                    'quote_amount':S['quote_amount'][i],
+                    'quote_pdf':S['quote_pdf'][i],
+                }
+            else:
+                this_data = {
+                    'pk':S['pk'],
+                    'service_request_id':S['service_request_id'],
+                    'quote_number':quote,
+                    'date':S['date'],
+                    'group':S['group'],
+                    'research_contact':S['research_contact'],
+                    'quote_amount':S['quote_amount'][i],
+                    'quote_pdf':'',
+                }
+
             i += 1
         quote_list.append(this_data)
     data = quote_list
@@ -1157,7 +1170,7 @@ def QuotePdfUpload(request):
     return render(request, 'manager_app/manager_feeforservice_quotepdfupload.html',context)
 
 def QuotePdfByQidUpload(request,requestid,quoteid):
-    qid = quoteid
+    qid = ' '.join([quoteid[:-10],quoteid[-10:-4],quoteid[-4:]])
     requestid = requestid
     this_request = ServiceRequest.objects.get(id=requestid)
     index = this_request.quote_number.index(qid)
@@ -1166,13 +1179,14 @@ def QuotePdfByQidUpload(request,requestid,quoteid):
         quotes_upload_form = QuoteUploadByQidFileForm(request.POST, request.FILES)
         if quotes_upload_form.is_valid():
             file = request.FILES['file']
-            print(qid)
-            file_name = qid+'.pdf'
+            file_name = quoteid+'.pdf'
             fs = FileSystemStorage()
             filename = fs.save(file_name, file)
-            subprocess.call("ln -s "+os.path.join(settings.MEDIA_ROOT,file_name)+" "+os.path.join(settings.QUOTE_DIR,file_name), shell=True)
+            subprocess.call("ln -sf "+os.path.join(settings.MEDIA_ROOT,filename)+" "+os.path.join(settings.QUOTE_DIR,file_name), shell=True)
             this_request.quote_pdf[index] = True
+            this_request.status = 'sent'
             this_request.save()
+
             return redirect('manager_app:quote_list')
     else:
         quotes_upload_form = QuoteUploadByQidFileForm()
@@ -1186,9 +1200,10 @@ def QuotePdfByQidUpload(request,requestid,quoteid):
 
 @transaction.atomic
 def QuoteUpdateView(request,requestid,quoteid):
+    qid = ' '.join([quoteid[:-10],quoteid[-10:-4],quoteid[-4:]])
     this_request = get_object_or_404(ServiceRequest, pk=requestid)
-    quotecreate_form = QuoteCreationForm(request.POST or None,instance=thiservicerequest)
-    index = this_request.quote_number.index(quoteid)
+    quotecreate_form = QuoteCreationForm(request.POST or None,instance=this_request)
+    index = this_request.quote_number.index(qid)
 
     if 'Preview' in request.POST or 'Save' in request.POST:
 
@@ -1196,6 +1211,7 @@ def QuoteUpdateView(request,requestid,quoteid):
             group_name = quotecreate_form.cleaned_data['group']
             research_contact = quotecreate_form.cleaned_data['research_contact']
             this_amount = ''.join(quotecreate_form.cleaned_data['quote_amount'])
+
             if not this_amount.startswith('$'):
                 this_amount = '$'+this_amount
             if '-' in this_amount:
@@ -1206,8 +1222,9 @@ def QuoteUpdateView(request,requestid,quoteid):
                     else:
                         tm.append('$'+x)
                 this_amount = '-'.join(tm)
+
  
-           data_request = {
+            data_request = {
                 'quote_number':quoteid,
                 'group':group_name,
                 'research_contact':research_contact,
@@ -1237,8 +1254,30 @@ def QuoteUpdateView(request,requestid,quoteid):
 
     context = {
         'quotecreate_form': quotecreate_form,
-        'qid':quoteid,
+        'qid':qid,
 
     }
 
     return render(request, 'manager_app/manager_feeforservice_quoteupdate.html', context)
+
+@transaction.atomic
+def QuoteDeleteView(request, requestid,quoteid):
+    qid = ' '.join([quoteid[:-10],quoteid[-10:-4],quoteid[-4:]])
+    this_request = get_object_or_404(ServiceRequest, pk=requestid)
+    index = this_request.quote_number.index(qid)
+    if len(this_request.quote_number) == 1:
+        this_request.delete()
+    else:
+        del this_request.quote_number[index]
+        del this_request.quote_amount[index]
+        del this_request.quote_pdf[index]
+
+    return redirect('manager_app:quote_list')
+
+
+
+    sampleinfo = get_object_or_404(SampleInfo, pk=pk)
+    if sampleinfo.team_member != request.user and not request.user.groups.filter(name='bioinformatics').exists():
+        raise PermissionDenied
+    sampleinfo.delete()
+    return redirect('masterseq_app:user_metadata')
