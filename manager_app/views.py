@@ -24,6 +24,7 @@ import subprocess
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.core.files.storage import FileSystemStorage
+from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 
@@ -935,6 +936,8 @@ def ServiceRequestDataView(request):
 
 
 def QuotePdfView(request,quoteid):
+    if not request.user.groups.filter(name='manager').exists() :
+        raise PermissionDenied
     pdf_name = quoteid+'.pdf'
     pdf_path = os.path.join(settings.QUOTE_DIR,pdf_name)
     with open(pdf_path,'rb') as pdf:
@@ -981,6 +984,8 @@ def QuoteTextUpdateView(request,quoteid):
 
 @transaction.atomic
 def QuoteAddView(request):
+    if not request.user.groups.filter(name='manager').exists() :
+        raise PermissionDenied
 
     quotecreate_form = QuoteCreationForm(request.POST or None)
     quotes_form = QuoteBulkImportForm(None)
@@ -1084,6 +1089,8 @@ def QuoteAddView(request):
     return render(request, 'manager_app/manager_feeforservice_quotecreate_import.html', context)
 
 def QuoteListView(request):
+    if not request.user.groups.filter(name='manager').exists() :
+        raise PermissionDenied
     quote_list = []
     ServiceRequest_list = ServiceRequest.objects.all().values('pk','service_request_id','quote_number','date','group','research_contact','quote_amount','quote_pdf')
     for S in ServiceRequest_list:
@@ -1150,6 +1157,8 @@ def QuoteBulkAddView(request):
 
 
 def QuotePdfUpload(request):
+    if not request.user.groups.filter(name='manager').exists() :
+        raise PermissionDenied
     if request.method == 'POST':
         quotes_upload_form = QuoteUploadFileForm(request.POST, request.FILES)
         if quotes_upload_form.is_valid():
@@ -1170,6 +1179,8 @@ def QuotePdfUpload(request):
     return render(request, 'manager_app/manager_feeforservice_quotepdfupload.html',context)
 
 def QuotePdfByQidUpload(request,requestid,quoteid):
+    if not request.user.groups.filter(name='manager').exists() :
+        raise PermissionDenied
     qid = ' '.join([quoteid[:-10],quoteid[-10:-4],quoteid[-4:]])
     requestid = requestid
     this_request = ServiceRequest.objects.get(id=requestid)
@@ -1200,6 +1211,8 @@ def QuotePdfByQidUpload(request,requestid,quoteid):
 
 @transaction.atomic
 def QuoteUpdateView(request,requestid,quoteid):
+    if not request.user.groups.filter(name='manager').exists() :
+        raise PermissionDenied
     qid = ' '.join([quoteid[:-10],quoteid[-10:-4],quoteid[-4:]])
     this_request = get_object_or_404(ServiceRequest, pk=requestid)
     quotecreate_form = QuoteCreationForm(request.POST or None,instance=this_request)
@@ -1262,6 +1275,8 @@ def QuoteUpdateView(request,requestid,quoteid):
 
 @transaction.atomic
 def QuoteDeleteView(request, requestid,quoteid):
+    if not request.user.groups.filter(name='manager').exists() :
+        raise PermissionDenied
     qid = ' '.join([quoteid[:-10],quoteid[-10:-4],quoteid[-4:]])
     this_request = get_object_or_404(ServiceRequest, pk=requestid)
     index = this_request.quote_number.index(qid)
