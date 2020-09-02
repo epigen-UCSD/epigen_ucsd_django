@@ -316,9 +316,9 @@ def ServiceRequestCreateView(request):
                         service = form.cleaned_data['service']
                         quantity = form.cleaned_data['quantity']
                         if service.service_name == 'ATAC-seq':
-                            if float(quantity) >= 24 and float(quantity) < 96:
+                            if float(quantity) > 24 and float(quantity) <= 96:
                                 service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
-                            elif float(quantity) >= 96:
+                            elif float(quantity) > 96:
                                 service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
                         print(institute)
 
@@ -476,9 +476,9 @@ def ServiceRequestUpdateView(request,pk):
                     service = form.cleaned_data['service']
                     quantity = form.cleaned_data['quantity']
                     if service.service_name == 'ATAC-seq':
-                        if float(quantity) >= 24 and float(quantity) < 96:
+                        if float(quantity) > 24 and float(quantity) <= 96:
                             service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
-                        elif float(quantity) >= 96:
+                        elif float(quantity) > 96:
                             service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
 
                     if institute == 'uc':
@@ -639,9 +639,9 @@ def ServiceRequestAddNewQuoteView(request,pk):
                     service = form.cleaned_data['service']
                     quantity = form.cleaned_data['quantity']
                     if service.service_name == 'ATAC-seq':
-                        if float(quantity) >= 24 and float(quantity) < 96:
+                        if float(quantity) > 24 and float(quantity) <= 96:
                             service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
-                        elif float(quantity) >= 96:
+                        elif float(quantity) > 96:
                             service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
                     print(institute)
 
@@ -815,9 +815,9 @@ def ServiceRequestCreateViewOld(request):
                         service = form.cleaned_data['service']
                         quantity = form.cleaned_data['quantity']
                         if service.service_name == 'ATAC-seq':
-                            if float(quantity) >= 24 and float(quantity) < 96:
+                            if float(quantity) > 24 and float(quantity) <= 96:
                                 service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
-                            elif float(quantity) >= 96:
+                            elif float(quantity) > 96:
                                 service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
                         #print(service.service_name)
 

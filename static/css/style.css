@@ -9,10 +9,6 @@
   background-color: #e9ecef !important;
  }*/
 
-@page {
-  size: Letter !important;
-  margin: 0in 0.44in 0.2in 0.44in;
-}
 
 #contentlogin {
   margin-top: 60px;

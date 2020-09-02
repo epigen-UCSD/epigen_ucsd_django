@@ -81,13 +81,13 @@ def quotebody(serviceitems, quantities,institute):
 		service_breakdown_help = ''
 		if item in ['ATAC-seq','ATAC-seq(pilot)']:
 			this_name = 'ATAC-seq'
-			service_breakdown_help = ' (up to 23 samples)'
+			service_breakdown_help = ' (up to 24 samples)'
 		elif item == 'ATAC-seq_24':
 			this_name = 'ATAC-seq'
-			service_breakdown_help = ' (up to 95 samples)'
+			service_breakdown_help = ' (up to 96 samples)'
 		elif item == 'ATAC-seq_96':
 			this_name = 'ATAC-seq'
-			service_breakdown_help = ' (96 samples or more)'
+			service_breakdown_help = ' (97 samples or more)'
 		else:
 			this_name = item
 			service_breakdown_help = ''
