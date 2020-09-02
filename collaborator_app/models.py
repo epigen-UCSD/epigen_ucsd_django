@@ -32,7 +32,7 @@ class ServiceRequest(models.Model):
     # research_contact_email = models.CharField(max_length=100, blank=True, null=True)
     group = models.CharField('PI',max_length=200,blank=True, null=True)
     institute_choice = (('uc', 'uc'), ('non_uc', 'non_uc'),('industry', 'industry'))
-    institute = models.CharField(max_length=50, choices=institute_choice, default='uc')
+    institute = models.CharField(max_length=50, choices=institute_choice,blank=True, null=True)
     research_contact = models.CharField(max_length=200,blank=True, null=True)
     research_contact_email = models.CharField(max_length=200,blank=True, null=True)
     date =  models.DateField(blank=True, null=True)

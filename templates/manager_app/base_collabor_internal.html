@@ -12,7 +12,9 @@
     <li class="sidebar-header">Collaborators App</li>
     <a href="{% url 'manager_app:collab_list' %}" class="list-group-item list-group-item-action-custom-darkblue">All Collaborators</a>
 <!--     <a href="{% url 'manager_app:servicerequests_list' %}" class="list-group-item list-group-item-action-custom-darkblue editable">All ServiceRequests</a> -->
-    <a href="{% url 'manager_app:quote_list' %}" class="list-group-item list-group-item-action-custom-darkblue ">All Quotes</a>   
+    {% if request.user|has_group:"manager" %}
+    <a href="{% url 'manager_app:quote_list' %}" class="list-group-item list-group-item-action-custom-darkblue ">All Quotes</a>
+    {% endif %}
 <!--     {% if request.user|has_group:"manager" %} 
     <a href="{% url 'manager_app:group_account_add' %}" class="list-group-item list-group-item-action-custom-darkblue ">Add a new group account</a> 
     {% endif %}
@@ -23,11 +25,15 @@
      
      <a href="#manageaccounts" class="list-group-item list-group-item-action-custom-darkblue" data-toggle="collapse" > Manage Accounts <i class="fa fa-caret-down"></i></a>
       <div class="collapse" id="manageaccounts">
+        {% if request.user|has_group:"manager" or request.user|has_group:"bioinformatics" %}
         <a href="{% url 'manager_app:group_account_add' %}" class="list-group-item list-group-item-action-custom-darkblue submenu">Add a new group account</a>
         <a href="{% url 'manager_app:collab_add' %}" class="list-group-item list-group-item-action-custom-darkblue submenu">Add a new collaborator</a>
+        {% endif %}
         <a href="{% url 'manager_app:collabinfo_add' %}" class="list-group-item list-group-item-action-custom-darkblue submenu">Add new info to collaborator</a>
       </div> 
+     {% if request.user|has_group:"manager" %}
      <a href="{% url 'manager_app:quote_add' %}" class="list-group-item list-group-item-action-custom-darkblue ">Add new Quotes</a>
+     {% endif %}
 
 
 

@@ -553,13 +553,14 @@ $(document).ready(function () {
     $('#quotes_all').DataTable({
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
-        "order": [[2, "desc"]],
+        "order": [[0, "desc"]],
         "processing": true,
         "ajax": {
             url: quotesurl,
             dataSrc: ''
         },
         "columns": [
+            { "data": "quote_number" },
             { "data": "quote_number" },
             { "data": "service_request_id" },
             { "data": "date" },
@@ -574,7 +575,16 @@ $(document).ready(function () {
         "columnDefs": [
 
         {
-            "targets": 1,
+            "targets": 0,
+            "render": function (data, type, row) {
+                return data.slice(-4);
+                
+            }
+        },
+
+
+        {
+            "targets": 2,
             "render": function (data, type, row) {
                 var itemID = row["pk"];
                 if (data == null) {
@@ -587,7 +597,7 @@ $(document).ready(function () {
             }
         },
         {
-            "targets": 6,
+            "targets": 7,
             "render": function (data, type, row) {
                 var itemID = row["pk"];
                 var qid = row["quote_number"].replace(/ /g, "")
@@ -602,7 +612,7 @@ $(document).ready(function () {
         },
 
         {
-            "targets": 7,
+            "targets": 8,
             "render": function (data, type, row) {
                 var itemID = row["pk"];
                 var qid = row["quote_number"].replace(/ /g, "")
