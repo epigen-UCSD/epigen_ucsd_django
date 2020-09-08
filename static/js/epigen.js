@@ -219,6 +219,7 @@ $(document).ready(function () {
     $('#collab_metadata_samples').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -260,6 +261,7 @@ $(document).ready(function () {
     $('#seqmanager_seq').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -282,6 +284,7 @@ $(document).ready(function () {
     $('#collab_metadata_libs').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -337,6 +340,7 @@ $(document).ready(function () {
     $('#collab_metadata_seqs').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -627,6 +631,7 @@ $(document).ready(function () {
     $('#metadata_samples').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -668,6 +673,7 @@ $(document).ready(function () {
     $('#metadata_samples_bio').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -718,6 +724,7 @@ $(document).ready(function () {
     $('#metadata_libs').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -771,6 +778,7 @@ $(document).ready(function () {
     $('#metadata_libs_bio').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -833,6 +841,7 @@ $(document).ready(function () {
     $('#metadata_seqs').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -899,6 +908,7 @@ $(document).ready(function () {
     $('#metadata_seqs_bio').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -1707,6 +1717,7 @@ $(document).ready(function () {
     //all 10xATAC QC datatable 
     var qcUrl_10xATAC = $('#datatable-all-scATACqc').attr("data-href");
     $("#datatable-all-scATACqc").DataTable({
+        dom: 'lBfrtip',
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
         "processing": true,
@@ -1714,6 +1725,14 @@ $(document).ready(function () {
             url: qcUrl_10xATAC,
             dataSrc: ''
         },
+        select: {
+            style: 'multi'
+        },
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+        ],
         "columns": [
             { data: 'seqinfo__seq_id' },
             { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' },
@@ -1724,6 +1743,7 @@ $(document).ready(function () {
             { data: 'frac_waste_mitochondrial' },
             { data: 'tsse' },
             { data: 'path_to_websummary' },
+            { data: "seqinfo__libraryinfo__sampleinfo__group" },
         ],
         "deferRender": true,
         "columnDefs": [{
@@ -1746,6 +1766,7 @@ $(document).ready(function () {
     //user 10xATAC QC datatable 
     var qcUrl_10xATAC_user = $('#datatable-user-scATACqc').attr("data-href");
     $("#datatable-user-scATACqc").DataTable({
+        dom: 'lBfrtip',
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
         "processing": true,
@@ -1753,6 +1774,14 @@ $(document).ready(function () {
             url: qcUrl_10xATAC_user,
             dataSrc: ''
         },
+        select: {
+            style: 'multi'
+        },
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+        ],
         "columns": [
             { data: 'seqinfo__seq_id' },
             { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' },
@@ -1763,6 +1792,7 @@ $(document).ready(function () {
             { data: 'frac_waste_mitochondrial' },
             { data: 'tsse' },
             { data: 'path_to_websummary' },
+            { data: "seqinfo__libraryinfo__sampleinfo__group" },
         ],
         "deferRender": true,
         "columnDefs": [{
@@ -1785,6 +1815,7 @@ $(document).ready(function () {
     //all 10xRNA QC datatable 
     var qcUrl_10xRNA = $('#datatable-all-scRNAqc').attr("data-href");
     $("#datatable-all-scRNAqc").DataTable({
+        dom: 'lBfrtip',
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
         "processing": true,
@@ -1792,6 +1823,14 @@ $(document).ready(function () {
             url: qcUrl_10xRNA,
             dataSrc: ''
         },
+        select: {
+            style: 'multi'
+        },
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+        ],
         "columns": [
             { data: 'seqinfo__seq_id' },
             { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' },
@@ -1802,6 +1841,7 @@ $(document).ready(function () {
             { data: 'median_genes_per_cell' },
             { data: 'frac_reads_in_cells' },
             { data: 'path_to_websummary' },
+            { data: "seqinfo__libraryinfo__sampleinfo__group" },
         ],
         "deferRender": true,
         "columnDefs": [{
@@ -1824,6 +1864,7 @@ $(document).ready(function () {
     //user 10xRNA QC datatable 
     var qcUrl_10xRNA_user = $('#datatable-user-scRNAqc').attr("data-href");
     $("#datatable-user-scRNAqc").DataTable({
+        dom: 'lBfrtip',
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
         "processing": true,
@@ -1831,6 +1872,14 @@ $(document).ready(function () {
             url: qcUrl_10xRNA_user,
             dataSrc: ''
         },
+        select: {
+            style: 'multi'
+        },
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+        ],
         "columns": [
             { data: 'seqinfo__seq_id' },
             { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' },
@@ -1841,6 +1890,7 @@ $(document).ready(function () {
             { data: 'median_genes_per_cell' },
             { data: 'frac_reads_in_cells' },
             { data: 'path_to_websummary' },
+            { data: "seqinfo__libraryinfo__sampleinfo__group" },
         ],
         "deferRender": true,
         "columnDefs": [{
@@ -1863,7 +1913,7 @@ $(document).ready(function () {
     //all seqs datatable
     var singlecellurl = $('#datatable-all-sc').attr("data-href");
     $('#datatable-all-sc').DataTable({
-        //dom: 'lBfrtip',
+        dom: 'lBfrtip',
         "order": [[4, "desc"], [0, "asc"]],
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
@@ -1872,6 +1922,9 @@ $(document).ready(function () {
         "ajax": {
             url: singlecellurl,
             dataSrc: ''
+        },
+        select: {
+            style: 'multi'
         },
         "columns": [
             { data: "seqinfo__seq_id" },
@@ -1884,6 +1937,11 @@ $(document).ready(function () {
             { data: "cooladminsubmission__pipeline_status" },
             { data: "cooladmin_edit" },
             { data: "seqinfo__libraryinfo__sampleinfo__group" },
+        ],
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
         ],
         "deferRender": true,
         "columnDefs": [
@@ -1986,18 +2044,10 @@ $(document).ready(function () {
             { data: "cooladmin_edit" },
             { data: "seqinfo__libraryinfo__sampleinfo__group" },
         ],
-        buttons: [{
-            text: 'Export',
-            action: function (e, dt, type, indexes) {
-                if (type === 'row') {
-                    var data = sc_table.rows(indexes).data();
-                    var itemID = data["seqinfo__seq_id"]
-
-                    // do something with the ID of the selected items
-                    console.log(itemID)
-                }
-            }
-        }
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
         ],
         "deferRender": true,
         "columnDefs": [
@@ -2170,17 +2220,6 @@ $(document).ready(function () {
         ]
     });
 
-    //Add on selection functions 
-    sc_table.on('select', function (e, dt, type, indexes) {
-        if (type === 'row') {
-            var data = sc_table.rows(indexes).data().pluck('id');
-            var itemID = data["seqinfo__seq_id"]
-
-            // do something with the ID of the selected items
-            console.log(data)
-
-        }
-    });
 
     //Cool admin form edit page details 
     $('#id_date_submitted').attr("readonly", true);

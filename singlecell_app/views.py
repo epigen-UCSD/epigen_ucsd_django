@@ -96,7 +96,8 @@ def All10xAtacQcData(request):
     seqs_queryset = SingleCellObject.objects.filter(Q(tenx_pipeline_status='Yes')&Q(experiment_type='10xATAC')).select_related('seqinfo',
                                                                   'libraryinfo', 'sampleinfo',
                                                                   'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__seq_id', 'seqinfo__id','path_to_websummary', 'random_string_link','date_last_modified','seqinfo__libraryinfo__sampleinfo__id', 'seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
+        'seqinfo__seq_id', 'seqinfo__id','path_to_websummary','seqinfo__libraryinfo__sampleinfo__group',
+        'random_string_link','date_last_modified','seqinfo__libraryinfo__sampleinfo__id', 'seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
 
     data = list(seqs_queryset)
     build_10xATAC_qc_list(data)
@@ -130,7 +131,8 @@ def All10xRnaQcData(request):
     seqs_queryset = SingleCellObject.objects.filter(Q(tenx_pipeline_status='Yes')&(Q(experiment_type='snRNA-seq')|Q(experiment_type='scRNA-seq'))).select_related('seqinfo',
                                                                   'libraryinfo', 'sampleinfo',
                                                                   'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__seq_id', 'path_to_websummary', 'random_string_link','date_last_modified', 'seqinfo__libraryinfo__sampleinfo__id','seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
+        'seqinfo__seq_id', 'path_to_websummary', 'seqinfo__libraryinfo__sampleinfo__group',
+        'random_string_link','date_last_modified', 'seqinfo__libraryinfo__sampleinfo__id','seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
 
     data = list(seqs_queryset)
     build_10xRNA_qc_list(data)
@@ -194,7 +196,12 @@ def UserSingleCellData(request):
 
 # TODO Think about when cooladmin being modified and submitted should affect the date of the singlecell seq
 def build_10xRNA_qc_list(seqs_list):
+    groups = Group.objects.all()
     for entry in seqs_list:
+        group_id = entry['seqinfo__libraryinfo__sampleinfo__group']
+        group_name = get_group_name(groups, group_id)
+        entry['seqinfo__libraryinfo__sampleinfo__group'] = group_name            
+
         if(entry['content_type_id'] == None):
             for k in ['estimated_number_of_cells','number_of_reads','sequencing_saturation','mean_reads_per_cell','median_genes_per_cell','frac_reads_in_cells']:
                 entry[k]=None
@@ -209,7 +216,12 @@ def build_10xRNA_qc_list(seqs_list):
     return(seqs_list)
 
 def build_10xATAC_qc_list(seqs_list):
+    groups = Group.objects.all()
     for entry in seqs_list:
+        group_id = entry['seqinfo__libraryinfo__sampleinfo__group']
+        group_name = get_group_name(groups, group_id)
+        entry['seqinfo__libraryinfo__sampleinfo__group'] = group_name
+
         if(entry['content_type_id'] == None):
             for k in ['estimated_nuclei','total_fragments','median_fragments_per_cell','tsse','frac_duplicate','frac_waste_mitochondrial']:
                 entry[k]=None
