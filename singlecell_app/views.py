@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.auth.models import User, Group
+from django.contrib.contenttypes.models import ContentType
 from datetime import datetime
 from django.forms.models import model_to_dict
+from django.db.models import Q
 from django.core import serializers
 from django.http import JsonResponse, FileResponse, HttpResponse
 from masterseq_app.models import LibraryInfo, SeqInfo, GenomeInfo, RefGenomeInfo, ExperimentType
@@ -84,22 +86,6 @@ def MySeqs2(request):
     return render(request, 'singlecell_app/myseqs2.html', context)
 
 
-'''
-def AllSingleCellData(request):
-    """ async function to get hit by ajax. Returns json of all single cell data dict
-    in db
-    """
-    # make sure only bioinformatics group users allowed
-
-    seqs_queryset = SeqInfo.objects.filter(libraryinfo__experiment_type__in=SINGLE_CELL_EXPS).select_related('libraryinfo','libraryinfo__sampleinfo','libraryinfo__sampleinfo__group').order_by(
-        '-date_submitted_for_sequencing').values('id', 'seq_id', 'libraryinfo__experiment_type', 'read_type',
-                                                 'libraryinfo__sampleinfo__species', 'date_submitted_for_sequencing','libraryinfo__sampleinfo__group','libraryinfo__sampleinfo__sample_id')
-
-    data = list(seqs_queryset)
-    build_seq_list(data)
-    return JsonResponse(data, safe=False)
-'''
-
 
 def All10xAtacQcData(request):
     """ async function to get hit by ajax. Returns json of all single cell data dict
@@ -107,9 +93,22 @@ def All10xAtacQcData(request):
     """
     # make sure only bioinformatics group users allowed
 
-    seqs_queryset = SingleCellObject.objects.all().select_related('seqinfo',
-                                                                  'cooladminsubmission', 'libraryinfo', 'sampleinfo',
+    seqs_queryset = SingleCellObject.objects.filter(Q(tenx_pipeline_status='Yes')&Q(experiment_type='10xATAC')).select_related('seqinfo',
+                                                                  'libraryinfo', 'sampleinfo',
                                                                   'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
+        'seqinfo__seq_id', 'path_to_websummary', 'random_string_link','date_last_modified', 'seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
+
+    data = list(seqs_queryset)
+    build_10xATAC_qc_list(data)
+    print(data[0])
+    return JsonResponse(data, safe=False)
+
+def User10xAtacQcData(request):
+    """async function to get hit by ajax, returns user only seqs
+    """
+    seqs_queryset = SingleCellObject.objects.filter(seqinfo__team_member_initails=request.user).select_related('seqinfo',
+                                                                                                               'cooladminsubmission', 'libraryinfo', 'sampleinfo',
+                                                                                                               'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
         'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
         'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species',
         'seqinfo__libraryinfo__sampleinfo__group', 'tenx_pipeline_status',
@@ -121,7 +120,24 @@ def All10xAtacQcData(request):
 
     return JsonResponse(data, safe=False)
 
-def User10xAtacQcData(request):
+
+def All10xRnaQcData(request):
+    """ async function to get hit by ajax. Returns json of all single cell data dict
+    in db
+    """
+    # make sure only bioinformatics group users allowed
+
+    seqs_queryset = SingleCellObject.objects.filter(Q(tenx_pipeline_status='Yes')&(Q(experiment_type='snRNA-seq')|Q(experiment_type='scRNA-seq'))).select_related('seqinfo',
+                                                                  'libraryinfo', 'sampleinfo',
+                                                                  'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
+        'seqinfo__seq_id', 'path_to_websummary', 'random_string_link','date_last_modified', 'seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
+
+    data = list(seqs_queryset)
+    build_10xRNA_qc_list(data)
+    print(data[0])
+    return JsonResponse(data, safe=False)
+
+def User10xRnaQcData(request):
     """async function to get hit by ajax, returns user only seqs
     """
     seqs_queryset = SingleCellObject.objects.filter(seqinfo__team_member_initails=request.user).select_related('seqinfo',
@@ -156,7 +172,6 @@ def AllSingleCellData(request):
 
     data = list(seqs_queryset)
     build_seq_list_modified(data)
-
     return JsonResponse(data, safe=False)
 
 
@@ -178,7 +193,35 @@ def UserSingleCellData(request):
     return JsonResponse(data, safe=False)
 
 # TODO Think about when cooladmin being modified and submitted should affect the date of the singlecell seq
+def build_10xRNA_qc_list(seqs_list):
+    for entry in seqs_list:
+        if(entry['content_type_id'] == None):
+            for k in ['estimated_number_of_cells','number_of_reads','sequencing_saturation','mean_reads_per_cell','median_genes_per_cell','frac_reads_in_cells']:
+                entry[k]=None
+        else:
+            obj = ContentType.objects.get(pk=entry['content_type_id']).get_object_for_this_type(id=entry['object_id'])
+            entry['estimated_number_of_cells']= obj.estimated_number_of_cells
+            entry['number_of_reads']=obj.number_of_reads #total_usable_fragments
+            entry['sequencing_saturation']= obj.sequencing_saturation                        
+            entry['mean_reads_per_cell']=obj.mean_reads_per_cell
+            entry['median_genes_per_cell']=obj.median_genes_per_cell
+            entry['frac_reads_in_cells']=obj.mean_reads_per_cell            
+    return(seqs_list)
 
+def build_10xATAC_qc_list(seqs_list):
+    for entry in seqs_list:
+        if(entry['content_type_id'] == None):
+            for k in ['estimated_nuclei','total_fragments','median_fragments_per_cell','tsse','frac_duplicate','frac_waste_mitochondrial']:
+                entry[k]=None
+        else:
+            obj = ContentType.objects.get(pk=entry['content_type_id']).get_object_for_this_type(id=entry['object_id'])
+            entry['estimated_nuclei']= obj.annotated_cells
+            entry['total_fragments']=obj.num_fragments #total_usable_fragments
+            entry['median_fragments_per_cell']=obj.median_fragments_per_cell
+            entry['tsse']= obj.tss_enrichment_score            
+            entry['frac_duplicate']=obj.frac_waste_duplicate
+            entry['frac_waste_mitochondrial']=obj.frac_waste_mitochondrial
+    return(seqs_list)
 
 def build_seq_list_modified(seqs_list):
     """ This function is used to build seq lists to be returned to the from an 

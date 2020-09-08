@@ -504,48 +504,48 @@ $(document).ready(function () {
 
         "columnDefs": [
 
-        {
-            "targets": 0,
-            "render": function (data, type, row) {
-                var itemID = row["pk"];
-                if (data == null) {
-                    return ''
+            {
+                "targets": 0,
+                "render": function (data, type, row) {
+                    var itemID = row["pk"];
+                    if (data == null) {
+                        return ''
+                    }
+                    else {
+                        return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+                    }
                 }
-                else {
-                    return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            },
+
+            {
+                "targets": 6,
+                "render": function (data, type, row) {
+                    var returnvalue = ''
+
+                    for (i = 0; i < data.length; i++) {
+                        var qid = data[i].replace(/ /g, "");
+                        var returnvalue = returnvalue.concat('<a class="spacing-big" href="/manager/quote/' + qid + '/",data-toggle="tooltip" data-placement="right" title="' + data[i] + '" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>')
+                    }
+
+                    if (row["status"] == 'initiate') {
+                        return returnvalue.concat('<a class="spacing" href="/manager/quote/' + qid + '/text_update/"><i class="fas fa-edit"></i></a>')
+                    }
+                    else {
+                        return returnvalue
+                    }
+
+
                 }
-            }
-        },
+            },
+            {
+                "targets": 8,
+                "render": function (data, type, row) {
+                    var itemID = row["pk"];
+                    return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a><a class="spacing" href="/manager/add_new_quote/' + itemID + '/"><i class="fas fa-plus"></i></a>'
 
-        {
-            "targets": 6,
-            "render": function (data, type, row) {
-                var returnvalue = ''
-                
-                for (i = 0; i < data.length; i++) {
-                  var qid = data[i].replace(/ /g, "");
-                  var returnvalue = returnvalue.concat('<a class="spacing-big" href="/manager/quote/'+qid+'/",data-toggle="tooltip" data-placement="right" title="'+data[i]+'" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>')
+
                 }
-
-                if (row["status"] == 'initiate'){
-                    return returnvalue.concat('<a class="spacing" href="/manager/quote/' + qid + '/text_update/"><i class="fas fa-edit"></i></a>')
-                }
-                else{
-                    return returnvalue
-                }   
-                
-
-            }
-        },
-        {
-            "targets": 8,
-            "render": function (data, type, row) {
-                var itemID = row["pk"];
-                return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a><a class="spacing" href="/manager/add_new_quote/' + itemID + '/"><i class="fas fa-plus"></i></a>'
-                
-
-            }
-        }],
+            }],
     });
 
 
@@ -574,56 +574,54 @@ $(document).ready(function () {
 
         "columnDefs": [
 
-        {
-            "targets": 0,
-            "render": function (data, type, row) {
-                return data.slice(-4);
-                
-            }
-        },
+            {
+                "targets": 0,
+                "render": function (data, type, row) {
+                    return data.slice(-4);
+
+                }
+            },
 
 
-        {
-            "targets": 2,
-            "render": function (data, type, row) {
-                var itemID = row["pk"];
-                if (data == null) {
-                    return ''
-                }
-                else {
-                    return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
-                }
-                
-            }
-        },
-        {
-            "targets": 7,
-            "render": function (data, type, row) {
-                var itemID = row["pk"];
-                var qid = row["quote_number"].replace(/ /g, "")
-                if (data) {
-                    return '<a class="spacing-big" href="/manager/quote/'+qid+'/" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>'
-                }
-                else {
-                    return '';
-                }
-                
-            }
-        },
+            {
+                "targets": 2,
+                "render": function (data, type, row) {
+                    var itemID = row["pk"];
+                    if (data == null) {
+                        return ''
+                    }
+                    else {
+                        return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+                    }
 
-        {
-            "targets": 8,
-            "render": function (data, type, row) {
-                var itemID = row["pk"];
-                var qid = row["quote_number"].replace(/ /g, "")
-                return '<a class="spacing" href="/manager/quote_upload/' + itemID + '/' + qid + '/"><i class="fas fa-upload"></i></a><a class="spacing" href="/manager/quote_update/' + itemID + '/'+ qid + '/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete quote ' + row["quote_number"] + '?\');" href="/manager/quote_delete/' + itemID + '/'+ qid + '/"><i class="fas fa-trash-alt"></i></a>'
-                
+                }
+            },
+            {
+                "targets": 7,
+                "render": function (data, type, row) {
+                    var itemID = row["pk"];
+                    var qid = row["quote_number"].replace(/ /g, "")
+                    if (data) {
+                        return '<a class="spacing-big" href="/manager/quote/' + qid + '/" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>'
+                    }
+                    else {
+                        return '';
+                    }
 
-            }
-        }],
+                }
+            },
+
+            {
+                "targets": 8,
+                "render": function (data, type, row) {
+                    var itemID = row["pk"];
+                    var qid = row["quote_number"].replace(/ /g, "")
+                    return '<a class="spacing" href="/manager/quote_upload/' + itemID + '/' + qid + '/"><i class="fas fa-upload"></i></a><a class="spacing" href="/manager/quote_update/' + itemID + '/' + qid + '/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete quote ' + row["quote_number"] + '?\');" href="/manager/quote_delete/' + itemID + '/' + qid + '/"><i class="fas fa-trash-alt"></i></a>'
+
+
+                }
+            }],
     });
-
-
 
     var metasampsurl = $('#metadata_samples').attr("data-href");
     $('#metadata_samples').DataTable({
@@ -1047,7 +1045,7 @@ $(document).ready(function () {
         })
     });
 
-    if(document.getElementById("error-message-bulk")){
+    if (document.getElementById("error-message-bulk")) {
         console.log(document.getElementById("error-message-bulk").innerHTML);
         $('#link-bulk').addClass('active');
         $('#link-single').removeClass('active');
@@ -1060,7 +1058,7 @@ $(document).ready(function () {
 
     }
 
-    
+
 
 
 
@@ -1707,17 +1705,100 @@ $(document).ready(function () {
     *
     */
     //all 10xATAC QC datatable 
-    var qcUrl_10xATAC = $('#datatable-all-scATAC-qc').attr("data-href");
-    $("#datatable-all-scATAC-qc").DataTable({
+    var qcUrl_10xATAC = $('#datatable-all-scATACqc').attr("data-href");
+    $("#datatable-all-scATACqc").DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
         "ajax": {
             url: qcUrl_10xATAC,
             dataSrc: ''
         },
         "columns": [
-            { data: 'seqinfo_seq_id' },
-            { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' }
-        ]
-    })
+            { data: 'seqinfo__seq_id' },
+            { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' },
+            { data: 'estimated_nuclei' },
+            { data: 'total_fragments' },
+            { data: 'median_fragments_per_cell' },
+            { data: 'frac_duplicate' },
+            { data: 'frac_waste_mitochondrial' },
+            { data: 'tsse' },
+            { data: 'path_to_websummary' },
+        ],
+        "deferRender": true
+    });
+
+    //user 10xATAC QC datatable 
+    var qcUrl_10xATAC_user = $('#datatable-user-scATACqc').attr("data-href");
+    $("#datatable-user-scATACqc").DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        "ajax": {
+            url: qcUrl_10xATAC_user,
+            dataSrc: ''
+        },
+        "columns": [
+            { data: 'seqinfo__seq_id' },
+            { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' },
+            { data: 'estimated_nuclei' },
+            { data: 'total_fragments' },
+            { data: 'median_fragments_per_cell' },
+            { data: 'frac_duplicate' },
+            { data: 'frac_waste_mitochondrial' },
+            { data: 'tsse' },
+            { data: 'path_to_websummary' },
+        ],
+        "deferRender": true
+    });
+
+    //all 10xRNA QC datatable 
+    var qcUrl_10xRNA = $('#datatable-all-scRNAqc').attr("data-href");
+    $("#datatable-all-scRNAqc").DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        "ajax": {
+            url: qcUrl_10xRNA,
+            dataSrc: ''
+        },
+        "columns": [
+            { data: 'seqinfo__seq_id' },
+            { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' },
+            { data: 'estimated_number_of_cells' },
+            { data: 'number_of_reads' },
+            { data: 'sequencing_saturation' },
+            { data: 'mean_reads_per_cell' },
+            { data: 'median_genes_per_cell' },
+            { data: 'frac_reads_in_cells' },
+            { data: 'path_to_websummary' },
+        ],
+        "deferRender": true
+    });
+
+    //user 10xRNA QC datatable 
+    var qcUrl_10xRNA_user = $('#datatable-user-scRNAqc').attr("data-href");
+    $("#datatable-user-scRNAqc").DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        "ajax": {
+            url: qcUrl_10xRNA_user,
+            dataSrc: ''
+        },
+        "columns": [
+            { data: 'seqinfo__seq_id' },
+            { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' },
+            { data: 'estimated_number_of_cells' },
+            { data: 'number_of_reads' },
+            { data: 'sequencing_saturation' },
+            { data: 'mean_reads_per_cell' },
+            { data: 'median_genes_per_cell' },
+            { data: 'frac_reads_in_cells' },
+            { data: 'path_to_websummary' },
+        ],
+        "deferRender": true
+    });
 
     //all seqs datatable
     var singlecellurl = $('#datatable-all-sc').attr("data-href");
