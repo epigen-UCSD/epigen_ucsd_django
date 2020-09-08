@@ -1725,7 +1725,22 @@ $(document).ready(function () {
             { data: 'tsse' },
             { data: 'path_to_websummary' },
         ],
-        "deferRender": true
+        "deferRender": true,
+        "columnDefs": [{
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__id"];
+                return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 1,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__libraryinfo__sampleinfo__id"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        },
+        ],
     });
 
     //user 10xATAC QC datatable 
@@ -1749,7 +1764,22 @@ $(document).ready(function () {
             { data: 'tsse' },
             { data: 'path_to_websummary' },
         ],
-        "deferRender": true
+        "deferRender": true,
+        "columnDefs": [{
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__id"];
+                return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 1,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__libraryinfo__sampleinfo__id"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        },
+        ],
     });
 
     //all 10xRNA QC datatable 
@@ -1773,7 +1803,22 @@ $(document).ready(function () {
             { data: 'frac_reads_in_cells' },
             { data: 'path_to_websummary' },
         ],
-        "deferRender": true
+        "deferRender": true,
+        "columnDefs": [{
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__id"];
+                return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 1,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__libraryinfo__sampleinfo__id"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        },
+        ],
     });
 
     //user 10xRNA QC datatable 
@@ -1797,7 +1842,22 @@ $(document).ready(function () {
             { data: 'frac_reads_in_cells' },
             { data: 'path_to_websummary' },
         ],
-        "deferRender": true
+        "deferRender": true,
+        "columnDefs": [{
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__id"];
+                return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 1,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__libraryinfo__sampleinfo__id"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        },
+        ],
     });
 
     //all seqs datatable

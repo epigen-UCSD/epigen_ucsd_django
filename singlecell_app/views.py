@@ -96,7 +96,7 @@ def All10xAtacQcData(request):
     seqs_queryset = SingleCellObject.objects.filter(Q(tenx_pipeline_status='Yes')&Q(experiment_type='10xATAC')).select_related('seqinfo',
                                                                   'libraryinfo', 'sampleinfo',
                                                                   'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__seq_id', 'path_to_websummary', 'random_string_link','date_last_modified', 'seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
+        'seqinfo__seq_id', 'seqinfo__id','path_to_websummary', 'random_string_link','date_last_modified','seqinfo__libraryinfo__sampleinfo__id', 'seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
 
     data = list(seqs_queryset)
     build_10xATAC_qc_list(data)
@@ -130,7 +130,7 @@ def All10xRnaQcData(request):
     seqs_queryset = SingleCellObject.objects.filter(Q(tenx_pipeline_status='Yes')&(Q(experiment_type='snRNA-seq')|Q(experiment_type='scRNA-seq'))).select_related('seqinfo',
                                                                   'libraryinfo', 'sampleinfo',
                                                                   'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__seq_id', 'path_to_websummary', 'random_string_link','date_last_modified', 'seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
+        'seqinfo__seq_id', 'path_to_websummary', 'random_string_link','date_last_modified', 'seqinfo__libraryinfo__sampleinfo__id','seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
 
     data = list(seqs_queryset)
     build_10xRNA_qc_list(data)
@@ -200,12 +200,12 @@ def build_10xRNA_qc_list(seqs_list):
                 entry[k]=None
         else:
             obj = ContentType.objects.get(pk=entry['content_type_id']).get_object_for_this_type(id=entry['object_id'])
-            entry['estimated_number_of_cells']= obj.estimated_number_of_cells
-            entry['number_of_reads']=obj.number_of_reads #total_usable_fragments
-            entry['sequencing_saturation']= obj.sequencing_saturation                        
-            entry['mean_reads_per_cell']=obj.mean_reads_per_cell
-            entry['median_genes_per_cell']=obj.median_genes_per_cell
-            entry['frac_reads_in_cells']=obj.mean_reads_per_cell            
+            entry['estimated_number_of_cells']= f'{obj.estimated_number_of_cells:,}'
+            entry['number_of_reads']=f'{obj.number_of_reads:,}' #total_usable_fragments
+            entry['sequencing_saturation']= f'{obj.sequencing_saturation:.3f}'                        
+            entry['mean_reads_per_cell']=f'{obj.mean_reads_per_cell:,}'
+            entry['median_genes_per_cell']=f'{obj.median_genes_per_cell:,}'
+            entry['frac_reads_in_cells']=f'{obj.mean_reads_per_cell :,}'           
     return(seqs_list)
 
 def build_10xATAC_qc_list(seqs_list):
@@ -215,12 +215,12 @@ def build_10xATAC_qc_list(seqs_list):
                 entry[k]=None
         else:
             obj = ContentType.objects.get(pk=entry['content_type_id']).get_object_for_this_type(id=entry['object_id'])
-            entry['estimated_nuclei']= obj.annotated_cells
-            entry['total_fragments']=obj.num_fragments #total_usable_fragments
-            entry['median_fragments_per_cell']=obj.median_fragments_per_cell
-            entry['tsse']= obj.tss_enrichment_score            
-            entry['frac_duplicate']=obj.frac_waste_duplicate
-            entry['frac_waste_mitochondrial']=obj.frac_waste_mitochondrial
+            entry['estimated_nuclei']= f'{obj.annotated_cells:,}'
+            entry['total_fragments']=f'{obj.num_fragments:,}' #total_usable_fragments
+            entry['median_fragments_per_cell']=f'{obj.median_fragments_per_cell:,.0f}'
+            entry['tsse']= f'{obj.tss_enrichment_score:.1f}'            
+            entry['frac_duplicate']=f'{obj.frac_waste_duplicate:.3f}'
+            entry['frac_waste_mitochondrial']=f'{obj.frac_waste_mitochondrial:.3f}'
     return(seqs_list)
 
 def build_seq_list_modified(seqs_list):
