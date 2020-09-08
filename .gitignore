@@ -15,3 +15,4 @@ data/web*
 *_local.sh
 .ipynb_checkpoints/*
 .vscode
+data/masterseq_app/*.pdf

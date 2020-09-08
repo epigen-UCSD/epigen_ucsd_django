@@ -40,7 +40,7 @@ libs=$(awk -v FS=',' '(NR>1){print $2}' $samplesheet)
 
 ## run mkfastq 
 cd $run_dir
-export PATH=/projects/ps-epigen/software/cellranger-3.0.2/:$PATH
+export PATH=/projects/ps-epigen/software/cellranger-4.0.0/:$PATH
 
 [[ -f ${out_dir}/extraPars.txt ]] && extraParsVal=$(cat ${out_dir}/extraPars.txt)
 echo -e "cellranger mkfastq --run=$run_dir  --localcores=16 --csv $samplesheet --qc $extraParsVal #--use-bases-mask Y50,I8n*,Y16,Y50"

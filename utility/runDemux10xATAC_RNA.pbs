@@ -13,7 +13,7 @@
 ############################################################
 ## update status to job submitted @VM
 ############################################################
-export PATH=/projects/ps-epigen/software/cellranger-3.0.2/:$PATH
+export PATH=/projects/ps-epigen/software/cellranger-4.0.0/:$PATH
 export PATH=/projects/ps-epigen/software/cellranger-atac-1.2.0/:$PATH
 
 

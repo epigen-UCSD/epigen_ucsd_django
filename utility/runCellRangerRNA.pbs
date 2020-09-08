@@ -12,7 +12,7 @@
 
 # -v pass parameters: samples
 
-export PATH=/projects/ps-epigen/software/cellranger-3.0.2/cellranger/:$PATH
+export PATH=/projects/ps-epigen/software/cellranger-4.0.0/cellranger/:$PATH
 WORKDIR="/oasis/tscc/scratch/$(whoami)/outputs_TA/"
 FASTQDIR="/projects/ps-epigen/seqdata/"
 
