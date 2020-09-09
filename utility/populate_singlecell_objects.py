@@ -146,6 +146,7 @@ def generate_qc_metrics_table(seq_id, expt_type):
 def convert_to_scrna_dict(data_dict):
     """Converts scRNA dictionary to correct keys
     """
+
     data_dict['estimated_number_of_cells'] = data_dict.pop('Estimated Number of Cells')
     data_dict['mean_reads_per_cell'] = data_dict.pop('Mean Reads per Cell')
     data_dict['median_genes_per_cell'] = data_dict.pop('Median Genes per Cell')
@@ -154,8 +155,8 @@ def convert_to_scrna_dict(data_dict):
     data_dict['sequencing_saturation'] = data_dict.pop('Sequencing Saturation')
     data_dict['q30_bases_in_barcode'] = data_dict.pop('Q30 Bases in Barcode')
     data_dict['q30_bases_in_rna_read'] = data_dict.pop('Q30 Bases in RNA Read')
-    data_dict['q30_bases_in_sample_index'] = data_dict.pop('Q30 Bases in Sample Index')
-    data_dict['q30_bases_in_UMI'] = data_dict.pop('Q30 Bases in UMI')
+    data_dict['q30_bases_in_sample_index'] = data_dict.pop('Q30 Bases in Sample Index') if 'Q30 Bases in Sample Index' in data_dict.keys() else None    
+    data_dict['q30_bases_in_UMI'] = data_dict.pop('Q30 Bases in UMI') if 'Q30 Bases in UMI' in data_dict.keys() else None
     data_dict['reads_mapped_to_genome'] = data_dict.pop('Reads Mapped to Genome')
     data_dict['reads_mapped_confidently_to_genome'] = data_dict.pop('Reads Mapped Confidently to Genome')
     data_dict['reads_mapped_confidently_to_intergenic_regions'] = data_dict.pop('Reads Mapped Confidently to Intergenic Regions')

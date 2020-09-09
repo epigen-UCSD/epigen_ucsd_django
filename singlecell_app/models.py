@@ -64,7 +64,7 @@ class scRNAqcInfo(models.Model):
         max_digits=20, decimal_places=16)
     q30_bases_in_rna_read = models.DecimalField(
         max_digits=20, decimal_places=16)
-    q30_bases_in_sample_index = models.DecimalField(
+    q30_bases_in_sample_index = models.DecimalField(null=True, blank=True, 
         max_digits=20, decimal_places=16)
     q30_bases_in_UMI = models.DecimalField(max_digits=20, decimal_places=16)
     reads_mapped_to_genome = models.DecimalField(
