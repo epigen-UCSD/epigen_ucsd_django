@@ -139,7 +139,7 @@ class SingleCellObject(models.Model):
     tenx_pipeline_status = models.CharField(
         max_length=20, default='ClickToSubmit')
     path_to_websummary = models.CharField(max_length=100, blank=True)
-    random_string_link = models.CharField(max_length=50, blank=True)
+    random_string_link = models.CharField(max_length=100, blank=True)
     # generic type foriegn key fields
     content_type = models.ForeignKey(
         ContentType, on_delete=models.CASCADE, null=True, blank=True)

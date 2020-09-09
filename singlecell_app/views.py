@@ -931,7 +931,7 @@ def generate_tenx_link(request):
         return JsonResponse(data, safe=False)
 
 
-# TODO check where generate link is called, ensure expt_type is passed in
+
 def generate_link(seq, expt_type):
     """ return a link for files to be viewed with a share link
     Will generate a link if needed. Will return the link in the response.
@@ -1016,6 +1016,7 @@ def insert_link(filename, seq, expt_type):
     # write to file
     with open(filename, 'w') as overwrite:
         overwrite.write(newdata)
+    return(link)
 
 
 def view_websummary(request, seq_id):

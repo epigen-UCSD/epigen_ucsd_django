@@ -20,7 +20,7 @@ django.setup()
 # Now this script or any imported module can use any part of Django it needs.
 from masterseq_app.models import SeqInfo, LibraryInfo, SampleInfo
 from singlecell_app.models import SingleCellObject, TenxqcInfo, scRNAqcInfo, CoolAdminSubmission
-from singlecell_app.views import get_tenx_status, get_latest_modified_time
+from singlecell_app.views import get_tenx_status, get_latest_modified_time,insert_link
 from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import datetime
@@ -48,6 +48,11 @@ def main(seq_id, status):
         # make qc metrics table and save it to SCmodel's generic foreign key
         sc_obj.content_object = generate_qc_metrics_table(
             seq_id, sc_obj.experiment_type)
+        
+        ## update symbolic links 
+        #print(insert_link(os.path.join(dir_to_expts,seq_id,'outs/web_summary.html'), seq_id, sc_obj.experiment_type))
+        sc_obj.random_string_link=insert_link(os.path.join(dir_to_expts,seq_id,'outs/web_summary.html'), seq_id, sc_obj.experiment_type)
+
     sc_obj.save()
 
 
