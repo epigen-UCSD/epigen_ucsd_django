@@ -229,7 +229,7 @@ def build_10xATAC_qc_list(seqs_list):
             obj = ContentType.objects.get(pk=entry['content_type_id']).get_object_for_this_type(id=entry['object_id'])
             entry['estimated_nuclei']= f'{obj.annotated_cells:,}'
             entry['total_fragments']=f'{obj.num_fragments:,}' #total_usable_fragments
-            entry['median_fragments_per_cell']=f'{obj.median_fragments_per_cell:,.0f}'
+            entry['median_fragments_per_cell']=0 if obj.median_fragments_per_cell==None else f'{obj.median_fragments_per_cell:,.0f}'
             entry['tsse']= f'{obj.tss_enrichment_score:.1f}'            
             entry['frac_duplicate']=f'{obj.frac_waste_duplicate:.3f}'
             entry['frac_waste_mitochondrial']=f'{obj.frac_waste_mitochondrial:.3f}'
@@ -941,6 +941,7 @@ def generate_link(seq, expt_type):
     info = {}
     data = {}
     parent_dir = ""
+    is_generated=False
 
     # get all files in exposed outs folder
     exposed_outs_dir = settings.EXPOSED_OUTS_DIR
@@ -977,9 +978,10 @@ def generate_link(seq, expt_type):
         link = os.path.join(os.path.basename(
             os.path.split(exposed_outs_dir)[0]), link)
         print(link)
+        is_generated=True
     url = 'http://epigenomics.sdsc.edu/zhc268/' + link
 
-    return(url)
+    return(url,is_generated)
 
 
 def insert_link(filename, seq, expt_type):
@@ -988,12 +990,19 @@ def insert_link(filename, seq, expt_type):
     """
     # links
     # generate a link to the output folder
-    link = generate_link(seq, expt_type)
+    link, is_generated = generate_link(seq, expt_type)
     if(link == -1):
         print('error in generate_link!')
         return
+    # if link generated already
+    if(is_generated):
+        return(link)
+
     # backup original file
-    shutil.copyfile(filename, filename+'.bak')
+    try:
+        shutil.copyfile(filename, filename+'.bak')
+    except:
+        return(link)
 
     # for atac, insert at lines magic numbers, where we will insert link in web_summary.html
     if expt_type == '10xATAC':

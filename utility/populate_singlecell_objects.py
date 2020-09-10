@@ -126,6 +126,8 @@ def generate_qc_metrics_table(seq_id, expt_type):
         data = []
         for row in reader:
             data.append(row)
+        #print(len(data[0]))
+        #print(len(data[1]))
         for i, m in enumerate(data[0]):
             #check for data type
             data_dict[m] = type_data(data[1][i])
@@ -134,7 +136,15 @@ def generate_qc_metrics_table(seq_id, expt_type):
     if 'cellranger-atac_version' in data_dict.keys():
         data_dict['cellranger_atac_version'] = data_dict.pop('cellranger-atac_version')
     if expt_type == '10xATAC':
+        # validate fields 
+        fields = [i.attname for i in TenxqcInfo._meta.fields]
+        data_dict={k:v for k,v in data_dict.items() if k in fields}
+        #print(data_dict)
+        #print([k for k in  fields if k not in data_dict.keys() ])
+        #print({k:len(str(v)) for k,v in data_dict.items()})
+        #print(max([len(str(v)) for k,v in data_dict.items()]))
         model_ = TenxqcInfo(**data_dict)
+        model_.full_clean()
     else:
         #convert dict to scRNAqcInfo type
         convert_to_scrna_dict(data_dict)
@@ -183,7 +193,7 @@ def type_data(data):
     elif len(data.split('.')) == 1:
         #there is no . in the data so this is just a number
         #print('returning data as int: ',data)
-        data = int(data.replace(',', ''))
+        data = None  if data=='None'  else  int(data.replace(',', '')) 
     else:
         #data is just a decimal, percent or other
         #print('returning data as dec: ',len(data), ' ',data)

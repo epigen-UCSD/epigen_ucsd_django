@@ -36,22 +36,24 @@ status_types = ['Yes', 'No', 'InQueue', 'InProcess', 'Error!', 'ClickToSubmit']
 
 def main(seq_id, status):
     # for example: python updateSingelCellStatus.py -sedid 'MM_130' -status 'InProcess'
-    sc_obj = SingleCellObject.objects.get(seqinfo__seq_id=seq_id)
-    sc_obj.tenx_pipeline_status = status
-    sc_obj.date_last_modified = datetime.now()
+    try:
+        sc_obj = SingleCellObject.objects.get(seqinfo__seq_id=seq_id)
+    except:
+        return
 
-    if(status == 'Yes'):
-        # check if there is an error file that exists
-        dir_to_expts = settings.TENX_DIR if sc_obj.experiment_type == "10xATAC" else settings.SCRNA_DIR
-        # TODO: error handling error_file = sc_obj.experiment_type
-        # if()
+    sc_obj.date_last_modified = datetime.now()
+    dir_to_expts = settings.TENX_DIR if sc_obj.experiment_type == "10xATAC" else settings.SCRNA_DIR
+    summary_file = os.path.join(dir_to_expts,seq_id,'outs/web_summary.html')
+    if(status == 'Yes' and os.path.exists(summary_file)):
+        sc_obj.tenx_pipeline_status = status
+    
         # make qc metrics table and save it to SCmodel's generic foreign key
         sc_obj.content_object = generate_qc_metrics_table(
             seq_id, sc_obj.experiment_type)
         
         ## update symbolic links 
         #print(insert_link(os.path.join(dir_to_expts,seq_id,'outs/web_summary.html'), seq_id, sc_obj.experiment_type))
-        sc_obj.random_string_link=insert_link(os.path.join(dir_to_expts,seq_id,'outs/web_summary.html'), seq_id, sc_obj.experiment_type)
+        sc_obj.random_string_link=insert_link(summary_file, seq_id, sc_obj.experiment_type)
 
     sc_obj.save()
 

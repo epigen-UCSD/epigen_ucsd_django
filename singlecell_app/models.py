@@ -92,15 +92,15 @@ class TenxqcInfo(models.Model):
     cellranger_atac_version = models.CharField(max_length=10)
     cells_detected = models.PositiveIntegerField()
     frac_cut_fragments_in_peaks = models.DecimalField(
-        max_digits=20, decimal_places=16)
+        max_digits=20, decimal_places=16,null=True, blank=True)
     frac_fragments_nfr = models.DecimalField(max_digits=20, decimal_places=16)
     frac_fragments_nfr_or_nuc = models.DecimalField(
         max_digits=20, decimal_places=16)
     frac_fragments_nuc = models.DecimalField(max_digits=20, decimal_places=16)
     frac_fragments_overlapping_peaks = models.DecimalField(
-        max_digits=20, decimal_places=16)
+        max_digits=20, decimal_places=16,null=True, blank=True)
     frac_fragments_overlapping_targets = models.DecimalField(
-        max_digits=20, decimal_places=16)
+        max_digits=20, decimal_places=16,null=True, blank=True)
     frac_mapped_confidently = models.DecimalField(
         max_digits=20, decimal_places=16)
     frac_waste_chimeric = models.DecimalField(max_digits=20, decimal_places=16)
@@ -118,11 +118,11 @@ class TenxqcInfo(models.Model):
     frac_waste_total = models.DecimalField(max_digits=20, decimal_places=16)
     frac_waste_unmapped = models.DecimalField(max_digits=20, decimal_places=16)
     median_fragments_per_cell = models.DecimalField(
-        max_digits=20, decimal_places=16)
+        max_digits=30, decimal_places=16,null=True, blank=True)
     num_fragments = models.PositiveIntegerField()
     r1_q30_bases_fract = models.DecimalField(max_digits=20, decimal_places=16)
     r2_q30_bases_fract = models.DecimalField(max_digits=20, decimal_places=16)
-    si_q30_bases_fract = models.DecimalField(max_digits=20, decimal_places=16)
+    si_q30_bases_fract = models.DecimalField(max_digits=20, decimal_places=16,null=True, blank=True)
     total_usable_fragments = models.PositiveIntegerField()
     tss_enrichment_score = models.DecimalField(
         max_digits=20, decimal_places=16)
