@@ -95,9 +95,17 @@ class GenomeInfo(models.Model):
     def __str__(self):
         return self.genome_name
 
+class ProjectInfo(models.Model):
+    project_number = models.CharField('project_number', max_length=100)
+
+class TaskInfo(models.Model):
+    task_number = models.CharField('task_number', max_length=100)
+    project_info = models.ForeignKey(ProjectInfo, on_delete=models.CASCADE)
 
 class SampleInfo(models.Model):
     sample_id = models.CharField('sample name', max_length=100)
+    task_info = models.ForeignKey(TaskInfo, on_delete=models.CASCADE, blank=True, null=True)
+    funding_source_number = models.CharField('funding source number', max_length=100, blank=True, null=True)
     date = models.DateField(
         help_text='If the datepicker is not working, please enter in this form: yyyy-mm-dd, like 2018-04-03', blank=True, null=True)
     date_received = models.DateField(

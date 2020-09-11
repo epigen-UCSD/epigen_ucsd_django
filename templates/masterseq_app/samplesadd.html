@@ -96,6 +96,63 @@
 
       </div>
       <div class="modal-body">
+
+
+        {% if newprojectrequired %}
+        <p>In this request, <span style="background-color: #F6BE00">new project number </span> will be created, <span style="background-color: #F6BE00">are you sure?</span> </p>
+
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            {% for field in displayorder6 %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+         <tbody>
+          {% for key,value in data.items%}
+          {% if value.newprojectflag %}
+          <tr>
+            {% for field in displayorder6 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+
+        </tbody>
+      </table> 
+      {% endif %}
+
+        {% if newtaskrequired %}
+        <p>In this request, <span style="background-color: #F6BE00">new task number </span> will be created, <span style="background-color: #F6BE00">are you sure?</span> </p>
+
+      <table class="table table-striped table-sm table-responsive-xl " style="white-space: nowrap;">
+        <thead>
+          <tr>
+            {% for field in displayorder7 %}
+            <th scope="col">{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+         <tbody>
+          {% for key,value in data.items%}
+          {% if value.newtaskflag %}
+          <tr>
+            {% for field in displayorder7 %}
+            <td>{{ value|key:field }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+          {% endfor %}
+
+        </tbody>
+      </table> 
+      {% endif %}
+          
+
+
+
         {% if newuserrequired %}
         <p>In this request, the follwing <span style="background-color: #F6BE00">new user account</span> will be created,<span style="background-color: #F6BE00">are you sure?</span></p>
 
