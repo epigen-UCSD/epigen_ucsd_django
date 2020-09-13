@@ -368,6 +368,8 @@ def SamplesCreateView(request):
     newprojectrequired = 0
     newtaskrequired = 0
     alreadynewuser = []
+    allnewproject = []
+    allnewtask = []
     if sample_form.is_valid():
         sampleinfo = sample_form.cleaned_data['samplesinfo']
         all_index = list(SampleInfo.objects.values_list(
@@ -389,14 +391,23 @@ def SamplesCreateView(request):
                 if not ProjectInfo.objects.filter(project_number=project_n).exists():
                     newprojectrequired = 1
                     newtaskrequired = 1
-                    newprojectflag = 1
-                    newtaskflag = 1
+                    if project_n not in allnewproject:
+                        newprojectflag = 1
+                        newtaskflag = 1
+                        allnewproject.append(project_n)
+                        allnewtask.append(project_n+'-'+task_n)
+                    else:
+                        if project_n+'-'+task_n not in allnewtask:
+                            newtaskflag = 1
+                            allnewtask.append(project_n+'-'+task_n)
 
                 else:
                     this_project = ProjectInfo.objects.get(project_number=project_n)
                     if not TaskInfo.objects.filter(project_info=this_project,task_number=task_n).exists():
                         newtaskrequired = 1
-                        newtaskflag = 1
+                        if project_n+'-'+task_n not in allnewtask:
+                            newtaskflag = 1
+                            allnewtask.append(project_n+'-'+task_n)
             
             del fields[8:11]
 
@@ -772,6 +783,7 @@ def SamplesCreateView(request):
                     fiscal_email=v['fiscal_email'],
                     fiscal_index=v['fiscal_index'],
                     task_info = this_task,
+                    funding_source_number=v['funding_source_number'],
                     sample_id=k,
                     species=v['species'],
                     sample_type=v['sample_type'],
@@ -826,6 +838,8 @@ def SamplesCreateView(request):
                 'displayorder3': displayorder3,
                 'displayorder4': displayorder4,
                 'displayorder5': displayorder5,
+                'displayorder6': displayorder6,
+                'displayorder7': displayorder7,
                 'data': data,
             }
 
@@ -1573,6 +1587,8 @@ def SampleDetailView(request, pk):
             for person in user.collaboratorpersoninfo_set.all():
                 if 'PI' in person.role:
                     piname.append(user.first_name + ' ' + user.last_name)
+    task_number = sampleinfo.task_info.task_number
+    project_number = sampleinfo.task_info.project_info.project_number
 
     context = {
         'groupinfo': groupinfo,
@@ -1585,7 +1601,10 @@ def SampleDetailView(request, pk):
         'libfield': libfield,
         'seqfield': seqfield,
         'libinfo': libinfo.order_by('library_id'),
-        'seqs': seqs.order_by('seq_id')
+        'seqs': seqs.order_by('seq_id'),
+        'task_number':task_number,
+        'project_number':project_number,
+
     }
     return render(request, 'masterseq_app/sampledetail.html', context=context)
 

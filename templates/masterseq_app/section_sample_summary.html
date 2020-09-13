@@ -67,6 +67,18 @@
                         <th>index:</th> 
                         <td>{{ sampleinfo.fiscal_index | default_if_none:""}}</td>
                       </tr>
+                      <tr>
+                        <th>project_number:</th> 
+                        <td>{{ project_number | default_if_none:""}}</td>
+                      </tr>
+                      <tr>
+                        <th>task_number:</th> 
+                        <td>{{ task_number | default_if_none:""}}</td>
+                      </tr>
+                      <tr>
+                        <th>funding_source_number:</th> 
+                        <td>{{ sampleinfo.funding_source_number | default_if_none:""}}</td>
+                      </tr>
                     </tbody>                                     
                   </table>
                 </div>
