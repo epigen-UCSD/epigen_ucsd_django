@@ -7,7 +7,7 @@ from .forms import SampleCreationForm, LibraryCreationForm, SeqCreationForm,\
     LibsCreationForm_wetlab, SeqsCreationForm_wetlab, BulkUpdateForm, EncodeDataForm
 from .models import SampleInfo, LibraryInfo, SeqInfo, ProtocalInfo, \
     SeqMachineInfo, SeqBioInfo, choice_for_preparation, choice_for_fixation,\
-    choice_for_unit, choice_for_sample_type, ProjectInfo, TaskInfo
+    choice_for_unit, choice_for_sample_type
 from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.shared import datetransform
@@ -365,11 +365,7 @@ def SamplesCreateView(request):
     data = {}
     newuserrequired = 0
     newinforequired = 0
-    newprojectrequired = 0
-    newtaskrequired = 0
     alreadynewuser = []
-    allnewproject = []
-    allnewtask = []
     if sample_form.is_valid():
         sampleinfo = sample_form.cleaned_data['samplesinfo']
         all_index = list(SampleInfo.objects.values_list(
@@ -383,31 +379,6 @@ def SamplesCreateView(request):
             project_n = fields[8].strip() if fields[8].strip() not in ['NA', 'N/A'] else ''
             task_n = fields[9].strip() if fields[9].strip() not in ['NA', 'N/A'] else ''
             funding_source_n = fields[10].strip() if fields[10].strip() not in ['NA', 'N/A'] else ''
-
-            newprojectflag = 0
-            newtaskflag = 0
-
-            if project_n and task_n:
-                if not ProjectInfo.objects.filter(project_number=project_n).exists():
-                    newprojectrequired = 1
-                    newtaskrequired = 1
-                    if project_n not in allnewproject:
-                        newprojectflag = 1
-                        newtaskflag = 1
-                        allnewproject.append(project_n)
-                        allnewtask.append(project_n+'-'+task_n)
-                    else:
-                        if project_n+'-'+task_n not in allnewtask:
-                            newtaskflag = 1
-                            allnewtask.append(project_n+'-'+task_n)
-
-                else:
-                    this_project = ProjectInfo.objects.get(project_number=project_n)
-                    if not TaskInfo.objects.filter(project_info=this_project,task_number=task_n).exists():
-                        newtaskrequired = 1
-                        if project_n+'-'+task_n not in allnewtask:
-                            newtaskflag = 1
-                            allnewtask.append(project_n+'-'+task_n)
             
             del fields[8:11]
 
@@ -682,11 +653,9 @@ def SamplesCreateView(request):
                 'fisnew_email': fisnew_email,
                 'fisnew_phone': fisnew_phone,
                 'fisnew_index': fisnew_index,
-                'funding_source_number':funding_source_n,
-                'newprojectflag':newprojectflag,
-                'newtaskflag':newtaskflag,
                 'project_number':project_n,
                 'task_number':task_n,
+                'funding_source_number':funding_source_n,
             }
 
         if 'Save' in request.POST:
@@ -761,17 +730,6 @@ def SamplesCreateView(request):
                         current_index.insert(0, v['fisnew_index'])
                         fisperson.index = removenone(current_index)
                     fisperson.save()
-                if v['project_number'] and v['task_number']:
-                    if v['newprojectflag']:
-                        this_project = ProjectInfo.objects.create(project_number=v['project_number'])
-                        this_task = TaskInfo.objects.create(project_info=this_project,task_number=v['task_number'])
-                    else:
-                        if v['newtaskflag']:
-                            this_task = TaskInfo.objects.create(project_info=this_project,task_number=v['task_number'])
-                        else:
-                            this_task = TaskInfo.objects.get(project_info=this_project,task_number=v['task_number'])
-                else:
-                    this_task = None
 
                 tosave_item = SampleInfo(
                     sample_index=v['sample_index'],
@@ -782,8 +740,9 @@ def SamplesCreateView(request):
                     fiscal_name=v['fiscal_name'],
                     fiscal_email=v['fiscal_email'],
                     fiscal_index=v['fiscal_index'],
-                    task_info = this_task,
-                    funding_source_number=v['funding_source_number'],
+                    project_number = v['project_number'],
+                    task_number = v['task_number'],
+                    funding_source_number=v['funding_source_number'], 
                     sample_id=k,
                     species=v['species'],
                     sample_type=v['sample_type'],
@@ -822,15 +781,12 @@ def SamplesCreateView(request):
                              'user_last_name', 'new_email', 'new_phone', 'new_index']
             displayorder5 = ['group', 'fisuser_first_name', 'fisuser_last_name',
                              'fisnew_email', 'fisnew_phone', 'fisnew_index']
-            displayorder6 = ['project_number']
-            displayorder7 = ['task_number','project_number']
+
 
 
             context = {
                 'newuserrequired': newuserrequired,
                 'newinforequired': newinforequired,
-                'newprojectrequired':newprojectrequired,
-                'newtaskrequired':newtaskrequired,
                 'sample_form': sample_form,
                 'modalshowplus': 1,
                 'displayorder': displayorder,
@@ -838,8 +794,6 @@ def SamplesCreateView(request):
                 'displayorder3': displayorder3,
                 'displayorder4': displayorder4,
                 'displayorder5': displayorder5,
-                'displayorder6': displayorder6,
-                'displayorder7': displayorder7,
                 'data': data,
             }
 
@@ -1587,8 +1541,6 @@ def SampleDetailView(request, pk):
             for person in user.collaboratorpersoninfo_set.all():
                 if 'PI' in person.role:
                     piname.append(user.first_name + ' ' + user.last_name)
-    task_number = sampleinfo.task_info.task_number
-    project_number = sampleinfo.task_info.project_info.project_number
 
     context = {
         'groupinfo': groupinfo,
@@ -1602,9 +1554,6 @@ def SampleDetailView(request, pk):
         'seqfield': seqfield,
         'libinfo': libinfo.order_by('library_id'),
         'seqs': seqs.order_by('seq_id'),
-        'task_number':task_number,
-        'project_number':project_number,
-
     }
     return render(request, 'masterseq_app/sampledetail.html', context=context)
 
@@ -1816,7 +1765,7 @@ def SaveMyMetaDataExcel(request):
     Samples_list = SampleInfo.objects.filter(team_member=request.user).order_by('pk').select_related('group',
                                                                                                      'team_member').values_list('date', 'group__name',
                                                                                                                                 'research_name', 'research_email', 'research_phone', 'fiscal_name', 'fiscal_email', 'fiscal_index',
-                                                                                                                                'task_info__project_info__project_number','task_info__task_number','funding_source_number',
+                                                                                                                                'project_number','task_number','funding_source_number',
                                                                                                                                 'sample_id', 'description', 'species', 'sample_type',
                                                                                                                                 'preparation', 'fixation', 'sample_amount', 'unit', 'service_requested', 'seq_depth_to_target',
                                                                                                                                 'seq_length_requested', 'seq_type_requested', 'notes', 'date_received',
@@ -2062,7 +2011,7 @@ def SaveAllMetaDataExcel(request):
     Samples_list = SampleInfo.objects.all().order_by('pk').select_related('group',
                                                                           'team_member').values_list('date', 'group__name',
                                                                                                      'research_name', 'research_email', 'research_phone', 'fiscal_name', 'fiscal_email', 'fiscal_index',
-                                                                                                     'task_info__project_info__project_number','task_info__task_number','funding_source_number',
+                                                                                                     'project_number','task_number','funding_source_number',
                                                                                                      'sample_id', 'description', 'species', 'sample_type',
                                                                                                      'preparation', 'fixation', 'sample_amount', 'unit', 'service_requested', 'seq_depth_to_target',
                                                                                                      'seq_length_requested', 'seq_type_requested', 'notes', 'date_received',

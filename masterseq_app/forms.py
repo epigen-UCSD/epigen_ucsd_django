@@ -494,7 +494,6 @@ class SamplesCreationForm(forms.Form):
 		flagfiscal1 = 0
 		flagfiscal2 = 0
 		flagfisindex = 0
-		flagprojecttask = 0
 		invaliddate = []
 		invaliddate_received = []
 		invalidspecies = []
@@ -518,12 +517,6 @@ class SamplesCreationForm(forms.Form):
 			if lineitem != '\r':
 				#fields = lineitem.split('\t')
 				fields = (lineitem+'\t'*20).split('\t')
-
-				project_n = fields[8].strip() if fields[8].strip() not in ['NA', 'N/A'] else ''
-				task_n = fields[9].strip() if fields[9].strip() not in ['NA', 'N/A'] else ''
-
-				if (project_n and not task_n) or (task_n and not project_n):
-					flagprojecttask = 1
 
 				del fields[8:11]
 				try:
@@ -632,8 +625,6 @@ class SamplesCreationForm(forms.Form):
 				samnotes = fields[20].strip()
 					
 				cleaneddata.append(lineitem)
-		if flagprojecttask == 1:
-			raise forms.ValidationError('Project number and Task number should both populated or both blank')
 		if flagdate == 1:
 			raise forms.ValidationError('Invalid date:'+','.join(invaliddate)+'. Please enter like this: 10/30/2018 or 10/30/18')
 		if flagdate_received == 1:

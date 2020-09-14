@@ -69,11 +69,11 @@
                       </tr>
                       <tr>
                         <th>project_number:</th> 
-                        <td>{{ project_number | default_if_none:""}}</td>
+                        <td>{{ sampleinfo.project_number | default_if_none:""}}</td>
                       </tr>
                       <tr>
                         <th>task_number:</th> 
-                        <td>{{ task_number | default_if_none:""}}</td>
+                        <td>{{ sampleinfo.task_number | default_if_none:""}}</td>
                       </tr>
                       <tr>
                         <th>funding_source_number:</th> 
