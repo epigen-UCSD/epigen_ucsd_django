@@ -97,7 +97,7 @@ def quotebody(serviceitems, quantities,institute):
 		total += subtotal
 		if len(serviceitems) > 1:
 			
-			this_breakdown = this_breakdown+'\nSubtotal:$'+str(rate_value)+'*'+str(quantity)+' '+thisitem.rate_unit+'s = $'+str(subtotal)+'\n'
+			this_breakdown = this_breakdown+'\nSubtotal: $'+str(rate_value)+' * '+str(quantity)+' '+thisitem.rate_unit+'s = $'+str(subtotal)+'\n'
 			if '(pilot)' not in item:
 				i += 1
 				if thisitem.description_brief:
@@ -130,7 +130,7 @@ def quotebody(serviceitems, quantities,institute):
 		fixedpart3 = 'The costs are for '+'.'.join(service_detail)
 		outlines.append('.'.join([fixedpart1,fixedpart2,fixedpart3,fixedpart4]))
 		outlines.append('\n'.join(service_breakdown))
-		outlines.append('\nTotal Estimate: '+'+'.join(subtotals)+' = '+'$'+str(total))
+		outlines.append('\nTotal Estimate: '+' + '.join(subtotals)+' = '+'$'+str(total))
 	else:
 		fixedpart2 = 'This quote is for our '+','.join(servicename)+' service'
 		fixedpart3 = 'The costs are for '+','.join(service_detail)

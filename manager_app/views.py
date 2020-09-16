@@ -1028,7 +1028,7 @@ def QuotePdfView(request,quoteid):
     pdf_path = os.path.join(settings.QUOTE_DIR,pdf_name)
     with open(pdf_path,'rb') as pdf:
         response = HttpResponse(pdf, content_type='application/pdf')
-        response['Content-Disposition'] = 'inline; filename="mypdf.pdf"'
+        response['Content-Disposition'] = 'inline; filename="'+pdf_name+'"'
         return response
 
 

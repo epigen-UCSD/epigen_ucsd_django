@@ -111,6 +111,7 @@ def tomultiplicationsign(text):
 		l = len(words)
 		for i in range(l):
 			if words[i] == '*' and i>0 and i<l-1:
+				print(' '.join([words[i-1],words[i],words[i+1]]))
 				try:
 					float(words[i-1].strip().strip('$'))
 					float(words[i+1].strip().strip('$'))
