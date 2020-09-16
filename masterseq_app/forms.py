@@ -30,6 +30,7 @@ class SampleCreationForm(forms.ModelForm):
         model = SampleInfo
         fields = ['sample_id','description','date','group','research_name',\
         'research_email','research_phone','fiscal_name','fiscal_email','fiscal_index',\
+        'project_number','task_number','funding_source_number',\
         'species','sample_type','preparation',\
         'fixation','sample_amount','unit','service_requested',\
         'seq_depth_to_target','seq_length_requested','seq_type_requested','notes','date_received','storage','internal_notes','status']
