@@ -18,13 +18,13 @@
   {% load nextseq_app_tags %}
 </head>
 <body>
-  <img src="{% static 'images/CFE_Brandmark-01.png' %}" alt="Center Logo" style="width:280px;margin-left:-30px;margin-top:-30px;">
-  <p style="margin-top: 45px;">Quote # {{ quote_id }}
+  <img src="{% static 'images/CFE_letter.png' %}" alt="Center Logo" style="height:215px;margin-left:-80px;margin-top:-80px;" >
+  <p style="margin-top: -10px;">Quote # {{ quote_id }}
   <br>
   <span style="font-style: italic;"> Note: This quote will expire 60 days from the date below </span>
   </p>
 
-  <p>{{ date }}</p>
+  <p style="margin-top: 15px;margin-bottom: 20px;">{{ date }}</p>
   
   {{ body | linkemail | safe | linebreaksbr }}
 
