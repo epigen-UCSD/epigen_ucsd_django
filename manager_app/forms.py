@@ -93,7 +93,10 @@ class ServiceRequestItemCreationForm(forms.ModelForm):
 		fields = ['service', 'quantity']
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		excludes = ['ATAC-seq_24','ATAC-seq_96']
+		excludes = ['ATAC-seq_24','ATAC-seq_96','10x scATAC-seq_2','10x scATAC-seq_3','10x scATAC-seq_4','10x scRNA-seq_2','10x scRNA-seq_3','10x scRNA-seq_4',\
+		'10x snRNA-seq_2','10x snRNA-seq_3','10x snRNA-seq_4','sciATAC-seq_2','sciATAC-seq_3','sciATAC-seq_4',\
+		'10x scATAC-seq_2(pilot)','10x scATAC-seq_3(pilot)','10x scATAC-seq_4(pilot)','10x scRNA-seq_2(pilot)','10x scRNA-seq_3(pilot)','10x scRNA-seq_4(pilot)',\
+		'10x snRNA-seq_2(pilot)','10x snRNA-seq_3(pilot)','10x snRNA-seq_4(pilot)','sciATAC-seq_2(pilot)','sciATAC-seq_3(pilot)','sciATAC-seq_4(pilot)']
 		self.fields['service'].queryset = ServiceInfo.objects.all().exclude(service_name__in=excludes)
 
 

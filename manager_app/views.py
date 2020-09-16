@@ -284,6 +284,7 @@ def ServiceRequestCreateView(request):
     now = datetime.datetime.now()
 
     writelines = []
+    duplicate = {}
 
 
 
@@ -320,24 +321,112 @@ def ServiceRequestCreateView(request):
                                 service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
                             elif float(quantity) > 96:
                                 service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
-                        print(institute)
+
+                        if service.service_name == 'sciATAC-seq':
+                            if float(quantity) == 1:
+                                service = ServiceInfo.objects.get(service_name='sciATAC-seq')
+                            elif float(quantity) == 2:
+                                service = ServiceInfo.objects.get(service_name='sciATAC-seq_2')
+                            elif float(quantity) == 3:
+                                service = ServiceInfo.objects.get(service_name='sciATAC-seq_3')
+                            elif float(quantity) >= 4:
+                                service = ServiceInfo.objects.get(service_name='sciATAC-seq_4')
+
+                        if service.service_name == '10x scATAC-seq':
+                            if float(quantity) == 1:
+                                service = ServiceInfo.objects.get(service_name='10x scATAC-seq')
+                            elif float(quantity) == 2:
+                                service = ServiceInfo.objects.get(service_name='10x scATAC-seq_2')
+                            elif float(quantity) == 3:
+                                service = ServiceInfo.objects.get(service_name='10x scATAC-seq_3')
+                            elif float(quantity) >= 4:
+                                service = ServiceInfo.objects.get(service_name='10x scATAC-seq_4')
+
+
+                        if service.service_name == '10x scRNA-seq':
+                            if float(quantity) == 1:
+                                service = ServiceInfo.objects.get(service_name='10x scRNA-seq')
+                            elif float(quantity) == 2:
+                                service = ServiceInfo.objects.get(service_name='10x scRNA-seq_2')
+                            elif float(quantity) == 3:
+                                service = ServiceInfo.objects.get(service_name='10x scRNA-seq_3')
+                            elif float(quantity) >= 4:
+                                service = ServiceInfo.objects.get(service_name='10x scRNA-seq_4')
+
+                        if service.service_name == '10x snRNA-seq':
+                            if float(quantity) == 1:
+                                service = ServiceInfo.objects.get(service_name='10x snRNA-seq')
+                            elif float(quantity) == 2:
+                                service = ServiceInfo.objects.get(service_name='10x snRNA-seq_2')
+                            elif float(quantity) == 3:
+                                service = ServiceInfo.objects.get(service_name='10x snRNA-seq_3')
+                            elif float(quantity) >= 4:
+                                service = ServiceInfo.objects.get(service_name='10x snRNA-seq_4')
+
+                        if service.service_name == 'sciATAC-seq(pilot)':
+                            if float(quantity) == 1:
+                                service = ServiceInfo.objects.get(service_name='sciATAC-seq(pilot)')
+                            elif float(quantity) == 2:
+                                service = ServiceInfo.objects.get(service_name='sciATAC-seq_2(pilot)')
+                            elif float(quantity) == 3:
+                                service = ServiceInfo.objects.get(service_name='sciATAC-seq_3(pilot)')
+                            elif float(quantity) >= 4:
+                                service = ServiceInfo.objects.get(service_name='sciATAC-seq_4(pilot)')
+
+                        if service.service_name == '10x scATAC-seq(pilot)':
+                            if float(quantity) == 1:
+                                service = ServiceInfo.objects.get(service_name='10x scATAC-seq(pilot)')
+                            elif float(quantity) == 2:
+                                service = ServiceInfo.objects.get(service_name='10x scATAC-seq_2(pilot)')
+                            elif float(quantity) == 3:
+                                service = ServiceInfo.objects.get(service_name='10x scATAC-seq_3(pilot)')
+                            elif float(quantity) >= 4:
+                                service = ServiceInfo.objects.get(service_name='10x scATAC-seq_4(pilot)')
+
+
+                        if service.service_name == '10x scRNA-seq(pilot)':
+                            if float(quantity) == 1:
+                                service = ServiceInfo.objects.get(service_name='10x scRNA-seq(pilot)')
+                            elif float(quantity) == 2:
+                                service = ServiceInfo.objects.get(service_name='10x scRNA-seq_2(pilot)')
+                            elif float(quantity) == 3:
+                                service = ServiceInfo.objects.get(service_name='10x scRNA-seq_3(pilot)')
+                            elif float(quantity) >= 4:
+                                service = ServiceInfo.objects.get(service_name='10x scRNA-seq_4(pilot)')
+
+                        if service.service_name == '10x snRNA-seq(pilot)':
+                            if float(quantity) == 1:
+                                service = ServiceInfo.objects.get(service_name='10x snRNA-seq(pilot)')
+                            elif float(quantity) == 2:
+                                service = ServiceInfo.objects.get(service_name='10x snRNA-seq_2(pilot)')
+                            elif float(quantity) == 3:
+                                service = ServiceInfo.objects.get(service_name='10x snRNA-seq_3(pilot)')
+                            elif float(quantity) >= 4:
+                                service = ServiceInfo.objects.get(service_name='10x snRNA-seq_4(pilot)')
+
+                        if service.service_name in data_requestitem.keys():
+                            duplicate[service.service_name] += 1
+                            this_service_name = service.service_name + 'duplicate#' + str(duplicate[service.service_name])
+                        else:
+                            this_service_name = service.service_name
+                            duplicate[service.service_name] = 1                 
 
                         if institute == 'uc':
-                            data_requestitem[service.service_name] = {
+                            data_requestitem[this_service_name] = {
                                 'rate(uc users)':str(service.uc_rate)+'/'+service.rate_unit,
                                 'rate_number':service.uc_rate,
                                 'quantity':quantity,
                                 'rate_unit':service.rate_unit,
                             }
                         elif institute == 'non_uc':
-                            data_requestitem[service.service_name] = {
+                            data_requestitem[this_service_name] = {
                                 'rate(non-uc users)':str(service.nonuc_rate)+'/'+service.rate_unit,
                                 'rate_number':service.nonuc_rate,
                                 'quantity':quantity,
                                 'rate_unit':service.rate_unit,
                             }
                         elif institute == 'industry':
-                            data_requestitem[service.service_name] = {
+                            data_requestitem[this_service_name] = {
                                 'rate(industry users)':str(service.industry_rate)+'/'+service.rate_unit,
                                 'rate_number':service.industry_rate,
                                 'quantity':quantity,
@@ -399,11 +488,11 @@ def ServiceRequestCreateView(request):
                     for item in data_requestitem.keys():
                         ServiceRequestItem.objects.create(
                             request=thisrequest, 
-                            service=ServiceInfo.objects.get(service_name=item),
+                            service=ServiceInfo.objects.get(service_name=item.split('duplicate#')[0]),
                             quantity=data_requestitem[item]['quantity'],
                             )
-                        service_items.append(item)
-                        this_service_item = ServiceInfo.objects.get(service_name=item)
+                        service_items.append(item.split('duplicate#')[0])
+                        #this_service_item = ServiceInfo.objects.get(service_name=item)
                         service_quantities.append(data_requestitem[item]['quantity'])
                     quote_compact = ''.join(data_request['quote_number'].split(' '))
                     collab_info = [group_name,research_contact,research_contact_email+'\n']

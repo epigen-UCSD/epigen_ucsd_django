@@ -96,6 +96,9 @@ def linkemail(text):
 	#print('\n'.join(outtext))
 	return '\n'.join(outtext)	
 
+@register.filter
+def trueitem(value):
+	return value.split('duplicate#')[0]
 
 
 
