@@ -136,7 +136,7 @@ def quotebody(serviceitems, quantities,institute):
 		fixedpart3 = 'The costs are for '+','.join(service_detail)
 		outlines.append('.'.join([fixedpart1,fixedpart2,fixedpart3,fixedpart4]))
 		outlines.append('\n'.join(service_breakdown))
-		outlines.append('Total Estimate: $'+str(rate_value)+'*'+str(quantity)+' '+thisitem.rate_unit+'s = $'+str(subtotal))
+		outlines.append('Total Estimate: $'+str(rate_value)+' * '+str(quantity)+' '+thisitem.rate_unit+'s = $'+str(subtotal))
 
 	return '\n'.join(outlines)
 

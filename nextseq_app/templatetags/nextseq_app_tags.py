@@ -101,5 +101,27 @@ def trueitem(value):
 	return value.split('duplicate#')[0]
 
 
+@register.filter
+def tomultiplicationsign(text):
+	outtext = []
+	lines = text.split('\n')
+	for line in lines:
+		outline = []
+		words = line.split(' ')
+		l = len(words)
+		for i in range(l):
+			if words[i] == '*' and i>0 and i<l-1:
+				try:
+					float(words[i-1].strip().strip('$'))
+					float(words[i+1].strip().strip('$'))
+					outline.append('&#215')
+
+				except:
+					outline.append(words[i])
+			else:
+				outline.append(words[i])
+		outtext.append(' '.join(outline))
+	return '\n'.join(outtext)	
+
 
 
