@@ -19,7 +19,7 @@ def getArgs():
     parser = argparse.ArgumentParser(
         description='Import barcodes script for 10xATAC.')
     parser.add_argument('-b', '--barcode_file', dest='barcode_file',
-                        help='input barcode file  (csv format, basedir is ../)')
+                        help='input barcode file  (csv format, basedir is ../scripts)')
     parser.add_argument('-k', '--barcode_kits', dest='barcode_kits',default='TA',
                         help='input barcode-kits (eg.TA, TR etc).')
 
