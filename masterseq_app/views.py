@@ -375,6 +375,13 @@ def SamplesCreateView(request):
         for lineitem in sampleinfo.strip().split('\n'):
             lineitem = lineitem+'\t'*20
             fields = lineitem.strip('\n').split('\t')
+
+            project_n = fields[8].strip() if fields[8].strip() not in ['NA', 'N/A'] else ''
+            task_n = fields[9].strip() if fields[9].strip() not in ['NA', 'N/A'] else ''
+            funding_source_n = fields[10].strip() if fields[10].strip() not in ['NA', 'N/A'] else ''
+            
+            del fields[8:11]
+
             samindex = 'SAMP-'+str(max_index + 1)
             max_index = max_index + 1
             newresuserflag = 0
@@ -646,6 +653,9 @@ def SamplesCreateView(request):
                 'fisnew_email': fisnew_email,
                 'fisnew_phone': fisnew_phone,
                 'fisnew_index': fisnew_index,
+                'project_number':project_n,
+                'task_number':task_n,
+                'funding_source_number':funding_source_n,
             }
 
         if 'Save' in request.POST:
@@ -730,6 +740,9 @@ def SamplesCreateView(request):
                     fiscal_name=v['fiscal_name'],
                     fiscal_email=v['fiscal_email'],
                     fiscal_index=v['fiscal_index'],
+                    project_number = v['project_number'],
+                    task_number = v['task_number'],
+                    funding_source_number=v['funding_source_number'], 
                     sample_id=k,
                     species=v['species'],
                     sample_type=v['sample_type'],
@@ -754,7 +767,8 @@ def SamplesCreateView(request):
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
             displayorder = ['sample_index', 'group', 'research_name', 'research_email',
-                            'research_phone', 'fiscal_name', 'fiscal_email', 'fiscal_index', 'description',
+                            'research_phone', 'fiscal_name', 'fiscal_email', 'fiscal_index','project_number',\
+                            'task_number','funding_source_number', 'description',
                             'date', 'species', 'sample_type',
                             'preparation', 'fixation', 'sample_amount', 'unit',
                             'notes', 'service_requested', 'seq_depth_to_target',
@@ -767,6 +781,8 @@ def SamplesCreateView(request):
                              'user_last_name', 'new_email', 'new_phone', 'new_index']
             displayorder5 = ['group', 'fisuser_first_name', 'fisuser_last_name',
                              'fisnew_email', 'fisnew_phone', 'fisnew_index']
+
+
 
             context = {
                 'newuserrequired': newuserrequired,
@@ -1537,7 +1553,7 @@ def SampleDetailView(request, pk):
         'libfield': libfield,
         'seqfield': seqfield,
         'libinfo': libinfo.order_by('library_id'),
-        'seqs': seqs.order_by('seq_id')
+        'seqs': seqs.order_by('seq_id'),
     }
     return render(request, 'masterseq_app/sampledetail.html', context=context)
 
@@ -1696,10 +1712,10 @@ def SaveMyMetaDataExcel(request):
     ws.row(row_num).height = 256*1
     ws.write_merge(0, 0, 21, 24, 'To be entered upon reciept', style)
     row_num = 1
-    columns_width = [15, 15, 15, 21, 15, 15, 21, 15, 25, 30, 12,
+    columns_width = [15, 15, 15, 21, 15, 15, 21, 15, 15, 15, 15, 25, 30, 12,
                      15, 15, 11, 12, 12, 12, 12, 12, 12, 30, 15, 15, 15, 25]
     columns = ['Date', 'PI', 'Research contact name', 'Research contact e-mail',
-               'Research contact phone', 'Fiscal contact name', 'Fiscal conact e-mail', 'Index for payment',
+               'Research contact phone', 'Fiscal contact name', 'Fiscal conact e-mail', 'Index for payment','Project number','Task number','Funding Source Number (if sponsored research)',
                'Sample ID', 'Sample description', 'Species', 'Sample type', 'Preperation',
                'Fixation?', 'Sample amount', 'Units', 'Service requested', 'Sequencing depth to target',
                'Sequencing length requested', 'Sequencing type requested', 'Notes',
@@ -1707,7 +1723,7 @@ def SaveMyMetaDataExcel(request):
 
     for col_num in range(len(columns)):
         ws.col(col_num).width = 256*columns_width[col_num]
-        if col_num == 8:
+        if col_num == 11:
             style = xlwt.XFStyle()
             style.alignment.wrap = 1
             style.font.bold = True
@@ -1749,6 +1765,7 @@ def SaveMyMetaDataExcel(request):
     Samples_list = SampleInfo.objects.filter(team_member=request.user).order_by('pk').select_related('group',
                                                                                                      'team_member').values_list('date', 'group__name',
                                                                                                                                 'research_name', 'research_email', 'research_phone', 'fiscal_name', 'fiscal_email', 'fiscal_index',
+                                                                                                                                'project_number','task_number','funding_source_number',
                                                                                                                                 'sample_id', 'description', 'species', 'sample_type',
                                                                                                                                 'preparation', 'fixation', 'sample_amount', 'unit', 'service_requested', 'seq_depth_to_target',
                                                                                                                                 'seq_length_requested', 'seq_type_requested', 'notes', 'date_received',
@@ -1940,10 +1957,10 @@ def SaveAllMetaDataExcel(request):
     ws.row(row_num).height = 256*1
     ws.write_merge(0, 0, 21, 24, 'To be entered upon reciept', style)
     row_num = 1
-    columns_width = [15, 15, 15, 21, 15, 15, 21, 15, 25, 30, 12,
+    columns_width = [15, 15, 15, 21, 15, 15, 21, 15, 15, 15, 15, 25, 30, 12,
                      15, 15, 11, 12, 12, 12, 12, 12, 12, 30, 15, 15, 15, 25]
     columns = ['Date', 'PI', 'Research contact name', 'Research contact e-mail',
-               'Research contact phone', 'Fiscal contact name', 'Fiscal conact e-mail', 'Index for payment',
+               'Research contact phone', 'Fiscal contact name', 'Fiscal conact e-mail', 'Index for payment','Project number','Task number','Funding Source Number (if sponsored research)',
                'Sample ID', 'Sample description', 'Species', 'Sample type', 'Preperation',
                'Fixation?', 'Sample amount', 'Units', 'Service requested', 'Sequencing depth to target',
                'Sequencing length requested', 'Sequencing type requested', 'Notes',
@@ -1951,7 +1968,7 @@ def SaveAllMetaDataExcel(request):
 
     for col_num in range(len(columns)):
         ws.col(col_num).width = 256*columns_width[col_num]
-        if col_num == 8:
+        if col_num == 11:
             style = xlwt.XFStyle()
             style.alignment.wrap = 1
             style.font.bold = True
@@ -1994,6 +2011,7 @@ def SaveAllMetaDataExcel(request):
     Samples_list = SampleInfo.objects.all().order_by('pk').select_related('group',
                                                                           'team_member').values_list('date', 'group__name',
                                                                                                      'research_name', 'research_email', 'research_phone', 'fiscal_name', 'fiscal_email', 'fiscal_index',
+                                                                                                     'project_number','task_number','funding_source_number',
                                                                                                      'sample_id', 'description', 'species', 'sample_type',
                                                                                                      'preparation', 'fixation', 'sample_amount', 'unit', 'service_requested', 'seq_depth_to_target',
                                                                                                      'seq_length_requested', 'seq_type_requested', 'notes', 'date_received',

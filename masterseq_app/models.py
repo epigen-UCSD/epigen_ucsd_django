@@ -136,7 +136,9 @@ class SampleInfo(models.Model):
     fiscal_name = models.CharField(max_length=200, blank=True, null=True)
     fiscal_email = models.CharField(max_length=200, blank=True, null=True)
     fiscal_index = models.CharField(max_length=200, blank=True, null=True)
-
+    project_number = models.CharField(max_length=100, blank=True, null=True)
+    task_number = models.CharField(max_length=100,blank=True, null=True)
+    funding_source_number = models.CharField(max_length=100, blank=True, null=True)
     research_person = models.ForeignKey(
         CollaboratorPersonInfo, related_name='contact_person', on_delete=models.CASCADE, null=True)
     fiscal_person = models.ForeignKey(
