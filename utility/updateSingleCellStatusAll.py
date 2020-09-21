@@ -32,7 +32,7 @@ SINGLE_CELL_EXPS = ['10xATAC', 'scRNA-seq', 'snRNA-seq', 'scATAC-seq']
 # These should be the only status's passed to the function. #TODO maybe add or force a check?
 # No is the same status as ClickToSubmit
 status_types = ['Yes', 'No', 'InQueue', 'InProcess', 'Error!', 'ClickToSubmit']
-
+cooladmin_objects = CoolAdminSubmission.objects.all()
 
 def check_status(entry):
     #group_id = entry['libraryinfo__sampleinfo__group']
@@ -58,16 +58,16 @@ def main():
     cooladmin_objects = CoolAdminSubmission.objects.all()
     groups = Group.objects.all()
     data = list(seqs_queryset)
-
+    print(len(data))
     i = 0
     for entry in data:
         seq_obj = SeqInfo.objects.get(seq_id=entry['seq_id'])
         entry = check_status(entry)
         # seq_obj.save()
-        sc_obj, _ = SingleCellObject.objects.get_or_create(seqinfo=seq_obj,
+        sc_obj, created = SingleCellObject.objects.get_or_create(seqinfo=seq_obj,
                                                            date_last_modified=entry['date_submitted_for_sequencing'],
                                                            experiment_type=entry['libraryinfo__experiment_type'],
-                                                           tenx_pipeline_status=entry['10x_status'])
+                                                           tenx_pipeline_status=entry['10x_status'])                                                           
         if(entry['10x_status'] == 'Yes'):
             try:
                 sc_obj.content_object = generate_qc_metrics_table(
@@ -75,4 +75,9 @@ def main():
                 sc_obj.save()
             except:
                 a = 0
+        if(created):
+            print(i)
+            sc_obj.save()
         i += 1
+
+main()
