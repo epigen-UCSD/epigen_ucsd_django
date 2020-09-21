@@ -16,3 +16,4 @@ data/web*
 .ipynb_checkpoints/*
 .vscode
 data/masterseq_app/*.pdf
+*Rhistory

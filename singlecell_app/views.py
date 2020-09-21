@@ -101,7 +101,7 @@ def All10xAtacQcData(request):
 
     data = list(seqs_queryset)
     build_10xATAC_qc_list(data)
-    print(data[0])
+    # print(data[0])
     return JsonResponse(data, safe=False)
 
 def User10xAtacQcData(request):
