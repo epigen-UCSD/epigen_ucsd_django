@@ -1133,8 +1133,11 @@ def SeqsCreateView(request):
                     default_label=v['default_label'],
                     date_submitted_for_sequencing=v['date_submitted'],
                 )
+                tosave_item.save()
                 tosave_list.append(tosave_item)
-            SeqInfo.objects.bulk_create(tosave_list)
+
+            # SeqInfo.objects.bulk_create(tosave_list)           
+
             return redirect('masterseq_app:index')
         if 'Preview' in request.POST:
             displayorder = ['libraryinfo', 'default_label', 'date_submitted', 'team_member_initails', 'read_length',
