@@ -59,6 +59,9 @@ def main(seq_id, status):
         ## update symbolic links 
         #print(insert_link(os.path.join(dir_to_expts,seq_id,'outs/web_summary.html'), seq_id, sc_obj.experiment_type))
         sc_obj.random_string_link=insert_link(summary_file, seq_id, sc_obj.experiment_type)
+    elif(status == 'Yes' ):
+        # not finished actually
+        sc_obj.tenx_pipeline_status= 'ClickToSubmit'
 
     sc_obj.save()
 
