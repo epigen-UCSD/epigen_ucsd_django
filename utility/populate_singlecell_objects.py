@@ -149,6 +149,7 @@ def generate_qc_metrics_table(seq_id, expt_type):
         #convert dict to scRNAqcInfo type
         convert_to_scrna_dict(data_dict)
         model_ = scRNAqcInfo(**data_dict)
+
     model_.save()
 
     return(model_)
@@ -187,9 +188,8 @@ def type_data(data):
     elif('%' in data):
         #data is a percent and should be converted to a float
         _data = data.replace('%','')
-        _data = _data.split('.')
-        #print('returning decimal: ''0.'+_data[0]+_data[1])
-        data = float('0.'+_data[0]+_data[1])
+        data = float(_data)/100
+        
     elif len(data.split('.')) == 1:
         #there is no . in the data so this is just a number
         #print('returning data as int: ',data)

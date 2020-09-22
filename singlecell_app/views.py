@@ -131,7 +131,7 @@ def All10xRnaQcData(request):
     seqs_queryset = SingleCellObject.objects.filter(Q(tenx_pipeline_status='Yes')&(Q(experiment_type='snRNA-seq')|Q(experiment_type='scRNA-seq'))).select_related('seqinfo',
                                                                   'libraryinfo', 'sampleinfo',
                                                                   'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__seq_id', 'path_to_websummary', 'seqinfo__libraryinfo__sampleinfo__group',
+        'seqinfo__id','seqinfo__seq_id', 'path_to_websummary', 'seqinfo__libraryinfo__sampleinfo__group',
         'random_string_link','date_last_modified', 'seqinfo__libraryinfo__sampleinfo__id','seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
 
     data = list(seqs_queryset)
@@ -158,6 +158,7 @@ def User10xRnaQcData(request):
 
 
 def AllSingleCellData(request):
+
     """ async function to get hit by ajax. Returns json of all single cell data dict
     in db
     """
@@ -212,7 +213,7 @@ def build_10xRNA_qc_list(seqs_list):
             entry['sequencing_saturation']= f'{obj.sequencing_saturation:.3f}'                        
             entry['mean_reads_per_cell']=f'{obj.mean_reads_per_cell:,}'
             entry['median_genes_per_cell']=f'{obj.median_genes_per_cell:,}'
-            entry['frac_reads_in_cells']=f'{obj.mean_reads_per_cell :,}'           
+            entry['frac_reads_in_cells']=f'{obj.frac_reads_in_cells:.3f}'           
     return(seqs_list)
 
 def build_10xATAC_qc_list(seqs_list):
