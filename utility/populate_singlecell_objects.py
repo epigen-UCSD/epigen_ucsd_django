@@ -115,8 +115,8 @@ def generate_qc_metrics_table(seq_id, expt_type):
     print('recvd args: {seq_id} {expt_type}'.format(seq_id=seq_id,expt_type=expt_type))
     tenx_filename = 'summary.csv'
     scrna_filename = 'metrics_summary.csv'
-    parent_dir = settings.TENX_DIR if expt_type == '10xATAC' else settings.SCRNA_DIR
-    metrics_file_name = tenx_filename if expt_type == '10xATAC' else scrna_filename
+    parent_dir = settings.TENX_DIR if expt_type in ['10xATAC','scATAC-seq'] else settings.SCRNA_DIR
+    metrics_file_name = tenx_filename if expt_type in ['10xATAC','scATAC-seq'] else scrna_filename
     metrics_file_path = os.path.join(parent_dir,seq_id,'outs',metrics_file_name)
     data_dict = {}
 
@@ -135,7 +135,7 @@ def generate_qc_metrics_table(seq_id, expt_type):
     #now transfer data into model
     if 'cellranger-atac_version' in data_dict.keys():
         data_dict['cellranger_atac_version'] = data_dict.pop('cellranger-atac_version')
-    if expt_type == '10xATAC':
+    if expt_type in ['10xATAC','scATAC-seq']:
         # validate fields 
         fields = [i.attname for i in TenxqcInfo._meta.fields]
         data_dict={k:v for k,v in data_dict.items() if k in fields}

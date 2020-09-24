@@ -46,7 +46,7 @@ def main(seq_id, status):
         return
 
     sc_obj.date_last_modified = datetime.now()
-    dir_to_expts = settings.TENX_DIR if sc_obj.experiment_type == "10xATAC" else settings.SCRNA_DIR
+    dir_to_expts = settings.TENX_DIR if sc_obj.experiment_type in ["10xATAC","scATAC-seq"]  else settings.SCRNA_DIR
     summary_file = os.path.join(dir_to_expts,seq_id,'outs/web_summary.html')
     sc_obj.tenx_pipeline_status = status
 
