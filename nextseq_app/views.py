@@ -590,7 +590,7 @@ def RunUpdateView2(request, username, run_pk):
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
 
 
-        if lanesum != sumlane:
+        if abs(lanesum-sumlane)>1e-5:
             context = {
                 'run_form': run_form,
                 'sample_formset': sample_formset,
