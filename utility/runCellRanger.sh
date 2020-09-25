@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#Authors: Brandon Gonzalez, Justin Buchanan
-#Contact: brg029@ucsd.edu, Center For Epigenomics
-#Date: 03/05/2020
 #Description: This script is used to handle a 10x `cellranger count` job submission
 
 SEQ=$1
