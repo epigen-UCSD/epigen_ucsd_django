@@ -1370,3 +1370,10 @@ def QuoteDeleteView(request, requestid,quoteid):
         raise PermissionDenied
     sampleinfo.delete()
     return redirect('masterseq_app:user_metadata')
+
+def GetDescriptionView(request, service_pk):
+    serviceinfo = get_object_or_404(ServiceInfo, pk=service_pk)
+    data = {}
+    data['description'] = serviceinfo.description
+    return JsonResponse(data)
+

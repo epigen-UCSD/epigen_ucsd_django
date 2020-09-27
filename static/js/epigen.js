@@ -79,6 +79,25 @@ $(document).ready(function () {
 
     });
 
+
+    $('#datatabledetailnotes3').DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[3, "desc"], [1, "desc"]],
+        "columnDefs": [{
+            "orderable": false,
+            "targets": [0, -1, -2],
+        },
+            // {
+            //  "className": 'details-control',
+            //  "targets": 0,
+            // }
+
+        ]
+
+    });
+
+
     $('#datatabledetailnotes tbody').on('click', 'td.details-control', function () {
         var thisurl = $(this).attr("data-href");
         var tr = $(this).closest('tr');
@@ -127,6 +146,35 @@ $(document).ready(function () {
 
                     if (data.notes) {
                         tr.after('<tr class="detailnotes"><td class="detailnotes" colspan="8"><div class="detailnotes">Notes:' + data.notes + '</div></td></tr>')
+
+
+                    }
+                }
+            })
+
+        }
+
+    });
+
+
+    $('#datatabledetailnotes3 tbody').on('click', 'td.details-control', function () {
+        var thisurl = $(this).attr("data-href");
+        var tr = $(this).closest('tr');
+        if ($(this).hasClass("closing")) {
+            $(this).removeClass("closing")
+            tr.next().closest(".detailnotes").remove()
+        }
+        else {
+            $(this).addClass("closing")
+
+            $.ajax({
+                url: thisurl,
+                cache: false,
+                dataType: 'json',
+                success: function (data) {
+
+                    if (data.description) {
+                        tr.after('<tr class="detailnotes"><td class="detailnotes" colspan="8"><div class="detailnotes">Description:' + data.description + '</div></td></tr>')
 
 
                     }
