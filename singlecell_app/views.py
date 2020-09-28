@@ -346,7 +346,7 @@ def get_seq_status(seq_id, read_type, experiment_type=''):
     reps = seq_id.split('_')[2:]
     mainname = '_'.join(seq_id.split('_')[0:2])
     # reps are [_2] in brandon_210_2 or [_1,_2,_3] in brandon_210_1_2_3
-    if(experiment_type in ['scRNA-seq', 'snRNA-seq']):
+    if(experiment_type in ['scRNA-seq', 'snRNA-seq','10xATAC']):
         if len(reps) == 0:
             if not os.path.isdir(os.path.join(fastqdir,mainname)):
                 return ('No')
