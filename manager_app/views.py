@@ -480,6 +480,7 @@ def ServiceRequestCreateView(request):
                         service_request_id=data_request['service_request_id'],
                         quote_number=[data_request['quote_number']],
                         quote_amount=[data_request['quote_amount']],
+                        quote_pdf=[True],
                         date=data_request['date'],
                         research_contact=data_request['research_contact'],
                         research_contact_email=data_request['research_contact_email'],
@@ -659,7 +660,7 @@ def ServiceRequestUpdateView(request,pk):
 
                 pdf_context = {
                     'quote_id':quote_compact,
-                    'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
+                    'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
                     'body':'\n'.join(writelines),
 
                 }
@@ -804,6 +805,7 @@ def ServiceRequestAddNewQuoteView(request,pk):
                 thiservicerequest.status = data_request['status']
                 thiservicerequest.quote_amount.append(data_request['quote_amount'])
                 thiservicerequest.quote_number.append(data_request['quote_number'])
+                thiservicerequest.quote_pdf.append(True)
                 thiservicerequest.save()
                 servicerequestitems_formset.save()
 
@@ -823,7 +825,7 @@ def ServiceRequestAddNewQuoteView(request,pk):
 
                 pdf_context = {
                     'quote_id':quote_compact,
-                    'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
+                    'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
                     'body':'\n'.join(writelines),
 
                 }
@@ -1206,7 +1208,7 @@ def QuoteListView(request):
                 }
 
             i += 1
-        quote_list.append(this_data)
+            quote_list.append(this_data)
     data = quote_list
     return JsonResponse(data, safe=False)
 
@@ -1383,10 +1385,11 @@ def GetDescriptionView(request, service_pk):
 
 def ServiceRequestDetailView(request, pk):
     servicerequestinfo = get_object_or_404(ServiceRequest, pk=pk)
-    summaryfield = ['status','date', 'group','institute','research_contact','research_contact_email','quote','quote_amount','notes']
+    summaryfield = ['status','date', 'group','institute','research_contact','research_contact_email','notes']
     itemsfield = ['service','quantity','status']
     itemsinfo = servicerequestinfo.servicerequestitem_set.all().select_related('service')
     quotes_info = {}
+    current_quote = {}
     quotes_list = servicerequestinfo.quote_number
     amounts_list = servicerequestinfo.quote_amount
     for i in range(len(quotes_list)):
@@ -1394,12 +1397,20 @@ def ServiceRequestDetailView(request, pk):
             'amount':amounts_list[i],
             'number_compact':''.join(quotes_list[i].split(' ')),
         }
+    print(quotes_info)
+    current_quote = {
+        'number':quotes_list[-1],
+        'amount':amounts_list[-1],
+        'number_compact':''.join(quotes_list[-1].split(' ')),
+
+    }
 
     context = {
         'summaryfield': summaryfield,
-        'requestedfield': requestedfield,
-        'quotes_info ': quotes_info ,
+        'itemsfield': itemsfield,
+        'quotes_info': quotes_info,
         'servicerequestinfo': servicerequestinfo,
         'itemsinfo': itemsinfo,
+        'current_quote':current_quote,
     }
     return render(request, 'manager_app/manager_servicerequestdetail.html', context=context)

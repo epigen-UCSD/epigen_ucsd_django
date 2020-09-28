@@ -20,12 +20,24 @@
                   
                 </th> 
                 <td>
-                  {{ servicerequestinfo|get_value:field|default_if_none:""}}
-                   
+                  {{ servicerequestinfo|get_value:field|default_if_none:""}}                   
                 </td>
               </tr>
                
               {% endfor %}  
+              <tr>
+                <th>quote number:</th>
+                <td>{{ current_quote.number|default_if_none:""}}</td>
+              </tr>
+              <tr>
+                <th>quote amount:</th>
+                <td>{{ current_quote.amount|default_if_none:""}}</td>
+              </tr>
+              <tr>
+                <th>quote file:</th>
+                <td><a href="{% url 'manager_app:quote_pdf' current_quote.number_compact %}"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a></td>
+              </tr>
+
             </tbody>
             
           </table>
