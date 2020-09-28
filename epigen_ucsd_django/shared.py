@@ -92,7 +92,7 @@ def quotebody(serviceitems, quantities,institute):
 			this_name = item
 			service_breakdown_help = ''
 		servicename.append(this_name)
-		this_breakdown = ':'.join([brief,'$'+str(rate_value)+'/'+thisitem.rate_unit+service_breakdown_help])
+		this_breakdown = ': '.join([brief,'$'+str(rate_value)+'/'+thisitem.rate_unit+service_breakdown_help])
 		subtotal = float(rate_value)*float(quantity)
 		total += subtotal
 		if len(serviceitems) > 1:
@@ -128,13 +128,13 @@ def quotebody(serviceitems, quantities,institute):
 			service_detail = service_detail_tm
 
 		fixedpart3 = 'The costs are for '+'.'.join(service_detail)
-		outlines.append('.'.join([fixedpart1,fixedpart2,fixedpart3,fixedpart4]))
+		outlines.append('. '.join([fixedpart1,fixedpart2,fixedpart3,fixedpart4]))
 		outlines.append('\n'.join(service_breakdown))
 		outlines.append('\nTotal Estimate: '+' + '.join(subtotals)+' = '+'$'+str(total))
 	else:
 		fixedpart2 = 'This quote is for our '+','.join(servicename)+' service'
 		fixedpart3 = 'The costs are for '+','.join(service_detail)
-		outlines.append('.'.join([fixedpart1,fixedpart2,fixedpart3,fixedpart4]))
+		outlines.append('. '.join([fixedpart1,fixedpart2,fixedpart3,fixedpart4]))
 		outlines.append('\n'.join(service_breakdown))
 		outlines.append('Total Estimate: $'+str(rate_value)+' * '+str(quantity)+' '+thisitem.rate_unit+'s = $'+str(subtotal))
 

@@ -98,6 +98,7 @@ $(document).ready(function () {
     });
 
 
+
     $('#datatabledetailnotes tbody').on('click', 'td.details-control', function () {
         var thisurl = $(this).attr("data-href");
         var tr = $(this).closest('tr');
@@ -157,7 +158,7 @@ $(document).ready(function () {
     });
 
 
-    $('#datatabledetailnotes3 tbody').on('click', 'td.details-control', function () {
+    $('#datatabledetailnotes4 tbody').on('click', 'td.details-control', function () {
         var thisurl = $(this).attr("data-href");
         var tr = $(this).closest('tr');
         if ($(this).hasClass("closing")) {

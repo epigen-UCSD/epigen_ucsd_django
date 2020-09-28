@@ -278,6 +278,8 @@ def ServiceRequestCreateView(request):
     ServiceRequestItemFormSet = formset_factory(
         ServiceRequestItemCreationForm, can_delete=True)
     servicerequestitems_formset = ServiceRequestItemFormSet(request.POST or None)
+
+    serviceinfo_list = ServiceInfo.objects.all()
     
     today = datetime.date.today()
     datesplit = str(datetime.date.today()).split('-')
@@ -466,9 +468,10 @@ def ServiceRequestCreateView(request):
                         'displayorder_request': displayorder_request,
                         'data_requestitem':data_requestitem,
                         'data_request':data_request,
-                        'total_expression':total_expression
+                        'total_expression':total_expression,
+                        'serviceinfo_list':serviceinfo_list,
                     }        
-                    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate.html', context)
+                    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate_new.html', context)
 
                 if 'Save' in request.POST:
                     thisrequest = ServiceRequest.objects.create(
@@ -504,7 +507,7 @@ def ServiceRequestCreateView(request):
 
                     pdf_context = {
                         'quote_id':quote_compact,
-                        'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
+                        'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
                         'body':'\n'.join(writelines),
 
                     }
@@ -526,9 +529,10 @@ def ServiceRequestCreateView(request):
     context = {
         'servicerequest_form': servicerequest_form,
         'servicerequestitems_formset': servicerequestitems_formset,
+        'serviceinfo_list':serviceinfo_list,
     }
 
-    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate.html', context)
+    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate_new.html', context)
 
 @transaction.atomic
 def ServiceRequestUpdateView(request,pk):
