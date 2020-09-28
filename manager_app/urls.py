@@ -32,6 +32,6 @@ urlpatterns = [
     path('quote_update/<slug:requestid>/<slug:quoteid>/', views.QuoteUpdateView, name='quote_update'),
     path('quote_delete/<slug:requestid>/<slug:quoteid>/', views.QuoteDeleteView, name='quote_delete'),
     path('<int:service_pk>/getdescription/',views.GetDescriptionView, name='service_getdescription'),
-    
+    path('servicerequest/<int:pk>/', views.ServiceRequestDetailView, name='servicerequest_detail'),
 
 ]

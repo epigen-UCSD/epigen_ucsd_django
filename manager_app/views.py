@@ -1377,3 +1377,25 @@ def GetDescriptionView(request, service_pk):
     data['description'] = serviceinfo.description
     return JsonResponse(data)
 
+def ServiceRequestDetailView(request, pk):
+    servicerequestinfo = get_object_or_404(ServiceRequest, pk=pk)
+    summaryfield = ['status','date', 'group','institute','research_contact','research_contact_email','quote','quote_amount','notes']
+    itemsfield = ['service','quantity','status']
+    itemsinfo = servicerequestinfo.servicerequestitem_set.all().select_related('service')
+    quotes_info = {}
+    quotes_list = servicerequestinfo.quote_number
+    amounts_list = servicerequestinfo.quote_amount
+    for i in range(len(quotes_list)):
+        quotes_info[quotes_list[i]] ={
+            'amount':amounts_list[i],
+            'number_compact':''.join(quotes_list[i].split(' ')),
+        }
+
+    context = {
+        'summaryfield': summaryfield,
+        'requestedfield': requestedfield,
+        'quotes_info ': quotes_info ,
+        'servicerequestinfo': servicerequestinfo,
+        'itemsinfo': itemsinfo,
+    }
+    return render(request, 'manager_app/manager_servicerequestdetail.html', context=context)

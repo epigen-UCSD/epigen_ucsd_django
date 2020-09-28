@@ -1,0 +1,43 @@
+{% extends 'manager_app/base_collabor_internal.html' %}
+
+{% block sidebar %}
+
+<div class="col-sm-2 col-md-2 col-lg-2">
+  <div class="fixed col-sm-2 col-md-2 col-lg-2">
+  <div class="card checkboxsidebar" >
+    <div class="card-header">
+       Choose To Display
+    </div>
+    <div class="card-body">
+      <ul class="list-group checkboxsidebar">
+      <label class="list-group-item orange" name="summary">Summary</label>
+      <label class="list-group-item orange" name="items">Items</label> 
+      <label class="list-group-item orange" name="quotes">Quotes</label>  
+      </ul>
+    </div>
+  </div>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+{% load nextseq_app_tags %}
+<div id="content" class="col-sm-10 col-md-10 col-lg-10">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a class="linkblue" href="{% url 'manager_app:service_request_display' %}">All Service Requests</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Service Request: {{ servicerequestinfo.service_request_id }}</li>
+    </ol>
+  </nav>  
+
+  {% include "manager_app/section_servicerequest_summary.html"%}
+  {% include "manager_app/section_servicerequest_items.html"%}
+  {% include "manager_app/section_servicerequest_quotes.html"%}
+
+
+
+
+</div><!-- /#content --> 
+
+
+
+{% endblock %}

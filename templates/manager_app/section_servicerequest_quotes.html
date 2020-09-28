@@ -1,0 +1,43 @@
+{% load nextseq_app_tags %}
+{% load humanize %}
+<div class="row" id="quotes">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="card bottom15">
+      <div class="card-header fortable collapseheader">
+        <a data-toggle="collapse" href="#collapse3" aria-expanded="true" aria-controls="collapse3"><i class="fa fas fa-caret-right collapseheader fa-lg fa-fw"></i><i class="fa fa-caret-down collapseheader fa-lg fa-fw"></i></a>
+        Seqs
+        <button type="button" class="close" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+        </button>
+      </div><!-- /.card-header -->
+      <div class="collapse show" id="collapse3">
+        <div class="card-body">
+          <br />
+          <table class="table table-sm table-striped text-center table-responsive-xl">
+
+            
+            <thead>
+            <tr>
+              <th>quote_number</th>
+              <th>quote_amount</th>
+              <th>quote_pdf</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+
+            {% for key, value in quotes_info.items %}
+            <tr>
+              <td>{{ key|default_if_none:"" }}</td>
+              <td>{{ value.amount|default_if_none:"" }}</td>
+              <td><a href="{% url 'manager_app:quote_pdf' value.number_compact %}"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a></td>
+      
+            </tr>
+            {% endfor %}
+            </tbody>               
+          </table>
+        </div><!-- /.card-body --> 
+      </div><!-- /.collapse -->             
+    </div><!-- /.card -->
+  
+  </div>
+</div>
