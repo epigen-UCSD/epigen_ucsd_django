@@ -9,7 +9,7 @@ from django.contrib.auth.models import User,Group
 from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models import Prefetch
-from epigen_ucsd_django.shared import is_member,daysuffix,quotebody,datetransform2,serviceitemcollapse
+from epigen_ucsd_django.shared import is_member,daysuffix,quotebody,datetransform2,serviceitemcollapse,servicetarget
 from masterseq_app.views import nonetolist,removenone
 from django.forms import formset_factory,inlineformset_factory
 from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm,QuoteBulkImportForm,QuoteUploadFileForm,QuoteUploadByQidFileForm
@@ -716,7 +716,7 @@ def ServiceRequestUpdateViewNew(request,pk):
     today = datetime.date.today()
     datesplit = str(datetime.date.today()).split('-')
     writelines = []
-
+    duplicate = {}
         
     if servicerequest_form.is_valid():
         group_name = servicerequest_form.cleaned_data['group']

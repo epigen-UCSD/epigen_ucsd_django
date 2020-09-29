@@ -185,7 +185,7 @@ def servicetarget(service, quantity):
             service = ServiceInfo.objects.get(service_name='10x scATAC-seq_4')
 
 
-   if service.service_name == '10x scRNA-seq':
+    if service.service_name == '10x scRNA-seq':
         if float(quantity) == 1:
             service = ServiceInfo.objects.get(service_name='10x scRNA-seq')
         elif float(quantity) == 2:
@@ -231,7 +231,7 @@ def servicetarget(service, quantity):
             service = ServiceInfo.objects.get(service_name='10x scATAC-seq_4(pilot)')
 
 
-   if service.service_name == '10x scRNA-seq(pilot)':
+    if service.service_name == '10x scRNA-seq(pilot)':
         if float(quantity) == 1:
             service = ServiceInfo.objects.get(service_name='10x scRNA-seq(pilot)')
         elif float(quantity) == 2:
@@ -250,4 +250,6 @@ def servicetarget(service, quantity):
             service = ServiceInfo.objects.get(service_name='10x snRNA-seq_3(pilot)')
         elif float(quantity) >= 4:
             service = ServiceInfo.objects.get(service_name='10x snRNA-seq_4(pilot)')
-     return service
+    return service
+
+
