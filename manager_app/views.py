@@ -9,7 +9,7 @@ from django.contrib.auth.models import User,Group
 from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models import Prefetch
-from epigen_ucsd_django.shared import is_member,daysuffix,quotebody,datetransform2
+from epigen_ucsd_django.shared import is_member,daysuffix,quotebody,datetransform2,serviceitemcollapse
 from masterseq_app.views import nonetolist,removenone
 from django.forms import formset_factory,inlineformset_factory
 from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm,QuoteBulkImportForm,QuoteUploadFileForm,QuoteUploadByQidFileForm
@@ -696,14 +696,23 @@ def ServiceRequestUpdateViewNew(request,pk):
 
     servicerequest_form = ServiceRequestCreationForm(request.POST or None, instance=thiservicerequest)
     
+    itemsinfo = thiservicerequest.servicerequestitem_set.all().select_related('service')
+    datainitial = []
+    for item in itemsinfo:
+        x = {
+        'service':item.service,
+        'quantity':item.quantity,
+        }
+
+        datainitial.append(serviceitemcollapse(x))
+
     ServiceRequestItemInlineFormSet = inlineformset_factory(ServiceRequest, ServiceRequestItem,form=ServiceRequestItemCreationForm, fields=[
         'service', 'quantity'])
-    # servicerequestitems_formset = ServiceRequestItemInlineFormSet(
-    #     request.POST or None, instance=thiservicerequest)
-    servicerequestitems_formset = ServiceRequestItemInlineFormSet(
-        request.POST or None, initial=[{'service':ServiceInfo.objects.get(service_name='ATAC-seq'),'quantity':10},{'service':ServiceInfo.objects.get(service_name='ATAC-seq'),'quantity':20},{'service':ServiceInfo.objects.get(service_name='ATAC-seq'),'quantity':20},{'service':ServiceInfo.objects.get(service_name='ATAC-seq'),'quantity':20}])
 
-    servicerequestitems_formset.extra = 4
+    servicerequestitems_formset = ServiceRequestItemInlineFormSet(
+        request.POST or None, initial=datainitial)
+
+    servicerequestitems_formset.extra = itemsinfo.count()
     today = datetime.date.today()
     datesplit = str(datetime.date.today()).split('-')
     writelines = []
@@ -724,12 +733,14 @@ def ServiceRequestUpdateViewNew(request,pk):
                 if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
                     service = form.cleaned_data['service']
                     quantity = form.cleaned_data['quantity']
+                    service = servicetarget(service,quantity)
 
-                    if service.service_name == 'ATAC-seq':
-                        if float(quantity) > 24 and float(quantity) <= 96:
-                            service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
-                        elif float(quantity) > 96:
-                            service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
+                    if service.service_name in data_requestitem.keys():
+                        duplicate[service.service_name] += 1
+                        this_service_name = service.service_name + 'duplicate#' + str(duplicate[service.service_name])
+                    else:
+                        this_service_name = service.service_name
+                        duplicate[service.service_name] = 1  
 
                     if institute == 'uc':
                         data_requestitem[service.service_name] = {

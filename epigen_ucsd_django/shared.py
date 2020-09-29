@@ -140,6 +140,114 @@ def quotebody(serviceitems, quantities,institute):
 
 	return '\n'.join(outlines)
 
+def serviceitemcollapse(dictdata):
+	atac_group = ['ATAC-seq','ATAC-seq_24','ATAC-seq_96']
+	sciatac_group = ['sciATAC-seq','sciATAC-seq_2','sciATAC-seq_3','sciATAC-seq_4']
+	tenscatac_group = ['10x scATAC-seq','10x scATAC-seq_2','10x scATAC-seq_3','10x scATAC-seq_4']
+	tenscrna_group = ['10x scRNA-seq','10x scRNA-seq_2','10x scRNA-seq_3','10x scRNA-seq_4']
+	tensnrna_group = ['10x snRNA-seq','10x snRNA-seq_2','10x snRNA-seq_3','10x snRNA-seq_4']
+	atacpilot_group = ['ATAC-seq(pilot)','ATAC-seq_24(pilot)','ATAC-seq_96(pilot)']
+	sciatacpilot_group = ['sciATAC-seq(pilot)','sciATAC-seq_2(pilot)','sciATAC-seq_3(pilot)','sciATAC-seq_4(pilot)']
+	tenscatacpilot_group = ['10x scATAC-seq(pilot)','10x scATAC-seq_2(pilot)','10x scATAC-seq_3(pilot)','10x scATAC-seq_4(pilot)']
+	tenscrnapilot_group = ['10x scRNA-seq(pilot)','10x scRNA-seq_2(pilot)','10x scRNA-seq_3(pilot)','10x scRNA-seq_4(pilot)']
+	tensnrnapilot_group = ['10x snRNA-seq(pilot)','10x snRNA-seq_2(pilot)','10x snRNA-seq_3(pilot)','10x snRNA-seq_4(pilot)']
+	checkedlist = [atac_group,sciatac_group,tenscatac_group,tenscrna_group,tensnrna_group,atacpilot_group,atacpilot_group,sciatacpilot_group,tenscatacpilot_group,tenscrnapilot_group,tensnrnapilot_group]
+	for l in checkedlist:
+		if dictdata['service'].service_name in l:
+			dictdata['service'] = ServiceInfo.objects.get(service_name=l[0])
+	return dictdata
+
+def servicetarget(service, quantity):
+    if service.service_name == 'ATAC-seq':
+        if float(quantity) > 24 and float(quantity) <= 96:
+            service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
+        elif float(quantity) > 96:
+            service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
+
+    if service.service_name == 'sciATAC-seq':
+        if float(quantity) == 1:
+            service = ServiceInfo.objects.get(service_name='sciATAC-seq')
+        elif float(quantity) == 2:
+            service = ServiceInfo.objects.get(service_name='sciATAC-seq_2')
+        elif float(quantity) == 3:
+            service = ServiceInfo.objects.get(service_name='sciATAC-seq_3')
+        elif float(quantity) >= 4:
+            service = ServiceInfo.objects.get(service_name='sciATAC-seq_4')
+
+    if service.service_name == '10x scATAC-seq':
+        if float(quantity) == 1:
+            service = ServiceInfo.objects.get(service_name='10x scATAC-seq')
+        elif float(quantity) == 2:
+            service = ServiceInfo.objects.get(service_name='10x scATAC-seq_2')
+        elif float(quantity) == 3:
+            service = ServiceInfo.objects.get(service_name='10x scATAC-seq_3')
+        elif float(quantity) >= 4:
+            service = ServiceInfo.objects.get(service_name='10x scATAC-seq_4')
 
 
+   if service.service_name == '10x scRNA-seq':
+        if float(quantity) == 1:
+            service = ServiceInfo.objects.get(service_name='10x scRNA-seq')
+        elif float(quantity) == 2:
+            service = ServiceInfo.objects.get(service_name='10x scRNA-seq_2')
+        elif float(quantity) == 3:
+            service = ServiceInfo.objects.get(service_name='10x scRNA-seq_3')
+        elif float(quantity) >= 4:
+            service = ServiceInfo.objects.get(service_name='10x scRNA-seq_4')
 
+    if service.service_name == '10x snRNA-seq':
+        if float(quantity) == 1:
+            service = ServiceInfo.objects.get(service_name='10x snRNA-seq')
+        elif float(quantity) == 2:
+            service = ServiceInfo.objects.get(service_name='10x snRNA-seq_2')
+        elif float(quantity) == 3:
+            service = ServiceInfo.objects.get(service_name='10x snRNA-seq_3')
+        elif float(quantity) >= 4:
+            service = ServiceInfo.objects.get(service_name='10x snRNA-seq_4')
+    if service.service_name == 'ATAC-seq(pilot)':
+        if float(quantity) > 24 and float(quantity) <= 96:
+            service = ServiceInfo.objects.get(service_name='ATAC-seq_24(pilot)')
+        elif float(quantity) > 96:
+            service = ServiceInfo.objects.get(service_name='ATAC-seq_96(pilot)')
+
+    if service.service_name == 'sciATAC-seq(pilot)':
+        if float(quantity) == 1:
+            service = ServiceInfo.objects.get(service_name='sciATAC-seq(pilot)')
+        elif float(quantity) == 2:
+            service = ServiceInfo.objects.get(service_name='sciATAC-seq_2(pilot)')
+        elif float(quantity) == 3:
+            service = ServiceInfo.objects.get(service_name='sciATAC-seq_3(pilot)')
+        elif float(quantity) >= 4:
+            service = ServiceInfo.objects.get(service_name='sciATAC-seq_4(pilot)')
+
+    if service.service_name == '10x scATAC-seq(pilot)':
+        if float(quantity) == 1:
+            service = ServiceInfo.objects.get(service_name='10x scATAC-seq(pilot)')
+        elif float(quantity) == 2:
+            service = ServiceInfo.objects.get(service_name='10x scATAC-seq_2(pilot)')
+        elif float(quantity) == 3:
+            service = ServiceInfo.objects.get(service_name='10x scATAC-seq_3(pilot)')
+        elif float(quantity) >= 4:
+            service = ServiceInfo.objects.get(service_name='10x scATAC-seq_4(pilot)')
+
+
+   if service.service_name == '10x scRNA-seq(pilot)':
+        if float(quantity) == 1:
+            service = ServiceInfo.objects.get(service_name='10x scRNA-seq(pilot)')
+        elif float(quantity) == 2:
+            service = ServiceInfo.objects.get(service_name='10x scRNA-seq_2(pilot)')
+        elif float(quantity) == 3:
+            service = ServiceInfo.objects.get(service_name='10x scRNA-seq_3(pilot)')
+        elif float(quantity) >= 4:
+            service = ServiceInfo.objects.get(service_name='10x scRNA-seq_4(pilot)')
+
+    if service.service_name == '10x snRNA-seq(pilot)':
+        if float(quantity) == 1:
+            service = ServiceInfo.objects.get(service_name='10x snRNA-seq(pilot)')
+        elif float(quantity) == 2:
+            service = ServiceInfo.objects.get(service_name='10x snRNA-seq_2(pilot)')
+        elif float(quantity) == 3:
+            service = ServiceInfo.objects.get(service_name='10x snRNA-seq_3(pilot)')
+        elif float(quantity) >= 4:
+            service = ServiceInfo.objects.get(service_name='10x snRNA-seq_4(pilot)')
+     return service
