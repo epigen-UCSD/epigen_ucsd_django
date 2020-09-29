@@ -7,6 +7,7 @@ import os
 from collaborator_app.models import ServiceInfo,ServiceRequest,ServiceRequestItem
 from django.db.models import Prefetch
 from django.conf import settings
+from django.forms import BaseInlineFormSet
 
 class UserForm(forms.ModelForm):
 	class Meta:
@@ -98,6 +99,7 @@ class ServiceRequestItemCreationForm(forms.ModelForm):
 		'10x scATAC-seq_2(pilot)','10x scATAC-seq_3(pilot)','10x scATAC-seq_4(pilot)','10x scRNA-seq_2(pilot)','10x scRNA-seq_3(pilot)','10x scRNA-seq_4(pilot)',\
 		'10x snRNA-seq_2(pilot)','10x snRNA-seq_3(pilot)','10x snRNA-seq_4(pilot)','sciATAC-seq_2(pilot)','sciATAC-seq_3(pilot)','sciATAC-seq_4(pilot)']
 		self.fields['service'].queryset = ServiceInfo.objects.all().exclude(service_name__in=excludes)
+		self.empty_permitted = False
 
 
 # class ServiceRequestCreationForm(forms.ModelForm):
