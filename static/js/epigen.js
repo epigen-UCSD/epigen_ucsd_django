@@ -569,7 +569,7 @@ $(document).ready(function () {
             "targets": 8,
             "render": function (data, type, row) {
                 var itemID = row["pk"];
-                return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a><a class="spacing" href="/manager/add_new_quote/' + itemID + '/"><i class="fas fa-plus"></i></a><a onclick="return confirm(\'Are you sure you want to delete Service Request ' + row["service_request_id"] + '?\');" href="/manager/servicerequest_delete/' + itemID + '/'+ qid + '/"><i class="fas fa-trash-alt"></i></a>'
+                return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a><a class="spacing" href="/manager/add_new_quote/' + itemID + '/"><i class="fas fa-plus"></i></a><a onclick="return confirm(\'Are you sure you want to delete Service Request ' + row["service_request_id"] + '?\');" href="/manager/servicerequest_delete/' + itemID + '/"><i class="fas fa-trash-alt"></i></a>'
                 
 
             }
