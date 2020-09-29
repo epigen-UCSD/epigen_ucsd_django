@@ -1370,13 +1370,6 @@ def QuoteDeleteView(request, requestid,quoteid):
     return redirect('manager_app:quote_list')
 
 
-
-    sampleinfo = get_object_or_404(SampleInfo, pk=pk)
-    if sampleinfo.team_member != request.user and not request.user.groups.filter(name='bioinformatics').exists():
-        raise PermissionDenied
-    sampleinfo.delete()
-    return redirect('masterseq_app:user_metadata')
-
 def GetDescriptionView(request, service_pk):
     serviceinfo = get_object_or_404(ServiceInfo, pk=service_pk)
     data = {}
@@ -1414,3 +1407,11 @@ def ServiceRequestDetailView(request, pk):
         'current_quote':current_quote,
     }
     return render(request, 'manager_app/manager_servicerequestdetail.html', context=context)
+
+def ServiceRequestDeleteView(request, pk):
+    servicerequestinfo = get_object_or_404(ServiceRequest, pk=pk)
+    servicerequestinfo.delete()
+    return redirect('manager_app:servicerequests_list')
+
+
+    
