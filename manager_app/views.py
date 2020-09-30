@@ -546,7 +546,7 @@ def ServiceRequestUpdateView(request,pk):
     servicerequest_form = ServiceRequestCreationForm(request.POST or None, instance=thiservicerequest)
     
     ServiceRequestItemInlineFormSet = inlineformset_factory(ServiceRequest, ServiceRequestItem, fields=[
-        'service', 'quantity'], extra=3)
+        'service', 'quantity'], extra=1)
     servicerequestitems_formset = ServiceRequestItemInlineFormSet(
         request.POST or None, instance=thiservicerequest)
 
@@ -707,12 +707,15 @@ def ServiceRequestUpdateViewNew(request,pk):
         datainitial.append(serviceitemcollapse(x))
 
     ServiceRequestItemInlineFormSet = inlineformset_factory(ServiceRequest, ServiceRequestItem,form=ServiceRequestItemCreationForm, fields=[
-        'service', 'quantity'])
+        'service', 'quantity'],extra=itemsinfo.count())
 
-    servicerequestitems_formset = ServiceRequestItemInlineFormSet(
-        request.POST or None, initial=datainitial)
+    servicerequestitems_formset = ServiceRequestItemInlineFormSet(request.POST or None, initial=datainitial)
+    #servicerequestitems_formset.extra = itemsinfo.count()
+        
 
-    servicerequestitems_formset.extra = itemsinfo.count()
+    #print(servicerequestitems_formset)
+
+    
     today = datetime.date.today()
     datesplit = str(datetime.date.today()).split('-')
     writelines = []
@@ -728,8 +731,6 @@ def ServiceRequestUpdateViewNew(request,pk):
         #print(institute)
         if servicerequestitems_formset.is_valid():
             for form in servicerequestitems_formset.forms:
-                form.empty_permitted = False
-                print(form.cleaned_data)
                 if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
                     service = form.cleaned_data['service']
                     quantity = form.cleaned_data['quantity']
@@ -1000,7 +1001,7 @@ def ServiceRequestAddNewQuoteView(request,pk):
                 service_items = []
                 service_quantities = []
                 for item in data_requestitem.keys():
-                   ServiceRequestItem.objects.create(
+                    ServiceRequestItem.objects.create(
                         request=thiservicerequest, 
                         service=ServiceInfo.objects.get(service_name=item.split('duplicate#')[0]),
                         quantity=data_requestitem[item]['quantity'],

@@ -1208,6 +1208,12 @@ $(document).ready(function () {
         prefix: 'form'
     });
 
+    $('.servicerequestitemformsetupdate_row').formset({
+        addText: 'add another service',
+        deleteText: 'remove',
+        prefix: 'servicerequestitem_set'
+    });
+
     $('.chipformset_row').formset({
         addText: 'add another group',
         deleteText: 'remove',
