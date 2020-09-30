@@ -128,6 +128,12 @@ class QuoteCreationForm(forms.ModelForm):
 		model = ServiceRequest
 		fields = ['group','research_contact','quote_amount']
 
+class QuoteUpdateForm(forms.Form):
+	PI = forms.CharField()
+	research_contact = forms.CharField()
+	quote_amount = forms.CharField()
+
+
 class QuoteBulkImportForm(forms.Form):
 	quotesinfo = forms.CharField(
 			label='QuoteInfo(Please copy and paste all of the columns from quote tracking sheet)',

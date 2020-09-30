@@ -12,7 +12,7 @@ from django.db.models import Prefetch
 from epigen_ucsd_django.shared import is_member,daysuffix,quotebody,datetransform2,serviceitemcollapse,servicetarget
 from masterseq_app.views import nonetolist,removenone
 from django.forms import formset_factory,inlineformset_factory
-from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm,QuoteBulkImportForm,QuoteUploadFileForm,QuoteUploadByQidFileForm
+from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm,QuoteBulkImportForm,QuoteUploadFileForm,QuoteUploadByQidFileForm,QuoteUpdateForm,QuoteUpdateAmountForm
 import datetime
 from collaborator_app.models import ServiceInfo,ServiceRequest,ServiceRequestItem
 from django.core.files.storage import FileSystemStorage
@@ -1490,15 +1490,20 @@ def QuotePdfByQidUpload(request,requestid,quoteid):
 def QuoteUpdateView(request,requestid,quoteid):
     qid = ' '.join([quoteid[:-10],quoteid[-10:-4],quoteid[-4:]])
     this_request = get_object_or_404(ServiceRequest, pk=requestid)
-    quotecreate_form = QuoteCreationForm(request.POST or None,instance=this_request)
+    
     index = this_request.quote_number.index(qid)
+    this_amount = this_request.quote_amount[index]
+    quoteupdate_form = QuoteUpdateForm(request.POST or None,\
+        initial={'PI':this_request.group,\
+        'research_contact':.this_requestresearch_contact,\
+        'quote_amount':this_amount})
 
     if 'Preview' in request.POST or 'Save' in request.POST:
 
-        if quotecreate_form.is_valid():
-            group_name = quotecreate_form.cleaned_data['group']
-            research_contact = quotecreate_form.cleaned_data['research_contact']
-            this_amount = ''.join(quotecreate_form.cleaned_data['quote_amount'])
+        if quoteupdate_form.is_valid():
+            group_name = quoteupdate_form.cleaned_data['PI']
+            research_contact = quoteupdate_form.cleaned_data['research_contact']
+            this_amount = quoteupdate_form.cleaned_data['quote_amount']
 
             if not this_amount.startswith('$'):
                 this_amount = '$'+this_amount
@@ -1514,13 +1519,13 @@ def QuoteUpdateView(request,requestid,quoteid):
  
             data_request = {
                 'quote_number':quoteid,
-                'group':group_name,
+                'PI':group_name,
                 'research_contact':research_contact,
                 'quote_amount':this_amount,
             }
 
             if 'Preview' in request.POST:
-                displayorder_request = ['quote_number','group','research_contact','quote_amount']
+                displayorder_request = ['quote_number','PI','research_contact','quote_amount']
                 #print(data_request)  
 
                 context = {
@@ -1541,7 +1546,7 @@ def QuoteUpdateView(request,requestid,quoteid):
 
 
     context = {
-        'quotecreate_form': quotecreate_form,
+        'quoteupdate_form': quoteupdate_form,
         'qid':qid,
 
     }
