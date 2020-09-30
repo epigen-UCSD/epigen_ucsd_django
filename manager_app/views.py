@@ -741,24 +741,25 @@ def ServiceRequestUpdateViewNew(request,pk):
                         this_service_name = service.service_name + 'duplicate#' + str(duplicate[service.service_name])
                     else:
                         this_service_name = service.service_name
-                        duplicate[service.service_name] = 1  
+                        duplicate[service.service_name] = 1 
+
 
                     if institute == 'uc':
-                        data_requestitem[service.service_name] = {
+                        data_requestitem[this_service_name] = {
                             'rate(uc users)':str(service.uc_rate)+'/'+service.rate_unit,
                             'rate_number':service.uc_rate,
                             'quantity':quantity,
                             'rate_unit':service.rate_unit,
                         }
                     elif institute == 'non_uc':
-                        data_requestitem[service.service_name] = {
+                        data_requestitem[this_service_name] = {
                             'rate(non-uc users)':str(service.nonuc_rate)+'/'+service.rate_unit,
                             'rate_number':service.nonuc_rate,
                             'quantity':quantity,
                             'rate_unit':service.rate_unit,
                         }
                     elif institute == 'industry':
-                        data_requestitem[service.service_name] = {
+                        data_requestitem[this_service_name] = {
                             'rate(industry users)':str(service.industry_rate)+'/'+service.rate_unit,
                             'rate_number':service.industry_rate,
                             'quantity':quantity,
@@ -790,6 +791,7 @@ def ServiceRequestUpdateViewNew(request,pk):
                     displayorde_requestitem = ['rate(industry users)','quantity']
                 displayorder_request = ['service_request_id','quote_number','quote_amount','date','group','institute','research_contact','research_contact_email','notes','status']
                 #print(data_request)  
+                print(data_requestitem)
 
                 context = {
                     'servicerequest_form': servicerequest_form,
@@ -929,21 +931,21 @@ def ServiceRequestAddNewQuoteView(request,pk):
                         duplicate[service.service_name] = 1  
 
                     if institute == 'uc':
-                        data_requestitem[service.service_name] = {
+                        data_requestitem[this_service_name] = {
                             'rate(uc users)':str(service.uc_rate)+'/'+service.rate_unit,
                             'rate_number':service.uc_rate,
                             'quantity':quantity,
                             'rate_unit':service.rate_unit,
                         }
                     elif institute == 'non_uc':
-                        data_requestitem[service.service_name] = {
+                        data_requestitem[this_service_name] = {
                             'rate(non-uc users)':str(service.nonuc_rate)+'/'+service.rate_unit,
                             'rate_number':service.nonuc_rate,
                             'quantity':quantity,
                             'rate_unit':service.rate_unit,
                         }
                     elif institute == 'industry':
-                        data_requestitem[service.service_name] = {
+                        data_requestitem[this_service_name] = {
                             'rate(industry users)':str(service.industry_rate)+'/'+service.rate_unit,
                             'rate_number':service.industry_rate,
                             'quantity':quantity,
@@ -1246,7 +1248,7 @@ def QuoteTextUpdateView(request,quoteid):
         body = text_form.cleaned_data['body']
         pdf_context = {
             'quote_id':quote_compact,
-            'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
+            'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
             'body':body,
         }
 
@@ -1360,7 +1362,6 @@ def QuoteAddView(request):
                     quote_pdf=[False],
                     date=this_date,
                     research_contact=research_contact,
-                    status='sent',
                     )
             return redirect('manager_app:quote_list')
 
@@ -1427,7 +1428,6 @@ def QuoteBulkAddView(request):
                 quote_amount=[fields[5].strip()],
                 date=this_date,
                 research_contact=research_contact,
-                status='sent',
                 )
         return redirect('manager_app:quote_list')
     context = {
@@ -1472,7 +1472,7 @@ def QuotePdfByQidUpload(request,requestid,quoteid):
             filename = fs.save(file_name, file)
             subprocess.call("ln -sf "+os.path.join(settings.MEDIA_ROOT,filename)+" "+os.path.join(settings.QUOTE_DIR,file_name), shell=True)
             this_request.quote_pdf[index] = True
-            this_request.status = 'sent'
+            this_request.status = ''
             this_request.save()
 
             return redirect('manager_app:quote_list')
