@@ -809,13 +809,17 @@ def ServiceRequestUpdateViewNew(request,pk):
                 thiservicerequest.status = data_request['status']
                 thiservicerequest.quote_amount[-1] = data_request['quote_amount']
                 thiservicerequest.save()
-                servicerequestitems_formset.save()
+                thiservicerequest.servicerequestitem_set.all().delete()
 
                 service_items = []
                 service_quantities = []
                 for item in data_requestitem.keys():
-                    service_items.append(item)
-                    this_service_item = ServiceInfo.objects.get(service_name=item)
+                    ServiceRequestItem.objects.create(
+                        request=thiservicerequest, 
+                        service=ServiceInfo.objects.get(service_name=item.split('duplicate#')[0]),
+                        quantity=data_requestitem[item]['quantity'],
+                        )
+                    service_items.append(item.split('duplicate#')[0])
                     service_quantities.append(data_requestitem[item]['quantity'])
                 quote_compact = ''.join(data_request['quote_number'].split(' '))
                 collab_info = [group_name,research_contact,research_contact_email+'\n']
@@ -862,16 +866,29 @@ def ServiceRequestAddNewQuoteView(request,pk):
     data_request = {}
 
     servicerequest_form = ServiceRequestCreationForm(request.POST or None, instance=thiservicerequest)
-    
-    ServiceRequestItemInlineFormSet = inlineformset_factory(ServiceRequest, ServiceRequestItem, fields=[
-        'service', 'quantity'], extra=3)
-    servicerequestitems_formset = ServiceRequestItemInlineFormSet(
-        request.POST or None, instance=thiservicerequest)
 
-    
+    itemsinfo = thiservicerequest.servicerequestitem_set.all().select_related('service')
+    datainitial = []
+    for item in itemsinfo:
+        x = {
+        'service':item.service,
+        'quantity':item.quantity,
+        }
+
+        datainitial.append(serviceitemcollapse(x))
+
+    ServiceRequestItemInlineFormSet = inlineformset_factory(ServiceRequest, ServiceRequestItem,form=ServiceRequestItemCreationForm, fields=[
+        'service', 'quantity'])
+
+    servicerequestitems_formset = ServiceRequestItemInlineFormSet(
+        request.POST or None, initial=datainitial)
+
+    servicerequestitems_formset.extra = itemsinfo.count()
+
     today = datetime.date.today()
     datesplit = str(datetime.date.today()).split('-')
     writelines = []
+    duplicate = {}
 
         
     if servicerequest_form.is_valid():
@@ -901,12 +918,14 @@ def ServiceRequestAddNewQuoteView(request,pk):
                 if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
                     service = form.cleaned_data['service']
                     quantity = form.cleaned_data['quantity']
-                    if service.service_name == 'ATAC-seq':
-                        if float(quantity) > 24 and float(quantity) <= 96:
-                            service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
-                        elif float(quantity) > 96:
-                            service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
-                    print(institute)
+                    service = servicetarget(service,quantity)
+
+                    if service.service_name in data_requestitem.keys():
+                        duplicate[service.service_name] += 1
+                        this_service_name = service.service_name + 'duplicate#' + str(duplicate[service.service_name])
+                    else:
+                        this_service_name = service.service_name
+                        duplicate[service.service_name] = 1  
 
                     if institute == 'uc':
                         data_requestitem[service.service_name] = {
@@ -929,7 +948,7 @@ def ServiceRequestAddNewQuoteView(request,pk):
                             'quantity':quantity,
                             'rate_unit':service.rate_unit,
                         }
-            print(data_requestitem.values())                        
+                     
             total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
             total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity'])+' '+x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
 
@@ -976,13 +995,17 @@ def ServiceRequestAddNewQuoteView(request,pk):
                 thiservicerequest.quote_number.append(data_request['quote_number'])
                 thiservicerequest.quote_pdf.append(True)
                 thiservicerequest.save()
-                servicerequestitems_formset.save()
+                thiservicerequest.servicerequestitem_set.all().delete()
 
                 service_items = []
                 service_quantities = []
                 for item in data_requestitem.keys():
-                    service_items.append(item)
-                    this_service_item = ServiceInfo.objects.get(service_name=item)
+                   ServiceRequestItem.objects.create(
+                        request=thiservicerequest, 
+                        service=ServiceInfo.objects.get(service_name=item.split('duplicate#')[0]),
+                        quantity=data_requestitem[item]['quantity'],
+                        )
+                    service_items.append(item.split('duplicate#')[0])
                     service_quantities.append(data_requestitem[item]['quantity'])
                 quote_compact = ''.join(data_request['quote_number'].split(' '))
                 collab_info = [group_name,research_contact,research_contact_email+'\n']

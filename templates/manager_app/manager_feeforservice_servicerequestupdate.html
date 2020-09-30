@@ -114,7 +114,7 @@
         <tbody>
           {% for key,value in data_requestitem.items%}
           <tr>
-            <td>{{ key|trueitem}}</td>
+            <td>{{ key|trueitem }}</td>
             {% for field in displayorde_requestitem %}
             <td>{{ value|key:field }}</td>
             {% endfor %}
