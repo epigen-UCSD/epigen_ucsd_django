@@ -12,7 +12,7 @@ from django.db.models import Prefetch
 from epigen_ucsd_django.shared import is_member,daysuffix,quotebody,datetransform2,serviceitemcollapse,servicetarget
 from masterseq_app.views import nonetolist,removenone
 from django.forms import formset_factory,inlineformset_factory
-from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm,QuoteBulkImportForm,QuoteUploadFileForm,QuoteUploadByQidFileForm,QuoteUpdateForm,QuoteUpdateAmountForm
+from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm,QuoteBulkImportForm,QuoteUploadFileForm,QuoteUploadByQidFileForm,QuoteUpdateForm
 import datetime
 from collaborator_app.models import ServiceInfo,ServiceRequest,ServiceRequestItem
 from django.core.files.storage import FileSystemStorage
@@ -1495,7 +1495,7 @@ def QuoteUpdateView(request,requestid,quoteid):
     this_amount = this_request.quote_amount[index]
     quoteupdate_form = QuoteUpdateForm(request.POST or None,\
         initial={'PI':this_request.group,\
-        'research_contact':.this_requestresearch_contact,\
+        'research_contact':this_request.research_contact,\
         'quote_amount':this_amount})
 
     if 'Preview' in request.POST or 'Save' in request.POST:
@@ -1529,7 +1529,7 @@ def QuoteUpdateView(request,requestid,quoteid):
                 #print(data_request)  
 
                 context = {
-                    'quotecreate_form': quotecreate_form,
+                    'quoteupdate_form': quoteupdate_form,
                     'modalshow': 1,
                     'displayorder_request': displayorder_request,
                     'data_request':data_request,
