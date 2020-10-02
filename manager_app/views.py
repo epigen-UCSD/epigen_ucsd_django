@@ -1384,6 +1384,12 @@ def QuotePdfByQidUpload(request,requestid,quoteid):
             file_name = quoteid+'.pdf'
             fs = FileSystemStorage()
             filename = fs.save(file_name, file)
+            if os.path.exists(os.path.join(settings.QUOTE_DIR,file_name)):
+                now = datetime.datetime.now()
+                file_name_old = '.'.join(file_name.split('.')[:-1]) + '_replaced_'+'_'.join([str(now.year), str(now.month), str(now.day), str(now.hour), str(now.minute), str(now.second), str(now.microsecond)])+'.'+file_name.split('.')[-1]
+                os.rename(os.path.join(settings.QUOTE_DIR,file_name),os.path.join(settings.QUOTE_DIR,file_name_old))
+    
+
             subprocess.call("ln -sf "+os.path.join(settings.MEDIA_ROOT,filename)+" "+os.path.join(settings.QUOTE_DIR,file_name), shell=True)
             this_request.quote_pdf[index] = True
             this_request.status = ''
