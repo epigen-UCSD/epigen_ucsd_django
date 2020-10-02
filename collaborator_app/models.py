@@ -45,8 +45,8 @@ class ServiceRequestItem(models.Model):
     quantity = models.FloatField(blank=True, null=True)
     status = models.CharField(max_length=50, blank=True, null=True)
 
-class UploadQuotePdf(models.Model):
-    request = models.ForeignKey(ServiceRequest, on_delete=models.CASCADE)
-    service = models.ForeignKey(ServiceInfo, on_delete=models.CASCADE)
-    quantity = models.FloatField(blank=True, null=True)
-    status = models.CharField(max_length=50, blank=True, null=True)
+# class UploadQuotePdf(models.Model):
+#     request = models.ForeignKey(ServiceRequest, on_delete=models.CASCADE)
+#     service = models.ForeignKey(ServiceInfo, on_delete=models.CASCADE)
+#     quantity = models.FloatField(blank=True, null=True)
+#     status = models.CharField(max_length=50, blank=True, null=True)
