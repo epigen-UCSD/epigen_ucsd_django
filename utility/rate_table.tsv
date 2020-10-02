@@ -1,0 +1,30 @@
+Assay	uc Rate / library ($ dollars)	uc Seq estimate	non-uc_Rate / library ($ dollars)	non_uc_Seq estimate	inductry_Rate / library ($ dollars)	industry_Seq estimate	rate_unit	description_brief	description
+ATAC-seq	$565 	$170.00 	$820 	$212.50 	$943 	$212.50 	sample	Library preparation 	all reagents and labor costs associated with library preparation, quality control shallow sequencing, and basic data processing 
+ATAC-seq_24	$455 	$170.00 	$660 	$212.50 	$759 	$212.50 	sample	Library preparation 	all reagents and labor costs associated with library preparation, quality control shallow sequencing, and basic data processing 
+ATAC-seq 96	$371 	$170.00 	$538 	$212.50 	$619 Assay	uc Rate / library ($ dollars)	uc Seq estimate	non-uc_Rate / library ($ dollars)	non_uc_Seq estimate	inductry_Rate / library ($ dollars)	industry_Seq estimate	rate_unit	description_brief	description
+ATAC-seq	$565 	$170.00 	$820 	$212.50 	$943 	$212.50 	sample	Library preparation 	all reagents and labor costs associated with library preparation, quality control shallow sequencing, and basic data processing 
+ATAC-seq_24	$455 	$170.00 	$660 	$212.50 	$759 	$212.50 	sample	Library preparation 	all reagents and labor costs associated with library preparation, quality control shallow sequencing, and basic data processing 
+ATAC-seq 96	$371 	$170.00 	$538 	$212.50 	$619 	$212.50 	sample	Library preparation 	all reagents and labor costs associated with library preparation, quality control shallow sequencing, and basic data processing 
+sciATAC-seq	$2,936 	$566.67 	$4,257 	$708.33 	$4,895 	$708.33 	sample		
+sciATAC-seq_2	$1,637 	$566.67 	$2,373 	$708.33 	$2,729 	$708.33 	sample		
+sciATAC-seq_3	$1,131 	$566.67 	$1,640 	$708.33 	$1,886 	$708.33 	sample		
+sciATAC-seq_4	$879 	$566.67 	$1,274 	$708.33 	$1,465 	$708.33 	sample		
+10x scATAC-seq	$2,922 	$458.33 	$4,237 	$572.92 	$4,872 	$572.92 	sample		
+10x scATAC-seq_2	$2,066 	$458.33 	$2,995 	$572.92 	$3,444 	$572.92 	sample		
+10x scATAC-seq_3	$1,744 	$458.33 	$2,528 	$572.92 	$2,907 	$572.92 	sample		
+10x scATAC-seq_4	$1,583 	$458.33 	$2,295 	$572.92 	$2,640 	$572.92 	sample		
+10x scRNA-seq	$3,012 	$366.67 	$4,368 	$458.33 	$5,023 	$458.33 	sample		
+10x scRNA-seq_2	$2,236 	$366.67 	$3,241 	$458.33 	$3,728 	$458.33 	sample		
+10x scRNA-seq_3	$1,940 	$366.67 	$2,813 	$458.33 	$3,235 	$458.33 	sample		
+10x scRNA-seq_4	$1,793 	$366.67 	$2,599 	$458.33 	$2,989 	$458.33 	sample		
+10x snRNA-seq	$3,023 	$293.33 	$4,383 	$366.67 	$5,041 	$366.67 	sample		
+10x snRNA-seq_2	$2,316 	$293.33 	$3,358 	$366.67 	$3,862 	$366.67 	sample		
+10x snRNA-seq_3	$2,044 	$293.33 	$2,964 	$366.67 	$3,408 	$366.67 	sample		
+10x snRNA-seq_4	$1,908 	$293.33 	$2,767 	$366.67 	$3,182 	$366.67 	sample		
+Nextseq use	$226 		$328 		$377 		sample		
+Tecnhician time	$109 		$157 		$181 		hour		
+Bioinformatic hours	$161 		$233 		$268 		hour		
+sciATAC-seq QC sequencing	$200 		$200 		$200 		sample		
+10x scATAC-seq QC sequencing	$200 		$200 		$200 		sample		
+10x scRNA-seq QC sequencing	$200 		$200 		$200 		sample		
+10x snRNA-seq QC sequencing	$200 		$200 		$200 		sample		
