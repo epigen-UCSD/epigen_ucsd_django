@@ -609,7 +609,7 @@ $(document).ready(function () {
                     return ''
                 }
                 else {
-                    return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+                    return '<a href="/manager/servicerequest/' + itemID + '">' + data + '</a>';
                 }
                 
             }
