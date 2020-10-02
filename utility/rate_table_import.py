@@ -29,19 +29,28 @@ def main():
 
 			ServiceInfo.objects.create(service_name=this_service,uc_rate=uc,nonuc_rate=non_uc,industry_rate=industry,rate_unit=unit,description_brief=brief,description=detail)
 			if fields[2]:
-				this_service = fields[0].strip()+'(passthrough)'
-				uc = float(''.join(fields[2].strip('$').split(',')))
-				non_uc = float(''.join(fields[4].strip('$').split(',')))
-				industry = float(''.join(fields[6].strip('$').split(',')))
-				unit = fields[7].strip('')
-				ServiceInfo.objects.create(service_name=this_service,uc_rate=uc,nonuc_rate=non_uc,industry_rate=industry,rate_unit=unit)
 
 				this_service = fields[0].strip()+'(pilot)'
 				uc = float(''.join(fields[1].strip('$').split(',')))
 				non_uc = float(''.join(fields[3].strip('$').split(',')))
 				industry = float(''.join(fields[5].strip('$').split(',')))
 				unit = fields[7].strip('')
-				ServiceInfo.objects.create(service_name=this_service,uc_rate=uc,nonuc_rate=non_uc,industry_rate=industry,rate_unit=unit)
+				if this_service.startswith('ATAC-seq'):
+					brief = fields[8].strip('')+' (pilot)'
+					detail = fields[9].strip('')
+				else:
+					brief = ''
+					detail = ''
+				ServiceInfo.objects.create(service_name=this_service,uc_rate=uc,nonuc_rate=non_uc,industry_rate=industry,rate_unit=unit,description_brief=brief,description=detail)
+				
+				if '_' not in fields[0].strip():
+					this_service = fields[0].strip()+'(passthrough)'
+					uc = float(''.join(fields[2].strip('$').split(',')))
+					non_uc = float(''.join(fields[4].strip('$').split(',')))
+					industry = float(''.join(fields[6].strip('$').split(',')))
+					unit = fields[7].strip('')
+					ServiceInfo.objects.create(service_name=this_service,uc_rate=uc,nonuc_rate=non_uc,industry_rate=industry,rate_unit=unit)
+
 
 
 if __name__ == '__main__':
