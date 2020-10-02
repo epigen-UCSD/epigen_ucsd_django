@@ -1205,7 +1205,7 @@ def QuoteAddView(request):
                     if not x.startswith('$'):
                         tm.append('$'+x)
                     else:
-                        tm.append('$'+x)
+                        tm.append(x)
                 this_amount = '-'.join(tm)
  
             all_quote_list = ServiceRequest.objects.values_list('quote_number', flat=True)
@@ -1427,7 +1427,7 @@ def QuoteUpdateView(request,requestid,quoteid):
                     if not x.startswith('$'):
                         tm.append('$'+x)
                     else:
-                        tm.append('$'+x)
+                        tm.append(x)
                 this_amount = '-'.join(tm)
 
  
