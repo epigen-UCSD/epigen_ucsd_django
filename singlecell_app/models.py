@@ -5,17 +5,19 @@ from django.contrib.contenttypes.models import ContentType
 
 
 class CoolAdminSubmission(models.Model):
+    V6 = 'v6'
     V4 = 'v4'
     V2 = 'v2'
     pipeline_versions_choices = [
         (V2, 'v2'),
         (V4, 'v4'),
+        (V6, 'v6'),
     ]
 
     submitted = models.BooleanField(default=False)
     pipeline_status = models.CharField(max_length=20, default='ClickToSubmit')
     pipeline_version = models.CharField(
-        max_length=2, choices=pipeline_versions_choices, default=V2)
+        max_length=2, choices=pipeline_versions_choices, default=V6)
     seqinfo = models.ForeignKey(
         'masterseq_app.SeqInfo', on_delete=models.CASCADE, blank=False, null=True)
     refgenome = models.CharField(max_length=10, blank=True, null=True)

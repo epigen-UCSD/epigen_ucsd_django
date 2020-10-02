@@ -670,6 +670,7 @@ def RunSetQC(request, setqc_pk):
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
             setinfo.set_id + ' ' + request.user.email + \
             ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
+        print(cmd1)
     else:
         # check if expirement is of type 10xATAC of each library:
         # 1. check if library passed has been process in cell ranger by looking for html output

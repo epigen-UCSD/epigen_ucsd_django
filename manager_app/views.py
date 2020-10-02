@@ -998,6 +998,8 @@ def QuoteAddView(request):
             group_name = quotecreate_form.cleaned_data['group']
             research_contact = quotecreate_form.cleaned_data['research_contact']
             this_amount = ''.join(quotecreate_form.cleaned_data['quote_amount'])
+            print(quotecreate_form)
+            print(quotecreate_form.cleaned_data['quote_amount'])
             if not this_amount.startswith('$'):
                 this_amount = '$'+this_amount
             if '-' in this_amount:
@@ -1181,8 +1183,10 @@ def QuotePdfUpload(request):
 def QuotePdfByQidUpload(request,requestid,quoteid):
     if not request.user.groups.filter(name='manager').exists() :
         raise PermissionDenied
+    print(quoteid)
     qid = ' '.join([quoteid[:-10],quoteid[-10:-4],quoteid[-4:]])
-    requestid = requestid
+    print(qid)
+    #requestid = requestid
     this_request = ServiceRequest.objects.get(id=requestid)
     index = this_request.quote_number.index(qid)
 
@@ -1217,7 +1221,6 @@ def QuoteUpdateView(request,requestid,quoteid):
     this_request = get_object_or_404(ServiceRequest, pk=requestid)
     quotecreate_form = QuoteCreationForm(request.POST or None,instance=this_request)
     index = this_request.quote_number.index(qid)
-
     if 'Preview' in request.POST or 'Save' in request.POST:
 
         if quotecreate_form.is_valid():
