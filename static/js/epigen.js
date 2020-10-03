@@ -2004,7 +2004,8 @@ $(document).ready(function () {
             {
                 "targets": 8,
                 "render": function (data, type, row) {
-                    var seq_id = row['seq_id']
+                    var seq_id = row['seq_id'];
+                    console.log(row['tenx_pipeline_status']);
                     if (row['seqinfo__libraryinfo__experiment_type'] !== "10xATAC" || row['tenx_pipeline_status'] === "Yes") {
                         return ('<a href="/singlecell/EditCoolAdmin/' + seq_id + '"><i class="fas fa-edit"></i></a>');
                     } else {
@@ -2111,7 +2112,7 @@ $(document).ready(function () {
                 "targets": 8,
                 "render": function (data, type, row) {
                     var seq_id = row['seqinfo__seq_id']
-                    if (row['seqinfo__libraryinfo__experiment_type'] !== "10xATAC" || row['10x_status'] === "Yes") {
+                    if (row['seqinfo__libraryinfo__experiment_type'] !== "10xATAC" || row['10x_status'] === "Results") {
                         return ('<a href="/singlecell/EditCoolAdmin/' + seq_id + '"><i class="fas fa-edit"></i></a>');
                     } else {
                         return ('<a href="#"><i class="fas fa-edit"></i></a>')

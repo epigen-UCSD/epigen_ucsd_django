@@ -86,23 +86,23 @@ def MySeqs2(request):
     return render(request, 'singlecell_app/myseqs2.html', context)
 
 
-
 def All10xAtacQcData(request):
     """ async function to get hit by ajax. Returns json of all single cell data dict
     in db
     """
     # make sure only bioinformatics group users allowed
 
-    seqs_queryset = SingleCellObject.objects.filter(Q(tenx_pipeline_status='Yes')&Q(experiment_type='10xATAC')).select_related('seqinfo',
-                                                                  'libraryinfo', 'sampleinfo',
-                                                                  'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__seq_id', 'seqinfo__id','path_to_websummary','seqinfo__libraryinfo__sampleinfo__group',
-        'random_string_link','date_last_modified','seqinfo__libraryinfo__sampleinfo__id', 'seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
+    seqs_queryset = SingleCellObject.objects.filter(Q(tenx_pipeline_status='Yes') & Q(experiment_type='10xATAC')).select_related('seqinfo',
+                                                                                                                                 'libraryinfo', 'sampleinfo',
+                                                                                                                                 'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
+        'seqinfo__seq_id', 'seqinfo__id', 'path_to_websummary', 'seqinfo__libraryinfo__sampleinfo__group',
+        'random_string_link', 'date_last_modified', 'seqinfo__libraryinfo__sampleinfo__id', 'seqinfo__libraryinfo__sampleinfo__sample_id', 'content_type_id', 'object_id')
 
     data = list(seqs_queryset)
     build_10xATAC_qc_list(data)
     # print(data[0])
     return JsonResponse(data, safe=False)
+
 
 def User10xAtacQcData(request):
     """async function to get hit by ajax, returns user only seqs
@@ -128,16 +128,17 @@ def All10xRnaQcData(request):
     """
     # make sure only bioinformatics group users allowed
 
-    seqs_queryset = SingleCellObject.objects.filter(Q(tenx_pipeline_status='Yes')&(Q(experiment_type='snRNA-seq')|Q(experiment_type='scRNA-seq'))).select_related('seqinfo',
-                                                                  'libraryinfo', 'sampleinfo',
-                                                                  'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__id','seqinfo__seq_id', 'path_to_websummary', 'seqinfo__libraryinfo__sampleinfo__group',
-        'random_string_link','date_last_modified', 'seqinfo__libraryinfo__sampleinfo__id','seqinfo__libraryinfo__sampleinfo__sample_id','content_type_id','object_id')
+    seqs_queryset = SingleCellObject.objects.filter(Q(tenx_pipeline_status='Yes') & (Q(experiment_type='snRNA-seq') | Q(experiment_type='scRNA-seq'))).select_related('seqinfo',
+                                                                                                                                                                      'libraryinfo', 'sampleinfo',
+                                                                                                                                                                      'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
+        'seqinfo__id', 'seqinfo__seq_id', 'path_to_websummary', 'seqinfo__libraryinfo__sampleinfo__group',
+        'random_string_link', 'date_last_modified', 'seqinfo__libraryinfo__sampleinfo__id', 'seqinfo__libraryinfo__sampleinfo__sample_id', 'content_type_id', 'object_id')
 
     data = list(seqs_queryset)
     build_10xRNA_qc_list(data)
     print(data[0])
     return JsonResponse(data, safe=False)
+
 
 def User10xRnaQcData(request):
     """async function to get hit by ajax, returns user only seqs
@@ -158,7 +159,6 @@ def User10xRnaQcData(request):
 
 
 def AllSingleCellData(request):
-
     """ async function to get hit by ajax. Returns json of all single cell data dict
     in db
     """
@@ -196,25 +196,30 @@ def UserSingleCellData(request):
     return JsonResponse(data, safe=False)
 
 # TODO Think about when cooladmin being modified and submitted should affect the date of the singlecell seq
+
+
 def build_10xRNA_qc_list(seqs_list):
     groups = Group.objects.all()
     for entry in seqs_list:
         group_id = entry['seqinfo__libraryinfo__sampleinfo__group']
         group_name = get_group_name(groups, group_id)
-        entry['seqinfo__libraryinfo__sampleinfo__group'] = group_name            
+        entry['seqinfo__libraryinfo__sampleinfo__group'] = group_name
 
         if(entry['content_type_id'] == None):
-            for k in ['estimated_number_of_cells','number_of_reads','sequencing_saturation','mean_reads_per_cell','median_genes_per_cell','frac_reads_in_cells']:
-                entry[k]=None
+            for k in ['estimated_number_of_cells', 'number_of_reads', 'sequencing_saturation', 'mean_reads_per_cell', 'median_genes_per_cell', 'frac_reads_in_cells']:
+                entry[k] = None
         else:
-            obj = ContentType.objects.get(pk=entry['content_type_id']).get_object_for_this_type(id=entry['object_id'])
-            entry['estimated_number_of_cells']= f'{obj.estimated_number_of_cells:,}'
-            entry['number_of_reads']=f'{obj.number_of_reads:,}' #total_usable_fragments
-            entry['sequencing_saturation']= f'{obj.sequencing_saturation:.3f}'                        
-            entry['mean_reads_per_cell']=f'{obj.mean_reads_per_cell:,}'
-            entry['median_genes_per_cell']=f'{obj.median_genes_per_cell:,}'
-            entry['frac_reads_in_cells']=f'{obj.frac_reads_in_cells:.3f}'           
+            obj = ContentType.objects.get(
+                pk=entry['content_type_id']).get_object_for_this_type(id=entry['object_id'])
+            entry['estimated_number_of_cells'] = f'{obj.estimated_number_of_cells:,}'
+            # total_usable_fragments
+            entry['number_of_reads'] = f'{obj.number_of_reads:,}'
+            entry['sequencing_saturation'] = f'{obj.sequencing_saturation:.3f}'
+            entry['mean_reads_per_cell'] = f'{obj.mean_reads_per_cell:,}'
+            entry['median_genes_per_cell'] = f'{obj.median_genes_per_cell:,}'
+            entry['frac_reads_in_cells'] = f'{obj.frac_reads_in_cells:.3f}'
     return(seqs_list)
+
 
 def build_10xATAC_qc_list(seqs_list):
     groups = Group.objects.all()
@@ -224,17 +229,21 @@ def build_10xATAC_qc_list(seqs_list):
         entry['seqinfo__libraryinfo__sampleinfo__group'] = group_name
 
         if(entry['content_type_id'] == None):
-            for k in ['estimated_nuclei','total_fragments','median_fragments_per_cell','tsse','frac_duplicate','frac_waste_mitochondrial']:
-                entry[k]=None
+            for k in ['estimated_nuclei', 'total_fragments', 'median_fragments_per_cell', 'tsse', 'frac_duplicate', 'frac_waste_mitochondrial']:
+                entry[k] = None
         else:
-            obj = ContentType.objects.get(pk=entry['content_type_id']).get_object_for_this_type(id=entry['object_id'])
-            entry['estimated_nuclei']= f'{obj.annotated_cells:,}'
-            entry['total_fragments']=f'{obj.num_fragments:,}' #total_usable_fragments
-            entry['median_fragments_per_cell']=0 if obj.median_fragments_per_cell==None else f'{obj.median_fragments_per_cell:,.0f}'
-            entry['tsse']= f'{obj.tss_enrichment_score:.1f}'            
-            entry['frac_duplicate']=f'{obj.frac_waste_duplicate:.3f}'
-            entry['frac_waste_mitochondrial']=f'{obj.frac_waste_mitochondrial:.3f}'
+            obj = ContentType.objects.get(
+                pk=entry['content_type_id']).get_object_for_this_type(id=entry['object_id'])
+            entry['estimated_nuclei'] = f'{obj.annotated_cells:,}'
+            # total_usable_fragments
+            entry['total_fragments'] = f'{obj.num_fragments:,}'
+            entry[
+                'median_fragments_per_cell'] = 0 if obj.median_fragments_per_cell == None else f'{obj.median_fragments_per_cell:,.0f}'
+            entry['tsse'] = f'{obj.tss_enrichment_score:.1f}'
+            entry['frac_duplicate'] = f'{obj.frac_waste_duplicate:.3f}'
+            entry['frac_waste_mitochondrial'] = f'{obj.frac_waste_mitochondrial:.3f}'
     return(seqs_list)
+
 
 def build_seq_list_modified(seqs_list):
     """ This function is used to build seq lists to be returned to the from an 
@@ -255,7 +264,7 @@ def build_seq_list_modified(seqs_list):
         experiment_type = entry['seqinfo__libraryinfo__experiment_type']
         # need to move FASTQ file status to db
         entry['seq_status'] = get_seq_status(
-            seq_id, entry['seqinfo__read_type'],experiment_type)
+            seq_id, entry['seqinfo__read_type'], experiment_type)
         entry['species'] = entry['seqinfo__libraryinfo__sampleinfo__species']
         ca_status = entry['cooladminsubmission__pipeline_status']
         entry['cooladmin_status'] = entry['cooladminsubmission__link'] if ca_status == 'Yes' else ca_status
@@ -282,7 +291,8 @@ def build_seq_list(seqs_list):
         experiment_type = entry['libraryinfo__experiment_type']
         entry['last_modified'] = get_latest_modified_time(
             seq_id, entry['id'], entry['date_submitted_for_sequencing'], cooladmin_objects)
-        entry['seq_status'] = get_seq_status(seq_id, entry['read_type'],experiment_type)
+        entry['seq_status'] = get_seq_status(
+            seq_id, entry['read_type'], experiment_type)
         entry['10x_status'] = get_tenx_status(seq_id, experiment_type)
         entry['species'] = entry['libraryinfo__sampleinfo__species']
         entry['cooladmin_status'] = get_cooladmin_status(seq_id, entry['id'])
@@ -346,21 +356,21 @@ def get_seq_status(seq_id, read_type, experiment_type=''):
     reps = seq_id.split('_')[2:]
     mainname = '_'.join(seq_id.split('_')[0:2])
     # reps are [_2] in brandon_210_2 or [_1,_2,_3] in brandon_210_1_2_3
-    if(experiment_type in ['scRNA-seq', 'snRNA-seq','10xATAC']):
+    if(experiment_type in ['scRNA-seq', 'snRNA-seq', '10xATAC']):
         if len(reps) == 0:
-            if not os.path.isdir(os.path.join(fastqdir,mainname)):
+            if not os.path.isdir(os.path.join(fastqdir, mainname)):
                 return ('No')
-            else:   
+            else:
                 seqsStatus = ('Yes')
         else:
             for rep in reps:
-                    if rep == '1':
-                        if not os.path.isdir(os.path.join(fastqdir,mainname)):
-                            return ('No')
-                    else:
-                        repname = mainname + '_' + rep
-                        if not os.path.isdir(os.path.join(fastqdir,repname)):
-                            return ('No')
+                if rep == '1':
+                    if not os.path.isdir(os.path.join(fastqdir, mainname)):
+                        return ('No')
+                else:
+                    repname = mainname + '_' + rep
+                    if not os.path.isdir(os.path.join(fastqdir, repname)):
+                        return ('No')
             seqsStatus = 'Yes'
     else:
         if len(reps) == 0:
@@ -450,7 +460,7 @@ def submit_singlecell(request):
         if not SeqInfo.objects.filter(seq_id=seq).exists():
             data = {
                 'success': False,
-                error: "Seq does not exist!"
+                'error': "Seq does not exist!"
             }
         else:
             email = request.user.email
@@ -949,7 +959,6 @@ def generate_tenx_link(request):
         return JsonResponse(data, safe=False)
 
 
-
 def generate_link(seq, expt_type):
     """ return a link for files to be viewed with a share link
     Will generate a link if needed. Will return the link in the response.
@@ -959,7 +968,7 @@ def generate_link(seq, expt_type):
     info = {}
     data = {}
     parent_dir = ""
-    is_generated=False
+    is_generated = False
 
     # get all files in exposed outs folder
     exposed_outs_dir = settings.EXPOSED_OUTS_DIR
@@ -996,10 +1005,10 @@ def generate_link(seq, expt_type):
         link = os.path.join(os.path.basename(
             os.path.split(exposed_outs_dir)[0]), link)
         print(link)
-        is_generated=True
+        is_generated = True
     url = 'http://epigenomics.sdsc.edu/zhc268/' + link
 
-    return(url,is_generated)
+    return(url, is_generated)
 
 
 def insert_link(filename, seq, expt_type):
