@@ -1934,7 +1934,7 @@ $(document).ready(function () {
             { data: "date_last_modified" },
             { data: "seq_status" },
             { data: "tenx_pipeline_status" },
-            { data: "cooladminsubmission__pipeline_status" },
+            { data: "cooladmin_status" },
             { data: "cooladmin_edit" },
             { data: "seqinfo__libraryinfo__sampleinfo__group" },
         ],
@@ -1997,7 +1997,6 @@ $(document).ready(function () {
                         return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
                     } else {
                         return '<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="' + '#' + '" style="color:white" target="_blank"> Results</a></button >'
-
                     }
                 },
             },
@@ -2005,7 +2004,7 @@ $(document).ready(function () {
                 "targets": 8,
                 "render": function (data, type, row) {
                     var seq_id = row['seq_id'];
-                    console.log(row['tenx_pipeline_status']);
+                    //console.log(row['tenx_pipeline_status']);
                     if (row['seqinfo__libraryinfo__experiment_type'] !== "10xATAC" || row['tenx_pipeline_status'] === "Yes") {
                         return ('<a href="/singlecell/EditCoolAdmin/' + seq_id + '"><i class="fas fa-edit"></i></a>');
                     } else {
