@@ -1977,10 +1977,11 @@ $(document).ready(function () {
                 "render": function (data, type, row) {
                     var status = data;
                     var seq_id = row['seqinfo__seq_id'];
+                    var seq_type = row['seqinfo__libraryinfo__experiment_type'];
                     if (status === "ClickToSubmit" || status == null) {
                         //check fastq seq status
                         if (row["seq_status"] === "Yes") {
-                            if (row['libraryinfo__experiment_type'] == "10xATAC" && (row['10x_status'].toLowerCase() === "yes" || row['10x_status'].toLowerCase() === "results")) {
+                            if (seq_type == "10xATAC" && (row['10x_status'].toLowerCase() === "yes" || row['10x_status'].toLowerCase() === "results")) {
                                 return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange" disabled value="' + seq_id + '"> ClickToSubmit </button>');
                             } else if (row['seqinfo__libraryinfo__experiment_type'] === "10xATAC" && row['tenx_pipeline_status'].toLowerCase() !== "results") {
                                 return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
@@ -2040,7 +2041,7 @@ $(document).ready(function () {
             { data: "date_last_modified" },
             { data: "seq_status" },
             { data: "tenx_pipeline_status" },
-            { data: "cooladminsubmission__pipeline_status" },
+            { data: "cooladmin_status" },
             { data: "cooladmin_edit" },
             { data: "seqinfo__libraryinfo__sampleinfo__group" },
         ],
