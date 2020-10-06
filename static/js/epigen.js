@@ -2100,6 +2100,8 @@ $(document).ready(function () {
                         }
                     } else if (status === ".status.fail") {//failed
                         return ('<button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status">Error!</button>')
+                    } else if (status === "InQueue") {
+                        return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Submitted</button>')
                     } else if (status === ".status.processing") {
                         return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
                     } else {
@@ -2211,6 +2213,18 @@ $(document).ready(function () {
                     }
                 },
             },
+            {//cooladmin edit button- links to edit page
+                "targets": 8,
+                "render": function (data, type, row) {
+                    var seq_id = row['seqinfo__seq_id']
+                    if (row['seqinfo__libraryinfo__experiment_type'] !== "10xATAC" || row['tenx_pipeline_status'] === "Yes") {
+                        return ('<a href="/singlecell/EditCoolAdmin/' + seq_id + '"><i class="fas fa-edit"></i></a>');
+                    } else {
+                        return ('<a href="#"><i class="fas fa-edit"></i></a>')
+                    }
+                }
+            }
+
 
             /*{// misc are for buttons
                 "targets": 8,

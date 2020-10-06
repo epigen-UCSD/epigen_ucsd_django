@@ -271,7 +271,7 @@ def build_seq_list_modified(seqs_list):
         entry['species'] = entry['seqinfo__libraryinfo__sampleinfo__species']
         ca_status = entry['cooladminsubmission__pipeline_status']
         # print(ca_status)
-        entry['cooladmin_status'] = entry['cooladminsubmission__link'] if ca_status == 'Yes' else ca_status
+        entry['cooladmin_status'] = entry['cooladminsubmission__link'] if entry['cooladminsubmission__link'] is not None else ca_status
     return (seqs_list)
 
 
@@ -659,15 +659,16 @@ def edit_cooladmin_sub(request, seqinfo):
         if(submission != False):
             data = model_to_dict(submission)
             data['genome'] = data['refgenome']
-            #print('\n data: ',data)
-            #print('\n post: ',post)
+            print('\n data: ', data)
+            print('\n post: ', post)
             form = CoolAdminForm(post, initial=data)
-            #print('form: is valid and has changed: ',form.is_valid(), form.has_changed())
+            print('form: is valid and has changed: ',
+                  form.is_valid(), form.has_changed())
             if form.is_valid():
                 if(form.has_changed()):
                     data = form.cleaned_data
                     data['submitted'] = False
-                    #print('changed data: ', form.changed_data)
+                    print('changed data: ', form.changed_data)
                     CoolAdminSubmission.objects.filter(
                         seqinfo=seqinfo_id).update(**data)
                     obj = CoolAdminSubmission.objects.get(seqinfo=seqinfo_id)
@@ -685,7 +686,7 @@ def edit_cooladmin_sub(request, seqinfo):
                 data['seqinfo'] = seqinfo_id
                 obj = CoolAdminSubmission(**data)
                 obj.save()
-                #print('new submission: ',model_to_dict(obj))
+                print('new submission: ', model_to_dict(obj))
 
         return redirect('singlecell_app:myseqs')
 
@@ -834,6 +835,7 @@ def getReferenceUsed(seq):
         with open(file_path) as json_file:
             data = json.load(json_file)
             refgenome = data["reference_assembly"]
+    refgenome = 'hg38' if refgenome == 'GRCh38' else refgenome
     # open summarry.json and read "reference_assembly"
     return refgenome
 
