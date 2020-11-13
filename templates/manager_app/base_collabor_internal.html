@@ -10,6 +10,7 @@
 <div id="sidebar" class="col-sm-2 col-md-2 col-lg-2" role="navigation">
   <div class="list-group navsiebar">
     <li class="sidebar-header">Collaborators App</li>
+    <a href="{% url 'manager_app:data_summary' %}" class="list-group-item list-group-item-action-custom-darkblue">Data Summary</a>
     <a href="{% url 'manager_app:collab_list' %}" class="list-group-item list-group-item-action-custom-darkblue">All Collaborators</a>
 <!--     <a href="{% url 'manager_app:servicerequests_list' %}" class="list-group-item list-group-item-action-custom-darkblue editable">All ServiceRequests</a> -->
     {% if request.user|has_group:"manager" %}
