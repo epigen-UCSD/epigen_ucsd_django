@@ -49,6 +49,7 @@ choice_for_species = (
     ('green monkey', 'green monkey'),
     ('pig-tailed macaque', 'pig-tailed macaque'),
     ('fruit fly', 'fruit fly'),
+    ('house fly', 'house fly'),
     ('sheep', 'sheep'),
     ('rabbit', 'rabbit'),
     ('dog', 'dog'),
@@ -137,8 +138,9 @@ class SampleInfo(models.Model):
     fiscal_email = models.CharField(max_length=200, blank=True, null=True)
     fiscal_index = models.CharField(max_length=200, blank=True, null=True)
     project_number = models.CharField(max_length=100, blank=True, null=True)
-    task_number = models.CharField(max_length=100,blank=True, null=True)
-    funding_source_number = models.CharField(max_length=100, blank=True, null=True)
+    task_number = models.CharField(max_length=100, blank=True, null=True)
+    funding_source_number = models.CharField(
+        max_length=100, blank=True, null=True)
     research_person = models.ForeignKey(
         CollaboratorPersonInfo, related_name='contact_person', on_delete=models.CASCADE, null=True)
     fiscal_person = models.ForeignKey(
@@ -202,19 +204,21 @@ class SeqInfo(models.Model):
 
     def __str__(self):
         return self.seq_id
-        
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        #check if single cell type expt.
+        # check if single cell type expt.
         lib = LibraryInfo.objects.get(library_id=str(self.libraryinfo))
         if(lib.experiment_type in SINGLE_CELL_EXPS and not SingleCellObject.objects.all().filter(seqinfo=self).exists()):
             self.make_singlecell_object(lib.experiment_type)
-    
+
     def make_singlecell_object(self, experiment_type):
-        #create single cell obj
-        scobj = SingleCellObject(seqinfo=self,experiment_type=experiment_type,date_last_modified=self.date_submitted_for_sequencing)
+        # create single cell obj
+        scobj = SingleCellObject(seqinfo=self, experiment_type=experiment_type,
+                                 date_last_modified=self.date_submitted_for_sequencing)
         scobj.save()
         #print('created scobj: ',scobj.id)
+
 
 class SeqBioInfo(models.Model):
     seqinfo = models.ForeignKey(SeqInfo, on_delete=models.CASCADE)
@@ -243,4 +247,3 @@ class RefGenomeInfo(models.Model):
 
     def __str__(self):
         return self.genome_name
-
