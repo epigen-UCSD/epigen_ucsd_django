@@ -28,7 +28,8 @@ defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
                  'rat': 'rn6', 'cattle': 'ARS-UCD1.2', 'sheep': 'oar_v3.1',
                  'green monkey': 'chlSab2', 'pig-tailed macaque': 'Mnem1.0',
                  'fruit fly': 'dm6', 'rabbit': 'oryCun2', 'dog': 'CanFam3.1',
-                 'mosquito': 'AaegL5', 'house fly': 'Musca_domestica-2.0.2'}
+                 'mosquito': 'AaegL5', 'house fly': 'Musca_domestica-2.0.2',
+                 'Anopheles': 'AgamP4'}
 
 
 def groupnumber(datalist):

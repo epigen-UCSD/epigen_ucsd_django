@@ -49,6 +49,7 @@ choice_for_species = (
     ('green monkey', 'green monkey'),
     ('pig-tailed macaque', 'pig-tailed macaque'),
     ('fruit fly', 'fruit fly'),
+    ('Anopheles', 'Anopheles'),
     ('house fly', 'house fly'),
     ('sheep', 'sheep'),
     ('rabbit', 'rabbit'),
