@@ -19,7 +19,7 @@ from collaborator_app.models import ServiceInfo, ServiceRequest, ServiceRequestI
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-#from weasyprint import HTML
+from weasyprint import HTML
 import os
 import subprocess
 from django.conf import settings

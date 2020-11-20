@@ -566,7 +566,8 @@ $(document).ready(function () {
                 else {
                     return '<a href="/manager/servicerequest/' + itemID + '">' + data + '</a>';
                 }
-            },
+            }
+        },
 
             {
                 "targets": 6,
@@ -588,13 +589,7 @@ $(document).ready(function () {
 
                 }
             },
-            {
-                "targets": 8,
-                "render": function (data, type, row) {
-                    var itemID = row["pk"];
-                    return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a><a class="spacing" href="/manager/add_new_quote/' + itemID + '/"><i class="fas fa-plus"></i></a>'
-            }
-        },
+
         {
             "targets": 8,
             "render": function (data, type, row) {
