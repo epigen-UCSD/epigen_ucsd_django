@@ -11,8 +11,9 @@ class ServiceInfo(models.Model):
     nonuc_rate = models.FloatField(blank=True, null=True)
     industry_rate = models.FloatField(blank=True, null=True)
     rate_unit = models.CharField(max_length=50)
-    description_brief = models.TextField(blank=True,null=True)
-    description = models.TextField(blank=True,null=True)
+    description_brief = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+
     #start_date =  models.DateField(blank=True, null=True)
     #end_date =  models.DateField(blank=True, null=True)
 

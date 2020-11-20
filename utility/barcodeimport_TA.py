@@ -19,23 +19,26 @@ def getArgs():
     parser = argparse.ArgumentParser(
         description='Import barcodes script for 10xATAC.')
     parser.add_argument('-b', '--barcode_file', dest='barcode_file',
-                        help='input barcode file  (csv format, basedir is ../scripts)')
+                        help='input barcode file  (csv format, basedir is ../)')
+    parser.add_argument('-k', '--barcode_kits', dest='barcode_kits',default='TA',
+                        help='input barcode-kits (eg.TA, TR etc).')
+
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
     args = parser.parse_args()
-    return args.barcode_file
+    return args.barcode_file, args.barcode_kits
 
 
 def main():
-    fn = getArgs()
+    fn,kit = getArgs()
     with io.open(fn, 'r', encoding='utf-8') as f:
         lines = f.read().splitlines()
     indexes = [l.replace(u'\ufeff', '').split(',')[0] for l in lines]
 
     for nm in indexes:
         obj, created = Barcode.objects.get_or_create(
-            indexid=nm, indexseq=nm, kit='TA')
+            indexid=nm, indexseq=nm, kit=kit)
 
 
 if __name__ == '__main__':

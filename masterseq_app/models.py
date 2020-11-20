@@ -2,7 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.models import CollaboratorPersonInfo
+from singlecell_app.models import SingleCellObject
+#from singlecell_app.models import SingleCellObject
+# from search_app.documents import SampleInfo as SampleDoc, SeqInfo as SeqDoc, LibraryInfo as LibDoc
 # Create your models here.
+SINGLE_CELL_EXPS = ['10xATAC', 'scRNA-seq', 'snRNA-seq', 'scATAC-seq']
 
 
 choice_for_experiment_type = (
@@ -15,6 +19,7 @@ choice_for_experiment_type = (
     ('snRNA-seq', 'snRNA-seq'),
     ('4C', '4C'),
     ('CUT&RUN', 'CUT&RUN'),
+    ('DNase-seq', 'DNase-seq'),
     ('other (please explain in notes)', 'other (please explain in notes)')
 )
 choice_for_sample_type = (
@@ -40,11 +45,16 @@ choice_for_species = (
     ('human', 'human'),
     ('mouse', 'mouse'),
     ('rat', 'rat'),
-    ('cattle','cattle'),
-    ('green monkey','green monkey'),
-    ('pig-tailed macaque','pig-tailed macaque'),
-    ('fruit fly','fruit fly'),    
-    ('sheep','sheep'),    
+    ('cattle', 'cattle'),
+    ('green monkey', 'green monkey'),
+    ('pig-tailed macaque', 'pig-tailed macaque'),
+    ('fruit fly', 'fruit fly'),
+    ('Anopheles', 'Anopheles'),
+    ('house fly', 'house fly'),
+    ('sheep', 'sheep'),
+    ('rabbit', 'rabbit'),
+    ('dog', 'dog'),
+    ('mosquito', 'mosquito'),
     ('other (please explain in notes)', 'other (please explain in notes)')
 )
 choice_for_unit = (
@@ -107,7 +117,7 @@ class SampleInfo(models.Model):
     fixation = models.CharField(
         max_length=50, choices=choice_for_fixation, null=True)
     notes = models.TextField(blank=True)
-    internal_notes = models.TextField('Internal Notes',blank=True)
+    internal_notes = models.TextField('Internal Notes', blank=True)
     sample_amount = models.CharField(max_length=100, blank=True, null=True)
     unit_choice = choice_for_unit
     unit = models.CharField(max_length=50, choices=unit_choice, null=True)
@@ -128,7 +138,10 @@ class SampleInfo(models.Model):
     fiscal_name = models.CharField(max_length=200, blank=True, null=True)
     fiscal_email = models.CharField(max_length=200, blank=True, null=True)
     fiscal_index = models.CharField(max_length=200, blank=True, null=True)
-
+    project_number = models.CharField(max_length=100, blank=True, null=True)
+    task_number = models.CharField(max_length=100, blank=True, null=True)
+    funding_source_number = models.CharField(
+        max_length=100, blank=True, null=True)
     research_person = models.ForeignKey(
         CollaboratorPersonInfo, related_name='contact_person', on_delete=models.CASCADE, null=True)
     fiscal_person = models.ForeignKey(
@@ -151,7 +164,7 @@ class LibraryInfo(models.Model):
         max_length=50, choices=experiment_type_choice, null=True)
     protocalinfo = models.ForeignKey(
         ProtocalInfo, on_delete=models.CASCADE, null=True)
-    protocal_used = models.CharField(max_length=200,blank=True,null=True)
+    protocal_used = models.CharField(max_length=200, blank=True, null=True)
     reference_to_notebook_and_page_number = models.CharField(
         max_length=50, null=True)
     date_started = models.DateField(
@@ -193,6 +206,20 @@ class SeqInfo(models.Model):
     def __str__(self):
         return self.seq_id
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # check if single cell type expt.
+        lib = LibraryInfo.objects.get(library_id=str(self.libraryinfo))
+        if(lib.experiment_type in SINGLE_CELL_EXPS and not SingleCellObject.objects.all().filter(seqinfo=self).exists()):
+            self.make_singlecell_object(lib.experiment_type)
+
+    def make_singlecell_object(self, experiment_type):
+        # create single cell obj
+        scobj = SingleCellObject(seqinfo=self, experiment_type=experiment_type,
+                                 date_last_modified=self.date_submitted_for_sequencing)
+        scobj.save()
+        #print('created scobj: ',scobj.id)
+
 
 class SeqBioInfo(models.Model):
     seqinfo = models.ForeignKey(SeqInfo, on_delete=models.CASCADE)
@@ -204,3 +231,20 @@ class SeqBioInfo(models.Model):
     mito_frac = models.FloatField(blank=True, null=True)
     tss_enrichment = models.FloatField(blank=True, null=True)
     frop = models.FloatField(blank=True, null=True)
+
+
+class ExperimentType(models.Model):
+    experiment = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.experiment
+
+
+class RefGenomeInfo(models.Model):
+    genome_name = models.CharField(max_length=50)
+    species = models.CharField(max_length=25)
+    experiment_type = models.ManyToManyField(ExperimentType)
+    path = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.genome_name

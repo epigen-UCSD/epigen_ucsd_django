@@ -268,6 +268,7 @@ $(document).ready(function () {
     $('#collab_metadata_samples').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -306,10 +307,33 @@ $(document).ready(function () {
     });
 
 
+    $('#seqmanager_seq').DataTable({
+        dom: 'lBfrtip',
+        buttons: [
+            'copyHtml5',
+            'excel',
+            {
+                text: 'TSV',
+                extend: 'csvHtml5',
+                fieldSeparator: '\t',
+                extension: '.tsv',
+                fieldBoundary: ''
+            }
+        ],
+        "select": true,
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[1, "asc"]],
+    });
+
+
+
+
     var metalibsurl = $('#collab_metadata_libs').attr("data-href");
     $('#collab_metadata_libs').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -365,6 +389,7 @@ $(document).ready(function () {
     $('#collab_metadata_seqs').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -455,13 +480,13 @@ $(document).ready(function () {
             "createdCell": function (td, data, row, col) {
                 var itemID = row["pk"];
                 var n = row["notes"];
-                if(n){
+                if (n) {
                     $(td).addClass('details-control');
-                    $(td).attr('data-href', '{% url \'collaborator_app:setqc_getnotes\' '+itemID+' %}');
+                    $(td).attr('data-href', '{% url \'collaborator_app:setqc_getnotes\' ' + itemID + ' %}');
                     $(td).text('');
 
                 }
-                else{
+                else {
                     $(td).text('');
                 }
 
@@ -477,13 +502,13 @@ $(document).ready(function () {
         },
         {
             "targets": 3,
-            "render": function (data, type, row){
+            "render": function (data, type, row) {
                 var date = row["last_modified"];
                 var dt = new Date(date);
                 var y = dt.getFullYear();
-                var m = dt.getMonth()+1;
+                var m = dt.getMonth() + 1;
                 var d = dt.getDate();
-                return y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+                return y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
 
 
             }
@@ -493,9 +518,9 @@ $(document).ready(function () {
             "render": function (data, type, row) {
                 var reporturl = row["url"];
                 if (reporturl) {
-                    return '<a href="'+reporturl+'" target="_blank"><i class="fas fa-file-alt" style="font-size: 17px;color:#26D07C"></i></a>'
+                    return '<a href="' + reporturl + '" target="_blank"><i class="fas fa-file-alt" style="font-size: 17px;color:#26D07C"></i></a>'
                 }
-                else{
+                else {
                     return ''
                 }
 
@@ -531,7 +556,6 @@ $(document).ready(function () {
         "select": false,
 
         "columnDefs": [
-
         {
             "targets": 0,
             "render": function (data, type, row) {
@@ -542,27 +566,33 @@ $(document).ready(function () {
                 else {
                     return '<a href="/manager/servicerequest/' + itemID + '">' + data + '</a>';
                 }
-            }
-        },
+            },
 
-        {
-            "targets": 6,
-            "render": function (data, type, row) {
-                var returnvalue = ''
-                
-                for (i = 0; i < data.length; i++) {
-                  var qid = data[i].replace(/ /g, "");
-                  var returnvalue = returnvalue.concat('<a class="spacing-big" href="/manager/quote/'+qid+'/",data-toggle="tooltip" data-placement="right" title="'+data[i]+'" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>')
+            {
+                "targets": 6,
+                "render": function (data, type, row) {
+                    var returnvalue = ''
+
+                    for (i = 0; i < data.length; i++) {
+                        var qid = data[i].replace(/ /g, "");
+                        var returnvalue = returnvalue.concat('<a class="spacing-big" href="/manager/quote/' + qid + '/",data-toggle="tooltip" data-placement="right" title="' + data[i] + '" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>')
+                    }
+
+                    if (row["status"] == 'initiate') {
+                        return returnvalue.concat('<a class="spacing" href="/manager/quote/' + qid + '/text_update/"><i class="fas fa-edit"></i></a>')
+                    }
+                    else {
+                        return returnvalue
+                    }
+
+
                 }
-
-                if (row["status"] == 'initiate'){
-                    return returnvalue.concat('<a class="spacing" href="/manager/quote/' + qid + '/text_update/"><i class="fas fa-edit"></i></a>')
-                }
-                else{
-                    return returnvalue
-                }   
-                
-
+            },
+            {
+                "targets": 8,
+                "render": function (data, type, row) {
+                    var itemID = row["pk"];
+                    return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a><a class="spacing" href="/manager/add_new_quote/' + itemID + '/"><i class="fas fa-plus"></i></a>'
             }
         },
         {
@@ -572,8 +602,8 @@ $(document).ready(function () {
                 return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a><a class="spacing" href="/manager/add_new_quote/' + itemID + '/"><i class="fas fa-plus"></i></a><a onclick="return confirm(\'Are you sure you want to delete Service Request ' + row["service_request_id"] + '?\');" href="/manager/servicerequest_delete/' + itemID + '/"><i class="fas fa-trash-alt"></i></a>'
                 
 
-            }
-        }],
+                }
+            }],
     });
 
 
@@ -581,13 +611,14 @@ $(document).ready(function () {
     $('#quotes_all').DataTable({
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
-        "order": [[2, "desc"]],
+        "order": [[0, "desc"]],
         "processing": true,
         "ajax": {
             url: quotesurl,
             dataSrc: ''
         },
         "columns": [
+            { "data": "quote_number" },
             { "data": "quote_number" },
             { "data": "service_request_id" },
             { "data": "date" },
@@ -601,52 +632,57 @@ $(document).ready(function () {
 
         "columnDefs": [
 
-        {
-            "targets": 1,
-            "render": function (data, type, row) {
-                var itemID = row["pk"];
-                if (data == null) {
-                    return ''
+            {
+                "targets": 0,
+                "render": function (data, type, row) {
+                    return data.slice(-4);
                 }
-                else {
-                    return '<a href="/manager/servicerequest/' + itemID + '">' + data + '</a>';
-                }
-                
-            }
-        },
-        {
-            "targets": 6,
-            "render": function (data, type, row) {
-                var itemID = row["pk"];
-                var qid = row["quote_number"].replace(/ /g, "")
-                if (data) {
-                    return '<a class="spacing-big" href="/manager/quote/'+qid+'/" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>'
-                }
-                else {
-                    return '';
-                }
-                
-            }
-        },
+            },
+          {
+              "targets": 2,
+              "render": function (data, type, row) {
+                  var itemID = row["pk"];
+                  if (data == null) {
+                      return ''
+                  }
+                  else {
+                      return '<a href="/manager/servicerequest/' + itemID + '">' + data + '</a>';
+                  }
 
-        {
-            "targets": 7,
-            "render": function (data, type, row) {
-                var itemID = row["pk"];
-                var qid = row["quote_number"].replace(/ /g, "")
-                return '<a class="spacing" href="/manager/quote_upload/' + itemID + '/' + qid + '/"><i class="fas fa-upload"></i></a><a class="spacing" href="/manager/quote_update/' + itemID + '/'+ qid + '/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete quote ' + row["quote_number"] + '?\');" href="/manager/quote_delete/' + itemID + '/'+ qid + '/"><i class="fas fa-trash-alt"></i></a>'
-                
+              }
+          },
+            {
+                "targets": 7,
+                "render": function (data, type, row) {
+                    var itemID = row["pk"];
+                    var qid = row["quote_number"].replace(/ /g, "")
+                    if (data) {
+                        return '<a class="spacing-big" href="/manager/quote/' + qid + '/" width="300"><i class="fas fa-file-alt" style="font-size: 17px;color:#0a2a66"></i></a>'
+                    }
+                    else {
+                        return '';
+                    }
 
-            }
-        }],
+                }
+            },
+
+            {
+                "targets": 8,
+                "render": function (data, type, row) {
+                    var itemID = row["pk"];
+                    var qid = row["quote_number"].replace(/ /g, "")
+                    return '<a class="spacing" href="/manager/quote_upload/' + itemID + '/' + qid + '/"><i class="fas fa-upload"></i></a><a class="spacing" href="/manager/quote_update/' + itemID + '/' + qid + '/"><i class="fas fa-edit"></i></a><a onclick="return confirm(\'Are you sure you want to delete quote ' + row["quote_number"] + '?\');" href="/manager/quote_delete/' + itemID + '/' + qid + '/"><i class="fas fa-trash-alt"></i></a>'
+
+
+                }
+            }],
     });
-
-
 
     var metasampsurl = $('#metadata_samples').attr("data-href");
     $('#metadata_samples').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -688,6 +724,7 @@ $(document).ready(function () {
     $('#metadata_samples_bio').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -738,6 +775,7 @@ $(document).ready(function () {
     $('#metadata_libs').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -791,6 +829,7 @@ $(document).ready(function () {
     $('#metadata_libs_bio').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -853,6 +892,7 @@ $(document).ready(function () {
     $('#metadata_seqs').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -919,6 +959,7 @@ $(document).ready(function () {
     $('#metadata_seqs_bio').DataTable({
         dom: 'lBfrtip',
         buttons: [
+            'copyHtml5',
             'excel',
             {
                 text: 'TSV',
@@ -1034,38 +1075,38 @@ $(document).ready(function () {
     });
 
 
-    $('#id_group').bind('autocompleteselect', function(e, ui){
+    $('#id_group').bind('autocompleteselect', function (e, ui) {
         var url = $("#groupdependent").attr("data-collabs-url");
         var groupname = ui.item.value;
         $.ajax({
-            url:url,
+            url: url,
             cache: false,
             data: {
-                'group':groupname
+                'group': groupname
             },
-            success:function (data){
+            success: function (data) {
                 $("#id_research_contact").html(data);
             }
         })
     });
 
-    $('select#id_research_contact').on('change', function (){
+    $('select#id_research_contact').on('change', function () {
         console.log(this.value);
         var url = $("#groupdependent").attr("data-email-url");
         var colllab_id = this.value;
         $.ajax({
-            url:url,
+            url: url,
             cache: false,
             data: {
-                'colllab_id':colllab_id
+                'colllab_id': colllab_id
             },
-            success:function (data){
+            success: function (data) {
                 $("#id_research_contact_email").html(data);
             }
         })
     });
 
-    if(document.getElementById("error-message-bulk")){
+    if (document.getElementById("error-message-bulk")) {
         console.log(document.getElementById("error-message-bulk").innerHTML);
         $('#link-bulk').addClass('active');
         $('#link-single').removeClass('active');
@@ -1078,7 +1119,7 @@ $(document).ready(function () {
 
     }
 
-    
+
 
 
 
@@ -1236,16 +1277,16 @@ $(document).ready(function () {
 
     $('select#id_step_to_run').on('change', function () {
         if (this.value == "step1") {
-            $( "#id_set_name" ).prop( "disabled", true );
-            $( "#encode_experiment_type" ).prop( "disabled", true );
-            $( "#id_notes" ).prop( "disabled", true );
-            $( "#id_genome" ).prop( "disabled", true );
+            $("#id_set_name").prop("disabled", true);
+            $("#encode_experiment_type").prop("disabled", true);
+            $("#id_notes").prop("disabled", true);
+            $("#id_genome").prop("disabled", true);
         }
         else {
-            $( "#id_set_name" ).prop( "disabled", false );
-            $( "#encode_experiment_type" ).prop( "disabled", false );
-            $( "#id_notes" ).prop( "disabled", false );
-            $( "#id_genome" ).prop( "disabled", false );
+            $("#id_set_name").prop("disabled", false);
+            $("#encode_experiment_type").prop("disabled", false);
+            $("#id_notes").prop("disabled", false);
+            $("#id_genome").prop("disabled", false);
         }
     });
 
@@ -1485,29 +1526,86 @@ $(document).ready(function () {
         })
     });
 
+    function add_radio_buttons(refs, seq) {
+        var divtoadd = $('<div value=' + seq + ' class="radio-buttons-sc"></div>')
+        divtoadd.appendTo('.refgenomes');
+        for (ref in refs) {
+            var radiobtn = $('<div class="radio"><label><input type="radio" \
+               value='+ refs[ref] + ' name = "refradio" > ' + refs[ref] + '</label ></div>');
+            radiobtn.appendTo('.radio-buttons-sc');
+        }
+
+    }
+
+    /* Click on runsinglecell located in singlecell app will GET refrence genomes available to the sequence for confirming*/
     $(document).on('click', '.runsinglecell', function (e) {
         e.preventDefault();
         button = $(this)
+        var seq = $(this).val()
+        console.log(seq)
         $.ajax({
-            type: "POST",
+            type: "GET",
             cache: false,
             url: "/singlecell/ajax/submit/",
             data: {
-                'seq': $(this).val(),
+                'seq': seq,
                 'email': "no emailneeded rn"
             },
             dataType: 'json',
             success: function (data) {
-                if (data['is_submitted'] == true) {
-                    console.log(data['is_submitted'])
-                    console.log('data submitted')
-                    $(button).replaceWith(' <button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>Submitted</button>')
-                    return
+                if (data['success'] === true) {
+                    if (data['submitted'] === true) {
+                        //submitted the seq without need to promp user
+                        $(".runsinglecell[value=" + seq + "]").replaceWith(
+                            '<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>Submitted</button>'
+                        );
+                        return
+                    }
+                    console.log(data['success'])
+                    $(".popup-overlay, .popup-content").addClass("active");
+                    console.log(data['refs'])
+                    add_radio_buttons(data['refs'], seq)
+
+                    //activate popup to confirm
                 }
             }
 
         });
     });
+
+
+    /* Click on runsinglecell located in singlecell app will GET refrence genomes available to the sequence for confirming*/
+    $(document).on('click', '.runsinglecell-confirm', function (e) {
+        e.preventDefault();
+        var seq = $('.radio-buttons-sc').attr('value');
+        var ref = $('input[name="refradio"]:checked').val();
+        console.log(`ref chosen: ${ref}, seq: ${seq}`)
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/singlecell/ajax/submit/",
+            data: {
+                'seq': seq,
+                'ref': ref,
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data['success'] == true) {
+                    console.log(data['success'])
+                    $(".popup-overlay, .popup-content").removeClass("active");
+                    $(".radio-buttons-sc").remove();
+                    $(".runsinglecell[value=" + seq + "]").replaceWith(
+                        '<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>Submitted</button>'
+                    );
+                }
+                else {
+                    alert(data['error'])
+                }
+            }
+
+        });
+    });
+
 
     $(document).on('click', '.cooladmin-submit', function (e) {
         e.preventDefault();
@@ -1572,14 +1670,308 @@ $(document).ready(function () {
         $("#target").click();
     });
 
+    /**This returns a button to link to html resutls AND a button for link sharing funcitionality */
+    function tenx_results_button(seq) {
+        if (seq === -1) {
+            var href = "#"
+            var share_button = '<a class="shareButtonSc btn btn-sm" disabled><i disabled class="fas fa-link"></i></a>'
+        }
+        else {
+            href = ("/singlecell/websummary/" + seq);
+            share_button = '<a style="display:inline-block;" class="shareButtonSc btn btn-sm" data-toggle="tooltip" data-placement="top" title="Copy link to share to clipboard." value="' + seq + '" ><i class="fas fa-link"></i></a>'
+        }
+
+        return ('<a style="display:inline-block;" type="button" href=' + href + ' class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a> ' + share_button);
+    }
+
+    //popup btn will make popup visible
+    $(document).on('click', '.shareButtonSc', function (e) {
+        var seq = $(this).attr('value');
+        console.log(seq);
+        //var toShareButton = '<li class="list-group-item share-button-li"><button value="' + seq + '" class="btn btn-sm btn-info share-button" data-toggle="tooltip" data-placement="top" title="Share a link to the data directory"><i class="fas fa-link"></i></button></li>'
+        console.log('clicked')
+
+        //hit ajax endpoint
+        $.ajax({
+            type: "GET",
+            cache: false,
+            url: "/singlecell/ajax/generate_link",
+            data: {
+                'seq': seq
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data['error']) {
+                    return alert(data['error'])
+                }
+                console.log(data['link'])
+                console.log('link generated and returned!')
+                var link_string = 'http://epigenomics.sdsc.edu/zhc268/' + data['link'] + '/web_summary.html';
+
+                //copy link to clipboard
+                const el = document.createElement('textarea');
+                el.value = link_string;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+
+            }
+        });
+        $(".popup-options-sc").append(toShareButton);
+        $(".popup-overlay, .popup-content").addClass("active");
+    });
+
+
+    //removes the "active" class to .popup and .popup-content when the "Close" button is clicked 
+    $(".closePopup").on("click", function () {
+        $(".popup-overlay, .popup-content").removeClass("active");
+        $(".radio-buttons-sc").remove();
+    });
+
+    //share-button will generate or get link. 
+    $(document).on('click', '.share-button', function (e) {
+        var seq = $(this).attr('value');
+        console.log(seq);
+        console.log('clicked')
+        //hit ajax endpoint
+        $.ajax({
+            type: "GET",
+            cache: false,
+            url: "/singlecell/ajax/generate_link",
+            data: {
+                'seq': seq
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data['error']) {
+                    return alert(data['error'])
+                }
+                console.log(data['link'])
+                console.log('link generated and returned!')
+                var link_string = 'http://epigenomics.sdsc.edu/zhc268/' + data['link'] + '/web_summary.html';
+
+                //copy link to clipboard
+                const el = document.createElement('textarea');
+                el.value = link_string;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+
+                var link = '<p> Link generated and copied to clipboard: <a href="http://epigenomics.sdsc.edu/zhc268/' + data['link'] + '">' + link_string + '</a></p>'
+                $(".share-button-li").append(link);
+
+
+
+            }
+        });
+    });
+
     /* Start Singlecell functions
     *
     */
+    //all 10xATAC QC datatable 
+    var qcUrl_10xATAC = $('#datatable-all-scATACqc').attr("data-href");
+    $("#datatable-all-scATACqc").DataTable({
+        dom: 'lBfrtip',
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        "ajax": {
+            url: qcUrl_10xATAC,
+            dataSrc: ''
+        },
+        select: {
+            style: 'multi'
+        },
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+        ],
+        "columns": [
+            { data: 'seqinfo__seq_id' },
+            { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' },
+            { data: 'estimated_nuclei' },
+            { data: 'total_fragments' },
+            { data: 'median_fragments_per_cell' },
+            { data: 'frac_duplicate' },
+            { data: 'frac_waste_mitochondrial' },
+            { data: 'tsse' },
+            { data: 'random_string_link' },
+            { data: "seqinfo__libraryinfo__sampleinfo__group" },
+        ],
+        "deferRender": true,
+        "columnDefs": [{
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__id"];
+                return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 1,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__libraryinfo__sampleinfo__id"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        },
+        ],
+    });
+
+    //user 10xATAC QC datatable 
+    var qcUrl_10xATAC_user = $('#datatable-user-scATACqc').attr("data-href");
+    $("#datatable-user-scATACqc").DataTable({
+        dom: 'lBfrtip',
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        "ajax": {
+            url: qcUrl_10xATAC_user,
+            dataSrc: ''
+        },
+        select: {
+            style: 'multi'
+        },
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+        ],
+        "columns": [
+            { data: 'seqinfo__seq_id' },
+            { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' },
+            { data: 'estimated_nuclei' },
+            { data: 'total_fragments' },
+            { data: 'median_fragments_per_cell' },
+            { data: 'frac_duplicate' },
+            { data: 'frac_waste_mitochondrial' },
+            { data: 'tsse' },
+            { data: 'random_string_link' },
+            { data: "seqinfo__libraryinfo__sampleinfo__group" },
+        ],
+        "deferRender": true,
+        "columnDefs": [{
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__id"];
+                return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 1,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__libraryinfo__sampleinfo__id"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        },
+        ],
+    });
+
+    //all 10xRNA QC datatable 
+    var qcUrl_10xRNA = $('#datatable-all-scRNAqc').attr("data-href");
+    $("#datatable-all-scRNAqc").DataTable({
+        dom: 'lBfrtip',
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        "ajax": {
+            url: qcUrl_10xRNA,
+            dataSrc: ''
+        },
+        select: {
+            style: 'multi'
+        },
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+        ],
+        "columns": [
+            { data: 'seqinfo__seq_id' },
+            { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' },
+            { data: 'estimated_number_of_cells' },
+            { data: 'number_of_reads' },
+            { data: 'sequencing_saturation' },
+            { data: 'mean_reads_per_cell' },
+            { data: 'median_genes_per_cell' },
+            { data: 'frac_reads_in_cells' },
+            { data: 'random_string_link' },
+            { data: "seqinfo__libraryinfo__sampleinfo__group" },
+        ],
+        "deferRender": true,
+        "columnDefs": [{
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__id"];
+                return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 1,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__libraryinfo__sampleinfo__id"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        },
+        ],
+    });
+
+    //user 10xRNA QC datatable 
+    var qcUrl_10xRNA_user = $('#datatable-user-scRNAqc').attr("data-href");
+    $("#datatable-user-scRNAqc").DataTable({
+        dom: 'lBfrtip',
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        "ajax": {
+            url: qcUrl_10xRNA_user,
+            dataSrc: ''
+        },
+        select: {
+            style: 'multi'
+        },
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+        ],
+        "columns": [
+            { data: 'seqinfo__seq_id' },
+            { data: 'seqinfo__libraryinfo__sampleinfo__sample_id' },
+            { data: 'estimated_number_of_cells' },
+            { data: 'number_of_reads' },
+            { data: 'sequencing_saturation' },
+            { data: 'mean_reads_per_cell' },
+            { data: 'median_genes_per_cell' },
+            { data: 'frac_reads_in_cells' },
+            { data: 'random_string_link' },
+            { data: "seqinfo__libraryinfo__sampleinfo__group" },
+        ],
+        "deferRender": true,
+        "columnDefs": [{
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__id"];
+                return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+            }
+        },
+        {
+            "targets": 1,
+            "render": function (data, type, row) {
+                var itemID = row["seqinfo__libraryinfo__sampleinfo__id"];
+                return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
+            }
+        },
+        ],
+    });
+
     //all seqs datatable
     var singlecellurl = $('#datatable-all-sc').attr("data-href");
     $('#datatable-all-sc').DataTable({
-        //dom: 'lBfrtip',
-        "order": [[3, "desc"], [0, "asc"]],
+        dom: 'lBfrtip',
+        "order": [[4, "desc"], [0, "asc"]],
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
         "processing": true,
@@ -1588,39 +1980,49 @@ $(document).ready(function () {
             url: singlecellurl,
             dataSrc: ''
         },
+        select: {
+            style: 'multi'
+        },
         "columns": [
-            { data: "seq_id" },
-            { data: "libraryinfo__experiment_type" },
-            { data: "species" },
-            { data: "last_modified" },
+            { data: "seqinfo__seq_id" },
+            { data: "seqinfo__libraryinfo__sampleinfo__sample_id" },
+            { data: "seqinfo__libraryinfo__experiment_type" },
+            { data: "seqinfo__libraryinfo__sampleinfo__species" },
+            { data: "date_last_modified" },
             { data: "seq_status" },
-            { data: "10x_status" },
+            { data: "tenx_pipeline_status" },
             { data: "cooladmin_status" },
-
+            { data: "cooladmin_edit" },
+            { data: "seqinfo__libraryinfo__sampleinfo__group" },
+        ],
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
         ],
         "deferRender": true,
         "columnDefs": [
             {
                 "targets": 0,
                 "render": function (data, type, row) {
-                    var itemID = row["id"];
+                    var itemID = row["seqinfo__id"];
                     return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
                 }
             },
             // 10x pipeline check
             {
-                "targets": 5,
+                "targets": 6,
                 "render": function (data, type, row) {
                     var status = data;
-                    var seq = row['seq_id'];
+                    var seq = row['seqinfo__seq_id'];
                     if (status === "Yes") {
-                        return ('<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="#" style="color:white" target="_blank"> Results</a></button >');
+                        return (tenx_results_button(seq));
                     } else if (status === "Error!") {
                         return ('<button type="button" class="badge badge-success badge-status-red" data-toggle="tooltip" data-placement="top" title="Contact bioinformatics group!">Error!</button>');
-                    } else if (status === "No" && row['seq_status'] === "No") {
+                    } else if ((status === "ClickToSubmit" || status === "No") && row['seq_status'].toLowerCase() === "no") {
                         return ('<button type="button" class="btn btn-sm badge-status-blue" style="color:white" data-toggle="tooltip" data-placement="top" title="No FASTQ files available">ClickToSubmit</button>');
-                    } else if (status === "No" && row['seq_status'] === "Yes") {
-                        return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange" value=' + seq + '> ClickToSubmit </button>');
+                    } else if ((status === "ClickToSubmit" || status === "No") && row['seq_status'].toLowerCase() === "yes") {
+                        return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange" disabled value=' + seq + '> ClickToSubmit </button>');
                     } else {
                         return ('<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>' + status + '</button>');
                     }
@@ -1628,19 +2030,19 @@ $(document).ready(function () {
             },
             {
                 //cooladmin status
-                "targets": 6,
+                "targets": 7,
                 "render": function (data, type, row) {
                     var status = data;
-                    var seq_id = row['seq_id'];
-                    if (status === "ClickToSubmit") {
+                    var seq_id = row['seqinfo__seq_id'];
+                    if (status === "ClickToSubmit" || status == null) {
                         //check fastq seq status
                         if (row["seq_status"] === "Yes") {
-                            if (row['libraryinfo__experiment_type'] == "10xATAC" && (row['10x_status'] === "Yes" || row['10x_status'] === "Results")) {
-                                return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange" value="' + seq_id + '"> ClickToSubmit </button>');
-                            } else if (row['libraryinfo__experiment_type'] === "10xATAC" && !(row['10x_status'] === "Yes" || row['10x_status'] === "Results")) {
+                            if (row['libraryinfo__experiment_type'] == "10xATAC" && (row['10x_status'].toLowerCase() === "yes" || row['10x_status'].toLowerCase() === "results")) {
+                                return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange" disabled value="' + seq_id + '"> ClickToSubmit </button>');
+                            } else if (row['seqinfo__libraryinfo__experiment_type'] === "10xATAC" && row['tenx_pipeline_status'].toLowerCase() !== "results") {
                                 return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
                             } else {
-                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange  value="' + seq_id + '"> ClickToSubmit</button>');
+                                return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange disabled value="' + seq_id + '"> ClickToSubmit</button>');
                             }
                         }
                         else { //no fastq file present
@@ -1652,15 +2054,15 @@ $(document).ready(function () {
                         return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
                     } else {
                         return '<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="' + '#' + '" style="color:white" target="_blank"> Results</a></button >'
-
                     }
                 },
             },
             {
-                "targets": 7,
+                "targets": 8,
                 "render": function (data, type, row) {
-                    var seq_id = row['seq_id']
-                    if (row['libraryinfo__experiment_type'] !== "10xATAC" || row['10x_status'] === "Yes") {
+                    var seq_id = row['seq_id'];
+                    //console.log(row['tenx_pipeline_status']);
+                    if (row['seqinfo__libraryinfo__experiment_type'] !== "10xATAC" || row['tenx_pipeline_status'] === "Yes") {
                         return ('<a href="/singlecell/EditCoolAdmin/' + seq_id + '"><i class="fas fa-edit"></i></a>');
                     } else {
                         return ('<a href="#"><i class="fas fa-edit"></i></a>')
@@ -1669,11 +2071,12 @@ $(document).ready(function () {
             }
         ]
     });
+
     //user sequences
     var singlecellurl_user = $('#datatable-user-sc').attr("data-href");
-    $('#datatable-user-sc').DataTable({
-        "order": [[3, "desc"], [0, "asc"]],
-        //dom: 'lBfrtip',
+    var sc_table = $('#datatable-user-sc').DataTable({
+        "order": [[4, "desc"], [0, "asc"]],
+        dom: 'lBfrtip',
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
         "processing": true,
@@ -1682,38 +2085,49 @@ $(document).ready(function () {
             url: singlecellurl_user,
             dataSrc: ''
         },
-        "columns": [
-            { data: "seq_id" },
-            { data: "libraryinfo__experiment_type" },
-            { data: "species" },
-            { data: "last_modified" },
-            { data: "seq_status" },
-            { data: "10x_status" },
-            { data: "cooladmin_status" },
+        select: {
+            style: 'multi'
+        },
 
+        "columns": [
+            { data: "seqinfo__seq_id" },
+            { data: "seqinfo__libraryinfo__sampleinfo__sample_id" },
+            { data: "seqinfo__libraryinfo__experiment_type" },
+            { data: "seqinfo__libraryinfo__sampleinfo__species" },
+            { data: "date_last_modified" },
+            { data: "seq_status" },
+            { data: "tenx_pipeline_status" },
+            { data: "cooladminsubmission__pipeline_status" },
+            { data: "cooladmin_edit" },
+            { data: "seqinfo__libraryinfo__sampleinfo__group" },
+        ],
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
         ],
         "deferRender": true,
         "columnDefs": [
             {
                 "targets": 0,
                 "render": function (data, type, row) {
-                    var itemID = row["id"];
+                    var itemID = row["seqinfo__id"];
                     return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
                 }
             },
             // 10x pipeline check
             {
-                "targets": 5,
+                "targets": 6,
                 "render": function (data, type, row) {
                     var status = data;
-                    var seq = row['seq_id'];
+                    var seq = row['seqinfo__seq_id'];
                     if (status === "Yes") {
-                        return ('<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="/setqc/' + seq + '/web_summary.html" style="color:white" target="_blank"> Results</a></button >');
+                        return (tenx_results_button(seq));
                     } else if (status === "Error!") {
                         return ('<button type="button" class="badge badge-success badge-status-red" data-toggle="tooltip" data-placement="top" title="Contact bioinformatics group!">Error!</button>');
-                    } else if (status === "No" && row['seq_status'] === "No") {
+                    } else if ((status === "ClickToSubmit" || status === "No") && row['seq_status'] === "No") {
                         return ('<button type="button" class="btn btn-sm badge-status-blue" style="color:white" data-toggle="tooltip" data-placement="top" title="No FASTQ files available">ClickToSubmit</button>');
-                    } else if (status === "No" && row['seq_status'] === "Yes") {
+                    } else if ((status === "ClickToSubmit" || status === "No") && row['seq_status'] === "Yes") {
                         return ('<button type="button" class="runsinglecell btn btn-danger btn-sm btn-status-orange" value=' + seq + '> ClickToSubmit </button>');
                     } else {
                         return ('<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>' + status + '</button>');
@@ -1722,16 +2136,16 @@ $(document).ready(function () {
             },
             {
                 //cooladmin status
-                "targets": 6,
+                "targets": 7,
                 "render": function (data, type, row) {
                     var status = data;
-                    var seq_id = row['seq_id'];
-                    if (status === "ClickToSubmit") {
+                    var seq_id = row['seqinfo__seq_id'];
+                    if (status === "ClickToSubmit" || status == null) {
                         //check fastq seq status
                         if (row["seq_status"] === "Yes") {
-                            if (row['libraryinfo__experiment_type'] == "10xATAC" && (row['10x_status'] === "Yes" || row['10x_status'] === "Results")) {
+                            if (row['seqinfo__libraryinfo__experiment_type'] == "10xATAC" && row['tenx_pipeline_status'] === "Yes") {
                                 return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange  cooladmin-submit" value="' + seq_id + '"> ClickToSubmit </button>');
-                            } else if (row['libraryinfo__experiment_type'] === "10xATAC" && !(row['10x_status'] === "Yes" || row['10x_status'] === "Results")) {
+                            } else if (row['seqinfo__libraryinfo__experiment_type'] === "10xATAC" && row['tenx_pipeline_status'] !== "Results") {
                                 return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
                             } else {
                                 return ('<button type="submit" class="btn btn-danger btn-sm btn-status-orange cooladmin-submit" value="' + seq_id + '"> ClickToSubmit</button>');
@@ -1745,24 +2159,124 @@ $(document).ready(function () {
                     } else if (status === ".status.processing") {
                         return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
                     } else {
-                        return '<button type="button" class="btn btn-sm btn-success badge-status-green" style="color:white"><a href="' + status + '" style="color:white" target="_blank"> Results</a></button >'
+                        return '<a href="' + status + '" style="color:white" target="_blank" type="button" class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a>'
 
                     }
                 },
             },
             {//cooladmin edit button- links to edit page
-                "targets": 7,
+                "targets": 8,
                 "render": function (data, type, row) {
-                    var seq_id = row['seq_id']
-                    if (row['libraryinfo__experiment_type'] !== "10xATAC" || row['10x_status'] === "Yes") {
+                    var seq_id = row['seqinfo__seq_id']
+                    if (row['seqinfo__libraryinfo__experiment_type'] !== "10xATAC" || row['tenx_pipeline_status'] === "Yes") {
                         return ('<a href="/singlecell/EditCoolAdmin/' + seq_id + '"><i class="fas fa-edit"></i></a>');
                     } else {
                         return ('<a href="#"><i class="fas fa-edit"></i></a>')
                     }
                 }
             }
+            /*{// misc are for buttons
+                "targets": 8,
+                "render": function (data, type, row) {
+                    var share_pill = '<a href="#" class="badge badge-pill badge-info">Share</a>'
+                }
+            }*/
         ]
     });
+
+    //user sequences
+    var singlecellurl_user = $('#datatable-collab-sc').attr("data-href");
+    $('#datatable-collab-sc').DataTable({
+        "order": [[4, "desc"], [0, "asc"]],
+        //dom: 'lBfrtip',
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "processing": true,
+        //"order": [[5, "desc"], [4, "desc"]],
+        "ajax": {
+            url: singlecellurl_user,
+            dataSrc: ''
+        },
+        "columns": [
+            { data: "seqinfo__seq_id" },
+            { data: "seqinfo__libraryinfo__sampleinfo__sample_id" },
+            { data: "seqinfo__libraryinfo__experiment_type" },
+            { data: "seqinfo__libraryinfo__sampleinfo__species" },
+            { data: "date_last_modified" },
+            { data: "seq_status" },
+            { data: "tenx_pipeline_status" },
+            { data: "cooladminsubmission__pipeline_status" },
+            { data: "cooladmin_edit" },
+            { data: "seqinfo__libraryinfo__sampleinfo__group" },
+        ],
+        "deferRender": true,
+        "columnDefs": [
+            // {
+            //     "targets": 0,
+            //     "render": function (data, type, row) {
+            //         var itemID = row["id"];
+            //         return '<a href="/metadata/seq/' + itemID + '">' + data + '</a>';
+            //     }
+            // },
+            // 10x pipeline check
+            {
+                "targets": 6,
+                "render": function (data, type, row) {
+                    var status = data;
+                    var seq = row['seqinfo__seq_id'];
+                    if (status === "Yes") {
+                        return (tenx_results_button(seq));
+                    } else if (status === "Error!") {
+                        return ('<button type="button" class="badge badge-success badge-status-red" data-toggle="tooltip" data-placement="top" title="Contact bioinformatics group!">Error!</button>');
+                    } else if (status === "No" && row['seq_status'] === "No") {
+                        return ('<button type="button" class="btn btn-sm badge-status-blue" style="color:white" data-toggle="tooltip" data-placement="top" title="No FASTQ files available">ClickToSubmit</button>');
+                    } else if (status === "No" && row['seq_status'] === "Yes") {
+                        return ('<button type="button" disabled class="runsinglecell btn btn-danger btn-sm btn-status-orange" value=' + seq + '> Submit </button>');
+                    } else {
+                        return ('<button type="button" class="btn btn-sm badge-success badge-status-lightblue" disabled>' + status + '</button>');
+                    }
+                }
+            },
+            {
+                //cooladmin status
+                "targets": 7,
+                "render": function (data, type, row) {
+                    var status = data;
+                    var seq_id = row['seqinfo__seq_id'];
+                    if (status === "ClickToSubmit" || status == null) {
+                        //check fastq seq status
+                        if (row["seq_status"] === "Yes") {
+                            if (row['seqinfo__libraryinfo__experiment_type'] == "10xATAC" && row['tenx_pipeline_status'] === "Yes") {
+                                return ('<button type="button" class="btn btn-danger btn-sm btn-status-orange  cooladmin-submit" disabled value="' + seq_id + '"> Submit </button>');
+                            } else if (row['seqinfo__libraryinfo__experiment_type'] === "10xATAC" && row['tenx_pipeline_status'] !== "Results") {
+                                return ('<button type="button" data-toggle="tooltip" data-placement="top" title="Run10xPipeline First" class="badge badge-success badge-status-blue cooladmin-submit" disabled> Run10xPipeline</button>');
+                            } else {
+                                return ('<button type="submit" disabled class="btn btn-danger btn-sm btn-status-orange cooladmin-submit" value="#"> Submit</button>');
+                            }
+                        }
+                        else { //no fastq file present
+                            return ('<button type="button" data-toggle="tooltip" data-placement="top" title="FASTQ not present" disabled class="badge badge-success badge-status-blue cooladmin-submit" disabled> ClickToSubmit </button>');
+                        }
+                    } else if (status === ".status.fail") {//failed
+                        return ('<button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status">Error!</button>')
+                    } else if (status === ".status.processing") {
+                        return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
+                    } else {
+                        return '<a href="' + status + '" style="color:white" target="_blank" type="button" class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a>'
+
+                    }
+                },
+            },
+
+            /*{// misc are for buttons
+                "targets": 8,
+                "render": function (data, type, row) {
+                    var share_pill = '<a href="#" class="badge badge-pill badge-info">Share</a>'
+                }
+            }*/
+        ]
+    });
+
 
     //Cool admin form edit page details 
     $('#id_date_submitted').attr("readonly", true);

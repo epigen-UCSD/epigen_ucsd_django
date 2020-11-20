@@ -1,0 +1,84 @@
+#!/bin/bash
+#PBS -q home-epigen
+#PBS -N django_10xPipeline
+#PBS -l nodes=1:ppn=16
+#PBS -l walltime=24:00:00
+#PBS -l mem=96gb
+#PBS -o /home/zhc268/logs/run_10xMkpipeline.out
+#PBS -e /home/zhc268/logs/run_10xMkpipeline.err
+#PBS -V
+#PBS -m abe
+#PBS -A epigen-group
+
+# -v pass parameters: samples
+
+export PATH=/projects/ps-epigen/software/cellranger-atac-1.2.0/:$PATH
+WORKDIR="/oasis/tscc/scratch/$(whoami)/outputs_TA/"
+FASTQDIR="/projects/ps-epigen/seqdata/"
+
+
+# select libs 
+samplenames=(`cat $samples`)
+INPREFIX=${samplenames[${PBS_ARRAYID}*3]} #index start from 0
+SAMPLE=${samplenames[${PBS_ARRAYID}*3+1]}
+GENOME=${samplenames[${PBS_ARRAYID}*3+2]}
+
+cd $WORKDIR
+
+# determine genomes
+case $GENOME in
+    mm10)
+        genome_dir="/home/zhc268/data/GENOME/mm10/refdata-cellranger-atac-mm10-1.2.0";;
+    hg38)
+        genome_dir="/home/zhc268/data/GENOME/hg38/refdata-cellranger-atac-GRCh38-1.2.0";;
+    hg19)
+        genome_dir="/home/zhc268/data/GENOME/hg38/refdata-cellranger-atac-hg19-1.2.0";;
+    *)
+        echo "wrong genome input: $GENOME"
+        exit 0;;
+esac
+
+# prepaire fastqs
+fastqs=$(echo $SAMPLE| awk -v FS=',' -v d="${FASTQDIR}" '{ for(i=1;i<=NF-1;i++) {printf "%s,", d$i};print d$NF;}')
+
+#fastqs="${FASTQDIR}/${INPREFIX}"
+#echo $fastqs
+# [[ ! -d $fastqs ]] && { echo "$fastqs not found"; exit 0; }
+
+
+# update status from InQueue to InProcess
+cmd="source activate django; python \$(which updateSingleCellStatus.py) -seqid $INPREFIX -status InProcess;"
+job1=$(ssh zhc268@epigenomics.sdsc.edu $cmd)
+
+
+# runPipeline
+mkdir -p ~/data/outputs/10xATAC/$INPREFIX
+[[ -f ~/data/outputs/10xATAC/${INPREFIX}/.inqueue ]] && rm  ~/data/outputs/10xATAC/${INPREFIX}/.inqueue 
+touch ~/data/outputs/10xATAC/${INPREFIX}/.inprocess
+cellranger-atac count --id=$INPREFIX --fastqs=$fastqs --sample $SAMPLE --reference=$genome_dir --localcores=16  --mempercore=5
+wait
+
+# transfer results
+rsync -azru ${WORKDIR}${INPREFIX} ~/data/outputs/10xATAC/
+rm  ~/data/outputs/10xATAC/${INPREFIX}/.inprocess
+## addtional check
+#[[ -z $(find ${OUTDIR}/qc/rep1 -name "*_qc.txt") ]]  && { echo  "pipeline interrupted"; exit 0; }
+
+
+# runFastQC & fastq_screen
+#runFastQC_screen.sh  $INPREFIX
+#results_transfer.sh $INPREFIX $(whoami)
+
+# add .finished.txt tag
+
+
+#qsub -t 0-3 -v samples=$(pwd)/run_2019-04-25_10xatac.txt $(which run10xPipeline.pbs)
+
+
+############################################################
+# update status to finish or warning @ VM
+############################################################
+cmd="source activate django; python \$(which updateSingleCellStatus.py) -seqid $INPREFIX -status Yes;"
+job1=$(ssh zhc268@epigenomics.sdsc.edu $cmd)
+#update status in 
+
