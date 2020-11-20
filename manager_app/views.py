@@ -9,10 +9,10 @@ from django.contrib.auth.models import User, Group
 from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models import Prefetch
-from epigen_ucsd_django.shared import is_member,daysuffix,quotebody,datetransform2,serviceitemcollapse,servicetarget
-from masterseq_app.views import nonetolist,removenone
-from django.forms import formset_factory,inlineformset_factory
-from .forms import ServiceRequestItemCreationForm,ServiceRequestCreationForm,ContactForm,QuoteBulkImportForm,QuoteUploadFileForm,QuoteUploadByQidFileForm,QuoteUpdateForm
+from epigen_ucsd_django.shared import is_member, daysuffix, quotebody, datetransform2, serviceitemcollapse, servicetarget
+from masterseq_app.views import nonetolist, removenone
+from django.forms import formset_factory, inlineformset_factory
+from .forms import ServiceRequestItemCreationForm, ServiceRequestCreationForm, ContactForm, QuoteBulkImportForm, QuoteUploadFileForm, QuoteUploadByQidFileForm, QuoteUpdateForm
 from masterseq_app.models import SeqInfo, SeqBioInfo, LibraryInfo, SampleInfo
 import datetime
 from collaborator_app.models import ServiceInfo, ServiceRequest, ServiceRequestItem
@@ -315,7 +315,8 @@ def ServiceRequestCreateView(request):
         request.POST or None, initial={'institute': 'uc'})
     ServiceRequestItemFormSet = formset_factory(
         ServiceRequestItemCreationForm, can_delete=True)
-    servicerequestitems_formset = ServiceRequestItemFormSet(request.POST or None)
+    servicerequestitems_formset = ServiceRequestItemFormSet(
+        request.POST or None)
 
     serviceinfo_list = ServiceInfo.objects.all()
     today = datetime.date.today()
@@ -356,38 +357,42 @@ def ServiceRequestCreateView(request):
                     if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
                         service = form.cleaned_data['service']
                         quantity = form.cleaned_data['quantity']
-                        service = servicetarget(service,quantity)
+                        service = servicetarget(service, quantity)
 
                         if service.service_name in data_requestitem.keys():
                             duplicate[service.service_name] += 1
-                            this_service_name = service.service_name + 'duplicate#' + str(duplicate[service.service_name])
+                            this_service_name = service.service_name + \
+                                'duplicate#' + \
+                                str(duplicate[service.service_name])
                         else:
                             this_service_name = service.service_name
-                            duplicate[service.service_name] = 1                 
+                            duplicate[service.service_name] = 1
 
                         if institute == 'uc':
                             data_requestitem[this_service_name] = {
-                                'rate(uc users)':str(service.uc_rate)+'/'+service.rate_unit,
-                                'rate_number':service.uc_rate,
-                                'quantity':quantity,
-                                'rate_unit':service.rate_unit,
+                                'rate(uc users)': str(service.uc_rate)+'/'+service.rate_unit,
+                                'rate_number': service.uc_rate,
+                                'quantity': quantity,
+                                'rate_unit': service.rate_unit,
                             }
                         elif institute == 'non_uc':
                             data_requestitem[this_service_name] = {
-                                'rate(non-uc users)':str(service.nonuc_rate)+'/'+service.rate_unit,
-                                'rate_number':service.nonuc_rate,
-                                'quantity':quantity,
-                                'rate_unit':service.rate_unit,
+                                'rate(non-uc users)': str(service.nonuc_rate)+'/'+service.rate_unit,
+                                'rate_number': service.nonuc_rate,
+                                'quantity': quantity,
+                                'rate_unit': service.rate_unit,
                             }
                         elif institute == 'industry':
                             data_requestitem[this_service_name] = {
-                                'rate(industry users)':str(service.industry_rate)+'/'+service.rate_unit,
-                                'rate_number':service.industry_rate,
-                                'quantity':quantity,
-                                'rate_unit':service.rate_unit,
-                            }                        
-                total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
-                total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity'])+' '+x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
+                                'rate(industry users)': str(service.industry_rate)+'/'+service.rate_unit,
+                                'rate_number': service.industry_rate,
+                                'quantity': quantity,
+                                'rate_unit': service.rate_unit,
+                            }
+                total_price = sum([float(x['rate_number'])*float(x['quantity'])
+                                   for x in data_requestitem.values()])
+                total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(
+                    x['quantity'])+' '+x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
 
                 data_request = {
                     'service_request_id': this_service_request_id,
@@ -421,11 +426,11 @@ def ServiceRequestCreateView(request):
                         'modalshow': 1,
                         'displayorde_requestitem': displayorde_requestitem,
                         'displayorder_request': displayorder_request,
-                        'data_requestitem':data_requestitem,
-                        'data_request':data_request,
-                        'total_expression':total_expression,
-                        'serviceinfo_list':serviceinfo_list,
-                    }        
+                        'data_requestitem': data_requestitem,
+                        'data_request': data_request,
+                        'total_expression': total_expression,
+                        'serviceinfo_list': serviceinfo_list,
+                    }
                     return render(request, 'manager_app/manager_feeforservice_servicerequestcreate_new.html', context)
 
                 if 'Save' in request.POST:
@@ -446,16 +451,20 @@ def ServiceRequestCreateView(request):
                     service_quantities = []
                     for item in data_requestitem.keys():
                         ServiceRequestItem.objects.create(
-                            request=thisrequest, 
-                            service=ServiceInfo.objects.get(service_name=item.split('duplicate#')[0]),
+                            request=thisrequest,
+                            service=ServiceInfo.objects.get(
+                                service_name=item.split('duplicate#')[0]),
                             quantity=data_requestitem[item]['quantity'],
-                            )
+                        )
                         service_items.append(item.split('duplicate#')[0])
                         #this_service_item = ServiceInfo.objects.get(service_name=item)
-                        service_quantities.append(data_requestitem[item]['quantity'])
-                    quote_compact = ''.join(data_request['quote_number'].split(' '))
-                    collab_info = [group_name,research_contact,research_contact_email+'\n']
-                    dear = 'Dr. '+ group_name.split(' ')[-1]
+                        service_quantities.append(
+                            data_requestitem[item]['quantity'])
+                    quote_compact = ''.join(
+                        data_request['quote_number'].split(' '))
+                    collab_info = [group_name, research_contact,
+                                   research_contact_email+'\n']
+                    dear = 'Dr. ' + group_name.split(' ')[-1]
 
                     writelines = writelines+collab_info
                     writelines.append('Dear '+dear+',\n')
@@ -463,9 +472,9 @@ def ServiceRequestCreateView(request):
                         quotebody(service_items, service_quantities, institute))
 
                     pdf_context = {
-                        'quote_id':quote_compact,
-                        'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
-                        'body':'\n'.join(writelines),
+                        'quote_id': quote_compact,
+                        'date': today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
+                        'body': '\n'.join(writelines),
                     }
 
                     html_string = render_to_string(
@@ -486,7 +495,7 @@ def ServiceRequestCreateView(request):
     context = {
         'servicerequest_form': servicerequest_form,
         'servicerequestitems_formset': servicerequestitems_formset,
-        'serviceinfo_list':serviceinfo_list,
+        'serviceinfo_list': serviceinfo_list,
     }
 
     return render(request, 'manager_app/manager_feeforservice_servicerequestcreate_new.html', context)
@@ -527,9 +536,11 @@ def ServiceRequestUpdateView(request, pk):
                     quantity = form.cleaned_data['quantity']
                     if service.service_name == 'ATAC-seq':
                         if float(quantity) > 24 and float(quantity) <= 96:
-                            service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
+                            service = ServiceInfo.objects.get(
+                                service_name='ATAC-seq_24')
                         elif float(quantity) > 96:
-                            service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
+                            service = ServiceInfo.objects.get(
+                                service_name='ATAC-seq_96')
 
                     if institute == 'uc':
                         data_requestitem[service.service_name] = {
@@ -624,9 +635,9 @@ def ServiceRequestUpdateView(request, pk):
                     quotebody(service_items, service_quantities, institute))
 
                 pdf_context = {
-                    'quote_id':quote_compact,
-                    'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
-                    'body':'\n'.join(writelines),
+                    'quote_id': quote_compact,
+                    'date': today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
+                    'body': '\n'.join(writelines),
 
                 }
 
@@ -653,109 +664,114 @@ def ServiceRequestUpdateView(request, pk):
 
 
 @transaction.atomic
-def ServiceRequestUpdateViewNew(request,pk):
+def ServiceRequestUpdateViewNew(request, pk):
     thiservicerequest = get_object_or_404(ServiceRequest, pk=pk)
     this_quote_nunmber = thiservicerequest.quote_number[-1]
 
     data_requestitem = {}
     data_request = {}
 
-    servicerequest_form = ServiceRequestCreationForm(request.POST or None, instance=thiservicerequest)
-    
+    servicerequest_form = ServiceRequestCreationForm(
+        request.POST or None, instance=thiservicerequest)
+
     itemsinfo = thiservicerequest.servicerequestitem_set.all().select_related('service')
     datainitial = []
     for item in itemsinfo:
         x = {
-        'service':item.service,
-        'quantity':item.quantity,
+            'service': item.service,
+            'quantity': item.quantity,
         }
 
         datainitial.append(serviceitemcollapse(x))
 
-    ServiceRequestItemInlineFormSet = inlineformset_factory(ServiceRequest, ServiceRequestItem,form=ServiceRequestItemCreationForm, fields=[
-        'service', 'quantity'],extra=itemsinfo.count())
+    ServiceRequestItemInlineFormSet = inlineformset_factory(ServiceRequest, ServiceRequestItem, form=ServiceRequestItemCreationForm, fields=[
+        'service', 'quantity'], extra=itemsinfo.count())
 
-    servicerequestitems_formset = ServiceRequestItemInlineFormSet(request.POST or None, initial=datainitial)
+    servicerequestitems_formset = ServiceRequestItemInlineFormSet(
+        request.POST or None, initial=datainitial)
     #servicerequestitems_formset.extra = itemsinfo.count()
-        
 
-    #print(servicerequestitems_formset)
+    # print(servicerequestitems_formset)
 
     today = datetime.date.today()
     datesplit = str(datetime.date.today()).split('-')
     writelines = []
     duplicate = {}
-        
+
     if servicerequest_form.is_valid():
         group_name = servicerequest_form.cleaned_data['group']
         institute = servicerequest_form.cleaned_data['institute']
         research_contact = servicerequest_form.cleaned_data['research_contact']
         research_contact_email = servicerequest_form.cleaned_data['research_contact_email']
- 
+
         this_service_request_id = thiservicerequest.service_request_id
-        #print(institute)
+        # print(institute)
         if servicerequestitems_formset.is_valid():
             for form in servicerequestitems_formset.forms:
                 if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
                     service = form.cleaned_data['service']
                     quantity = form.cleaned_data['quantity']
-                    service = servicetarget(service,quantity)
+                    service = servicetarget(service, quantity)
 
                     if service.service_name in data_requestitem.keys():
                         duplicate[service.service_name] += 1
-                        this_service_name = service.service_name + 'duplicate#' + str(duplicate[service.service_name])
+                        this_service_name = service.service_name + \
+                            'duplicate#' + str(duplicate[service.service_name])
                     else:
                         this_service_name = service.service_name
-                        duplicate[service.service_name] = 1 
-
+                        duplicate[service.service_name] = 1
 
                     if institute == 'uc':
                         data_requestitem[this_service_name] = {
-                            'rate(uc users)':str(service.uc_rate)+'/'+service.rate_unit,
-                            'rate_number':service.uc_rate,
-                            'quantity':quantity,
-                            'rate_unit':service.rate_unit,
+                            'rate(uc users)': str(service.uc_rate)+'/'+service.rate_unit,
+                            'rate_number': service.uc_rate,
+                            'quantity': quantity,
+                            'rate_unit': service.rate_unit,
                         }
                     elif institute == 'non_uc':
                         data_requestitem[this_service_name] = {
-                            'rate(non-uc users)':str(service.nonuc_rate)+'/'+service.rate_unit,
-                            'rate_number':service.nonuc_rate,
-                            'quantity':quantity,
-                            'rate_unit':service.rate_unit,
+                            'rate(non-uc users)': str(service.nonuc_rate)+'/'+service.rate_unit,
+                            'rate_number': service.nonuc_rate,
+                            'quantity': quantity,
+                            'rate_unit': service.rate_unit,
                         }
                     elif institute == 'industry':
                         data_requestitem[this_service_name] = {
-                            'rate(industry users)':str(service.industry_rate)+'/'+service.rate_unit,
-                            'rate_number':service.industry_rate,
-                            'quantity':quantity,
-                            'rate_unit':service.rate_unit,
+                            'rate(industry users)': str(service.industry_rate)+'/'+service.rate_unit,
+                            'rate_number': service.industry_rate,
+                            'quantity': quantity,
+                            'rate_unit': service.rate_unit,
                         }
-                      
-            total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
-            total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity'])+' '+x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
 
+            total_price = sum([float(x['rate_number'])*float(x['quantity'])
+                               for x in data_requestitem.values()])
+            total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity'])+' ' +
+                                         x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
 
             data_request = {
-                'service_request_id':this_service_request_id,
-                'quote_number':this_quote_nunmber,
-                'quote_amount':'$'+str(total_price),
-                'date':str(today),
-                'group':group_name,
-                'institute':institute,
-                'status':'initiate',
-                'research_contact':research_contact,
-                'research_contact_email':research_contact_email,
-                'notes':servicerequest_form.cleaned_data['notes'],
+                'service_request_id': this_service_request_id,
+                'quote_number': this_quote_nunmber,
+                'quote_amount': '$'+str(total_price),
+                'date': str(today),
+                'group': group_name,
+                'institute': institute,
+                'status': 'initiate',
+                'research_contact': research_contact,
+                'research_contact_email': research_contact_email,
+                'notes': servicerequest_form.cleaned_data['notes'],
             }
             if 'Preview' in request.POST:
                 if institute == 'uc':
-                    displayorde_requestitem = ['rate(uc users)','quantity']
+                    displayorde_requestitem = ['rate(uc users)', 'quantity']
                 elif institute == 'non_uc':
-                    displayorde_requestitem = ['rate(non-uc users)','quantity']
+                    displayorde_requestitem = [
+                        'rate(non-uc users)', 'quantity']
                 elif institute == 'industry':
-                    displayorde_requestitem = ['rate(industry users)','quantity']
-                displayorder_request = ['service_request_id','quote_number','quote_amount','date','group','institute','research_contact','research_contact_email','notes','status']
-                #print(data_request)  
+                    displayorde_requestitem = [
+                        'rate(industry users)', 'quantity']
+                displayorder_request = ['service_request_id', 'quote_number', 'quote_amount', 'date',
+                                        'group', 'institute', 'research_contact', 'research_contact_email', 'notes', 'status']
+                # print(data_request)
                 print(data_requestitem)
 
                 context = {
@@ -764,11 +780,11 @@ def ServiceRequestUpdateViewNew(request,pk):
                     'modalshow': 1,
                     'displayorde_requestitem': displayorde_requestitem,
                     'displayorder_request': displayorder_request,
-                    'data_requestitem':data_requestitem,
-                    'data_request':data_request,
-                    'total_expression':total_expression,
-                    'this_quote_nunmber':this_quote_nunmber,
-                }        
+                    'data_requestitem': data_requestitem,
+                    'data_request': data_request,
+                    'total_expression': total_expression,
+                    'this_quote_nunmber': this_quote_nunmber,
+                }
                 return render(request, 'manager_app/manager_feeforservice_servicerequestupdate.html', context)
 
             if 'Save' in request.POST:
@@ -783,70 +799,75 @@ def ServiceRequestUpdateViewNew(request,pk):
                 service_quantities = []
                 for item in data_requestitem.keys():
                     ServiceRequestItem.objects.create(
-                        request=thiservicerequest, 
-                        service=ServiceInfo.objects.get(service_name=item.split('duplicate#')[0]),
+                        request=thiservicerequest,
+                        service=ServiceInfo.objects.get(
+                            service_name=item.split('duplicate#')[0]),
                         quantity=data_requestitem[item]['quantity'],
-                        )
+                    )
                     service_items.append(item.split('duplicate#')[0])
-                    service_quantities.append(data_requestitem[item]['quantity'])
-                quote_compact = ''.join(data_request['quote_number'].split(' '))
-                collab_info = [group_name,research_contact,research_contact_email+'\n']
-                dear = 'Dr. '+ group_name.split(' ')[-1]
+                    service_quantities.append(
+                        data_requestitem[item]['quantity'])
+                quote_compact = ''.join(
+                    data_request['quote_number'].split(' '))
+                collab_info = [group_name, research_contact,
+                               research_contact_email+'\n']
+                dear = 'Dr. ' + group_name.split(' ')[-1]
 
                 writelines = writelines+collab_info
                 writelines.append('Dear '+dear+',\n')
-                writelines.append(quotebody(service_items,service_quantities,institute))
+                writelines.append(
+                    quotebody(service_items, service_quantities, institute))
 
                 pdf_context = {
-                    'quote_id':quote_compact,
-                    'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
-                    'body':'\n'.join(writelines),
+                    'quote_id': quote_compact,
+                    'date': today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
+                    'body': '\n'.join(writelines),
 
                 }
 
-                html_string = render_to_string('manager_app/quote_pdf_text_update_template.html', pdf_context)
-                pdf_name = quote_compact+'.pdf'    
-                html = HTML(string=html_string,base_url=request.build_absolute_uri())
-                html.write_pdf(target=os.path.join(settings.QUOTE_DIR,pdf_name));
-                
-  
-                with open(os.path.join(settings.QUOTE_DIR,quote_compact+'.txt'),'w') as fw:
-                    print(os.path.join(settings.QUOTE_DIR,quote_compact+'.txt'))
-                    fw.write('\n'.join(writelines))
+                html_string = render_to_string(
+                    'manager_app/quote_pdf_text_update_template.html', pdf_context)
+                pdf_name = quote_compact+'.pdf'
+                html = HTML(string=html_string,
+                            base_url=request.build_absolute_uri())
+                html.write_pdf(target=os.path.join(
+                    settings.QUOTE_DIR, pdf_name))
 
+                with open(os.path.join(settings.QUOTE_DIR, quote_compact+'.txt'), 'w') as fw:
+                    print(os.path.join(settings.QUOTE_DIR, quote_compact+'.txt'))
+                    fw.write('\n'.join(writelines))
 
                 return redirect('manager_app:servicerequests_list')
     context = {
         'servicerequest_form': servicerequest_form,
         'servicerequestitems_formset': servicerequestitems_formset,
-        'this_quote_nunmber':this_quote_nunmber,
+        'this_quote_nunmber': this_quote_nunmber,
     }
 
     return render(request, 'manager_app/manager_feeforservice_servicerequestupdate.html', context)
 
 
-
 @transaction.atomic
-def 
-(request,pk):
+def ServiceRequestAddNewQuoteView(request, pk):
     thiservicerequest = get_object_or_404(ServiceRequest, pk=pk)
 
     data_requestitem = {}
     data_request = {}
 
-    servicerequest_form = ServiceRequestCreationForm(request.POST or None, instance=thiservicerequest)
+    servicerequest_form = ServiceRequestCreationForm(
+        request.POST or None, instance=thiservicerequest)
 
     itemsinfo = thiservicerequest.servicerequestitem_set.all().select_related('service')
     datainitial = []
     for item in itemsinfo:
         x = {
-        'service':item.service,
-        'quantity':item.quantity,
+            'service': item.service,
+            'quantity': item.quantity,
         }
 
         datainitial.append(serviceitemcollapse(x))
 
-    ServiceRequestItemInlineFormSet = inlineformset_factory(ServiceRequest, ServiceRequestItem,form=ServiceRequestItemCreationForm, fields=[
+    ServiceRequestItemInlineFormSet = inlineformset_factory(ServiceRequest, ServiceRequestItem, form=ServiceRequestItemCreationForm, fields=[
         'service', 'quantity'])
 
     servicerequestitems_formset = ServiceRequestItemInlineFormSet(
@@ -888,39 +909,42 @@ def
                 if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
                     service = form.cleaned_data['service']
                     quantity = form.cleaned_data['quantity']
-                    service = servicetarget(service,quantity)
+                    service = servicetarget(service, quantity)
 
                     if service.service_name in data_requestitem.keys():
                         duplicate[service.service_name] += 1
-                        this_service_name = service.service_name + 'duplicate#' + str(duplicate[service.service_name])
+                        this_service_name = service.service_name + \
+                            'duplicate#' + str(duplicate[service.service_name])
                     else:
                         this_service_name = service.service_name
-                        duplicate[service.service_name] = 1  
+                        duplicate[service.service_name] = 1
 
                     if institute == 'uc':
                         data_requestitem[this_service_name] = {
-                            'rate(uc users)':str(service.uc_rate)+'/'+service.rate_unit,
-                            'rate_number':service.uc_rate,
-                            'quantity':quantity,
-                            'rate_unit':service.rate_unit,
+                            'rate(uc users)': str(service.uc_rate)+'/'+service.rate_unit,
+                            'rate_number': service.uc_rate,
+                            'quantity': quantity,
+                            'rate_unit': service.rate_unit,
                         }
                     elif institute == 'non_uc':
                         data_requestitem[this_service_name] = {
-                            'rate(non-uc users)':str(service.nonuc_rate)+'/'+service.rate_unit,
-                            'rate_number':service.nonuc_rate,
-                            'quantity':quantity,
-                            'rate_unit':service.rate_unit,
+                            'rate(non-uc users)': str(service.nonuc_rate)+'/'+service.rate_unit,
+                            'rate_number': service.nonuc_rate,
+                            'quantity': quantity,
+                            'rate_unit': service.rate_unit,
                         }
                     elif institute == 'industry':
                         data_requestitem[this_service_name] = {
-                            'rate(industry users)':str(service.industry_rate)+'/'+service.rate_unit,
-                            'rate_number':service.industry_rate,
-                            'quantity':quantity,
-                            'rate_unit':service.rate_unit,
+                            'rate(industry users)': str(service.industry_rate)+'/'+service.rate_unit,
+                            'rate_number': service.industry_rate,
+                            'quantity': quantity,
+                            'rate_unit': service.rate_unit,
                         }
-                     
-            total_price = sum([float(x['rate_number'])*float(x['quantity']) for x in data_requestitem.values()])
-            total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity'])+' '+x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
+
+            total_price = sum([float(x['rate_number'])*float(x['quantity'])
+                               for x in data_requestitem.values()])
+            total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(x['quantity'])+' ' +
+                                         x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
 
             data_request = {
                 'service_request_id': this_service_request_id,
@@ -963,8 +987,10 @@ def
                 thiservicerequest = servicerequest_form.save(commit=False)
                 thiservicerequest.date = data_request['date']
                 thiservicerequest.status = data_request['status']
-                thiservicerequest.quote_amount.append(data_request['quote_amount'])
-                thiservicerequest.quote_number.append(data_request['quote_number'])
+                thiservicerequest.quote_amount.append(
+                    data_request['quote_amount'])
+                thiservicerequest.quote_number.append(
+                    data_request['quote_number'])
                 thiservicerequest.quote_pdf.append(True)
                 thiservicerequest.save()
                 thiservicerequest.servicerequestitem_set.all().delete()
@@ -973,25 +999,29 @@ def
                 service_quantities = []
                 for item in data_requestitem.keys():
                     ServiceRequestItem.objects.create(
-                        request=thiservicerequest, 
-                        service=ServiceInfo.objects.get(service_name=item.split('duplicate#')[0]),
+                        request=thiservicerequest,
+                        service=ServiceInfo.objects.get(
+                            service_name=item.split('duplicate#')[0]),
                         quantity=data_requestitem[item]['quantity'],
-                        )
+                    )
                     service_items.append(item.split('duplicate#')[0])
-                    service_quantities.append(data_requestitem[item]['quantity'])
-                quote_compact = ''.join(data_request['quote_number'].split(' '))
-                collab_info = [group_name,research_contact,research_contact_email+'\n']
-                dear = 'Dr. '+ group_name.split(' ')[-1]
-            
+                    service_quantities.append(
+                        data_requestitem[item]['quantity'])
+                quote_compact = ''.join(
+                    data_request['quote_number'].split(' '))
+                collab_info = [group_name, research_contact,
+                               research_contact_email+'\n']
+                dear = 'Dr. ' + group_name.split(' ')[-1]
+
                 writelines = writelines+collab_info
                 writelines.append('Dear '+dear+',\n')
                 writelines.append(
                     quotebody(service_items, service_quantities, institute))
 
                 pdf_context = {
-                    'quote_id':quote_compact,
-                    'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
-                    'body':'\n'.join(writelines),
+                    'quote_id': quote_compact,
+                    'date': today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
+                    'body': '\n'.join(writelines),
 
                 }
 
@@ -1081,10 +1111,12 @@ def ServiceRequestCreateViewOld(request):
                         quantity = form.cleaned_data['quantity']
                         if service.service_name == 'ATAC-seq':
                             if float(quantity) > 24 and float(quantity) <= 96:
-                                service = ServiceInfo.objects.get(service_name='ATAC-seq_24')
+                                service = ServiceInfo.objects.get(
+                                    service_name='ATAC-seq_24')
                             elif float(quantity) > 96:
-                                service = ServiceInfo.objects.get(service_name='ATAC-seq_96')
-                        #print(service.service_name)
+                                service = ServiceInfo.objects.get(
+                                    service_name='ATAC-seq_96')
+                        # print(service.service_name)
 
                         if institute == 'ucsd':
                             data_requestitem[service.service_name] = {
@@ -1238,9 +1270,9 @@ def QuoteTextUpdateView(request, quoteid):
     if text_form.is_valid():
         body = text_form.cleaned_data['body']
         pdf_context = {
-            'quote_id':quote_compact,
-            'date':today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
-            'body':body,
+            'quote_id': quote_compact,
+            'date': today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+', '+str(today.year),
+            'body': body,
         }
 
         html_string = render_to_string(
@@ -1361,7 +1393,7 @@ def QuoteAddView(request):
                     quote_pdf=[False],
                     date=this_date,
                     research_contact=research_contact,
-                    )
+                )
             return redirect('manager_app:quote_list')
 
     context = {
@@ -1432,7 +1464,7 @@ def QuoteBulkAddView(request):
                 quote_amount=[fields[5].strip()],
                 date=this_date,
                 research_contact=research_contact,
-                )
+            )
         return redirect('manager_app:quote_list')
     context = {
         'quotes_form': quotes_form,
@@ -1483,13 +1515,15 @@ def QuotePdfByQidUpload(request, requestid, quoteid):
             file_name = quoteid+'.pdf'
             fs = FileSystemStorage()
             filename = fs.save(file_name, file)
-            if os.path.exists(os.path.join(settings.QUOTE_DIR,file_name)):
+            if os.path.exists(os.path.join(settings.QUOTE_DIR, file_name)):
                 now = datetime.datetime.now()
-                file_name_old = '.'.join(file_name.split('.')[:-1]) + '_replaced_'+'_'.join([str(now.year), str(now.month), str(now.day), str(now.hour), str(now.minute), str(now.second), str(now.microsecond)])+'.'+file_name.split('.')[-1]
-                os.rename(os.path.join(settings.QUOTE_DIR,file_name),os.path.join(settings.QUOTE_DIR,file_name_old))
-    
+                file_name_old = '.'.join(file_name.split('.')[:-1]) + '_replaced_'+'_'.join([str(now.year), str(now.month), str(
+                    now.day), str(now.hour), str(now.minute), str(now.second), str(now.microsecond)])+'.'+file_name.split('.')[-1]
+                os.rename(os.path.join(settings.QUOTE_DIR, file_name),
+                          os.path.join(settings.QUOTE_DIR, file_name_old))
 
-            subprocess.call("ln -sf "+os.path.join(settings.MEDIA_ROOT,filename)+" "+os.path.join(settings.QUOTE_DIR,file_name), shell=True)
+            subprocess.call("ln -sf "+os.path.join(settings.MEDIA_ROOT, filename) +
+                            " "+os.path.join(settings.QUOTE_DIR, file_name), shell=True)
             this_request.quote_pdf[index] = True
             this_request.status = ''
             this_request.save()
@@ -1512,13 +1546,13 @@ def QuoteUpdateView(request, requestid, quoteid):
         raise PermissionDenied
     qid = ' '.join([quoteid[:-10], quoteid[-10:-4], quoteid[-4:]])
     this_request = get_object_or_404(ServiceRequest, pk=requestid)
-    
+
     index = this_request.quote_number.index(qid)
     this_amount = this_request.quote_amount[index]
-    quoteupdate_form = QuoteUpdateForm(request.POST or None,\
-        initial={'PI':this_request.group,\
-        'research_contact':this_request.research_contact,\
-        'quote_amount':this_amount})
+    quoteupdate_form = QuoteUpdateForm(request.POST or None,
+                                       initial={'PI': this_request.group,
+                                                'research_contact': this_request.research_contact,
+                                                'quote_amount': this_amount})
 
     if 'Preview' in request.POST or 'Save' in request.POST:
 
@@ -1539,15 +1573,16 @@ def QuoteUpdateView(request, requestid, quoteid):
                 this_amount = '-'.join(tm)
 
             data_request = {
-                'quote_number':quoteid,
-                'PI':group_name,
-                'research_contact':research_contact,
-                'quote_amount':this_amount,
+                'quote_number': quoteid,
+                'PI': group_name,
+                'research_contact': research_contact,
+                'quote_amount': this_amount,
             }
 
             if 'Preview' in request.POST:
-                displayorder_request = ['quote_number','PI','research_contact','quote_amount']
-                #print(data_request)  
+                displayorder_request = ['quote_number',
+                                        'PI', 'research_contact', 'quote_amount']
+                # print(data_request)
 
                 context = {
                     'quoteupdate_form': quoteupdate_form,
@@ -1567,7 +1602,7 @@ def QuoteUpdateView(request, requestid, quoteid):
 
     context = {
         'quoteupdate_form': quoteupdate_form,
-        'qid':qid,
+        'qid': qid,
 
     }
 
@@ -1597,25 +1632,27 @@ def GetDescriptionView(request, service_pk):
     data['description'] = serviceinfo.description
     return JsonResponse(data)
 
+
 def ServiceRequestDetailView(request, pk):
     servicerequestinfo = get_object_or_404(ServiceRequest, pk=pk)
-    summaryfield = ['status','date', 'group','institute','research_contact','research_contact_email','notes']
-    itemsfield = ['service','quantity','status']
+    summaryfield = ['status', 'date', 'group', 'institute',
+                    'research_contact', 'research_contact_email', 'notes']
+    itemsfield = ['service', 'quantity', 'status']
     itemsinfo = servicerequestinfo.servicerequestitem_set.all().select_related('service')
     quotes_info = {}
     current_quote = {}
     quotes_list = servicerequestinfo.quote_number
     amounts_list = servicerequestinfo.quote_amount
     for i in range(len(quotes_list)):
-        quotes_info[quotes_list[i]] ={
-            'amount':amounts_list[i],
-            'number_compact':''.join(quotes_list[i].split(' ')),
+        quotes_info[quotes_list[i]] = {
+            'amount': amounts_list[i],
+            'number_compact': ''.join(quotes_list[i].split(' ')),
         }
     print(quotes_info)
     current_quote = {
-        'number':quotes_list[-1],
-        'amount':amounts_list[-1],
-        'number_compact':''.join(quotes_list[-1].split(' ')),
+        'number': quotes_list[-1],
+        'amount': amounts_list[-1],
+        'number_compact': ''.join(quotes_list[-1].split(' ')),
 
     }
 
@@ -1625,14 +1662,12 @@ def ServiceRequestDetailView(request, pk):
         'quotes_info': quotes_info,
         'servicerequestinfo': servicerequestinfo,
         'itemsinfo': itemsinfo,
-        'current_quote':current_quote,
+        'current_quote': current_quote,
     }
     return render(request, 'manager_app/manager_servicerequestdetail.html', context=context)
+
 
 def ServiceRequestDeleteView(request, pk):
     servicerequestinfo = get_object_or_404(ServiceRequest, pk=pk)
     servicerequestinfo.delete()
     return redirect('manager_app:servicerequests_list')
-
-
-    
