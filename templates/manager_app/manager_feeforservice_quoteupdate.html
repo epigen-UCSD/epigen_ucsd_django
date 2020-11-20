@@ -15,7 +15,7 @@
       <form id="groupdependent" action="" method="post" data-collabs-url="{% url 'manager_app:ajax_load_researchcontact' %}" data-email-url="{% url 'manager_app:ajax_load_email' %}">{% csrf_token %}  
 
 
-        {% for field in quotecreate_form %}
+        {% for field in quoteupdate_form %}
         <div class="fieldWrapper">
           <p>
             <ul>

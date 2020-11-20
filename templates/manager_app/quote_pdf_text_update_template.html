@@ -2,9 +2,13 @@
 <head>
   <title>Test</title>
   <style>
+    @page { 
+      size: Letter; 
+      margin: 0.7in 0.7in 0.7in 0.7in; 
+    }
     body {
       font-family: Arial, Helvetica, sans-serif;
-      font-size:13px;
+      font-size:12px;
       line-height: 1.7;
 
       
@@ -14,19 +18,20 @@
   {% load nextseq_app_tags %}
 </head>
 <body>
-  <img src="{% static 'images/CFE_Brandmark-01.png' %}" alt="Center Logo" style="width:300px;margin-left:-30px;margin-top:-30px;">
-  <p style="margin-top: 50px;">Quote # {{ quote_id }}
+  <img src="{% static 'images/CFE_letter.png' %}" alt="Center Logo" style="height:215px;margin-left:-80px;margin-top:-80px;" >
+  <p style="margin-top: -10px;">Quote # {{ quote_id }}
   <br>
   <span style="font-style: italic;"> Note: This quote will expire 60 days from the date below </span>
   </p>
 
-  <p>{{ date }}</p>
+  <p style="margin-top: 15px;margin-bottom: 20px;">{{ date }}</p>
   
-  {{ body | linkemail | safe | linebreaksbr }}
+  {{ body | linkemail | tomultiplicationsign | safe | linebreaksbr }}
 
   <br>
   <br>
   <p>Sincerely,
+  <br><img src="{% static 'images/LaurenSignature.png' %}" alt="signature" style="height:40px">
   <br>Lauren Thomas
   <br>Epigenomic Program Analyst
   <br>Center for Epigenomics

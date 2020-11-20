@@ -13,6 +13,7 @@ class ServiceInfo(models.Model):
     rate_unit = models.CharField(max_length=50)
     description_brief = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+
     #start_date =  models.DateField(blank=True, null=True)
     #end_date =  models.DateField(blank=True, null=True)
 
@@ -45,8 +46,8 @@ class ServiceRequestItem(models.Model):
     quantity = models.FloatField(blank=True, null=True)
     status = models.CharField(max_length=50, blank=True, null=True)
 
-class UploadQuotePdf(models.Model):
-    request = models.ForeignKey(ServiceRequest, on_delete=models.CASCADE)
-    service = models.ForeignKey(ServiceInfo, on_delete=models.CASCADE)
-    quantity = models.FloatField(blank=True, null=True)
-    status = models.CharField(max_length=50, blank=True, null=True)
+# class UploadQuotePdf(models.Model):
+#     request = models.ForeignKey(ServiceRequest, on_delete=models.CASCADE)
+#     service = models.ForeignKey(ServiceInfo, on_delete=models.CASCADE)
+#     quantity = models.FloatField(blank=True, null=True)
+#     status = models.CharField(max_length=50, blank=True, null=True)

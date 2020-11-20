@@ -79,6 +79,26 @@ $(document).ready(function () {
 
     });
 
+
+    $('#datatabledetailnotes3').DataTable({
+        "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
+        "iDisplayLength": 20,
+        "order": [[3, "desc"], [1, "desc"]],
+        "columnDefs": [{
+            "orderable": false,
+            "targets": [0, -1, -2],
+        },
+            // {
+            //  "className": 'details-control',
+            //  "targets": 0,
+            // }
+
+        ]
+
+    });
+
+
+
     $('#datatabledetailnotes tbody').on('click', 'td.details-control', function () {
         var thisurl = $(this).attr("data-href");
         var tr = $(this).closest('tr');
@@ -127,6 +147,35 @@ $(document).ready(function () {
 
                     if (data.notes) {
                         tr.after('<tr class="detailnotes"><td class="detailnotes" colspan="8"><div class="detailnotes">Notes:' + data.notes + '</div></td></tr>')
+
+
+                    }
+                }
+            })
+
+        }
+
+    });
+
+
+    $('#datatabledetailnotes4 tbody').on('click', 'td.details-control', function () {
+        var thisurl = $(this).attr("data-href");
+        var tr = $(this).closest('tr');
+        if ($(this).hasClass("closing")) {
+            $(this).removeClass("closing")
+            tr.next().closest(".detailnotes").remove()
+        }
+        else {
+            $(this).addClass("closing")
+
+            $.ajax({
+                url: thisurl,
+                cache: false,
+                dataType: 'json',
+                success: function (data) {
+
+                    if (data.description) {
+                        tr.after('<tr class="detailnotes"><td class="detailnotes" colspan="8"><div class="detailnotes">Description:' + data.description + '</div></td></tr>')
 
 
                     }
@@ -507,17 +556,15 @@ $(document).ready(function () {
         "select": false,
 
         "columnDefs": [
-
-            {
-                "targets": 0,
-                "render": function (data, type, row) {
-                    var itemID = row["pk"];
-                    if (data == null) {
-                        return ''
-                    }
-                    else {
-                        return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
-                    }
+        {
+            "targets": 0,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                if (data == null) {
+                    return ''
+                }
+                else {
+                    return '<a href="/manager/servicerequest/' + itemID + '">' + data + '</a>';
                 }
             },
 
@@ -546,7 +593,14 @@ $(document).ready(function () {
                 "render": function (data, type, row) {
                     var itemID = row["pk"];
                     return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a><a class="spacing" href="/manager/add_new_quote/' + itemID + '/"><i class="fas fa-plus"></i></a>'
-
+            }
+        },
+        {
+            "targets": 8,
+            "render": function (data, type, row) {
+                var itemID = row["pk"];
+                return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a><a class="spacing" href="/manager/add_new_quote/' + itemID + '/"><i class="fas fa-plus"></i></a><a onclick="return confirm(\'Are you sure you want to delete Service Request ' + row["service_request_id"] + '?\');" href="/manager/servicerequest_delete/' + itemID + '/"><i class="fas fa-trash-alt"></i></a>'
+                
 
                 }
             }],
@@ -582,24 +636,21 @@ $(document).ready(function () {
                 "targets": 0,
                 "render": function (data, type, row) {
                     return data.slice(-4);
-
                 }
             },
+          {
+              "targets": 2,
+              "render": function (data, type, row) {
+                  var itemID = row["pk"];
+                  if (data == null) {
+                      return ''
+                  }
+                  else {
+                      return '<a href="/manager/servicerequest/' + itemID + '">' + data + '</a>';
+                  }
 
-
-            {
-                "targets": 2,
-                "render": function (data, type, row) {
-                    var itemID = row["pk"];
-                    if (data == null) {
-                        return ''
-                    }
-                    else {
-                        return '<a href="/metadata/sample/' + itemID + '">' + data + '</a>';
-                    }
-
-                }
-            },
+              }
+          },
             {
                 "targets": 7,
                 "render": function (data, type, row) {
@@ -1196,6 +1247,12 @@ $(document).ready(function () {
         addText: 'add another service',
         deleteText: 'remove',
         prefix: 'form'
+    });
+
+    $('.servicerequestitemformsetupdate_row').formset({
+        addText: 'add another service',
+        deleteText: 'remove',
+        prefix: 'servicerequestitem_set'
     });
 
     $('.chipformset_row').formset({

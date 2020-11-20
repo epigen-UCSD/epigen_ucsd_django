@@ -1,0 +1,42 @@
+{% load nextseq_app_tags %}
+{% load humanize %}
+<div class="row" id="items">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="card bottom15">
+      <div class="card-header fortable collapseheader">
+        <a data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapse2"><i class="fa fas fa-caret-right collapseheader fa-lg fa-fw"></i><i class="fa fa-caret-down collapseheader fa-lg fa-fw"></i></a>
+        Service Items
+        <button type="button" class="close" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+        </button>
+      </div><!-- /.card-header -->
+      <div class="collapse show" id="collapse2">
+        <div class="card-body">
+          <br />
+          <table class="table table-sm table-striped text-center table-responsive-xl">
+
+            
+            <thead>
+            <tr>
+              {% for x in itemsfield %}
+              <th>{{ x }}</th>
+              {% endfor %} 
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for item in itemsinfo %}
+            <tr>
+              {% for x in itemsfield %}
+              <td>{{ item|get_value:x|default_if_none:"" }}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+            </tbody>               
+          </table>
+        </div><!-- /.card-body --> 
+      </div><!-- /.collapse -->             
+    </div><!-- /.card -->
+  
+  </div>
+</div>
