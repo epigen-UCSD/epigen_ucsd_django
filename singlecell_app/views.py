@@ -259,8 +259,6 @@ def build_seq_list_modified(seqs_list):
     groups = Group.objects.all()
     i = 0
     for entry in seqs_list:
-        print(i)
-        i += 1
         group_id = entry['seqinfo__libraryinfo__sampleinfo__group']
         group_name = get_group_name(groups, group_id)
         entry['seqinfo__libraryinfo__sampleinfo__group'] = group_name
@@ -271,7 +269,8 @@ def build_seq_list_modified(seqs_list):
         entry['species'] = entry['seqinfo__libraryinfo__sampleinfo__species']
         ca_status = entry['cooladminsubmission__pipeline_status']
         print(ca_status)
-        entry['cooladmin_status'] = entry['cooladminsubmission__link'] if ca_status == 'Yes' else ca_status
+        # if ca_status == 'Yes' else ca_status
+        entry['cooladmin_status'] = entry['cooladminsubmission__link']
     return (seqs_list)
 
 
