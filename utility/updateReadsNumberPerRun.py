@@ -13,7 +13,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "epigen_ucsd_django.settings")
 django.setup()
 
 from nextseq_app.models import RunInfo, LibrariesInRun
-
+from masterseq_app.models import SeqInfo
 
 def main():
     '''
@@ -40,7 +40,11 @@ def main():
             if(obj.numberofreads < warning_count_th):
                 run_obj.jobstatus = 'Warning'
             obj.save()
-
+            
+            # update seqinfo 
+            obj_seq = SeqInfo.objects.get(seq_id=fields[0])
+            obj_seq.status='Yes'
+            obj_seq.save()
     # save run
     run_obj.save()
 
