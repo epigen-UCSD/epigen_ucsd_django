@@ -2153,7 +2153,7 @@ $(document).ready(function () {
                         }
                     } else if (status === ".status.fail") {//failed
                         return ('<button type="button" class="btn btn-success btn-sm badge-status-yellow cooladmin-status">Error!</button>')
-                    } else if (status === ".status.processing") {
+                    } else if (status === "InQueue") {
                         return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
                     } else {
                         return '<a href="' + link + '" style="color:white" target="_blank" type="button" class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a>'

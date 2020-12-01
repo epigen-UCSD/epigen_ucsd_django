@@ -268,7 +268,7 @@ def build_seq_list_modified(seqs_list):
         entry['seq_status'] = entry['seqinfo__status']
         entry['species'] = entry['seqinfo__libraryinfo__sampleinfo__species']
         ca_status = entry['cooladminsubmission__pipeline_status']
-        print(ca_status)
+        # print(ca_status)
         # if ca_status == 'Yes' else ca_status
         entry['cooladmin_status'] = entry['cooladminsubmission__link']
     return (seqs_list)
@@ -532,12 +532,15 @@ def submit_cooladmin(request):
     """This function handles a cooladmin submission request from LIMS user.
     This function run a bash script ./utility/coolAdmin.sh
     """
+    genome_convert_10x_dict = {'GRCh37': 'hg19', 'GRCh38': 'hg38'}
     seq = request.POST.get('seq')
     email = request.user.email
     info = SeqInfo.objects.select_related(
         'libraryinfo__sampleinfo').get(seq_id=seq)
     species = defaultgenome[info.libraryinfo.sampleinfo.species.lower()]
-
+    print(species)
+    exp_type = info.libraryinfo.experiment_type
+    print(exp_type)
     defaults = {
         'submitted': True,
         'seqinfo': info,
@@ -549,15 +552,17 @@ def submit_cooladmin(request):
                                                                        defaults=defaults)
     submission_dict = model_to_dict(submission)
     if created == True:
-        if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
-            submission_dict['refgenome'] = getReferenceUsed(seq)
+        if(exp_type == '10xATAC'):
+            submission_dict['refgenome'] = genome_convert_10x_dict[getReferenceUsed(
+                seq)]
         else:  # set ref genome to default species
             submission_dict['refgenome'] = species
             submission.date_modified = datetime.now()
     else:
-        #print('submission dict: ', submission_dict)
-        if(info.libraryinfo.sampleinfo.experiment_type_choice == '10xATAC'):
-            submission_dict['refgenome'] = getReferenceUsed(seq)
+        if(exp_type == '10xATAC'):
+            submission_dict['refgenome'] = genome_convert_10x_dict[getReferenceUsed(
+                seq)]
+        print('submission dict: ', submission_dict)
 
     submission.date_submitted = datetime.now()
     submission.pipeline_status = INQUEUE
@@ -576,7 +581,7 @@ def submit_cooladmin(request):
     paramString = buildCoolAdminParameterString(
         submission_dict).replace('"', '\\"').replace(' ', '\\ ')
     #print('paramString: ', paramString)
-    cmd1 = f'bash ./utility/coolAdmin.sh {email} {seqString} {paramString}'
+    cmd1 = f'bash ./utility/coolAdmin.sh {email} {seqString} {exp_type} {paramString}'
     print(cmd1)
 
     p = subprocess.Popen(
@@ -829,6 +834,8 @@ def getReferenceUsed(seq):
 
     file_path = os.path.join(tenxdir, str(
         seq), tenx_output_folder, tenx_target_outfile)
+    print('looking for reference genome'+file_path)
+    print(os.path.exists(file_path))
     if(os.path.exists(file_path)):
         with open(file_path) as json_file:
             data = json.load(json_file)
