@@ -556,18 +556,18 @@ $(document).ready(function () {
         "select": false,
 
         "columnDefs": [
-        {
-            "targets": 0,
-            "render": function (data, type, row) {
-                var itemID = row["pk"];
-                if (data == null) {
-                    return ''
+            {
+                "targets": 0,
+                "render": function (data, type, row) {
+                    var itemID = row["pk"];
+                    if (data == null) {
+                        return ''
+                    }
+                    else {
+                        return '<a href="/manager/servicerequest/' + itemID + '">' + data + '</a>';
+                    }
                 }
-                else {
-                    return '<a href="/manager/servicerequest/' + itemID + '">' + data + '</a>';
-                }
-            }
-        },
+            },
 
             {
                 "targets": 6,
@@ -590,12 +590,12 @@ $(document).ready(function () {
                 }
             },
 
-        {
-            "targets": 8,
-            "render": function (data, type, row) {
-                var itemID = row["pk"];
-                return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a><a class="spacing" href="/manager/add_new_quote/' + itemID + '/"><i class="fas fa-plus"></i></a><a onclick="return confirm(\'Are you sure you want to delete Service Request ' + row["service_request_id"] + '?\');" href="/manager/servicerequest_delete/' + itemID + '/"><i class="fas fa-trash-alt"></i></a>'
-                
+            {
+                "targets": 8,
+                "render": function (data, type, row) {
+                    var itemID = row["pk"];
+                    return '<a class="spacing" href="/manager/servicerequest_update/' + itemID + '/"><i class="fas fa-edit"></i></a><a class="spacing" href="/manager/add_new_quote/' + itemID + '/"><i class="fas fa-plus"></i></a><a onclick="return confirm(\'Are you sure you want to delete Service Request ' + row["service_request_id"] + '?\');" href="/manager/servicerequest_delete/' + itemID + '/"><i class="fas fa-trash-alt"></i></a>'
+
 
                 }
             }],
@@ -633,19 +633,19 @@ $(document).ready(function () {
                     return data.slice(-4);
                 }
             },
-          {
-              "targets": 2,
-              "render": function (data, type, row) {
-                  var itemID = row["pk"];
-                  if (data == null) {
-                      return ''
-                  }
-                  else {
-                      return '<a href="/manager/servicerequest/' + itemID + '">' + data + '</a>';
-                  }
+            {
+                "targets": 2,
+                "render": function (data, type, row) {
+                    var itemID = row["pk"];
+                    if (data == null) {
+                        return ''
+                    }
+                    else {
+                        return '<a href="/manager/servicerequest/' + itemID + '">' + data + '</a>';
+                    }
 
-              }
-          },
+                }
+            },
             {
                 "targets": 7,
                 "render": function (data, type, row) {
@@ -2074,7 +2074,7 @@ $(document).ready(function () {
         dom: 'lBfrtip',
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
-        "processing": true,
+        "processing": false,
         //"order": [[5, "desc"], [4, "desc"]],
         "ajax": {
             url: singlecellurl_user,
@@ -2135,6 +2135,7 @@ $(document).ready(function () {
                 "render": function (data, type, row) {
                     var status = data;
                     var seq_id = row['seqinfo__seq_id'];
+                    var link = row['cooladminsubmission__link']; //row['cooladmin_status']
                     if (status === "ClickToSubmit" || status == null) {
                         //check fastq seq status
                         if (row["seq_status"] === "Yes") {
@@ -2154,7 +2155,7 @@ $(document).ready(function () {
                     } else if (status === ".status.processing") {
                         return ('<button class="btn btn-sm badge-success badge-status-lightblue" disabled cooladmin-status"> Processing</button>')
                     } else {
-                        return '<a href="' + status + '" style="color:white" target="_blank" type="button" class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a>'
+                        return '<a href="' + link + '" style="color:white" target="_blank" type="button" class="btn btn-sm btn-success badge-status-green font-weight-bold" style="color:white">Results</a>'
 
                     }
                 },

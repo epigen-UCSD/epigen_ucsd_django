@@ -202,6 +202,7 @@ class SeqInfo(models.Model):
     default_label = models.CharField(
         'Default Label(for setQC report)', max_length=200, blank=True)
     notes = models.TextField(blank=True)
+    status = models.NullBooleanField(blank=True)
 
     def __str__(self):
         return self.seq_id

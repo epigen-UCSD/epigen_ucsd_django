@@ -174,10 +174,8 @@ def AllSingleCellData(request):
         'seqinfo__date_submitted_for_sequencing', 'cooladminsubmission__link')
 
     data = list(seqs_queryset)
-    for i in range(len(data)):
-        if data[i]['seqinfo__id'] == 7985:
-            print(data[i])
     build_seq_list_modified(data)
+    print('load here: {0}'.format(len(data)))
     return JsonResponse(data, safe=False)
 
 
@@ -259,7 +257,10 @@ def build_seq_list_modified(seqs_list):
     """
     # optimize later
     groups = Group.objects.all()
+    i = 0
     for entry in seqs_list:
+        print(i)
+        i += 1
         group_id = entry['seqinfo__libraryinfo__sampleinfo__group']
         group_name = get_group_name(groups, group_id)
         entry['seqinfo__libraryinfo__sampleinfo__group'] = group_name
@@ -271,7 +272,7 @@ def build_seq_list_modified(seqs_list):
         entry['species'] = entry['seqinfo__libraryinfo__sampleinfo__species']
         ca_status = entry['cooladminsubmission__pipeline_status']
         # print(ca_status)
-        entry['cooladmin_status'] = entry['cooladminsubmission__link'] if ca_status == 'Yes' else ca_status
+        #entry['cooladmin_status'] = entry['cooladminsubmission__link'] if ca_status == 'Yes' else ca_status
     return (seqs_list)
 
 
