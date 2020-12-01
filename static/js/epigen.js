@@ -2074,7 +2074,7 @@ $(document).ready(function () {
         dom: 'lBfrtip',
         "aLengthMenu": [[20, 50, 75, -1], [20, 50, 75, "All"]],
         "iDisplayLength": 20,
-        "processing": false,
+        "processing": true,
         //"order": [[5, "desc"], [4, "desc"]],
         "ajax": {
             url: singlecellurl_user,

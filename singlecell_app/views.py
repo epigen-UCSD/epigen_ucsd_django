@@ -110,7 +110,7 @@ def User10xAtacQcData(request):
     seqs_queryset = SingleCellObject.objects.filter(seqinfo__team_member_initails=request.user).select_related('seqinfo',
                                                                                                                'cooladminsubmission', 'libraryinfo', 'sampleinfo',
                                                                                                                'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
+        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__status', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
         'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species',
         'seqinfo__libraryinfo__sampleinfo__group', 'tenx_pipeline_status',
         'seqinfo__libraryinfo__sampleinfo__sample_id', 'cooladminsubmission__pipeline_status',
@@ -146,7 +146,7 @@ def User10xRnaQcData(request):
     seqs_queryset = SingleCellObject.objects.filter(seqinfo__team_member_initails=request.user).select_related('seqinfo',
                                                                                                                'cooladminsubmission', 'libraryinfo', 'sampleinfo',
                                                                                                                'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
+        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__status', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
         'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species',
         'seqinfo__libraryinfo__sampleinfo__group', 'tenx_pipeline_status',
         'seqinfo__libraryinfo__sampleinfo__sample_id', 'cooladminsubmission__pipeline_status',
@@ -167,7 +167,7 @@ def AllSingleCellData(request):
     seqs_queryset = SingleCellObject.objects.all().select_related('seqinfo',
                                                                   'cooladminsubmission', 'libraryinfo', 'sampleinfo',
                                                                   'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
+        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__status', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
         'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species',
         'seqinfo__libraryinfo__sampleinfo__group', 'tenx_pipeline_status',
         'seqinfo__libraryinfo__sampleinfo__sample_id', 'cooladminsubmission__pipeline_status',
@@ -185,7 +185,7 @@ def UserSingleCellData(request):
     seqs_queryset = SingleCellObject.objects.filter(seqinfo__team_member_initails=request.user).select_related('seqinfo',
                                                                                                                'cooladminsubmission', 'libraryinfo', 'sampleinfo',
                                                                                                                'seqinfo__libraryinfo__sampleinfo__group').order_by('-date_last_modified').values(
-        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
+        'seqinfo__id', 'seqinfo__seq_id', 'seqinfo__status', 'seqinfo__libraryinfo__experiment_type', 'date_last_modified',
         'seqinfo__read_type', 'seqinfo__libraryinfo__sampleinfo__species',
         'seqinfo__libraryinfo__sampleinfo__group', 'tenx_pipeline_status',
         'seqinfo__libraryinfo__sampleinfo__sample_id', 'cooladminsubmission__pipeline_status',
@@ -267,12 +267,11 @@ def build_seq_list_modified(seqs_list):
         seq_id = entry['seqinfo__seq_id']
         experiment_type = entry['seqinfo__libraryinfo__experiment_type']
         # need to move FASTQ file status to db
-        entry['seq_status'] = get_seq_status(
-            seq_id, entry['seqinfo__read_type'], experiment_type)
+        entry['seq_status'] = entry['seqinfo__status']
         entry['species'] = entry['seqinfo__libraryinfo__sampleinfo__species']
         ca_status = entry['cooladminsubmission__pipeline_status']
-        # print(ca_status)
-        #entry['cooladmin_status'] = entry['cooladminsubmission__link'] if ca_status == 'Yes' else ca_status
+        print(ca_status)
+        entry['cooladmin_status'] = entry['cooladminsubmission__link'] if ca_status == 'Yes' else ca_status
     return (seqs_list)
 
 
