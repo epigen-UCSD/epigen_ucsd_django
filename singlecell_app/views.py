@@ -46,8 +46,7 @@ defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
 
 LINK_CLASS_NAME = "data-link-epigen"
 
-INQUEUE = 'InQueue'
-
+INQUEUE = '.status.processing'  # inQueue status for cooladmin
 
 # TODO do rat for scRNA-seq plus option for hg19, we deafault to hg38 right now.
 # TODO also need option for mixed mouse and human
@@ -440,7 +439,7 @@ def get_cooladmin_status(seq_id, seq_pk):
     elif os.path.isfile(path + '/.status.processing'):
         return '.status.processing'
     elif os.path.isfile(path + '/.status.success'):
-        return get_cooladmin_link(seq_id)
+        return '.status.success'
     elif os.path.isfile(path + '/.status.fail'):
         return '.status.fail'
     else:
@@ -787,7 +786,7 @@ def submit_tenX(seq, refgenome, email):
 
     # update singlecellobject db entry that seq is inq
     sc_obj = SingleCellObject.objects.get(seqinfo__seq_id=seq)
-    sc_obj.tenx_pipeline_status = INQUEUE
+    sc_obj.tenx_pipeline_status = 'InQueue'
     sc_obj.date_last_modified = datetime.now()
     sc_obj.save()
     return True
