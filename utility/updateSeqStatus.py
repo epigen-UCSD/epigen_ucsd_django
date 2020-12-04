@@ -15,7 +15,6 @@ sys.path.append(os.path.dirname(basedir))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "epigen_ucsd_django.settings")
 django.setup()
 
-
 from django.contrib.auth.models import User, Group
 from singlecell_app.views import get_seq_status
 from singlecell_app.models import SingleCellObject, TenxqcInfo, scRNAqcInfo, CoolAdminSubmission
@@ -24,7 +23,6 @@ from masterseq_app.models import SeqInfo, LibraryInfo, SampleInfo
 """
 This script is to update seq status in db by scan on the disk 
 """
-
 
 
 def check_status(entry):
@@ -37,17 +35,31 @@ def check_status(entry):
 
 
 def main():
+    # add options
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-id', help='Sequence_ID (e.g. JYH_xxx)')
+    args = parser.parse_args()
+
     # get all sc seqs
-    seqs_queryset = SeqInfo.objects.all().select_related('libraryinfo', 'libraryinfo__sampleinfo',
-                                                         'libraryinfo__sampleinfo__group').values('seq_id', 'libraryinfo__experiment_type', 'read_type')
-    print(len(seqs_queryset))  # 1444
-    data = list(seqs_queryset)
-    print(len(data))
-    i = 0
-    for entry in data:
-        print(i)
-        i += 1
-        seq_obj = SeqInfo.objects.get(seq_id=entry['seq_id'])
+    if args.id is None:
+        seqs_queryset = SeqInfo.objects.all().select_related('libraryinfo', 'libraryinfo__sampleinfo',
+                                                       'libraryinfo__sampleinfo__group').values('seq_id', 'libraryinfo__experiment_type', 'read_type')
+        print(len(seqs_queryset))  # 1444
+        data = list(seqs_queryset)
+        print(len(data))
+        i = 0
+        for entry in data:
+            print(i)
+            i += 1
+            seq_obj = SeqInfo.objects.get(seq_id=entry['seq_id'])
+            seq_obj.status = check_status(entry)
+            seq_obj.save()
+    else:
+        seq_id = parser.parse_args().id
+        seqs_queryset = SeqInfo.objects.filter(seq_id=seq_id).select_related('libraryinfo', 'libraryinfo__sampleinfo',
+                                                                          'libraryinfo__sampleinfo__group').values('seq_id', 'libraryinfo__experiment_type', 'read_type')
+        entry = list(seqs_queryset)[0]
+        seq_obj = SeqInfo.objects.get(seq_id=seq_id)
         seq_obj.status = check_status(entry)
         seq_obj.save()
 

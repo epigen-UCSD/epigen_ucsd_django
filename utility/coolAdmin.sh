@@ -12,6 +12,7 @@ if [[ $EXPTYPE = '10xATAC' ]]
 then 
 cmd2="qsub -k oe -M $EMAIL -v OUTPUTNAME=${SEQ},INPUTNAME=${SEQ},DATASETNAME=${SEQ},${PARAMSTRING%,} /projects/ps-epigen/software/snATACCoolAdmin_LIMS/10x_model.bash"
 else
+cmd2="qsub -k oe -M $EMAIL -v OUTPUTNAME=${SEQ},INPUTNAME=${SEQ},DATASETNAME=${SEQ},${PARAMSTRING%,} /projects/ps-epigen/software/snATACCoolAdmin_LIMS/from_fastq_process.bash"
 fi
 
 echo $cmd2

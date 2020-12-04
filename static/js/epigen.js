@@ -2136,7 +2136,7 @@ $(document).ready(function () {
                     var status = data;
                     var seq_id = row['seqinfo__seq_id'];
                     var link = row['cooladminsubmission__link']; //row['cooladmin_status']
-                    console.log(link)
+                    //console.log(link)
                     if (status === "ClickToSubmit" || status == null) {
                         //check fastq seq status
                         if (row["seq_status"] === "Yes") {

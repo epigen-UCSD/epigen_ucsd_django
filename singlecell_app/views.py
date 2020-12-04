@@ -561,6 +561,8 @@ def submit_cooladmin(request):
         if(exp_type == '10xATAC'):
             submission_dict['refgenome'] = genome_convert_10x_dict[getReferenceUsed(
                 seq)]
+        else:
+            submission_dict['refgenome'] = species
         print('submission dict: ', submission_dict)
 
     submission.date_submitted = datetime.now()
