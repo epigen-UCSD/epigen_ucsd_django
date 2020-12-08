@@ -184,7 +184,7 @@ def UserSamplesView(request):
 class RunDetailView2(DetailView):
     model = RunInfo
     template_name = 'nextseq_app/details.html'
-    summaryfield = ['jobstatus', 'date', 'operator', 'machine', 'experiment_type', 'read_type', 'total_lanes','total_libraries', 'total_reads',
+    summaryfield = ['jobstatus', 'date', 'operator', 'machine', 'experiment_type', 'read_type', 'total_lanes', 'total_libraries', 'total_reads',
                     'percent_of_reads_demultiplexed', 'read_length', 'nextseqdir', 'extra_parameters']
     # object = FooForm(data=model_to_dict(Foo.objects.get(pk=object_id)))
 
@@ -245,7 +245,8 @@ def RunCreateView4(request):
 
 @transaction.atomic
 def RunCreateView6(request):
-    run_form = RunCreationForm(request.POST or None,initial={'total_lanes': 1.00})
+    run_form = RunCreationForm(
+        request.POST or None, initial={'total_lanes': 1.00})
     form = SamplesToCreatForm(request.POST or None)
 
     if run_form.is_valid() and form.is_valid():
@@ -269,7 +270,6 @@ def RunCreateView6(request):
         for samples in samplestocreat.strip().split('\n'):
             samples_info = re.split(r'[\s]', samples+'  ')
 
-            
             if samples != '\r' and samples_info[0] != 'Sequencing_ID':
 
                 if samples_info[3]:
@@ -300,7 +300,7 @@ def RunCreateView6(request):
                                     'form': form,
                                     'error_message': 'either both i7 not in range(1,4) or  i5 in range(1-8) for library input '+'\t'.join(samples_info)
                                 }
-                                return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)    
+                                return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
                         else:  # require 2 barcodes
                             context = {
@@ -308,28 +308,28 @@ def RunCreateView6(request):
                                 'form': form,
                                 'error_message': 'Need both i7 and i5 for snATAC for this library: '+'\t'.join(samples_info)
                             }
-                            return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)    
+                            return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
                         if lane_tm not in i7index_list.keys():
                             i7index_list[lane_tm] = []
                             i5index_list[lane_tm] = []
                         i7index_list[lane_tm].append(samples_info[1])
                         i5index_list[lane_tm].append(samples_info[2])
-                        libraryid_list.append(samples_info[0])  
+                        libraryid_list.append(samples_info[0])
 
                     except ObjectDoesNotExist:
                         context = {
                             'run_form': run_form,
                             'form': form,
                             'error_message': 'There are indexes that are not stored in the database for this library: '+'\t'.join(samples_info)
-                        }   
+                        }
 
-                        return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)    
+                        return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
                     tosave_list.append(tosave_sample)
-                # handle bulk barcodes 
+                # handle bulk barcodes
                 else:
-                    try:           
+                    try:
                         if samples_info[1] and samples_info[2]:
                             tosave_sample = LibrariesInRun(
                                 Library_ID=samples_info[0],
@@ -340,7 +340,7 @@ def RunCreateView6(request):
                                 lane=lane_tm,
                             )
                         elif samples_info[1] and not samples_info[2]:
-                            tosave_sample = LibrariesInRun( 
+                            tosave_sample = LibrariesInRun(
 
                                 Library_ID=samples_info[0],
                                 i7index=Barcode.objects.get(
@@ -348,7 +348,7 @@ def RunCreateView6(request):
                                 lane=lane_tm,
                             )
                         elif not samples_info[1] and samples_info[2]:
-                            tosave_sample = LibrariesInRun( 
+                            tosave_sample = LibrariesInRun(
 
                                 Library_ID=samples_info[0],
                                 i5index=Barcode.objects.get(
@@ -356,7 +356,7 @@ def RunCreateView6(request):
                                 lane=lane_tm,
                             )
                         else:
-                            tosave_sample = LibrariesInRun( 
+                            tosave_sample = LibrariesInRun(
 
                                 Library_ID=samples_info[0],
                                 lane=lane_tm,
@@ -366,16 +366,16 @@ def RunCreateView6(request):
                             i5index_list[lane_tm] = []
                         i7index_list[lane_tm].append(samples_info[1])
                         i5index_list[lane_tm].append(samples_info[2])
-                        libraryid_list.append(samples_info[0])  
+                        libraryid_list.append(samples_info[0])
 
                     except ObjectDoesNotExist:
                         context = {
                             'run_form': run_form,
                             'form': form,
                             'error_message': 'There are indexes that are not stored in the database for this library: '+'\t'.join(samples_info)
-                        }   
+                        }
 
-                        return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)    
+                        return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
                     tosave_list.append(tosave_sample)
 
@@ -407,7 +407,7 @@ def RunCreateView6(request):
             return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
         for ke in i7index_list.keys():
-            if runinfo.experiment_type in ["TA","TR"]:
+            if runinfo.experiment_type in ["TA", "TR"]:
                 duplicate = IndexValidation2(
                     i7index_list[ke], i5index_list[ke])
             else:
@@ -426,7 +426,7 @@ def RunCreateView6(request):
                 this_seq = SeqInfo.objects.get(seq_id=k)
                 if this_seq.portion_of_lane:
                     data[k] = {
-                        'portion_of_lane':this_seq.portion_of_lane,
+                        'portion_of_lane': this_seq.portion_of_lane,
                     }
                     lanesum += this_seq.portion_of_lane
                 else:
@@ -450,18 +450,16 @@ def RunCreateView6(request):
             }
             return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
-
         if lanesum != sumlane:
             context = {
                 'run_form': run_form,
                 'form': form,
-                'data':data,
+                'data': data,
                 'modalshow': 1,
-                'lanesum':lanesum,
+                'lanesum': lanesum,
 
             }
             return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
-
 
         runinfo.save()
         for samples in tosave_list:
@@ -537,8 +535,7 @@ def RunUpdateView2(request, username, run_pk):
             }
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
 
-
-        if runinfo.experiment_type in ["TA","TR"]:
+        if runinfo.experiment_type in ["TA", "TR", "TM"]:
             duplicate = IndexValidation2(
                 [x.indexid if x is not None else None for x in i7index_list],
                 [x.indexid if x is not None else None for x in i5index_list]
@@ -563,7 +560,7 @@ def RunUpdateView2(request, username, run_pk):
                 this_seq = SeqInfo.objects.get(seq_id=k)
                 if this_seq.portion_of_lane:
                     data[k] = {
-                        'portion_of_lane':this_seq.portion_of_lane,
+                        'portion_of_lane': this_seq.portion_of_lane,
                     }
                     lanesum += this_seq.portion_of_lane
                 else:
@@ -589,15 +586,14 @@ def RunUpdateView2(request, username, run_pk):
             }
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
 
-
-        if abs(lanesum-sumlane)>1e-5:
+        if abs(lanesum-sumlane) > 1e-5:
             context = {
                 'run_form': run_form,
                 'sample_formset': sample_formset,
                 'runinfo': runinfo,
-                'data':data,
+                'data': data,
                 'modalshow': 1,
-                'lanesum':lanesum,
+                'lanesum': lanesum,
 
             }
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
@@ -802,7 +798,7 @@ def DemultiplexingView(request, run_pk):
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i2_file = open(filename.replace('.csv', '_I2.csv'), 'w')
                 # support for sc-RNA expts.
-                elif runinfo.experiment_type in ['TA','TR','TM']:
+                elif runinfo.experiment_type in ['TA', 'TR', 'TM']:
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i1_file.write(','.join(["Lane", "Sample", "Index"])+'\n')
 
@@ -849,7 +845,7 @@ def DemultiplexingView(request, run_pk):
                             if runinfo.experiment_type == 'S2':
                                 i1_file.write(i7seq+'\n')
                                 i2_file.write(i5seq+'\n')
-                            elif runinfo.experiment_type in ['TA','TR','TM']:
+                            elif runinfo.experiment_type in ['TA', 'TR', 'TM']:
                                 i1_file.write(
                                     ','.join(['*', samples.Library_ID, i7id.indexid])+'\n')
                         else:
@@ -873,7 +869,7 @@ def DemultiplexingView(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file.close()
                     i2_file.close()
-                elif runinfo.experiment_type in ['TA','TR','TM']:
+                elif runinfo.experiment_type in ['TA', 'TR', 'TM']:
                     i1_file.close()
 
         except Exception as e:
@@ -971,7 +967,7 @@ def DemultiplexingView2(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i2_file = open(filename.replace('.csv', '_I2.csv'), 'w')
-                elif runinfo.experiment_type in ['TA','TR','TM']:
+                elif runinfo.experiment_type in ['TA', 'TR', 'TM']:
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i1_file.write(','.join(["Lane", "Sample", "Index"])+'\n')
 
@@ -1044,7 +1040,7 @@ def DemultiplexingView2(request, run_pk):
                 if runinfo.experiment_type == 'S2':
                     i1_file.close()
                     i2_file.close()
-                elif runinfo.experiment_type in ["TA" ,'TR',"TM"]:
+                elif runinfo.experiment_type in ["TA", 'TR', "TM"]:
                     i1_file.close()
         except Exception as e:
             data['writesamplesheeterror'] = 'Unexpected writing to SampleSheet.csv Error!'
@@ -1067,7 +1063,7 @@ def DemultiplexingView2(request, run_pk):
             cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
                 ' ' + basedirname + ' ' + request.user.email
         elif runinfo.experiment_type == 'TR':
-            # write extra_parameters to disk 
+            # write extra_parameters to disk
             with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
             cmd1 = 'bash ./utility/runDemux10xRNA.sh ' + runinfo.Flowcell_ID + \
