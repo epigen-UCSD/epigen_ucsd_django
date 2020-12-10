@@ -1095,7 +1095,7 @@ def SetQCDetailView(request, setqc_pk):
     fastqdir = settings.FASTQ_DIR
     tenxdir = settings.TENX_DIR
     allfolder = [fname for fname in os.listdir(
-        libdir) if os.path.isdir(os.path.join(libdir, fname))]
+        libdir) if os.path.isdir(os.path.join(libdir, fname))]  # TAKING LONG TIME
     summaryfield = ['status', 'set_id', 'set_name', 'date_requested',
                     'requestor', 'experiment_type', 'notes', 'url', 'version']
     groupinputinfo = ''
@@ -1114,7 +1114,7 @@ def SetQCDetailView(request, setqc_pk):
     list4 = [GenomeInfo.objects.values_list('genome_name', flat=True).get(
         id=x) for x in list(librariesset.values_list('genome', flat=True))]
     list5 = list(librariesset.values_list('label', flat=True))
-
+    print('2')
     # need list of experiment types
     liblist = [SeqInfo.objects.values_list(
         'libraryinfo', flat=True).get(id=x) for x in list1tem]
@@ -1131,6 +1131,7 @@ def SetQCDetailView(request, setqc_pk):
     else:
         collab = ''
     i = 0
+    print(list1)
     for item in list1:
         # check if 10x experiment processed by checking summary.HTML file
         if exp_type_list[i] == '10xATAC':

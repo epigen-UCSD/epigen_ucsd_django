@@ -35,7 +35,7 @@ def main():
     with open(sample_sheet) as f:
         lines = f.readlines()
         for l in lines:
-            ks = [k for k in barcode_dic.keys() if k in l]
+            ks = [k for k in barcode_dic.keys() if k in l.split(",")]
             if (len(ks) > 0):
                 i = 1
                 for b in barcode_dic[ks[0]]:

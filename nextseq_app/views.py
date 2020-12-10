@@ -729,7 +729,7 @@ def change_password(request):
 
 @transaction.atomic
 def DemultiplexingView(request, run_pk):
-    print('started xxxx')
+    print('started:'+str(run_pk))
 
     dmpdir = settings.NEXTSEQAPP_DMPDIR
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
@@ -902,6 +902,7 @@ def DemultiplexingView(request, run_pk):
                 ' ' + basedirname + ' ' + request.user.email
         elif runinfo.experiment_type == 'TM':
             # write extra_parameters to disk
+            print("TM")
             with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
             cmd1 = './utility/runDemux10xATAC_RNA.sh ' + runinfo.Flowcell_ID + \
