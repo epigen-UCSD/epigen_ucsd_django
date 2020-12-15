@@ -38,6 +38,9 @@ SNAP_PARAM_DICT = {
     'refgenome': 'GENOMETYPE',
 }
 
+genome_convert_10x_dict = {'GRCh37': 'hg19', 'GRCh38': 'hg38',
+                           'hg19': 'hg19', 'hg38': 'hg38', 'mm10': 'mm10'}
+
 # hold all single cell experiment values
 SINGLE_CELL_EXPS = ['10xATAC', 'scRNA-seq', 'snRNA-seq', 'scATAC-seq']
 
@@ -531,7 +534,7 @@ def submit_cooladmin(request):
     """This function handles a cooladmin submission request from LIMS user.
     This function run a bash script ./utility/coolAdmin.sh
     """
-    genome_convert_10x_dict = {'GRCh37': 'hg19', 'GRCh38': 'hg38'}
+    #genome_convert_10x_dict = {'GRCh37': 'hg19', 'GRCh38': 'hg38','hg19':'hg19','hg38':'hg38','mm10':'mm10'}
     seq = request.POST.get('seq')
     email = request.user.email
     info = SeqInfo.objects.select_related(
@@ -552,15 +555,13 @@ def submit_cooladmin(request):
     submission_dict = model_to_dict(submission)
     if created == True:
         if(exp_type == '10xATAC'):
-            submission_dict['refgenome'] = genome_convert_10x_dict[getReferenceUsed(
-                seq)]
+            submission_dict['refgenome'] = getReferenceUsed(seq)
         else:  # set ref genome to default species
             submission_dict['refgenome'] = species
             submission.date_modified = datetime.now()
     else:
         if(exp_type == '10xATAC'):
-            submission_dict['refgenome'] = genome_convert_10x_dict[getReferenceUsed(
-                seq)]
+            submission_dict['refgenome'] = getReferenceUsed(seq)
         else:
             submission_dict['refgenome'] = species
         print('submission dict: ', submission_dict)
@@ -651,6 +652,10 @@ def edit_cooladmin_sub(request, seqinfo):
         else:
             form.fields['refgenome'].initial = [defaultgenome[species]]
 
+    print("{0} is a new submission?: {1}".format(
+        seqinfo_id, submission == False))
+    print("default genome: {0}".format(ref_genome_used))
+
     # handle save of new submission form
     if request.method == 'POST':
         post = request.POST.copy()
@@ -667,7 +672,8 @@ def edit_cooladmin_sub(request, seqinfo):
             #print('\n data: ',data)
             #print('\n post: ',post)
             form = CoolAdminForm(post, initial=data)
-            #print('form: is valid and has changed: ',form.is_valid(), form.has_changed())
+            print('form: is valid and has changed: ',
+                  form.is_valid(), form.has_changed())
             if form.is_valid():
                 if(form.has_changed()):
                     data = form.cleaned_data
@@ -690,7 +696,7 @@ def edit_cooladmin_sub(request, seqinfo):
                 data['seqinfo'] = seqinfo_id
                 obj = CoolAdminSubmission(**data)
                 obj.save()
-                #print('new submission: ',model_to_dict(obj))
+                print('new submission: ', model_to_dict(obj))
 
         return redirect('singlecell_app:myseqs')
 
@@ -842,7 +848,7 @@ def getReferenceUsed(seq):
             data = json.load(json_file)
             refgenome = data["reference_assembly"]
     # open summarry.json and read "reference_assembly"
-    return refgenome
+    return genome_convert_10x_dict[refgenome]
 
 
 def get_latest_modified_time(seq_id, seq_object_id, date_sub_for_seq, cooladmin_objects):
