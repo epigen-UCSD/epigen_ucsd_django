@@ -651,11 +651,11 @@ def edit_cooladmin_sub(request, seqinfo):
             form.fields['refgenome'].initial = [ref_genome_used]
         else:
             form.fields['refgenome'].initial = [defaultgenome[species]]
-
+    print(form.fields['refgenome'].initial)
     print("{0} is a new submission?: {1}".format(
         seqinfo_id, submission == False))
     print("default genome: {0}".format(ref_genome_used))
-
+    # print(form)
     # handle save of new submission form
     if request.method == 'POST':
         post = request.POST.copy()
