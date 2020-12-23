@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.models import CollaboratorPersonInfo
 from singlecell_app.models import SingleCellObject
-from singlecell_app.views import get_seq_status
+from utility.utility import get_seq_status
 #from singlecell_app.models import SingleCellObject
 # from search_app.documents import SampleInfo as SampleDoc, SeqInfo as SeqDoc, LibraryInfo as LibDoc
 # Create your models here.
@@ -214,8 +214,8 @@ class SeqInfo(models.Model):
         lib = LibraryInfo.objects.get(library_id=str(self.libraryinfo))
         if(lib.experiment_type in SINGLE_CELL_EXPS and not SingleCellObject.objects.all().filter(seqinfo=self).exists()):
             self.make_singlecell_object(lib.experiment_type)
-            self.status = get_seq_status(
-                self.seq_id, self.read_type, lib.experiment_type)
+            # self.status = get_seq_status(
+            #    self.seq_id, self.read_type, lib.experiment_type)
         super().save(*args, **kwargs)
 
     def make_singlecell_object(self, experiment_type):
