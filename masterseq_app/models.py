@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from nextseq_app.models import Barcode
 from epigen_ucsd_django.models import CollaboratorPersonInfo
 from singlecell_app.models import SingleCellObject
-from utility.utility import get_seq_status
+#from utility.utility import get_seq_status
 #from singlecell_app.models import SingleCellObject
 # from search_app.documents import SampleInfo as SampleDoc, SeqInfo as SeqDoc, LibraryInfo as LibDoc
 # Create your models here.
