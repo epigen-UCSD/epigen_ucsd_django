@@ -848,7 +848,10 @@ def getReferenceUsed(seq):
             data = json.load(json_file)
             refgenome = data["reference_assembly"]
     # open summarry.json and read "reference_assembly"
-    return genome_convert_10x_dict[refgenome]
+    try:
+        return genome_convert_10x_dict[refgenome]
+    except:
+        return 'N/A'
 
 
 def get_latest_modified_time(seq_id, seq_object_id, date_sub_for_seq, cooladmin_objects):
