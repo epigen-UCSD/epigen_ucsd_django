@@ -213,10 +213,12 @@ class SeqInfo(models.Model):
         # check if single cell type expt.
         lib = LibraryInfo.objects.get(library_id=str(self.libraryinfo))
         if(lib.experiment_type in SINGLE_CELL_EXPS and not SingleCellObject.objects.all().filter(seqinfo=self).exists()):
+            super().save(*args, **kwargs)
             self.make_singlecell_object(lib.experiment_type)
             # self.status = get_seq_status(
             #    self.seq_id, self.read_type, lib.experiment_type)
-        super().save(*args, **kwargs)
+        else:
+            super().save(*args, **kwargs)
 
     def make_singlecell_object(self, experiment_type):
         # create single cell obj
