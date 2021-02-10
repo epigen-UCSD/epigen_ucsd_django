@@ -407,7 +407,7 @@ def RunCreateView6(request):
             return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
         for ke in i7index_list.keys():
-            if runinfo.experiment_type in ["TA", "TR"]:
+            if runinfo.experiment_type in ["TA", "TR", "TM"]:
                 duplicate = IndexValidation2(
                     i7index_list[ke], i5index_list[ke])
             else:
