@@ -136,31 +136,6 @@ def AllRunsView(request):
         return render(request, 'nextseq_app/runsinfo_bio.html', {'RunInfo_list': RunInfo_list})
 
 
-class HomeView(ListView):
-    template_name = "nextseq_app/runsinfo.html"
-    context_object_name = 'RunInfo_list'
-
-    def get_queryset(self):
-        queryset_list = RunInfo.objects.all()
-        if self.request.GET.get('q'):
-            q = self.request.GET.get('q')
-            # print(q)
-            queryset_list = queryset_list.filter(
-                Q(operator__username__icontains=q) |
-                Q(Flowcell_ID__icontains=q) |
-                Q(read_type__icontains=q) |
-                Q(read_length__icontains=q)
-
-            ).distinct()
-
-        return queryset_list
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['number'] = self.get_queryset().count()
-        return context
-
-
 def AllSamplesView(request):
     Samples_list = LibrariesInRun.objects.all().select_related(
         'singlerun', 'i7index', 'i5index')
@@ -599,14 +574,6 @@ def RunUpdateView2(request, username, run_pk):
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
 
         if run_form.has_changed() or sample_formset.has_changed():
-            # dmpdir = settings.NEXTSEQAPP_DMPDIR
-            # for fname in os.listdir(dmpdir):
-            #    if os.path.isdir(os.path.join(dmpdir, fname)) and fname.endswith(runinfo.Flowcell_ID):
-            #        basedirname = os.path.join(dmpdir, fname)
-            # try:
-            #    shutil.rmtree(os.path.join(basedirname, 'Data/Fastqs'))
-            # except (FileNotFoundError, UnboundLocalError) as e:
-            #    pass
             runinfo.jobstatus = 'ClickToSubmit'
 
         runinfo.save()
@@ -667,65 +634,6 @@ def RunDeleteView2(request, run_pk):
         raise PermissionDenied
     deleterun.delete()
     return redirect('nextseq_app:userruns')
-
-
-class UserRegisterView(FormView):
-    form_class = UserRegisterForm
-    template_name = 'nextseq_app/registration.html'
-    success_url = reverse_lazy('nextseq_app:userruns')
-
-    def form_valid(self, form):
-        user = form.save(commit=False)
-        user.set_password(form.cleaned_data['password1'])
-        user.save()
-        return HttpResponseRedirect(self.success_url)
-
-
-class UserLoginView(View):
-    form_class = UserLoginForm
-    template_name = 'nextseq_app/login.html'
-
-    def get(self, request):
-        form = self.form_class(None)
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request):
-        form = self.form_class(request.POST)
-
-        if form.is_valid():
-            user = authenticate(
-                username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return redirect('nextseq_app:userruns')
-            else:
-                return render(request, self.template_name, {'form': form, 'error_message': 'Invalid login'})
-
-        return render(request, self.template_name, {'form': form})
-
-
-def logout_view(request):
-    logout(request)
-    return redirect('nextseq_app:userruns')
-
-
-def change_password(request):
-    if request.method == 'POST':
-        form = PasswordChangeForm(user=request.user, data=request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, form.user)
-            # messages.success(request, 'Your password was successfully updated!')
-            return redirect('nextseq_app:userruns')
-        # else:
-            # messages.error(request, 'Please correct the error below.')
-    else:
-        form = PasswordChangeForm(user=request.user)
-    return render(request, 'nextseq_app/change_password.html', {
-        'form': form
-    })
-
 
 @transaction.atomic
 def DemultiplexingView(request, run_pk):
