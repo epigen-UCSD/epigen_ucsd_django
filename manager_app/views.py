@@ -77,45 +77,6 @@ def CollaboratorListView(request):
     else:
         return render(request, 'manager_app/collaboratorlist.html', context)
 
-# @transaction.atomic
-# def CollaboratorCreateView(request):
-#     user_form = UserForm(request.POST or None)
-#     profile_form = CollaboratorPersonForm(request.POST or None)
-#     group_form = GroupForm(request.POST or None)
-#     group_create_form = GroupCreateForm(request.POST or None)
-#     person_index_form = PersonIndexForm(request.POST or None)
-
-#     if request.method=='POST' and 'profile_save' in request.POST:
-#         if user_form.is_valid() and profile_form.is_valid() and group_form.is_valid() and person_index_form.is_valid():
-#             this_user = user_form.save()
-#             this_profile = profile_form.save(commit=False)
-#             this_profile.person_id = this_user
-#             this_profile.save()
-#             this_group = Group.objects.get(name=group_form.clean_name())
-#             this_group.user_set.add(this_user)
-#             this_person_index = person_index_form.save(commit=False)
-#             this_person_index.person = this_profile
-#             this_person_index.save()
-
-#             messages.success(request,'Your profile was successfully updated!')
-#             return redirect('manager_app:collab_list')
-#         else:
-#             messages.error(request,'Please correct the error below.')
-#     # elif request.method=='POST' and 'group_save' in request.POST:
-#     #     if group_create_form.is_valid():
-#     #         group_create_form.save()
-#     context = {
-#         'user_form': user_form,
-#         'profile_form': profile_form,
-#         'group_form':group_form,
-#         'group_create_form':group_create_form,
-#         'person_index_form':person_index_form,
-#     }
-#     if is_member(request.user,'manager'):
-#         return render(request, 'manager_app/profile_add.html', context)
-#     else:
-#         return render(request, 'manager_app/profile_add_nogroup.html', context)
-
 
 @transaction.atomic
 def CollaboratorCreateView(request):
@@ -243,7 +204,6 @@ def CollabInfoAddView(request):
 
 def load_collabs(request):
     q = request.GET.get('term', '')
-    #collabusers = User.objects.filter(Q(first_name__icontains = q)|Q(last_name__icontains = q)).values('first_name','last_name')[:20]
     collabusers = User.objects.filter(
         Q(first_name__icontains=q) | Q(last_name__icontains=q))
     for f in Group.objects.filter(name__icontains=q):
@@ -267,7 +227,6 @@ def load_collabs(request):
 
 def load_collabs_old(request):
     q = request.GET.get('term', '')
-    #collabusers = User.objects.filter(Q(first_name__icontains = q)|Q(last_name__icontains = q)).values('first_name','last_name')[:20]
     collabusers = User.objects.filter(
         Q(first_name__icontains=q) | Q(last_name__icontains=q))
     for f in Group.objects.filter(name__icontains=q):
@@ -289,11 +248,8 @@ def load_collabs_old(request):
 
 def load_researchcontact(request):
     groupname = request.GET.get('group')
-    # researchcontact = CollaboratorPersonInfo.objects.\
-    # filter(person_id__groups__name__in=[groupname]).prefetch_related(Prefetch('person_id__groups'))
     researchcontact = CollaboratorPersonInfo.objects.filter(
         person_id__groups__name__in=[groupname])
-    # print(researchcontact)
     return render(request, 'manager_app/researchcontact_dropdown_list_options.html', {'researchcontact': researchcontact})
 
 
@@ -301,7 +257,6 @@ def load_email(request):
     colllab_id = request.GET.get('colllab_id')
 
     researchcontact = CollaboratorPersonInfo.objects.get(id=colllab_id)
-    # print(researchcontact.email)
     return render(request, 'manager_app/email_dropdown_list_options.html', {'researchcontact': researchcontact})
 
 
@@ -340,7 +295,6 @@ def ServiceRequestCreateView(request):
                 for q in qs:
                     all_quote.append(q)
 
-            # print(all_quote)
             all_quote_number = [int(x.split(' ')[-1]) for x in all_quote if x]
             if all_quote_number:
                 max_quote = max(all_quote_number)
@@ -351,7 +305,6 @@ def ServiceRequestCreateView(request):
             this_quote_nunmber = ' '.join([group_name.split(' ')[0][0].upper()+group_name.split(
                 ' ')[-1][0].upper(), datesplit[1]+datesplit[2]+datesplit[0][-2:], str(max_quote+1).zfill(4)])
 
-            # print(institute)
             if servicerequestitems_formset.is_valid():
                 for form in servicerequestitems_formset.forms:
                     if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
@@ -592,7 +545,6 @@ def ServiceRequestUpdateView(request, pk):
                         'rate(industry users)', 'quantity']
                 displayorder_request = ['service_request_id', 'quote_number', 'quote_amount', 'date',
                                         'group', 'institute', 'research_contact', 'research_contact_email', 'notes', 'status']
-                # print(data_request)
 
                 context = {
                     'servicerequest_form': servicerequest_form,
@@ -689,9 +641,6 @@ def ServiceRequestUpdateViewNew(request, pk):
 
     servicerequestitems_formset = ServiceRequestItemInlineFormSet(
         request.POST or None, initial=datainitial)
-    #servicerequestitems_formset.extra = itemsinfo.count()
-
-    # print(servicerequestitems_formset)
 
     today = datetime.date.today()
     datesplit = str(datetime.date.today()).split('-')
@@ -703,9 +652,8 @@ def ServiceRequestUpdateViewNew(request, pk):
         institute = servicerequest_form.cleaned_data['institute']
         research_contact = servicerequest_form.cleaned_data['research_contact']
         research_contact_email = servicerequest_form.cleaned_data['research_contact_email']
-
         this_service_request_id = thiservicerequest.service_request_id
-        # print(institute)
+
         if servicerequestitems_formset.is_valid():
             for form in servicerequestitems_formset.forms:
                 if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
@@ -771,7 +719,7 @@ def ServiceRequestUpdateViewNew(request, pk):
                         'rate(industry users)', 'quantity']
                 displayorder_request = ['service_request_id', 'quote_number', 'quote_amount', 'date',
                                         'group', 'institute', 'research_contact', 'research_contact_email', 'notes', 'status']
-                # print(data_request)
+
                 print(data_requestitem)
 
                 context = {
@@ -1045,198 +993,6 @@ def ServiceRequestAddNewQuoteView(request, pk):
 
     return render(request, 'manager_app/manager_feeforservice_servicerequest_addanewquote.html', context)
 
-
-@transaction.atomic
-def ServiceRequestCreateViewOld(request):
-
-    data_requestitem = {}
-    data_request = {}
-
-    contact_form = ContactForm(request.POST or None)
-    ServiceRequestItemFormSet = formset_factory(
-        ServiceRequestItemCreationForm, can_delete=True)
-    servicerequestitems_formset = ServiceRequestItemFormSet(
-        request.POST or None)
-
-    today = datetime.date.today()
-    datesplit = str(datetime.date.today()).split('-')
-
-    if request.method == 'POST':
-        servicerequest_form = ServiceRequestCreationForm(request.POST)
-        if servicerequest_form.is_valid() and contact_form.is_valid():
-            group_name = contact_form.cleaned_data['group']
-            research_contact = contact_form.cleaned_data['research_contact']
-            research_contact_name = research_contact.person_id.first_name + \
-                ' '+research_contact.person_id.last_name
-            research_contact_email = contact_form.cleaned_data['research_contact_email']
-            print(research_contact_email)
-            groupinfo = Group.objects.get(name=group_name)
-            all_quote_list = ServiceRequest.objects.values_list(
-                'quote_number', flat=True)
-            all_quote = []
-            for qs in all_quote_list:
-                for q in qs:
-                    all_quote.append(q)
-
-            print(all_quote)
-            all_quote_number = [int(x.split(' ')[-1]) for x in all_quote if x]
-            if all_quote_number:
-                max_quote = max(all_quote_number)
-            else:
-                max_quote = 0
-            this_service_request_id = ' '.join([group_name.split(' ')[0][0].upper(
-            )+group_name.split(' ')[-1][0].upper(), datesplit[1]+datesplit[2]+datesplit[0][-2:]])
-            this_quote_nunmber = ' '.join([group_name.split(' ')[0][0].upper()+group_name.split(
-                ' ')[-1][0].upper(), datesplit[1]+datesplit[2]+datesplit[0][-2:], str(max_quote+1).zfill(4)])
-            data_request = {
-                'service_request_id': this_service_request_id,
-                'quote_number': this_quote_nunmber,
-                'date': str(today),
-                'group': group_name,
-                'status': 'initiate',
-                'research_contact': research_contact_name,
-                'research_contact_email': research_contact_email,
-                'notes': servicerequest_form.cleaned_data['notes'],
-            }
-            try:
-                institute = Group_Institution.objects.get(
-                    group=groupinfo).institution.lower()
-            except:
-                institute = 'non-ucsd'
-            # print(institute)
-            if servicerequestitems_formset.is_valid():
-                for form in servicerequestitems_formset.forms:
-                    if form not in servicerequestitems_formset.deleted_forms and form.cleaned_data:
-                        service = form.cleaned_data['service']
-                        quantity = form.cleaned_data['quantity']
-                        if service.service_name == 'ATAC-seq':
-                            if float(quantity) > 24 and float(quantity) <= 96:
-                                service = ServiceInfo.objects.get(
-                                    service_name='ATAC-seq_24')
-                            elif float(quantity) > 96:
-                                service = ServiceInfo.objects.get(
-                                    service_name='ATAC-seq_96')
-                        # print(service.service_name)
-
-                        if institute == 'ucsd':
-                            data_requestitem[service.service_name] = {
-                                'rate(uc users)': str(service.uc_rate)+'/'+service.rate_unit,
-                                'rate_number': service.uc_rate,
-                                'quantity': quantity,
-                                'rate_unit': service.rate_unit,
-                            }
-                        else:
-                            data_requestitem[service.service_name] = {
-                                'rate(non-uc users)': str(service.nonuc_rate)+'/'+service.rate_unit,
-                                'rate_number': service.nonuc_rate,
-                                'quantity': quantity,
-                                'rate_unit': service.rate_unit,
-                            }
-                total_price = sum([float(x['rate_number'])*float(x['quantity'])
-                                   for x in data_requestitem.values()])
-                total_expression = '+'.join(['$'+str(x['rate_number'])+'*'+str(
-                    x['quantity'])+' '+x['rate_unit']+'s' for x in data_requestitem.values()])+' = $'+str(total_price)
-
-                if 'Preview' in request.POST:
-                    if institute == 'ucsd':
-                        displayorde_requestitem = [
-                            'rate(uc users)', 'quantity']
-                    else:
-                        displayorde_requestitem = [
-                            'rate(non-uc users)', 'quantity']
-                    displayorder_request = ['service_request_id', 'quote_number', 'date',
-                                            'group', 'research_contact', 'research_contact_email', 'notes', 'status']
-                    # print(data_request)
-
-                    context = {
-                        'contact_form': contact_form,
-                        'servicerequest_form': servicerequest_form,
-                        'servicerequestitems_formset': servicerequestitems_formset,
-                        'modalshow': 1,
-                        'displayorde_requestitem': displayorde_requestitem,
-                        'displayorder_request': displayorder_request,
-                        'data_requestitem': data_requestitem,
-                        'data_request': data_request,
-                        'total_expression': total_expression
-                    }
-                    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate.html', context)
-
-                if 'Save' in request.POST:
-                    thisrequest = ServiceRequest.objects.create(
-                        group=groupinfo,
-                        service_request_id=data_request['service_request_id'],
-                        quote_number=[data_request['quote_number']],
-                        date=data_request['date'],
-                        research_contact=research_contact,
-                        research_contact_email=data_request['research_contact_email'],
-                        notes=data_request['notes'],
-                        status=data_request['status'],
-                    )
-                    service_items = []
-                    service_breakdown = []
-                    for item in data_requestitem.keys():
-                        print(item)
-                        print(data_requestitem[item]['quantity'])
-                        ServiceRequestItem.objects.create(
-                            request=thisrequest,
-                            service=ServiceInfo.objects.get(service_name=item),
-                            quantity=data_requestitem[item]['quantity'],
-                        )
-                        service_items.append(item)
-                        this_service_item = ServiceInfo.objects.get(
-                            service_name=item)
-                        service_breakdown.append(':'.join([this_service_item.description_brief, str(
-                            data_requestitem[item]['rate_number'])+'/'+this_service_item.rate_unit]))
-                    quote_compact = ''.join(
-                        data_request['quote_number'].split(' '))
-                    collab_info = [
-                        group_name, research_contact_name, research_contact_email]
-                    dear = 'Dr. ' + group_name.split(' ')[-1]
-                    service_items = ','.join(set(service_items))
-
-                    pdf_context = {
-                        'quote_id': quote_compact,
-                        'date': today.strftime('%B')+' '+str(today.day)+daysuffix(today.day)+','+str(today.year),
-                        'collab_info': collab_info,
-                        'dear': dear,
-                        'service_items': service_items,
-                        'service_breakdown': service_breakdown,
-                        'total_expression': total_expression,
-
-                    }
-
-                    paragraphs = ['first paragraph',
-                                  'second paragraph', 'third paragraph']
-                    html_string = render_to_string(
-                        'manager_app/quote_pdf_template.html', pdf_context)
-                    pdf_name = quote_compact+'.pdf'
-                    html = HTML(string=html_string,
-                                base_url=request.build_absolute_uri())
-                    html.write_pdf(target=os.path.join(
-                        settings.QUOTE_DIR, pdf_name))
-
-                    return redirect('manager_app:servicerequests_list')
-
-    else:
-        servicerequest_form = ServiceRequestCreationForm(None)
-
-    context = {
-        'contact_form': contact_form,
-        'servicerequest_form': servicerequest_form,
-        'servicerequestitems_formset': servicerequestitems_formset,
-    }
-
-    return render(request, 'manager_app/manager_feeforservice_servicerequestcreate_old.html', context)
-
-
-def ServiceRequestDataViewOld(request):
-    ServiceRequest_list = ServiceRequest.objects.all().select_related('group', 'research_contact__person_id').prefetch_related(Prefetch('group__group_institution_set')).values('pk', 'service_request_id', 'quote_number',
-                                                                                                                                                                                'date', 'group__name', 'research_contact__person_id__first_name', 'research_contact__person_id__last_name', 'research_contact_email', 'status', 'notes', 'group__group_institution__institution')
-    data = list(ServiceRequest_list)
-
-    return JsonResponse(data, safe=False)
-
-
 def ServiceRequestDataView(request):
     ServiceRequest_list = ServiceRequest.objects.all().values('pk', 'service_request_id', 'quote_number',
                                                               'date', 'group', 'institute', 'research_contact', 'research_contact_email', 'status', 'notes')
@@ -1348,7 +1104,6 @@ def QuoteAddView(request):
             if 'Preview' in request.POST:
                 displayorder_request = [
                     'quote_number', 'date', 'group', 'research_contact', 'quote_amount']
-                # print(data_request)
 
                 context = {
                     'quotecreate_form': quotecreate_form,
@@ -1440,38 +1195,6 @@ def QuoteListView(request):
             quote_list.append(this_data)
     data = quote_list
     return JsonResponse(data, safe=False)
-
-
-@transaction.atomic
-def QuoteBulkAddView(request):
-    quotes_form = QuoteBulkImportForm(request.POST or None)
-    if quotes_form.is_valid():
-        quotesinfo = quotes_form.cleaned_data['quotesinfo']
-        for lineitem in quotesinfo.strip().split('\n'):
-            fields = lineitem.split('\t')
-            contact_info = fields[1].split('/')
-            if len(contact_info) == 2:
-                group_name = contact_info[0].strip()
-                research_contact = contact_info[1].strip()
-            elif len(contact_info) == 1:
-                group_name = contact_info[0].strip()
-                research_contact = ''
-            this_date = datetransform2(fields[3].strip())
-
-            thisrequest = ServiceRequest.objects.create(
-                group=group_name,
-                quote_number=[fields[4].strip()],
-                quote_amount=[fields[5].strip()],
-                date=this_date,
-                research_contact=research_contact,
-            )
-        return redirect('manager_app:quote_list')
-    context = {
-        'quotes_form': quotes_form,
-    }
-
-    return render(request, 'manager_app/manager_feeforservice_quotebulkimport.html', context)
-
 
 def QuotePdfUpload(request):
     if not request.user.groups.filter(name='manager').exists():

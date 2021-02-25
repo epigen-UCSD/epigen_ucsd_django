@@ -28,9 +28,6 @@ class GroupForm(forms.Form):
 		label='Group Name',
 		widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
 		)
-	# def __init__(self, *args, **kwargs):
-	# 	super().__init__(*args, **kwargs)
-	# 	self.fields['name'].label = "Group name"
 	def clean_name(self):
 		data = self.cleaned_data['name']
 		if not Group.objects.filter(name=data).exists() :
@@ -45,9 +42,7 @@ class ContactForm(forms.Form):
 		)
 	research_contact = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),required=True)
 	research_contact_email = forms.ChoiceField(required=True)
-	# def __init__(self, *args, **kwargs):
-	# 	super().__init__(*args, **kwargs)
-	# 	self.fields['name'].label = "Group name"
+
 	def clean_group(self):
 		data = self.cleaned_data['group']
 		if not Group.objects.filter(name=data).exists() :
@@ -101,14 +96,6 @@ class ServiceRequestItemCreationForm(forms.ModelForm):
 		self.fields['service'].queryset = ServiceInfo.objects.all().exclude(service_name__in=excludes)
 		self.empty_permitted = False
 
-
-# class ServiceRequestCreationForm(forms.ModelForm):
-# 	class Meta:
-# 		model = ServiceRequest
-# 		fields = ['notes']
-# 		widgets = {
-# 			'notes': forms.Textarea(attrs={'cols': 60, 'rows': 3}),
-# 		}
 class ServiceRequestCreationForm(forms.ModelForm):
 	class Meta:
 		model = ServiceRequest
