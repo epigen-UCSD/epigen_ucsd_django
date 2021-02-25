@@ -16,7 +16,6 @@ class CollaboratorPersonInfo(models.Model):
         Group, on_delete=models.CASCADE, blank=True, null=True)
     cell_phone = models.CharField(
         'phone', max_length=200, blank=True, null=True)
-    #email = models.EmailField(max_length=254,blank=True,null=True)
     email = ArrayField(models.EmailField(
         max_length=254), blank=True, null=True)
     phone = ArrayField(models.CharField(
@@ -29,12 +28,6 @@ class CollaboratorPersonInfo(models.Model):
 
     class Meta:
         unique_together = ('person_id', 'group')
-
-# class Person_Index(models.Model):
-# 	index_name = models.CharField(max_length=200,blank=True,null=True)
-# 	person = models.ForeignKey(CollaboratorPersonInfo, on_delete=models.CASCADE,blank=True,null=True)
-# 	class Meta:
-# 		unique_together = ('index_name','person')
 
 
 class Group_Institution(models.Model):

@@ -60,8 +60,6 @@ def change_password(request):
                 return redirect('collaborator_app:user_metadata')
             else:
                 return redirect('nextseq_app:userruns')
-        # else:
-            #messages.error(request, 'Please correct the error below.')
     else:
         form = PasswordChangeForm(user=request.user)
     if not is_in_multiple_groups(request.user,['wetlab','bioinformatics']):
