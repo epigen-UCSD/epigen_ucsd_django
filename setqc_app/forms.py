@@ -59,9 +59,6 @@ class LibrariesSetQCCreationForm(forms.ModelForm):
             'notes': forms.Textarea(attrs={'cols': 60, 'rows': 3}),
 
         }
-    # def __init__(self, *args, **kwargs):
-    # 	super().__init__(*args, **kwargs)
-    # 	self.fields['collaborator'].queryset = User.objects.filter(groups__name='epigencollaborators')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -169,41 +166,9 @@ class SeqLabelGenomeCreationForm(forms.Form):
 class BaseSeqLabelGenomeCreationFormSet(BaseFormSet):
     def get_form_kwargs(self, index):
         kwargs = super().get_form_kwargs(index)
-        # print(kwargs['thisspecies_list'])
-        # print(index)
         kwargs['thisspecies'] = kwargs['thisspecies_list'][index]
         return kwargs
 
-# class EncodeSetForm(forms.Form):
-#     encode_link = forms.CharField(
-#         widget=forms.Textarea(attrs={'cols': 100, 'rows': 2}),
-#         required=True,
-#         )
-#     step_to_run = forms.ChoiceField(
-#         choices=[('step1','metadata saving + fq download'), ('step2','metadata saving + fq download + setqc create + setqc processing')],
-#         initial='step2',
-#         required=False
-#         )
-#     set_name =  forms.CharField(required=False)
-#     experiment_type = forms.ChoiceField(
-#         choices=[('ATAC-seq', 'ATAC-seq'), ('ChIP-seq', 'ChIP-seq')],
-#         required=False,
-#         widget=forms.Select(attrs={'id':'encode_experiment_type'})
-#         )
-#     genome = forms.ChoiceField(choices=[(x.genome_name, x.genome_name) for x in GenomeInfo.objects.all()],initial='hg38')
-#     notes = forms.CharField(
-#         widget=forms.Textarea(attrs={'cols': 40, 'rows': 2}),
-#         required=False
-#         )
-#     def clean(self):
-#         cleaned_data = super().clean()
-#         step_to_run = cleaned_data.get("step_to_run")
-#         print(step_to_run)
-#         set_name = cleaned_data.get("set_name")
-#         if step_to_run == 'step2':
-#             if set_name == '':
-#                 msg = 'Fill out Set name'
-#                 self.add_error('set_name', msg)
 
 
 

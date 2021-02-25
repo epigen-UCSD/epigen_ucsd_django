@@ -19,6 +19,5 @@ urlpatterns = [
     path('<int:setqc_pk>/',views.SetQCDetailView, name='setqc_detail'),
     path('ajax/load-users/', views.load_users, name='ajax_load_users'),
     path('<int:setqc_pk>/<str:outputname>/web_summary.html', views.tenx_output, name='10xATACoutput'),
-    #path('encodesetadd/', views.EncodeSetQCCreateView, name='encode_setqc_add'),
 
 ]

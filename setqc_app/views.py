@@ -284,15 +284,6 @@ def SetQCgenomelabelCreateView(request, setqc_pk):
         speci_list.append(speci)
         temdic['speciesbelong'] = speci
         temdic['genomeinthisset'] = defaultgenome[speci]
-        # if LibraryInSet.objects.filter(seqinfo=x.seqinfo).count()>1:
-        #     obj = LibraryInSet.objects.filter(seqinfo=x.seqinfo).order_by('-pk')[1]
-        #     if obj.label:
-        #         temdic['lableinthisset'] = obj.label
-        #     else:
-        #         temdic['lableinthisset'] = x.seqinfo.seq_id
-        # else:
-        #     temdic['lableinthisset'] = x.seqinfo.seq_id
-
         if x.seqinfo.default_label:
             temdic['lableinthisset'] = x.seqinfo.default_label
         else:
@@ -416,7 +407,6 @@ def SetQCUpdateView(request, setqc_pk):
             temdic['librariestoincludeIP'] = grouplibrariesOrderKeeped(
                 [x.seqinfo.seq_id for x in chipset.filter(group_number=i, is_input=False).order_by('pk')])
             initialgroup.append(temdic)
-            #print([x for x in chipset.filter(group_number=i,is_input=True)])
         ChIPLibrariesFormSet = formset_factory(
             ChIPLibrariesToIncludeCreatForm, can_delete=True)
         chiplibraries_formset = ChIPLibrariesFormSet(request.POST or None,
@@ -449,8 +439,6 @@ def SetQCUpdateView(request, setqc_pk):
                         if form not in chiplibraries_formset.deleted_forms and form.cleaned_data:
                             libinputs = form.cleaned_data['librariestoincludeInput']
                             libips = form.cleaned_data['librariestoincludeIP']
-                            # print(libinputs)
-                            # print(libips)
                             for item in libinputs:
                                 if item:
                                     tosave_item = LibraryInSet(
@@ -473,7 +461,6 @@ def SetQCUpdateView(request, setqc_pk):
                                     tosave_list.append(tosave_item)
                             groupnum += 1
                     setinfo.libraries_to_include.clear()
-                    # print(tosave_list)
                     LibraryInSet.objects.bulk_create(tosave_list)
                 if flag == 1:
                     setinfo.url = ''
@@ -530,9 +517,7 @@ def SetQCgenomelabelUpdateView(request, setqc_pk):
                                                     'thisspecies_list': speci_list}
                                                 )
     if formsetcustom.is_valid():
-        # print('right')
         for form in formsetcustom.forms:
-            # print(form)
             seqidtm = form.cleaned_data['sequencingid']
             genometm = form.cleaned_data['genomeinthisset']
             labeltm = form.cleaned_data['lableinthisset']
@@ -545,7 +530,6 @@ def SetQCgenomelabelUpdateView(request, setqc_pk):
             setinfo.version = ''
             setinfo.status = 'ClickToSubmit'
             setinfo.save()
-        # return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
         return redirect('setqc_app:usersetqcs')
 
     context = {
@@ -557,8 +541,6 @@ def SetQCgenomelabelUpdateView(request, setqc_pk):
 
 def GetNotesView(request, setqc_pk):
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
-    # if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
-    #     raise PermissionDenied
     data = {}
     data['notes'] = setinfo.notes
     return JsonResponse(data)
@@ -772,15 +754,6 @@ def RunSetQC(request, setqc_pk):
         data['writeseterror'] = 'Unexpected writing to Set.txt Error!'
     setinfo.status = 'JobSubmitted'
     setinfo.save()
-
-    # run setQC script
-    # cmd1 = './utility/runsetqctest.sh ' + setinfo.set_id + ' ' + request.user.email
-    # print(cmd1)
-
-    # cmd_tm = './utility/encode_test.sh .' + setinfo.set_id +'.txt'
-    # print(cmd_tm)
-    # log = open('some file.txt', 'a')
-    # p = subprocess.Popen(cmd_tm, shell=True, stdout=log, stderr=log)
 
     print(cmd1)
     p = subprocess.Popen(
@@ -1099,8 +1072,6 @@ def SetQCDetailView(request, setqc_pk):
     summaryfield = ['status', 'set_id', 'set_name', 'date_requested',
                     'requestor', 'experiment_type', 'notes', 'url', 'version']
     groupinputinfo = ''
-    # librariesset = LibraryInSet.objects.filter(
-    #     librariesetqc=setinfo).order_by('group_number', '-is_input')
     librariesset = LibraryInSet.objects.filter(
         librariesetqc=setinfo).order_by('pk')
     list1tem = list(librariesset.values_list('seqinfo', flat=True))
