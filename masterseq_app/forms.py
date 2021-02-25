@@ -23,8 +23,6 @@ class SampleCreationForm(forms.ModelForm):
         required=False,
         widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
         )
-    # research_person = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
-    #     required=False,widget=forms.Select(attrs={'id':'id_research_contact'}))
 
     class Meta:
         model = SampleInfo
@@ -45,20 +43,7 @@ class SampleCreationForm(forms.ModelForm):
         if self.instance.group:
             self.initial['group'] = str(self.instance.group.name)
             gname = str(self.instance.group.name)
-            # self.fields['research_person'].queryset = CollaboratorPersonInfo.objects.\
-            # filter(person_id__groups__name__in=[gname]).\
-            # prefetch_related(Prefetch('person_id__groups'))
-            # self.fields['research_person'].label_from_instance = \
-            # lambda obj: "%s %s__%s__%s" % (obj.person_id.first_name, \
-            #     obj.person_id.last_name,obj.person_id.email,obj.cell_phone)
 
-            # self.fields['fiscal_person_index'].queryset = Person_Index.objects.\
-            # filter(person__person_id__groups__name__in=[gname]).\
-            # prefetch_related(Prefetch('person__person_id__groups'))
-            # self.fields['fiscal_person_index'].label_from_instance = \
-            # lambda obj: "%s %s__%s__%s" % (obj.person.person_id.first_name, \
-            #     obj.person.person_id.last_name,obj.person.person_id.email,\
-            #     obj.index_name)
     def clean_group(self):
         gname = self.cleaned_data['group']
         if gname:
@@ -87,40 +72,6 @@ class LibraryCreationForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.initial['sampleinfo'] = self.instance.sampleinfo.__str__
 
-        #self.fields['sampleinfo'].queryset = SampleInfo.objects.order_by('-pk')
-    # def clean(self):
-    # def clean(self, *args, **kwargs):
-    # 	data = self.data.copy()
-    # 	if 'sampleinfo' in data:
-    # 		#print(data['sampleinfo'])
-    # 		obj = get_object_or_404(SampleInfo, sample_index=data['sampleinfo'].split(':')[0])
-    # 		print(obj.id)
-    # 		data['sampleinfo'] = str(obj.id)
-    # 	self.data = data
-    # 	print(self.data)
-    # 	return super(LibraryCreationForm,self).clean()
-
-    # 	if data is not None:
-    # 		print(data)
-    # 		data = data.copy()
-    # 		if data['sampleinfo']:
-    # 			obj = get_object_or_404(SampleInfo, sample_index=data['sampleinfo'].split(':')[0])
-    # 			data['sampleinfo'] = obj.id
-    # 			print(data['sampleinfo'])
-    # 	super().clean(*args, **kwargs)
-    # def save(self, commit=True):
-    # 	instance = super().save(commit=False)
-    # 	cleaned_sample = self.cleaned_data['sampleinfo']
-    # 	if cleaned_sample:
-    # 		f = get_object_or_404(SampleInfo,sample_index=cleaned_sample.split(':')[0])
-    # 		instance.filename = f
-    # 	else:
-    # 		instance.filename = None
-    # 	if commit:
-    # 		instance.save()
-    # 	return instance
-
-
 class SeqCreationForm(forms.ModelForm):
     libraryinfo = forms.ModelChoiceField(queryset=LibraryInfo.objects.all(
     ), widget=forms.TextInput({'class': 'ajax_libinput_form', 'size': 50}))
@@ -137,84 +88,6 @@ class SeqCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.initial['libraryinfo'] = self.instance.libraryinfo.__str__
-
-
-class SeqCreationForm2(forms.Form):
-    machine = forms.ModelChoiceField(queryset=SeqMachineInfo.objects.all())
-    read_type = forms.ChoiceField(label='read type', choices=(
-        ('', '---------'),) + choice_for_read_type, required=False,)
-    read_length = forms.CharField(label='read length:', required=False)
-    date_submitted_for_sequencing = forms.DateField(
-        initial=datetime.date.today, required=False)
-    sequencinginfo = forms.CharField(
-        label='SeqInfo in this run:',
-        widget=forms.Textarea(attrs={'cols': 120, 'rows': 10}),
-        required=False,
-        initial='SeqID\tLibID\tdefault_label\tteam_member\tportion_of_lane\ti7index\ti5index\tnotes\n\n'
-    )
-
-    def clean_sequencinginfo(self):
-        data = self.cleaned_data['sequencinginfo']
-        invalidliblist = []
-        invaliduserlist = []
-        invalidbarcodelist = []
-        invalidbarcodelist2 = []
-        invalidpolane = []
-        flaglib = 0
-        flaguser = 0
-        flagbarcode = 0
-        flagbarcode2 = 0
-        flagpolane = 0
-        cleadata = []
-        for lineitem in data.strip().split('\n'):
-            if not lineitem.startswith('SeqID\tLibID') and lineitem != '\r':
-                cleadata.append(lineitem)
-                libid = lineitem.split('\t')[1]
-                if not LibraryInfo.objects.filter(library_id=libid).exists():
-                    invalidliblist.append(libid)
-                    flaglib = 1
-                membername = lineitem.split('\t')[3]
-                
-                if not User.objects.filter(username=membername).exists():
-                    invaliduserlist.append(membername)
-                    flaguser = 1
-                try:
-                    indexname = lineitem.split('\t')[5]
-                    if indexname and not Barcode.objects.filter(indexid=indexname).exists():
-                        invalidbarcodelist.append(indexname)
-                        flagbarcode = 1
-                except:
-                    pass
-                try:
-                    indexname2 = lineitem.split('\t')[6]
-                    if indexname2 and not Barcode.objects.filter(indexid=indexname2).exists():
-                        invalidbarcodelist2.append(indexname)
-                        flagbarcode2 = 1
-                except:
-                    pass
-                if lineitem.split('\t')[4]:
-                    try:
-                        float(lineitem.split('\t')[4])
-                    except:
-                        invalidpolane.append(lineitem.split('\t')[4])
-                        flagpolane = 1
-        if flaglib == 1:
-            raise forms.ValidationError(
-                'Invalid Library:'+','.join(invalidliblist))
-        if flaguser == 1:
-            raise forms.ValidationError(
-                'Invalid Member Name:'+','.join(invaliduserlist))
-        if flagbarcode == 1:
-            raise forms.ValidationError(
-                'Invalid i7 Barcode:'+','.join(invalidbarcodelist))
-        if flagbarcode2 == 1:
-            raise forms.ValidationError(
-                'Invalid i5 Barcode:'+','.join(invalidbarcodelist2))
-        if flagpolane == 1:
-            raise forms.ValidationError(
-                'Invalid portion of lane:'+','.join(invalidpolane))
-        return '\n'.join(cleadata)
-
         
 class BulkUpdateForm(forms.Form):
 	updateinfo = forms.CharField(
@@ -615,14 +488,7 @@ class SamplesCreationForm(forms.Form):
 					if len(fiscalname.split(' '))<2:
 						invalidresearch2.append(fiscalname)
 						flagresearch2 = 1
-				# samprep = fields[12].split('(')[0].strip()
-				# if samprep == 'flash frozen':
-				# 	samprep = 'flash frozen without cryopreservant'
-				# 	# raise forms.ValidationError('Please denote whether the preparation is\
-				# 	# 	flash frozen without cryopreservant or flash frozen with cryopreservant')
-				# if samprep not in [x[0].split('(')[0].strip() for x in choice_for_preparation]:
-				# 	invalidprep.append(samprep)
-				# 	flagprep = 1
+
 				samnotes = fields[20].strip()
 					
 				cleaneddata.append(lineitem)
@@ -1016,102 +882,6 @@ class SeqsCreationForm(forms.Form):
                 'Duplicate Sample Name within this bulk entry:'+','.join(sampselfduplicate))
 
         return '\n'.join(cleaneddata)
-# class SamplesCollabsCreateForm(forms.Form):
-#     samplesinfo = forms.CharField(
-#         label='Samples:',
-#         widget=forms.Textarea(attrs={'cols': 30, 'rows': 10}),
-#         initial='Please input sample name:\n\n'
-#     )
-#     group = forms.CharField(\
-#         label='Group Name',
-#         widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
-#         )
-#     research_contact = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
-#         required=False)
-#     fiscal_person_index = forms.ModelChoiceField(queryset=Person_Index.objects.all(),required=False)
- 
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.none()
-#         self.fields['fiscal_person_index'].queryset = Person_Index.objects.none() 
-#         if 'group' in self.data:
-#             try:
-#                 gname = self.data.get('group')
-#                 self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.\
-#                 filter(person_id__groups__name__in=[gname]).\
-#                 prefetch_related(Prefetch('person_id__groups'))
-#                 self.fields['research_contact'].label_from_instance = \
-#                 lambda obj: "%s %s__%s__%s" % (obj.person_id.first_name, \
-#                     obj.person_id.last_name,obj.person_id.email,obj.cell_phone)
-
-#                 self.fields['fiscal_person_index'].queryset = Person_Index.objects.\
-#                 filter(person__person_id__groups__name__in=[gname]).\
-#                 prefetch_related(Prefetch('person__person_id__groups'))
-#                 self.fields['fiscal_person_index'].label_from_instance = \
-#                 lambda obj: "%s %s__%s__%s" % (obj.person.person_id.first_name, \
-#                     obj.person.person_id.last_name,obj.person.person_id.email,\
-#                     obj.index_name)
-            
-#             except (ValueError, TypeError):
-#                 pass 
-
-#     def clean_samplesinfo(self):
-#         data = self.cleaned_data['samplesinfo']
-#         cleadata = []
-#         invalidsamplist = []
-#         flagsamp = 0
-#         for lineitem in data.strip().split('\n'):
-#             if not lineitem.startswith('Please input') and lineitem != '\r':
-#                 cleadata.append(lineitem)
-#                 sampid = lineitem.strip()
-#                 if not SampleInfo.objects.filter(sample_id=sampid).exists():
-#                     invalidsamplist.append(sampid)
-#                     flagsamp = 1
-
-#         if flagsamp == 1:
-#             raise forms.ValidationError(
-#                 'Invalid Sample Name:'+','.join(invalidsamplist))
-#         return '\n'.join(cleadata)
-
-#     def clean_group(self):
-#         gname = self.cleaned_data['group']
-#         if not Group.objects.filter(name=gname).exists():
-#             raise forms.ValidationError('Invalid Group Name!')
-#         return gname
-
-# class SampleCollabsUpdateForm(forms.Form):
-#     group = forms.CharField(\
-#         label='Group Name',
-#         widget = forms.TextInput({'class': 'ajax_groupinput_form', 'size': 30}),
-#         )
-#     research_contact = forms.ModelChoiceField(queryset=CollaboratorPersonInfo.objects.all(),\
-#         required=False)
-#     fiscal_person_index = forms.ModelChoiceField(queryset=Person_Index.objects.all(),required=False)
- 
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.none()
-#         self.fields['fiscal_person_index'].queryset = Person_Index.objects.none() 
-#         if 'group' in self.data:
-#             try:
-#                 gname = self.data.get('group')
-#                 self.fields['research_contact'].queryset = CollaboratorPersonInfo.objects.\
-#                 filter(person_id__groups__name__in=[gname]).\
-#                 prefetch_related(Prefetch('person_id__groups'))
-#                 self.fields['research_contact'].label_from_instance = \
-#                 lambda obj: "%s %s__%s__%s" % (obj.person_id.first_name, \
-#                     obj.person_id.last_name,obj.person_id.email,obj.cell_phone)
-
-#                 self.fields['fiscal_person_index'].queryset = Person_Index.objects.\
-#                 filter(person__person_id__groups__name__in=[gname]).\
-#                 prefetch_related(Prefetch('person__person_id__groups'))
-#                 self.fields['fiscal_person_index'].label_from_instance = \
-#                 lambda obj: "%s %s__%s__%s" % (obj.person.person_id.first_name, \
-#                     obj.person.person_id.last_name,obj.person.person_id.email,\
-#                     obj.index_name)
-            
-#             except (ValueError, TypeError):
-#                 pass 
 
     def clean_group(self):
         gname = self.cleaned_data['group']
