@@ -1007,6 +1007,7 @@ def DownloadingfromIGM(request, run_pk):
     ftp_addr = request.POST.get("downloadaddress")
     ftp_user = request.POST.get("username")
     ftp_password = request.POST.get("pass")
+    tsccaccount = settings.TSCC_ACCOUNT
 
     data = {}
     try:
@@ -1037,8 +1038,8 @@ def DownloadingfromIGM(request, run_pk):
 
     data['updatedate'] = rundatefinal
     data['flowid'] = flowname
-    cmd = "./utility/download_igm.sh {0} {1} {2} {3} {4}".format(
-        ftp_addr, ftp_user, ftp_password, flowname, request.user.email)
+    cmd = "./utility/download_igm.sh {0} {1} {2} {3} {4} {5}".format(
+        ftp_addr, ftp_user, ftp_password, flowname, request.user.email, tsccaccount)
     print(cmd)
     p = subprocess.Popen(cmd,
                          shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
