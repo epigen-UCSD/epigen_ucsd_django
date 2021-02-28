@@ -211,4 +211,5 @@ ENCODE_TM_DIR = config['database']['ENCODE_TM_DIR']
 SCRNA_DIR = config['snapp']['SCRNA_DIR']
 EXPOSED_OUTS_DIR = config['snapp']['EXPOSED_OUTS_DIR']
 QUOTE_DIR = config['database']['QUOTE_DIR']
+TSCC_ACCOUNT = config['database']['TSCC_ACOUNT']
 

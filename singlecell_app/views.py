@@ -738,6 +738,7 @@ def submit_tenX(seq, refgenome, email):
     This function submits a sequence to 10x cell ranger or 10x atac pipeline
     """
 
+    tsccaccount = settings.TSCC_ACCOUNT
     seq_info = list(SeqInfo.objects.filter(seq_id=seq).select_related(
         'libraryinfo__sampleinfo').values('seq_id',
                                           'libraryinfo__sampleinfo__species', 'read_type',
@@ -783,10 +784,10 @@ def submit_tenX(seq, refgenome, email):
     # set command depedning on experiment
 
     if(experiment_type == '10xATAC'):
-        cmd1 = 'bash ./utility/run10xOnly.sh %s %s %s' % (seq, dir, email)
+        cmd1 = 'bash ./utility/run10xOnly.sh %s %s %s %s' % (seq, dir, email, tsccaccount)
     else:
-        cmd1 = ('bash ./utility/runCellRanger.sh %s %s %s %s' % (seq,
-                                                                 data['ref_path'], dir, email))
+        cmd1 = ('bash ./utility/runCellRanger.sh %s %s %s %s %s' % (seq,
+                                                                 data['ref_path'], dir, email, tsccaccount))
 
     print('cmd submitted: ', cmd1)
     p = subprocess.Popen(
