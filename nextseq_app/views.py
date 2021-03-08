@@ -656,6 +656,7 @@ def DemultiplexingView(request, run_pk):
             rundate = '20'+'-'.join([fname[i:i+2]
                                      for i in range(0, len(fname.split('_')[0]), 2)])
             break
+    subprocess.call(['chmod', '-R', 'g+w', basedirname])
     if 'is_direxists' in data:
         try:
             os.mkdir(os.path.join(basedirname, 'Data/Fastqs'))
@@ -852,7 +853,7 @@ def DemultiplexingView2(request, run_pk):
                                      for i in range(0, len(fname.split('_')[0]), 2)])
             # print(rundate)
             break
-    # print(data)
+    subprocess.call(['chmod', '-R', 'g+w', basedirname])
     if 'is_direxists' in data:
         # shutil.rmtree(os.path.join(basedirname, 'Data/Fastqs'))
         # os.mkdir(os.path.join(basedirname, 'Data/Fastqs'), exist_ok=True)
