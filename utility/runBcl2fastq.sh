@@ -1,5 +1,5 @@
 #!/bin/bash
-flowcell=$1; rundir=$2; useremail=$3;exptype=$4;
+flowcell=$1; rundir=$2; useremail=$3; tsccaccount=$4; exptype=$5;
 
 ## expand 10x barcode
 samplesheets=($(find ${rundir}/ -name "SampleSheet.csv" ))
@@ -12,7 +12,7 @@ done
 
 ## cmd1: qsub bcl2fastq job
 cmd1="qsub -k oe -M $useremail -v flowcell_id=$flowcell,run_dir=$rundir \$(which runBcl2fastq.pbs)"
-job1=$(ssh zhc268@tscc-login.sdsc.edu $cmd1)
+job1=$(ssh $tsccaccount $cmd1)
 
 ## cmd2: qsub 10x demutliplex
 #if [ $exptype = 'BT' ]

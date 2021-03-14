@@ -29,7 +29,7 @@ defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
                  'green monkey': 'chlSab2', 'pig-tailed macaque': 'Mnem1.0',
                  'fruit fly': 'dm6', 'rabbit': 'oryCun2', 'dog': 'CanFam3.1',
                  'mosquito': 'AaegL5', 'house fly': 'Musca_domestica-2.0.2',
-                 'Anopheles': 'AgamP4'}
+                 'Anopheles': 'AgamP4', 'pig':'susScr11', 'chicken': 'galGal6', 'fish': 'Omyk_1.0'}
 
 
 def groupnumber(datalist):
@@ -552,6 +552,7 @@ def RunSetQC(request, setqc_pk):
     fastqdir = settings.FASTQ_DIR
     setqcoutdir = settings.SETQC_DIR
     tenxdir = settings.TENX_DIR
+    tsccaccount = settings.TSCC_ACCOUNT
     data = {}
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
@@ -651,7 +652,7 @@ def RunSetQC(request, setqc_pk):
                          'Read Type', 'Sample Name', 'Species',
                          'Experiment Type', 'Machine', 'Set Name']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
-            setinfo.set_id + ' ' + request.user.email + \
+            setinfo.set_id + ' ' + request.user.email + ' ' + tsccaccount + \
             ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
         print(cmd1)
     else:
@@ -735,7 +736,7 @@ def RunSetQC(request, setqc_pk):
                          'Experiment Type', 'Machine', 'Set Name', '10xProcessed']
 
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
-            ' ' + request.user.email + ' ' + \
+            ' ' + request.user.email + ' ' + tsccaccount + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
 
     # write Set_**.txt to setqcoutdir
@@ -838,6 +839,7 @@ def RunSetQC2(request, setqc_pk):
     fastqdir = settings.FASTQ_DIR
     setqcoutdir = settings.SETQC_DIR
     tenxdir = settings.TENX_DIR
+    tsccaccount = settings.TSCC_ACCOUNT
     data = {}
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
@@ -934,7 +936,7 @@ def RunSetQC2(request, setqc_pk):
                          'Read Type', 'Sample Name', 'Species',
                          'Experiment Type', 'Machine', 'Set Name']
         cmd1 = './utility/runSetQC_chipseq.sh ' + \
-            setinfo.set_id + ' ' + request.user.email + \
+            setinfo.set_id + ' ' + request.user.email + ' ' + tsccaccount + \
             ' ' + re.sub(r"[\)\(]", ".", setinfo.set_name)
     else:
         # check if expirement is of type 10xATAC of each library:
@@ -1009,7 +1011,7 @@ def RunSetQC2(request, setqc_pk):
                          'Experiment Type', 'Machine', 'Set Name', '10xProcessed']
 
         cmd1 = './utility/runSetQC.sh ' + setinfo.set_id + \
-            ' ' + request.user.email + ' ' + \
+            ' ' + request.user.email + ' ' + tsccaccount + ' ' + \
             re.sub(r"[\)\(]", ".", setinfo.set_name)
 
     print('wc: ', writecontent)

@@ -641,6 +641,7 @@ def DemultiplexingView(request, run_pk):
 
     dmpdir = settings.NEXTSEQAPP_DMPDIR
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
+    tsccaccount = settings.TSCC_ACCOUNT
     # print('expt type: %s. Flowcell ID: %s' %(runinfo.experiment_type, runinfo.Flowcell_ID))
 
     if runinfo.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
@@ -655,6 +656,7 @@ def DemultiplexingView(request, run_pk):
             rundate = '20'+'-'.join([fname[i:i+2]
                                      for i in range(0, len(fname.split('_')[0]), 2)])
             break
+    subprocess.call(['chmod', '-R', 'g+w', basedirname])
     if 'is_direxists' in data:
         try:
             os.mkdir(os.path.join(basedirname, 'Data/Fastqs'))
@@ -794,31 +796,31 @@ def DemultiplexingView(request, run_pk):
               (runinfo.experiment_type, runinfo.Flowcell_ID))
         if runinfo.experiment_type == 'S2':
             cmd1 = './utility/runDemuxSnATAC.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email
+                ' ' + basedirname + ' ' + request.user.email + ' ' + tsccaccount
         elif runinfo.experiment_type == 'TA':
             # write extra_parameters to disk
             with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
 
             cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email
+                ' ' + basedirname + ' ' + request.user.email + ' ' + tsccaccount
         elif runinfo.experiment_type == 'TR':
             # write extra_parameters to disk
             with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
             cmd1 = './utility/runDemux10xRNA.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email
+                ' ' + basedirname + ' ' + request.user.email + ' ' + tsccaccount
         elif runinfo.experiment_type == 'TM':
             # write extra_parameters to disk
             print("TM")
             with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
             cmd1 = './utility/runDemux10xATAC_RNA.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email
+                ' ' + basedirname + ' ' + request.user.email + ' ' + tsccaccount
 
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email
+                ' ' + basedirname + ' ' + request.user.email + ' ' + tsccaccount
         print(cmd1)
 
         p = subprocess.Popen(cmd1, shell=True)
@@ -837,6 +839,7 @@ def DemultiplexingView(request, run_pk):
 def DemultiplexingView2(request, run_pk):
     dmpdir = settings.NEXTSEQAPP_DMPDIR
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
+    tsccaccount = settings.TSCC_ACCOUNT
     if runinfo.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     data = {}
@@ -850,7 +853,7 @@ def DemultiplexingView2(request, run_pk):
                                      for i in range(0, len(fname.split('_')[0]), 2)])
             # print(rundate)
             break
-    # print(data)
+    subprocess.call(['chmod', '-R', 'g+w', basedirname])
     if 'is_direxists' in data:
         # shutil.rmtree(os.path.join(basedirname, 'Data/Fastqs'))
         # os.mkdir(os.path.join(basedirname, 'Data/Fastqs'), exist_ok=True)
@@ -963,29 +966,29 @@ def DemultiplexingView2(request, run_pk):
         # runBcl2fastq
         if runinfo.experiment_type == 'S2':
             cmd1 = './utility/runDemuxSnATAC.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email
+                ' ' + basedirname + ' ' + request.user.email + ' ' + tsccaccount
         elif runinfo.experiment_type == 'TA':
             # write extra_parameters to disk
             with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
 
             cmd1 = './utility/runDemux10xATAC.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email
+                ' ' + basedirname + ' ' + request.user.email + ' ' + tsccaccount
         elif runinfo.experiment_type == 'TR':
             # write extra_parameters to disk
             with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
             cmd1 = 'bash ./utility/runDemux10xRNA.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email
+                ' ' + basedirname + ' ' + request.user.email + ' ' + tsccaccount
         elif runinfo.experiment_type == 'TM':
             # write extra_parameters to disk
             with open(os.path.join(basedirname, 'Data/Fastqs/', 'extraPars.txt'), 'w') as out:
                 out.write(runinfo.extra_parameters)
             cmd1 = './utility/runDemux10xATAC_RNA.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email
+                ' ' + basedirname + ' ' + request.user.email + ' ' + tsccaccount
         else:
             cmd1 = './utility/runBcl2fastq.sh ' + runinfo.Flowcell_ID + \
-                ' ' + basedirname + ' ' + request.user.email
+                ' ' + basedirname + ' ' + request.user.email + ' ' + tsccaccount
         print(cmd1)
         p = subprocess.Popen(cmd1, shell=True)
         # thisjobid=p.pid
@@ -1005,6 +1008,7 @@ def DownloadingfromIGM(request, run_pk):
     ftp_addr = request.POST.get("downloadaddress")
     ftp_user = request.POST.get("username")
     ftp_password = request.POST.get("pass")
+    tsccaccount = settings.TSCC_ACCOUNT
 
     data = {}
     try:
@@ -1035,8 +1039,8 @@ def DownloadingfromIGM(request, run_pk):
 
     data['updatedate'] = rundatefinal
     data['flowid'] = flowname
-    cmd = "./utility/download_igm.sh {0} {1} {2} {3} {4}".format(
-        ftp_addr, ftp_user, ftp_password, flowname, request.user.email)
+    cmd = "./utility/download_igm.sh {0} {1} {2} {3} {4} {5}".format(
+        ftp_addr, ftp_user, ftp_password, flowname, request.user.email, tsccaccount)
     print(cmd)
     p = subprocess.Popen(cmd,
                          shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

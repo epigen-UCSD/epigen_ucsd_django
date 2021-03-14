@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## parameters
-flowcell=$1; rundir=$2; useremail=$3; extraPars=${@:4:5};
+flowcell=$1; rundir=$2; useremail=$3; tsccaccount=$4; extraPars=${@:5:6};
 
 ## expand 10x barcode
 cd $out_dir
@@ -28,6 +28,6 @@ else
 fi
 
 echo $cmd1
-ssh zhc268@tscc-login.sdsc.edu $cmd1
+ssh $tsccaccount $cmd1
 
 
