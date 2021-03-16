@@ -42,10 +42,15 @@ def BarcodeDic():
 
 
 def UniqueValidation(tosavelist, existinglist):
+    """ To test whether the item in the tosavelist has alreasy
+    existed in the existinglist
+    """
     return list(set(tosavelist).intersection(set(existinglist)))
 
 
 def SelfUniqueValidation(tosavelist):
+    """ To test whether there is duplicate in the supplied list
+    """
     duplicate = []
     for i in range(0, len(tosavelist)):
         if tosavelist[i] in tosavelist[i+1:]:
@@ -53,14 +58,32 @@ def SelfUniqueValidation(tosavelist):
     return duplicate
 
 
-def IndexValidation(i7list, i5list):
+def IndexValidation(i7list, i5list, fullorpartial):
+    """ validate index in a run to be saved. It would return the duplicate
+    index items if:
+        (1). combinaton of i7 and i5 are the same, e.g. 
+            lib1 with (i7 seq, i5 seq) as (AGTTCCGT,ATGTCAGA)
+            lib2 with (i7 seq, i5 seq) as (AGTTCCGT,ATGTCAGA)
+
+        (2). if partial match, for one with both of i7 and i5 applicable and one with only i7, 
+        or both with only i7,  the i7 of one is part (including full part)of another, e.g
+            lib1 with (i7 seq, i5 seq) as (AGTTCCGT,ATGTCAGA)
+            lib2 with (i7 seq, i5 seq) as (AGTTCCG,'')
+
+        (3). if full match, for one with both of i7 and i5 applicable and one with only i7, 
+        or both with only i7,  the i7 is the same as another, e.g
+            lib1 with (i7 seq, i5 seq) as (AGTTCCGT,ATGTCAGA)
+            lib2 with (i7 seq, i5 seq) as (AGTTCCGT,'')
+    """
     barcodes_dic = BarcodeDic()
     duplicate = []
 
+    # prepare for the i7 seq and i5 seq from the index id
     combinelist = [x for x in list(zip(i7list, i5list)) if x[1]]
     print(combinelist)
     combinelistseq = [(barcodes_dic[x[0]], barcodes_dic[x[1]])
                       for x in combinelist]
+    # validate index on case (1)
     for i in range(0, len(combinelistseq)):
         for j in range(i+1, len(combinelistseq)):
             if combinelistseq[i] == combinelistseq[j]:
@@ -72,53 +95,37 @@ def IndexValidation(i7list, i5list):
     singlei7 = [x[0] for x in list(zip(i7list, i5list)) if not x[1] and x[0]]
     singlei7seq = [barcodes_dic[x] for x in singlei7]
 
-    for i in range(0, len(singlei7seq)):
-        for j in range(i+1, len(singlei7seq)):
-            if singlei7seq[i] in singlei7seq[j] or singlei7seq[j] in singlei7seq[i]:
-                duplicate.append(singlei7[i]+' vs '+singlei7[j])
+    # validate index on case (2)
+    if fullorpartial == 'partial':
+        for i in range(0, len(singlei7seq)):
+            for j in range(i+1, len(singlei7seq)):
+                if singlei7seq[i] in singlei7seq[j] or singlei7seq[j] in singlei7seq[i]:
+                    duplicate.append(singlei7[i]+' vs '+singlei7[j])
 
-    for i in range(0, len(combinei7seq)):
-        for j in range(0, len(singlei7seq)):
-            if combinei7seq[i] in singlei7seq[j] or singlei7seq[j] in combinei7seq[i]:
-                duplicate.append(combinei7[i]+' vs '+singlei7[j])
+        for i in range(0, len(combinei7seq)):
+            for j in range(0, len(singlei7seq)):
+                if combinei7seq[i] in singlei7seq[j] or singlei7seq[j] in combinei7seq[i]:
+                    duplicate.append(combinei7[i]+' vs '+singlei7[j])
 
-    return duplicate
+    # validate index on case (3)
+    elif fullorpartial == 'full':
+        for i in range(0, len(singlei7seq)):
+            for j in range(i+1, len(singlei7seq)):
+                if singlei7seq[i] == singlei7seq[j] or singlei7seq[j] == singlei7seq[i]:
+                    duplicate.append(singlei7[i]+' vs '+singlei7[j])
 
+        for i in range(0, len(combinei7seq)):
+            for j in range(0, len(singlei7seq)):
+                if combinei7seq[i] == singlei7seq[j] or singlei7seq[j] == combinei7seq[i]:
+                    duplicate.append(combinei7[i]+' vs '+singlei7[j])
 
-def IndexValidation2(i7list, i5list):
-    # validate only on not complete match, allow part match
-    barcodes_dic = BarcodeDic()
-    duplicate = []
-
-    combinelist = [x for x in list(zip(i7list, i5list)) if x[1]]
-    print(combinelist)
-    combinelistseq = [(barcodes_dic[x[0]], barcodes_dic[x[1]])
-                      for x in combinelist]
-    for i in range(0, len(combinelistseq)):
-        for j in range(i+1, len(combinelistseq)):
-            if combinelistseq[i] == combinelistseq[j]:
-                duplicate.append(
-                    str(combinelist[i])+' vs '+str(combinelist[j]))
-
-    combinei7 = list(set([x[0] for x in list(zip(i7list, i5list)) if x[1]]))
-    combinei7seq = [barcodes_dic[x] for x in combinei7]
-    singlei7 = [x[0] for x in list(zip(i7list, i5list)) if not x[1] and x[0]]
-    singlei7seq = [barcodes_dic[x] for x in singlei7]
-
-    for i in range(0, len(singlei7seq)):
-        for j in range(i+1, len(singlei7seq)):
-            if singlei7seq[i] == singlei7seq[j] or singlei7seq[j] == singlei7seq[i]:
-                duplicate.append(singlei7[i]+' vs '+singlei7[j])
-
-    for i in range(0, len(combinei7seq)):
-        for j in range(0, len(singlei7seq)):
-            if combinei7seq[i] == singlei7seq[j] or singlei7seq[j] == combinei7seq[i]:
-                duplicate.append(combinei7[i]+' vs '+singlei7[j])
 
     return duplicate
 
 
 def IndexView(request):
+    """ View returns all runs those belong to the login user
+    """
 
     RunInfo_list = RunInfo.objects.filter(
         operator=request.user).select_related('operator')
@@ -126,10 +133,13 @@ def IndexView(request):
 
 
 def AllRunsView(request):
+    """ View returns all runs those in the database
+    """
     RunInfo_list = RunInfo.objects.all().select_related('operator')
     context = {
         'RunInfo_list': RunInfo_list,
     }
+    # only users in bioinformatics group can edit and delete all runs, even those not belong to him
     if not request.user.groups.filter(name='bioinformatics').exists():
         return render(request, 'nextseq_app/runsinfo.html', {'RunInfo_list': RunInfo_list})
     else:
@@ -137,6 +147,8 @@ def AllRunsView(request):
 
 
 def AllSamplesView(request):
+    """ View returns all libraries those in the runs
+    """
     Samples_list = LibrariesInRun.objects.all().select_related(
         'singlerun', 'i7index', 'i5index')
     context = {
@@ -146,6 +158,8 @@ def AllSamplesView(request):
 
 
 def UserSamplesView(request):
+    """ View returns all libraries those in the runs those belong to the login user
+    """
     userruns = RunInfo.objects.filter(operator=request.user)
     Samples_list = LibrariesInRun.objects.filter(
         singlerun__in=userruns).select_related('singlerun', 'i7index', 'i5index')
@@ -157,15 +171,15 @@ def UserSamplesView(request):
 
 
 class RunDetailView2(DetailView):
+    """ View returns the detail informatin of a specific run, using Generic display views in Django
+    """
     model = RunInfo
     template_name = 'nextseq_app/details.html'
     summaryfield = ['jobstatus', 'date', 'operator', 'machine', 'experiment_type', 'read_type', 'total_lanes', 'total_libraries', 'total_reads',
                     'percent_of_reads_demultiplexed', 'read_length', 'nextseqdir', 'extra_parameters']
-    # object = FooForm(data=model_to_dict(Foo.objects.get(pk=object_id)))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['barcode'] = barcodes_dic
         context['barcode'] = BarcodeDic()
         context['summaryfield'] = self.summaryfield
         return context
@@ -173,6 +187,9 @@ class RunDetailView2(DetailView):
 
 @transaction.atomic
 def RunCreateView4(request):
+    """ An unused and unmaintained view.
+    View to add a new run, with one by one adding of libraries. 
+    """
     run_form = RunCreationForm(request.POST or None)
     SamplesInlineFormSet = inlineformset_factory(RunInfo, LibrariesInRun, fields=[
                                                  'Library_ID', 'i7index', 'i5index'], extra=2)
@@ -200,7 +217,8 @@ def RunCreateView4(request):
 
             duplicate = IndexValidation(
                 [x.indexid if x is not None else None for x in i7index_list],
-                [x.indexid if x is not None else None for x in i5index_list]
+                [x.indexid if x is not None else None for x in i5index_list],
+                'partial'
             )
             if len(duplicate) > 0:
                 context = {
@@ -220,8 +238,12 @@ def RunCreateView4(request):
 
 @transaction.atomic
 def RunCreateView6(request):
+    """ View to add a new run, with bulk adding of libraries. 
+    """
+
     run_form = RunCreationForm(
         request.POST or None, initial={'total_lanes': 1.00})
+    # form to bulk add libraries
     form = SamplesToCreatForm(request.POST or None)
 
     if run_form.is_valid() and form.is_valid():
@@ -356,6 +378,7 @@ def RunCreateView6(request):
 
                 samples_list.append(samples_info[0])
 
+        # library uniq validation.
         libraryselfduplicate = SelfUniqueValidation(libraryid_list)
         if len(libraryselfduplicate) > 0:
 
@@ -371,6 +394,7 @@ def RunCreateView6(request):
             LibrariesInRun.objects.values_list('Library_ID', flat=True))
         libraynotuniq = UniqueValidation(libraryid_list, existinglibray)
 
+        # library uniq validation.
         if len(libraynotuniq) > 0:
 
             context = {
@@ -381,12 +405,13 @@ def RunCreateView6(request):
             }
             return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
+        # index validation.
         for ke in i7index_list.keys():
             if runinfo.experiment_type in ["TA", "TR", "TM"]:
-                duplicate = IndexValidation2(
-                    i7index_list[ke], i5index_list[ke])
+                duplicate = IndexValidation(
+                    i7index_list[ke], i5index_list[ke, 'full'])
             else:
-                duplicate = IndexValidation(i7index_list[ke], i5index_list[ke])
+                duplicate = IndexValidation(i7index_list[ke], i5index_list[ke], 'partial')
             if len(duplicate) > 0:
                 context = {
                     'run_form': run_form,
@@ -396,6 +421,7 @@ def RunCreateView6(request):
                 }
                 return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
+        # handle portion of lane. The portion of lane of the library should be added in the metadata app first.
         for k in sorted(samples_list):
             try:
                 this_seq = SeqInfo.objects.get(seq_id=k)
@@ -425,6 +451,7 @@ def RunCreateView6(request):
             }
             return render(request, 'nextseq_app/runandsamplesbulkadd.html', context)
 
+        # handle portion of lane. Pop up a detail messaage if the sum of the portion of lane is not equal to the input total lane
         if lanesum != sumlane:
             context = {
                 'run_form': run_form,
@@ -453,7 +480,12 @@ def RunCreateView6(request):
 
 @transaction.atomic
 def RunUpdateView2(request, username, run_pk):
+    """ View to update an added run
+    """
+
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
+
+    # only allow the owner of the run and the uses in bioinformatics group edit
     if runinfo.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     run_form = RunCreationForm(request.POST or None, instance=runinfo)
@@ -469,7 +501,6 @@ def RunUpdateView2(request, username, run_pk):
     if run_form.is_valid() and sample_formset.is_valid():
         runinfo = run_form.save(commit=False)
         sumlane = runinfo.total_lanes
-        # runinfo.operator = request.user
         sample_formset.save(commit=False)
         Library_ID_list = []
         i7index_list = []
@@ -483,6 +514,7 @@ def RunUpdateView2(request, username, run_pk):
                 except KeyError:
                     pass
 
+        # library uniq validation
         libraryselfduplicate = SelfUniqueValidation(Library_ID_list)
         if len(libraryselfduplicate) > 0:
 
@@ -510,15 +542,18 @@ def RunUpdateView2(request, username, run_pk):
             }
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
 
+        # index validation
         if runinfo.experiment_type in ["TA", "TR", "TM"]:
-            duplicate = IndexValidation2(
+            duplicate = IndexValidation(
                 [x.indexid if x is not None else None for x in i7index_list],
-                [x.indexid if x is not None else None for x in i5index_list]
+                [x.indexid if x is not None else None for x in i5index_list],
+                'full'
             )
         else:
             duplicate = IndexValidation(
                 [x.indexid if x is not None else None for x in i7index_list],
-                [x.indexid if x is not None else None for x in i5index_list]
+                [x.indexid if x is not None else None for x in i5index_list],
+                'partial'
 
             )
         if len(duplicate) > 0:
@@ -530,6 +565,7 @@ def RunUpdateView2(request, username, run_pk):
             }
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
 
+        # handle portion of lane. The portion of lane of the library should be added in the metadata app first.
         for k in sorted(Library_ID_list):
             try:
                 this_seq = SeqInfo.objects.get(seq_id=k)
@@ -573,6 +609,7 @@ def RunUpdateView2(request, username, run_pk):
             }
             return render(request, 'nextseq_app/runandsamplesupdate.html', context)
 
+        # Allow to resubmit the job when any field changed.
         if run_form.has_changed() or sample_formset.has_changed():
             runinfo.jobstatus = 'ClickToSubmit'
 
@@ -584,9 +621,10 @@ def RunUpdateView2(request, username, run_pk):
     return render(request, 'nextseq_app/runandsamplesupdate.html', {'run_form': run_form, 'sample_formset': sample_formset, 'runinfo': runinfo})
 
 
-# @login
-
 def SampleSheetCreateView(request, run_pk):
+    """ View to generate and download the samplesheet.csv file of a specific run. Located in the Run Detail page
+    """
+
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="SampleSheet.csv"'
@@ -629,6 +667,9 @@ def SampleSheetCreateView(request, run_pk):
 
 
 def RunDeleteView2(request, run_pk):
+    """ View to delete a run. Only allow the owner and the members in bioinformatics group delete a run
+    """
+
     deleterun = get_object_or_404(RunInfo, pk=run_pk)
     if deleterun.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
@@ -637,17 +678,20 @@ def RunDeleteView2(request, run_pk):
 
 @transaction.atomic
 def DemultiplexingView(request, run_pk):
+    """ View to do the demutiplexing when user click to sumbit the job. Called by in epigen.js file:
+    $(".dmpajax").on("click", function (e) 
+    """
     print('started:'+str(run_pk))
 
     dmpdir = settings.NEXTSEQAPP_DMPDIR
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
     tsccaccount = settings.TSCC_ACCOUNT
-    # print('expt type: %s. Flowcell ID: %s' %(runinfo.experiment_type, runinfo.Flowcell_ID))
 
     if runinfo.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     data = {}
-    # print(runinfo.Flowcell_ID)
+
+    # to locate the flow cell run folder
     for fname in os.listdir(dmpdir):
         print(os.path.join(dmpdir, fname))
         if os.path.isdir(os.path.join(dmpdir, fname)) and fname.endswith(runinfo.Flowcell_ID):
@@ -656,7 +700,16 @@ def DemultiplexingView(request, run_pk):
             rundate = '20'+'-'.join([fname[i:i+2]
                                      for i in range(0, len(fname.split('_')[0]), 2)])
             break
+    """ By default, the folder only be writable by the owner (zhc268). Modify the permission to 
+    allow other users in the epigen-group to write in. Used when setting tscc account that run the
+    pipeline as someone instead of zhc268
+    """
     subprocess.call(['chmod', '-R', 'g+w', basedirname])
+
+    """
+     create folder Data/Fastqs. If folder already exits, it means it is not the first time to
+     run the demultiplexing. A warning will pop up for the user to confirm(see mkdirerror2).
+    """, 
     if 'is_direxists' in data:
         try:
             os.mkdir(os.path.join(basedirname, 'Data/Fastqs'))
@@ -712,6 +765,7 @@ def DemultiplexingView(request, run_pk):
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i1_file.write(','.join(["Lane", "Sample", "Index"])+'\n')
 
+                # generate the samplesheet.csv file and put it under the runfolder
                 with open(filename, 'w') as csvfile:
                     writer = csv.writer(csvfile)
                     writer.writerow(['[Header]'])
@@ -837,27 +891,34 @@ def DemultiplexingView(request, run_pk):
 
 @transaction.atomic
 def DemultiplexingView2(request, run_pk):
+    """ View to do the demutiplexing when user click to rerun the job. Called by epigen.js file:
+    $(".dmpajax").on("click", function (e) , when mkdirerror2 (Data/Fastqs already exist) occurs
+
+    """
+
     dmpdir = settings.NEXTSEQAPP_DMPDIR
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
     tsccaccount = settings.TSCC_ACCOUNT
     if runinfo.operator != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
     data = {}
-    # print(runinfo.Flowcell_ID)
+
+    # locate the flow cell run folder
     for fname in os.listdir(dmpdir):
-        # print(os.path.join(dmpdir,fname))
         if os.path.isdir(os.path.join(dmpdir, fname)) and fname.endswith(runinfo.Flowcell_ID):
             data['is_direxists'] = 1
             basedirname = os.path.join(dmpdir, fname)
             rundate = '20'+'-'.join([fname[i:i+2]
                                      for i in range(0, len(fname.split('_')[0]), 2)])
-            # print(rundate)
             break
-    subprocess.call(['chmod', '-R', 'g+w', basedirname])
-    if 'is_direxists' in data:
-        # shutil.rmtree(os.path.join(basedirname, 'Data/Fastqs'))
-        # os.mkdir(os.path.join(basedirname, 'Data/Fastqs'), exist_ok=True)
 
+    """ By default, the folder only be writable by the owner (zhc268). Modify the permission to 
+    allow other users in the epigen-group to write in. Used when setting tscc account that run the
+    pipeline as someone instead of zhc268
+    """
+    subprocess.call(['chmod', '-R', 'g+w', basedirname])
+
+    if 'is_direxists' in data:
         samples_list = runinfo.librariesinrun_set.all()
 
         i7len = len(
@@ -883,6 +944,7 @@ def DemultiplexingView2(request, run_pk):
                     i1_file = open(filename.replace('.csv', '_I1.csv'), 'w')
                     i1_file.write(','.join(["Lane", "Sample", "Index"])+'\n')
 
+                # generate the samplesheet.csv file and put it under the runfolder
                 with open(filename, 'w') as csvfile:
                     writer = csv.writer(csvfile)
                     writer.writerow(['[Header]'])
@@ -1004,6 +1066,12 @@ def DemultiplexingView2(request, run_pk):
 
 @transaction.atomic
 def DownloadingfromIGM(request, run_pk):
+    """ View to download fastq files from IGM  when user click to transfer data (the button is the 
+    same place with that do demultiplexing). Called by epigen.js file:
+    (".downloadajax").on("click", function (e)
+    
+    """
+
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
     ftp_addr = request.POST.get("downloadaddress")
     ftp_user = request.POST.get("username")
