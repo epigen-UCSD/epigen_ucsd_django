@@ -4,7 +4,7 @@
 ## Requirement 
 
 * Python: v3.6.5
-* Django: 2.0.4
+* Django: 2.2.5
 
 ## Install 
 
@@ -13,6 +13,13 @@
 ``` Shell
  conda create -n ${ENV_NAME}  --file requirement.txt -c defaults -c conda-forge 
 ```
+Another option since we did no mantain the requirement.txt
+``` Shell
+ conda env create -f django.yml
+ source activate django
+```
+
+
 ### Set up database 
 
 see [here](./docs/db.md)
@@ -38,6 +45,7 @@ ALTER USER test WITH PASSWORD '123456';
 ```
 
 ## Run 
+Create a deploy.ini file under folder epigen_ucsd_django/, check that file in deploy env to see what should be included. then run the following:
 ``` Shell
 python manage.py makemigrations
 python manage.py migrate
