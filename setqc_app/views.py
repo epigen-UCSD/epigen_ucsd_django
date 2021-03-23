@@ -33,6 +33,9 @@ defaultgenome = {'human': 'hg38', 'mouse': 'mm10',
 
 
 def groupnumber(datalist):
+    """ This function will group consecutive numbers in the list to a range. 
+    e.g. It will goup the list [3,4,5,6,1,10] to [(3, 6), (1, 1), (10, 10)]
+    """
     ranges = []
     for k, g in groupby(enumerate(datalist), lambda x: x[0]-x[1]):
         group = (map(itemgetter(1), g))
@@ -42,6 +45,10 @@ def groupnumber(datalist):
 
 
 def grouplibraries(librarieslist):
+    """ Unused. Replaced by grouplibrariesOrderKeeped function 
+    This function is used in initiating the LibrariesToIncludeCreatForm when updating a setQC.
+    e.g. It will group the libraries AVD_173,AVD_37,AVD_175, AVD_174, AVD_176 to AVD_37, AVD_173 - AVD_176
+    """
     groupedlibraries = []
     presuffix_number = {}
     for item in librarieslist:
@@ -84,6 +91,13 @@ def grouplibraries(librarieslist):
 
 
 def grouplibrariesOrderKeeped(librarieslist):
+
+    """ This function is used in initiating the LibrariesToIncludeCreatForm when updating a setQC and keep
+    the order of the libraries as that they were when adding this setQC info.
+    e.g. It will group the libraries AVD_173, JYH_12, AVD_174, AVD_175 to AVD_173, JYH_12, AVD_174-AVD_175.
+
+    """
+
     groupedlibraries = []
     presuffix_last = ''
     presuffix_number = {}
@@ -152,12 +166,14 @@ def grouplibrariesOrderKeeped(librarieslist):
 
 
 def AllSetQCView(request):
-
+    """ View returns all setQCs those in the database
+    """
     Sets_list = LibrariesSetQC.objects.all().select_related('requestor')
     context = {
         'Sets_list': Sets_list,
         'DisplayField': DisplayField2,
     }
+    # only users in bioinformatics group can edit and delete all runs, even those not belong to him
     if not request.user.groups.filter(name='bioinformatics').exists():
         return render(request, 'setqc_app/setqcinfo.html', context)
     else:
@@ -165,6 +181,8 @@ def AllSetQCView(request):
 
 
 def UserSetQCView(request):
+    """ View returns all setQCs those belong to the login user
+    """
     SetQC_list = LibrariesSetQC.objects.filter(requestor=request.user)
     context = {
         'Sets_list': SetQC_list,
@@ -175,6 +193,9 @@ def UserSetQCView(request):
 
 @transaction.atomic
 def SetQCCreateView(request):
+    """ setQC creation step I: create an instance of Model LibrariesSetQC and 
+    its LibraryInSet (except the label and genome fields)
+    """
 
     libraries_form = LibrariesToIncludeCreatForm(request.POST or None)
     ChIPLibrariesFormSet = formset_factory(
@@ -182,6 +203,7 @@ def SetQCCreateView(request):
     chiplibraries_formset = ChIPLibrariesFormSet(request.POST or None)
     if request.method == 'POST':
         post = request.POST.copy()
+        # parse collaborator input, e.g. 102: Jia Li(Neil Chi)
         if post['collaborator']:
             obj = get_object_or_404(
                 User, id=post['collaborator'].split(':')[0])
@@ -198,16 +220,16 @@ def SetQCCreateView(request):
             set_ids = list(
                 LibrariesSetQC.objects.values_list('set_id', flat=True))
             if not set_ids:
-                setinfo.set_id = 'Set_165'
+                setinfo.set_id = 'Set_165' # We started from Set_165 when the user use the setQC app instead of the google sheet
             else:
                 maxid = max([int(x.split('_')[1]) for x in set_ids])
                 setinfo.set_id = '_'.join(['Set', str(maxid+1)])
+            # non chip-seq save
             if set_form.cleaned_data['experiment_type'] != 'ChIP-seq':
                 if libraries_form.is_valid():
                     setinfo.save()
                     tosave_list = []
                     librariestoinclude = libraries_form.cleaned_data['librariestoinclude']
-                    # print(librariestoinclude)
 
                     for item in librariestoinclude:
                         if item:
@@ -218,10 +240,9 @@ def SetQCCreateView(request):
                             tosave_list.append(tosave_item)
 
                     LibraryInSet.objects.bulk_create(tosave_list)
-                    # return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
                     return redirect('setqc_app:libraylabelgenome_add', setqc_pk=setinfo.id)
+            # ChIP-seq save
             else:
-
                 if chiplibraries_formset.is_valid():
                     setinfo.save()
                     groupnum = 1
@@ -252,7 +273,6 @@ def SetQCCreateView(request):
                                     tosave_list.append(tosave_item)
                             groupnum += 1
                     LibraryInSet.objects.bulk_create(tosave_list)
-                    # return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
                     return redirect('setqc_app:libraylabelgenome_add', setqc_pk=setinfo.id)
     else:
         set_form = LibrariesSetQCCreationForm(None)
@@ -268,6 +288,8 @@ def SetQCCreateView(request):
 
 @transaction.atomic
 def SetQCgenomelabelCreateView(request, setqc_pk):
+    """ setQC creation step II: add the label and genome information to LibraryInSet
+    """
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
@@ -277,6 +299,7 @@ def SetQCgenomelabelCreateView(request, setqc_pk):
     formsetcustom = []
     initaldic = []
     speci_list = []
+    # initiate the form 
     for x in regset:
         temdic = {}
         temdic['sequencingid'] = x.seqinfo.seq_id
@@ -300,9 +323,7 @@ def SetQCgenomelabelCreateView(request, setqc_pk):
                                                     'thisspecies_list': speci_list}
                                                 )
     if formsetcustom.is_valid():
-        # print('right')
         for form in formsetcustom.forms:
-            # print(form)
             seqidtm = form.cleaned_data['sequencingid']
             genometm = form.cleaned_data['genomeinthisset']
             labeltm = form.cleaned_data['lableinthisset']
@@ -310,7 +331,6 @@ def SetQCgenomelabelCreateView(request, setqc_pk):
             obj.genome = GenomeInfo.objects.get(genome_name=genometm)
             obj.label = labeltm
             obj.save()
-        # return redirect('setqc_app:setqc_detail',setqc_pk=setinfo.id)
         return redirect('setqc_app:usersetqcs')
 
     context = {
@@ -321,6 +341,8 @@ def SetQCgenomelabelCreateView(request, setqc_pk):
 
 
 def SetQCDeleteView(request, setqc_pk):
+    """ View to delete a setQC. Only allow the owner and the members in bioinformatics group delete
+    """
     deleteset = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if deleteset.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
@@ -330,6 +352,10 @@ def SetQCDeleteView(request, setqc_pk):
 
 @transaction.atomic
 def SetQCUpdateView(request, setqc_pk):
+    """ View to update a setQC. Only allow the owner and the members in bioinformatics group update
+    Like setQC creation, updating also need 2 steps. This is the 1st step, to update an instance of 
+    Model LibrariesSetQC and its LibraryInSet (except the label and genome fields)
+    """
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
@@ -344,6 +370,7 @@ def SetQCUpdateView(request, setqc_pk):
                                                      initial={'librariestoinclude': grouplibrariesOrderKeeped(librarieslist)})
         if request.method == 'POST':
             post = request.POST.copy()
+            # parse collaborator input, e.g. 102: Jia Li(Neil Chi)
             if post['collaborator']:
                 obj = get_object_or_404(
                     User, id=post['collaborator'].split(':')[0])
@@ -357,6 +384,10 @@ def SetQCUpdateView(request, setqc_pk):
                 setinfo = set_form.save(commit=False)
                 setinfo.group = groupinfo
                 setinfo.save()
+                # if the fields in essentialfields or the libraryinset have been updated, 
+                #  set flag as 1, then the status will change to 'ClickToSubmit', so the 
+                # user could click to submit the job again.
+
                 for x in essentialfields:
                     if x in set_form.changed_data:
                         flag = 1
@@ -366,7 +397,6 @@ def SetQCUpdateView(request, setqc_pk):
                     flag = 1
                     tosave_list = []
                     librariestoinclude = libraries_form.cleaned_data['librariestoinclude']
-                    # print(librariestoinclude)
                     setinfo.libraries_to_include.clear()
 
                     for item in librariestoinclude:
@@ -400,6 +430,9 @@ def SetQCUpdateView(request, setqc_pk):
         groupitem = list(chipset.values_list(
             'group_number', flat=True).distinct())
         initialgroup = []
+        # initiate the ChIPLibrariesToIncludeCreatForm and keep the order as follows:
+        # 1. first by group_number: 1,2,3....
+        # 2. then input libraries go first, and then IP libraries
         for i in groupitem:
             temdic = {}
             temdic['librariestoincludeInput'] = grouplibrariesOrderKeeped(
@@ -413,6 +446,7 @@ def SetQCUpdateView(request, setqc_pk):
                                                      initial=initialgroup)
         if request.method == 'POST':
             post = request.POST.copy()
+            # parse collaborator input, e.g. 102: Jia Li(Neil Chi)
             if post['collaborator']:
                 obj = get_object_or_404(
                     User, id=post['collaborator'].split(':')[0])
@@ -426,6 +460,11 @@ def SetQCUpdateView(request, setqc_pk):
                 setinfo = set_form.save(commit=False)
                 setinfo.group = groupinfo
                 setinfo.save()
+
+                # if the fields in essentialfields or the libraryinset have been updated, 
+                #  set flag as 1, then the status will change to 'ClickToSubmit', so the 
+                # user could click to submit the job again.
+
                 for x in essentialfields:
                     if x in set_form.changed_data:
                         flag = 1
@@ -482,6 +521,10 @@ def SetQCUpdateView(request, setqc_pk):
 
 @transaction.atomic
 def SetQCgenomelabelUpdateView(request, setqc_pk):
+    """ View to update a setQC step 2: update two fields: genome and label in LibraryInSet.
+    Only allow the owner and the members in bioinformatics group update
+
+    """
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     if setinfo.requestor != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
@@ -491,6 +534,7 @@ def SetQCgenomelabelUpdateView(request, setqc_pk):
     formsetcustom = []
     initaldic = []
     speci_list = []
+    # initialte the form
     for x in regset:
         temdic = {}
         temdic['sequencingid'] = x.seqinfo.seq_id
@@ -525,6 +569,8 @@ def SetQCgenomelabelUpdateView(request, setqc_pk):
             obj.genome = GenomeInfo.objects.get(genome_name=genometm)
             obj.label = labeltm
             obj.save()
+        # if any fiels in the form have changed, change the status to 'ClickToSubmit' so that 
+        # the user could submit the job again.
         if formsetcustom.has_changed():
             setinfo.url = ''
             setinfo.version = ''
@@ -540,6 +586,8 @@ def SetQCgenomelabelUpdateView(request, setqc_pk):
 
 
 def GetNotesView(request, setqc_pk):
+    """ View to get(ajax) the notes in LibrariesSetQC
+    """
     setinfo = get_object_or_404(LibrariesSetQC, pk=setqc_pk)
     data = {}
     data['notes'] = setinfo.notes
@@ -548,6 +596,9 @@ def GetNotesView(request, setqc_pk):
 
 @transaction.atomic
 def RunSetQC(request, setqc_pk):
+    """ View to run the setQC pipeline when the user click to botton to submit the job. Called by in epigen.js file:
+    $(".runsetqc").on("click", function (e)
+    """
     libdir = settings.LIBQC_DIR
     fastqdir = settings.FASTQ_DIR
     setqcoutdir = settings.SETQC_DIR
@@ -574,6 +625,7 @@ def RunSetQC(request, setqc_pk):
     seqstatus = {}
     i = 0
     for item in list1:
+        # seqstatus is defined by whether the seq has gone through the mapping and peak calling pipeline
         if item not in allfolder:
             seqstatus[item] = 'No'
         else:
@@ -585,7 +637,11 @@ def RunSetQC(request, setqc_pk):
         reps = ['1']
         reps = reps + item.split('_')[2:]
         mainname = '_'.join(item.split('_')[0:2])
+
+        # To find whether the fastq files are ready
         if seqstatus[item] == 'No':
+            # the seq added through LIMS by calling 'encode_data_add' was named starting with 'ENCODE_', which
+            # is different from the tradition what we have on the naming the seq.
             if not item.startswith('ENCODE_'):
                 if list_readtype[i] == 'PE':
                     r1 = item+'_R1.fastq.gz'
@@ -835,6 +891,11 @@ def StrikeOutputNames(to_process, output_names):
 
 @transaction.atomic
 def RunSetQC2(request, setqc_pk):
+    """ View to run the setQC pipeline when user click to rerun the job. Called by epigen.js file:
+    $(".runsetqc").on("click", function (e), when setidexisterror (Data/Fastqs already exist) occurs.
+    TO do: considering merging this view with the RunSetQC view as one view
+
+    """
     libdir = settings.LIBQC_DIR
     fastqdir = settings.FASTQ_DIR
     setqcoutdir = settings.SETQC_DIR
@@ -857,6 +918,7 @@ def RunSetQC2(request, setqc_pk):
     list_readtype = [x['seqinfo__read_type'] for x in outinfo]
     seqstatus = {}
     i = 0
+    # seqstatus is defined by whether the seq has gone through the mapping and peak calling pipeline
     for item in list1:
         if item not in allfolder:
             seqstatus[item] = 'No'
@@ -869,6 +931,7 @@ def RunSetQC2(request, setqc_pk):
         reps = reps + item.split('_')[2:]
         mainname = '_'.join(item.split('_')[0:2])
 
+        # To find whether the fastq files are ready
         if seqstatus[item] == 'No':
             if not item.startswith('ENCODE_'):
                 if list_readtype[i] == 'PE':

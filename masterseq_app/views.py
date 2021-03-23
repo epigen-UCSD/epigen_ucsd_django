@@ -46,6 +46,8 @@ def removenone(inputlist):
         return list(sorted(set(y), key=y.index))
 
 def load_protocals(request):
+    """ We did not use the ProtocalInfo in the later development, could consider removing this
+    """
     exptype = request.GET.get('exptype')
     protocals = ProtocalInfo.objects.filter(
         experiment_type=exptype).order_by('protocal_name')
@@ -59,6 +61,10 @@ def BulkUpdateView(request):
     i = 0
     titleinfo = {}
     colinfo = {}
+    """
+    The field name in template is not always the same with that in the model. 
+
+    """
     title2field_seq = {
         'label (for qc report)': 'default_label',
         'team member intials': 'team_member_initails',
@@ -259,14 +265,26 @@ def BulkUpdateView(request):
 
 @transaction.atomic
 def SamplesCreateView(request):
+    """
+    Steps in creating new samples:
+    1). Will add the research person to database automatically if the person is new
+    2). Will add the phone, email to the research person if they are new info to the research person
+    3). Will add the fiscal person to database automatically if the person is new
+    4). Will add the index, email to the fiscal person if they are new info to the fiscal person
+    5). Will add the sample info
+    """
     sample_form = SamplesCreationForm(request.POST or None)
     tosave_list = []
     data = {}
+
+    # these 2 flags are used to decide whether show some segment in the pop up preview window
     newuserrequired = 0
     newinforequired = 0
+
     alreadynewuser = []
     if sample_form.is_valid():
         sampleinfo = sample_form.cleaned_data['samplesinfo']
+        # assign SAMP- number for each sample
         all_index = list(SampleInfo.objects.values_list(
             'sample_index', flat=True))
         max_index = max([int(x.split('-')[1])
@@ -283,8 +301,10 @@ def SamplesCreateView(request):
 
             samindex = 'SAMP-'+str(max_index + 1)
             max_index = max_index + 1
+            # these 2 flags are used to decide whether show some segment in the pop up preview window
             newresuserflag = 0
             newresinfoflag = 0
+
             user_first_name = ''
             user_last_name = ''
             user_username = '',
@@ -294,6 +314,8 @@ def SamplesCreateView(request):
             new_email = ''
             new_phone = ''
             new_index = ''
+
+            # these 2 flags are used to decide whether show some segment in the pop up preview window
             newfisuserflag = 0
             newfisinfoflag = 0
             fisuser_first_name = ''
@@ -307,13 +329,15 @@ def SamplesCreateView(request):
             fisnew_index = ''
             gname = fields[1].strip() if fields[1].strip() not in [
                 'NA', 'N/A'] else ''
+
+            # step1,2: research person part
             resname = fields[2].strip() if fields[2].strip() not in [
                 'NA', 'N/A'] else ''
             resemail = fields[3].strip().lower() if fields[3].strip() not in [
                 'NA', 'N/A'] else ''
             resphone = re.sub(
                 '-| |\.|\(|\)|ext', '', fields[4].strip()) if fields[4].strip() not in ['NA', 'N/A'] else ''
-            print(f'{gname}, {resname}, {resemail}, {resphone}')
+            print(f'{gname}, {resname}, {resemail}, {resphone}')            
             if resemail:
                 thisgroup = Group.objects.get(name=gname)
                 if thisgroup.collaboratorpersoninfo_set.all().filter(email__contains=[resemail]).exists():
@@ -381,6 +405,7 @@ def SamplesCreateView(request):
                             user_username = user_first_name[0] + \
                                 str(randint(0, 9))+user_last_name.lower()
 
+            # step3,4: fiscal person part
             fisname = fields[5].strip() if fields[5].strip() not in [
                 'NA', 'N/A'] else ''
             fisemail = fields[6].strip().lower() if fields[6].strip() not in [
@@ -454,6 +479,7 @@ def SamplesCreateView(request):
                             fisuser_username = fisuser_first_name[0]+str(
                                 randint(0, 9))+fisuser_last_name.lower()
 
+            # step5, other fields of samples
             samnotes = fields[20].strip()
             try:
                 saminternalnotes = fields[24].strip()
@@ -556,7 +582,7 @@ def SamplesCreateView(request):
                 'task_number':task_n,
                 'funding_source_number':funding_source_n,
             }
-
+        # to save the new samples
         if 'Save' in request.POST:
             for k, v in data.items():
                 if v['group']:
@@ -664,6 +690,7 @@ def SamplesCreateView(request):
                 tosave_list.append(tosave_item)
             SampleInfo.objects.bulk_create(tosave_list)
             return redirect('masterseq_app:index')
+        # to show the to be added info in a pop-up preview window before saving
         if 'Preview' in request.POST:
             displayorder = ['sample_index', 'group', 'research_name', 'research_email',
                             'research_phone', 'fiscal_name', 'fiscal_email', 'fiscal_index','project_number',\
@@ -706,6 +733,15 @@ def SamplesCreateView(request):
 
 @transaction.atomic
 def LibrariesCreateView(request):
+    """
+    The view to add new libraries. 
+    It will link the library to the sample through the sample id column in the template.
+    For the user not in the bioinformatics group, the sample should be already in the database
+    first. When user is in bioinformatics group, allow the sample be new, and it will add the
+    pseudo sample (detected by SAMPNA-) along with the library to the database automatically. 
+    The pseudo part is typically if the user wants to add the public data and get it through own
+    pipeline
+    """
     if request.user.groups.filter(name='bioinformatics').exists():
         library_form = LibsCreationForm(request.POST or None)
     else:
@@ -743,7 +779,6 @@ def LibrariesCreateView(request):
                 pseudoflag = 0
                 samtm = SampleInfo.objects.get(sample_id=sampid)
                 sampindex = samtm.sample_index
-                #saminfo = SampleInfo.objects.get(sample_index=fields[0].strip())
             expindex = 'EXP-'+str(existingexpmaxindex+1)
             existingexpmaxindex = existingexpmaxindex+1
             data[libid] = {}
@@ -858,6 +893,11 @@ def LibrariesCreateView(request):
 
 @transaction.atomic
 def SeqsCreateView(request):
+    """
+    The view to add new seqs. 
+    Same as the LibrariesCreateView, it allows the bioinformatics user to create a 
+    pseudo sample or pseudo library.
+    """
     if request.user.groups.filter(name='bioinformatics').exists():
         seqs_form = SeqsCreationForm(request.POST or None)
     else:
@@ -1097,6 +1137,9 @@ def SeqsCreateView(request):
 
 
 def SampleDataView(request):
+    """ called in ajax way, see epigen.js file:
+    $('#metadata_samples_bio').DataTable({})
+    """
     Samples_list = SampleInfo.objects.all().select_related('group').values(
         'pk', 'sample_id', 'description', 'date', 'sample_type', 'group__name', 'status')
     for sample in Samples_list:
@@ -1111,6 +1154,9 @@ def SampleDataView(request):
 
 
 def LibDataView(request):
+    """ called in ajax way, see epigen.js file:
+    $('#metadata_libs').DataTable({})
+    """
     Libs_list = LibraryInfo.objects.all().select_related('sampleinfo__group').values(
         'pk', 'library_id', 'library_description', 'sampleinfo__id', 'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
         'sampleinfo__species', 'sampleinfo__group__name', 'date_started', 'experiment_type')
@@ -1120,6 +1166,9 @@ def LibDataView(request):
 
 
 def SeqDataView(request):
+    """ called in ajax way, see epigen.js file:
+    $('#metadata_seqs').DataTable({})
+    """
     Seqs_list = SeqInfo.objects.all().select_related('libraryinfo__sampleinfo__group').values(
         'pk', 'seq_id', 'libraryinfo__library_description', 'libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
         'libraryinfo__sampleinfo__description', 'libraryinfo__sampleinfo__group__name',
@@ -1131,6 +1180,9 @@ def SeqDataView(request):
 
 
 def UserSampleDataView(request):
+    """ called in ajax way, see epigen.js file:
+    $('#metadata_samples_bio').DataTable({})
+    """
     Samples_list = SampleInfo.objects.filter(team_member=request.user).values(
         'pk', 'sample_id', 'description', 'date', 'sample_type', 'group__name', 'status')
     for sample in Samples_list:
@@ -1145,6 +1197,9 @@ def UserSampleDataView(request):
 
 
 def UserLibDataView(request):
+    """ called in ajax way, see epigen.js file:
+    $('#metadata_libs_bio').DataTable({})
+    """
     Libs_list = LibraryInfo.objects.filter(team_member_initails=request.user)\
         .select_related('sampleinfo__group').values(
             'pk', 'library_description', 'library_id', 'sampleinfo__id',  'sampleinfo__sample_type', 'sampleinfo__sample_id', 'sampleinfo__description',
@@ -1155,6 +1210,9 @@ def UserLibDataView(request):
 
 
 def UserSeqDataView(request):
+    """ called in ajax way, see epigen.js file:
+    $('#metadata_seqs_bio').DataTable({})
+    """
     Seqs_list = SeqInfo.objects.filter(team_member_initails=request.user)\
         .select_related('libraryinfo__sampleinfo__group', 'machine').values(
         'pk', 'seq_id', 'libraryinfo__library_description', 'libraryinfo__sampleinfo__id', 'libraryinfo__sampleinfo__sample_id',
@@ -1181,6 +1239,8 @@ def UserMetaDataView(request):
 
 
 def SampleDeleteView(request, pk):
+    """ View to delete a sample, only allow bioinformatics user or the owner to delete the sample
+    """
     sampleinfo = get_object_or_404(SampleInfo, pk=pk)
     if sampleinfo.team_member != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
@@ -1189,6 +1249,8 @@ def SampleDeleteView(request, pk):
 
 
 def LibDeleteView(request, pk):
+    """ View to delete a library, only allow bioinformatics user or the owner to delete the library
+    """
     libinfo = get_object_or_404(LibraryInfo, pk=pk)
     if libinfo.team_member_initails != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
@@ -1197,6 +1259,8 @@ def LibDeleteView(request, pk):
 
 
 def SeqDeleteView(request, pk):
+    """ View to delete a sequencing, only allow bioinformatics user or the owner to delete the sequencing
+    """
     seqinfo = get_object_or_404(SeqInfo, pk=pk)
     if seqinfo.team_member_initails != request.user and not request.user.groups.filter(name='bioinformatics').exists():
         raise PermissionDenied
@@ -1357,6 +1421,8 @@ def LibDetailView(request, pk):
 
 
 def SeqDetailView(request, pk):
+    """ Seq detail page thtough the primary key
+    """
     seqinfo = get_object_or_404(SeqInfo.objects.select_related('libraryinfo',
                                                                'machine', 'i7index', 'i5index', 'team_member_initails'), pk=pk)
     libinfo = seqinfo.libraryinfo
@@ -1391,6 +1457,8 @@ def SeqDetailView(request, pk):
 
 
 def SeqDetail2View(request, seqid):
+    """ Seq detail page thtough the seq id
+    """
     seqinfo = get_object_or_404(SeqInfo.objects.select_related('libraryinfo',
                                                                'machine', 'i7index', 'i5index', 'team_member_initails'), seq_id=seqid)
     libinfo = seqinfo.libraryinfo
@@ -1419,6 +1487,8 @@ def SeqDetail2View(request, seqid):
 
 
 def load_samples(request):
+    """ Used in ajax loading samples by autocompleting what user input when updating a library
+    """
     q = request.GET.get('term', '')
     samples = SampleInfo.objects.filter(Q(sample_id__icontains=q) | Q(
         sample_index__icontains=q)).values('sample_index', 'sample_id')[:20]
@@ -1433,6 +1503,8 @@ def load_samples(request):
 
 
 def load_libs(request):
+    """ Used in ajax loading libraries by autocompleting what user input when updating a sequencing
+    """
     q = request.GET.get('term', '')
     libs = LibraryInfo.objects.filter(
         library_id__icontains=q).values('library_id')[:20]

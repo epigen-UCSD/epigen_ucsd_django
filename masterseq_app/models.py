@@ -158,6 +158,9 @@ class SampleInfo(models.Model):
 
 
 class LibraryInfo(models.Model):
+    """
+    considering removing unused fields protocalinfo
+    """
     library_id = models.CharField('library name', max_length=100)
     library_description = models.TextField(blank=True)
     sampleinfo = models.ForeignKey(

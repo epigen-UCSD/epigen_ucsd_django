@@ -892,7 +892,8 @@ def DemultiplexingView(request, run_pk):
 @transaction.atomic
 def DemultiplexingView2(request, run_pk):
     """ View to do the demutiplexing when user click to rerun the job. Called by epigen.js file:
-    $(".dmpajax").on("click", function (e) , when mkdirerror2 (Data/Fastqs already exist) occurs
+    $(".dmpajax").on("click", function (e) , when mkdirerror2 (Data/Fastqs already exist) occurs.
+    TO do: considering merging this view with the DemultiplexingView view as one view
 
     """
 
@@ -1069,7 +1070,7 @@ def DownloadingfromIGM(request, run_pk):
     """ View to download fastq files from IGM  when user click to transfer data (the button is the 
     same place with that do demultiplexing). Called by epigen.js file:
     (".downloadajax").on("click", function (e)
-    
+
     """
 
     runinfo = get_object_or_404(RunInfo, pk=run_pk)
