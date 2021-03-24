@@ -144,6 +144,7 @@ class SampleInfo(models.Model):
     fiscal_index = models.CharField(max_length=200, blank=True, null=True)
     project_number = models.CharField(max_length=100, blank=True, null=True)
     task_number = models.CharField(max_length=100, blank=True, null=True)
+    financial_unit = models.CharField(max_length=100, blank=True, null=True)
     funding_source_number = models.CharField(
         max_length=100, blank=True, null=True)
     research_person = models.ForeignKey(
